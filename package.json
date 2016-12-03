@@ -1,0 +1,23 @@
+{
+  "name": "brainjs",
+  "version": "1.0.0",
+  "description": "increase conversions with a single line of code",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mybrainpal/brainjs.git"
+  },
+  "keywords": [
+    "cro",
+    "optimization"
+  ],
+  "author": "BrainPal",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mybrainpal/brainjs/issues"
+  },
+  "homepage": "https://github.com/mybrainpal/brainjs#readme"
+}
