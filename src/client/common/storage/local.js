@@ -2,16 +2,16 @@
  * Proudly created by ohad on 04/12/2016.
  */
 /**
- * Am implementation of {@link Logger}.
+ * Logs data in console.log
  * @param {Object} [options]
  * @constructor
  */
-function LocalLogger(options) {}
+function LocalStorage(options) {}
 
 /**
  * Logs an entry on subject.
- * @param {Subject} subject
+ * @param {Object} subject
  */
-LocalLogger.prototype.log = function (subject) {
-    console.log('BrainPal-LocalLogger: ' + subject);
+LocalStorage.prototype.log = function (subject) {
+    console.log('BrainPal-LocalStorage: ' + subject);
 };

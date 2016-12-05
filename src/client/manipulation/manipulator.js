@@ -12,43 +12,37 @@ function Manipulator(options) {
 
 /**
  * @param options
- *  @property {Logger} logger
+ *  @property {string} storage
  */
-Manipulator.prototype.options = function(options) {
-    if (options.logger) {
-        this.logger = options.logger;
+Manipulator.prototype.options = function (options) {
+    if (options.hasOwnProperty('storage')) {
+        this.storage = window.BrainPal.storage.create(options.storage);
+    } else {
+        window.BrainPal.errorLogger.log('Collector: missing storage.');
     }
-};
-
-Manipulator.prototype.executors = {
-    'swap': new SwapExecutor()
-};
-
-/**
- * Executes actionName manipulation on anchors.
- * @param {string} name
- * @param {Array} anchors
- * @param {Object} options
- *  @field
- */
-Manipulator.prototype.getExecutor = function(name, elements, options) {
-    if (!Executor.prototype.executors.hasOwnProperty(name)) {
-        console.log('BrainPal-Executor-error: illegal executor name(' + name + ').');
-        return;
-    }
-    if (this.executors[name].preconditions(anchors, options)) {
-        return this.executors[name]
-    }
-    console.log('BrainPal-Executor-error: preconditions failed for ' + name + '.');
-    return;
 };
 
 /**
  * Manipulates elements with action and then logs relevant data on subject.
  * @param {Experiment} experiment
- * @param {Object} options
- *  @property {Object} [executor]
+ * @param {Object} [options]
+ *  @property {Array} anchors - for event logging
  */
-Manipulator.prototype.manipulate = function(experiment, options) {
-
+Manipulator.prototype.experiment = function (experiment, options) {
+    if (experiment.client.included) {
+        this.storage.save('experiment:id-' + experiment.id +
+                          (experiment.hasOwnProperty('name') ? ',name-' + experiment.name : ''));
+        for (var group in experiment.client.groups) {
+            this.storage.save('experiment:id-' + experiment.id + ',group:name-' + group.name);
+            group.executor.execute(options.hasOwnProperty('executor') ?
+                                   options && options.executor : {});
+            if (options && options.hasOwnProperty('anchors')) {
+                for (var i = 0; i < options.anchors.length; i++) {
+                    window.BrainPal.collector.collect(
+                        options.anchors[i],
+                        'anchor:experiment:id-' + experiment.id + ',group:name-' + group.name);
+                }
+            }
+        }
+    }
 };

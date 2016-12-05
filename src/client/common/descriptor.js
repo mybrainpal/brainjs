@@ -17,7 +17,7 @@ function Descriptor(options) {
  *                                   element.
  */
 Descriptor.prototype.options = function (options) {
-    if (options.description) {
+    if (options.hasOwnProperty('description')) {
         this.description = options.description;
     }
 };
@@ -27,6 +27,6 @@ Descriptor.prototype.options = function (options) {
  */
 Descriptor.prototype.locate = function() {
     if (this.description.hasOwnProperty('id')) {
-        return document.getElementById(this.description['id']);
+        return document.getElementById(this.description.id);
     }
 };

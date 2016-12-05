@@ -4,13 +4,23 @@
 /**
  * A communication interface to store data in an external data warehouse. The interface is often
  * implemented by integrations.
+ *
+ * This constructor should not be invoked.
+ *
  * @param {Object} [options]
  * @constructor
  */
-function Logger(options) {}
+function Storage(options) {}
 
 /**
- * Logs an entry on subject.
- * @param {Subject} subject
+ * @param name
+ * @returns {Object} an instance of name-storage.
  */
-Logger.prototype.log = function(subject) {};
+Storage.prototype.create = function(name) {
+    switch (name) {
+        case 'local':
+            return new LocalStorage();
+        default:
+            BrainPal.errorLogger.log(name + ' is not a storage option, maybe one day though');
+    }
+};

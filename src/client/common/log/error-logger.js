@@ -5,34 +5,34 @@
  * @param {Object} [options]
  * @constructor
  */
-function Error(options) {
+function ErrorLogger(options) {
     this.options(options);
 }
 
 /**
  * @param options
- *  @property {Logger} logger
- *  @property {string} [prefix=BP-Error:]
+ *  @property {Logger} storage
+ *  @property {string} [prefix=BP-ErrorLogger:]
  */
-Error.prototype.options = function(options) {
-    if (options.hasOwnProperty('logger')) {
-        this.logger = options.logger;
+ErrorLogger.prototype.options = function(options) {
+    if (options.hasOwnProperty('storage')) {
+        this.storage = options.storage;
     } else {
-        console.log('BrainPal Error handler loaded without logger');
+        throw new Error('BrainPal ErrorLogger handler loaded without storage');
     }
     if (options.hasOwnProperty('prefix')) {
         this.prefix = options.prefix;
     } else {
-        this.prefix = 'BP-Error:';
+        this.prefix = 'BP-ErrorLogger:';
     }
 };
 
 /**
- * Logs msg onto logger.
+ * Logs msg onto storage.
  * @param {string} msg
  */
-Error.prototype.log = function (msg) {
-    if (this.hasOwnProperty('logger')) {
-        this.logger.log(this.prefix + msg);
+ErrorLogger.prototype.log = function (msg) {
+    if (this.hasOwnProperty('storage')) {
+        this.storage.log(this.prefix + msg);
     }
 };

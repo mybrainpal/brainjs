@@ -13,17 +13,21 @@ function Collector(options) {
 /**
  * Initializes self.
  * @param {Object} options
- *  @property {Logger} logger
+ *  @property {string} storage
  */
 Collector.prototype.options = function(options) {
-    this.logger = options.logger;
+    if (options.hasOwnProperty('storage')) {
+        this.storage = window.BrainPal.storage.create(options.storage);
+    } else {
+        window.BrainPal.errorLogger.log('Collector: missing storage.');
+    }
 };
 
 /**
  * Collects data on subject based on anchor.
  * @param {Anchor} anchor
- * @param {Subject} subject
+ * @param {Object} subject
  */
 Collector.prototype.collect = function(anchor, subject) {
-    anchor.listener(function() {this.logger.log(subject);});
+    anchor.listen(function() {this.storage.save(subject);});
 };
