@@ -7,10 +7,11 @@ var gulp = require('gulp'),
     sourcemaps = require('gulp-sourcemaps'),
     concat = require('gulp-concat'),
     babel = require('gulp-babel'),
+    order = require('gulp-order'),
     jshint = require('gulp-jshint');
 
 // define the default task and add the watch task to it
-gulp.task('default', ['build-js']);
+gulp.task('default', ['build-js', 'watch']);
 
 // configure the jshint task
 gulp.task('jshint', function () {
@@ -22,6 +23,10 @@ gulp.task('jshint', function () {
 // configure js bundling
 gulp.task('build-js', function () {
     return gulp.src('src/client/**/*.js')
+               .pipe(order([
+                               'src/client/**/*.js',
+                               'src/client/index.js'
+                           ]))
                .pipe(sourcemaps.init())
                .pipe(concat('brain.js'))
                .pipe(babel({presets: ['es2015']}))

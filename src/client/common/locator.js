@@ -1,43 +1,23 @@
 /**
  * Proudly created by ohad on 03/12/2016.
+ *
+ * Locates DOM nodes based on a json description.
  */
-var ErrorLogger = require('./log/logger');
-/**
- * Used to describe an element in the DOM.
- * @param {Object} options
- * @constructor
- */
-function Descriptor(options) {
-    if (options) {
-        this.options(options);
-    } else {
-        ErrorLogger().log('Descriptor: missing options.');
-    }
-}
+var Logger = require('./log/logger'),
+    Level = require('./log/logger').Level;
 
 /**
- * @param options
- *  @property {Object} description - collection of properties that will be used to locate an
- *                                   element.
+ * @param {Object} description
+ *  @property {string} [id]
+ * @returns {Node} that best matches the description.
  */
-Descriptor.prototype.options = function (options) {
-    if (options.hasOwnProperty('description')) {
-        this.description = options.description;
-    } else {
-        ErrorLogger().log('Descriptor: missing description.');
+module.exports.locate = function (description) {
+    var node;
+    if (description.hasOwnProperty('id')) {
+        node = document.getElementById(description.id);
     }
+    if (node instanceof Node) {
+        return node;
+    }
+    Logger.log(Level.INFO, 'Locator: could not locate for ' + JSON.stringify(description));
 };
-
-/**
- * @returns {Element} that best matches the description.
- */
-Descriptor.prototype.locate = function() {
-    if (this.description.hasOwnProperty('id')) {
-        return document.getElementById(this.description.id);
-    }
-};
-
-/**
- * Expose the `Descriptor` constructor.
- */
-module.exports = Descriptor;

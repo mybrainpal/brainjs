@@ -1,32 +1,22 @@
 /**
  * Proudly created by ohad on 04/12/2016.
+ * Console.log based storage (i.e. each message to printed in the console)
  */
-var ErrorLogger = require('../log/logger');
-/**
- * Logs data in console.log
- * @param {Object} [options]
- * @constructor
- */
-function BPLocalStorage(options) {}
-
+var Logger = require('../log/logger'),
+    Level = require('../log/logger').Level;
 /**
  * Logs an entry on subject.
  * @param {Object} subject
  */
-BPLocalStorage.prototype.save = function (subject) {
+module.exports.save = function save(subject) {
     try {
-        console.log('BrainPal-BPLocalStorage: ' + subject);
+        console.log('BPStorage: ' + JSON.stringify(subject));
     } catch (e) {
-        ErrorLogger().log('BPLocalStorage: ' + e.toString());
+        Logger.log(Level.ERROR, 'console-log.js: ' + JSON.stringify(e));
     }
 };
 
 /**
- * @returns {boolean} whether BPLocalStorage#save is ready to be invoked.
+ * @returns {boolean} whether #save is ready to be invoked.
  */
-BPLocalStorage.prototype.isReady = function() { return true; };
-
-/**
- * Expose the `BPLocalStorage` constructor.
- */
-module.exports = BPLocalStorage;
+module.exports.isReady = function () { return true; };

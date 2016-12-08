@@ -1,57 +1,62 @@
 /**
  * Proudly created by ohad on 04/12/2016.
- */
-/**
+ *
  * Swaps two DOM elements.
- * @constructor
  */
-function SwapExecutor() {}
+var Logger = require('../../common/log/logger'),
+    Level = require('../../common/log/logger').Level;
 
 /**
  * Swaps between elements[0] and elements[1].
  * @param {Array} elements
- * @param {Object} options
- *  @property {Function} callback
+ * @param {Object} [specs]
  */
-SwapExecutor.prototype.execute = function(elements, options) {
-    var parent, firstInserted, secondInserted;
-    if (elements[0].parentNode) {
-        parent = elements[0].parentNode;
-        firstInserted = parent.insertBefore(elements[1], elements[0]);
-        parent.removeChild(elements[0]);
+module.exports.execute = function (elements, specs) {
+    var firstParent = elements[0].parentNode,
+        secondParent = elements[1].parentNode;
+    if (firstParent === secondParent) {
+        if (elements[0].nextSibling === elements[1] ||
+            elements[0].previousSibling === elements[1]) {
+            firstParent.insertBefore(elements[1], elements[0]);
+            return;
+        }
+        if (elements[0].nextSibling && elements[0].nextSibling !== elements[1]) {
+            var firstNextSibling = elements[0].nextSibling;
+            firstParent.insertBefore(elements[0], elements[1]);
+            firstParent.insertBefore(elements[1], firstNextSibling);
+            return;
+        }
+        if (elements[1].nextSibling && elements[1].nextSibling !== elements[0]) {
+            var secondNextSibling = elements[1].nextSibling;
+            firstParent.insertBefore(elements[1], elements[0]);
+            firstParent.insertBefore(elements[0], secondNextSibling);
+        }
     }
-    if (elements[1].parentNode) {
-        parent = elements[1].parentNode;
-        secondInserted = parent.insertBefore(elements[0], elements[1]);
-        parent.removeChild(elements[1]);
-    }
-    if (options.hasOwnProperty('callback')) {
-        options.callback(firstInserted, secondInserted);
-    }
+    var cloned = elements[1].cloneNode(true);
+    secondParent.insertBefore(cloned, elements[1]);
+    firstParent.insertBefore(elements[1], elements[0]);
+    secondParent.insertBefore(elements[0], cloned);
+    secondParent.removeChild(cloned);
     // TODO(ohad): handle styling bloopers.
 };
 
 /**
  * Returns whether the executor has valid input.
+ * @param {Object} [specs]
  * @param {*} elements
- * @param {*} options
  */
-SwapExecutor.prototype.preconditions = function(elements, options) {
+module.exports.preconditions = function (elements, specs) {
     if (!Array.isArray(elements)) {
-        window.BrainPal.errorLogger.log('BrainPal-SwapExecutor-error: variable elements is not an array.');
+        Logger.log(Level.INFO, 'SwapExecutor: variable elements is not an array.');
         return false;
     }
     if (elements.length != 2) {
-        window.BrainPal.errorLogger.log('BrainPal-SwapExecutor-error: elements.length != 2.');
+        Logger.log(Level.INFO, 'SwapExecutor: elements.length != 2.');
         return false;
     }
-    if (elements[0].parentNode === null || elements[0].parentNode === undefined) {
-        window.BrainPal.errorLogger.log('BrainPal-SwapExecutor-error: swapped element(elements[0]) without a parent.');
-        return false;
+    if (elements[0].parentNode && elements[1].parentNode) {
+        return true;
     }
-    if (elements[1].parentNode === null || elements[1].parentNode === undefined) {
-        window.BrainPal.errorLogger.log('BrainPal-SwapExecutor-error: swapped element(elements[1]) without a parent.');
-        return false;
-    }
-    return true;
+    Logger.log(Level.INFO, 'SwapExecutor: one or both elements have no parent, kind of sad.');
+    return false;
 };

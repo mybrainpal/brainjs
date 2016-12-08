@@ -1,40 +1,51 @@
 /**
  * Proudly created by ohad on 05/12/2016.
  */
+var Logger = require('../../common/log/logger'),
+    Level = require('../../common/log/logger').Level,
+    Demographics = require('./demographics');
 /**
- * A group of users having fun participating in an experiment
+ * A group of users having fun participating in an experiment.
  * @param options
  * @constructor
  */
 function ExperimentGroup(options) {
-    this.options(options);
+    if (options) {
+        this.options(options);
+    } else {
+        Logger.log(Level.WARNING, 'ExperimentGroup: missing options.');
+    }
 }
 
 /**
  * @param options
  *  @property {string} experimentId
- *  @property {string} label
- *  @property {Object} demographics
- *  @property {Object} executor
+ *  @property {string} [label]
+ *  @property {Object} [demographics] - by default all users are included.
+ *  @property {Array.<Object>} [executors] - array of objects that will be used for execution
+ *                                           later.
  */
 ExperimentGroup.prototype.options = function(options) {
     if (options.hasOwnProperty('experimentId')) {
         this.experimentId = options.experimentId;
     } else {
-        window.BrainPal.errorLogger.log('ExperimentGroup: missing experimentId.');
+        Logger.log(Level.INFO, 'ExperimentGroup: missing experimentId.');
     }
+    this.label = '';
     if (options.hasOwnProperty('label')) {
         this.label = options.label;
     }
-    this.client = {};
-    this.client.included = true;
+    this.isClientIncluded = true;
     if (options.hasOwnProperty('demographics')) {
         this.demographics = new Demographics(options.demographics);
-        this.client.included = this.demographics.included(window.BrainPal.Client);
+        this.isClientIncluded = this.demographics.included;
     }
-    if (options.hasOwnProperty('executor')) {
-        this.executor = new Executor(options.executor);
-    } else {
-        this.executor = new Executor();
+    if (options.hasOwnProperty('executors')) {
+        this.executors = options.executors;
     }
 };
+
+/**
+ * Expose the `ExperimentGroup` constructor.
+ */
+module.exports = ExperimentGroup;

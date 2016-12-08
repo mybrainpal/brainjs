@@ -1,45 +1,47 @@
 /**
  * Proudly created by ohad on 04/12/2016.
  */
-var _singletonInstance,
-    Storage = require('../storage/storage');
+var Storage = require('../storage/storage');
 /**
- * @param {Object} [options]
- * @constructor
+ * Used to save logs.
+ * @type {Object}
+ * @private
  */
-function ErrorLogger(options) {
-    if (_singletonInstance) {
-        return _singletonInstance;
-    }
-    _singletonInstance = this;
-    this.options(options || {});
-}
+var _storage = Storage.getDefault();
+/**
+ * Prefixed to all logs
+ * @type {Object}
+ * @private
+ */
+var _prefix = '';
+
+module.exports.Level = Object.freeze({
+                                         FINE: {value: 0, name: 'Fine'},
+                                         INFO: {value: 1, name: 'Info'},
+                                         WARNING: {value: 2, name: 'Warning'},
+                                         ERROR: {value: 3, name: 'Error'},
+                                         FATAL: {value: 4, name: 'Fatal'}
+                                     });
 
 /**
  * @param options
  *  @property {Object} [storage=]
- *  @property {string} [prefix=BP-ErrorLogger:]
+ *  @property {string} [prefix=BP-Logger:]
  */
-ErrorLogger.prototype.options = function(options) {
-    this._storage = Storage().get(options.hasOwnProperty('storage') ? options.storage : '');
+module.exports.options = function (options) {
+    if (options.hasOwnProperty('storage')) {
+        _storage = Storage.get(options.storage);
+    }
     if (options.hasOwnProperty('prefix')) {
-        this._prefix = options.prefix;
-    } else {
-        this._prefix = 'BP-ErrorLogger:';
+        _prefix = options.prefix;
     }
 };
 
 /**
  * Logs msg onto storage.
- * @param {string} msg
+ * @param {Object} level - severity of the log.
+ * @param {Object} message
  */
-ErrorLogger.prototype.log = function (msg) {
-    if (this.hasOwnProperty('storage')) {
-        this._storage.save(this._prefix + msg);
-    }
+module.exports.log = function (level, message) {
+    _storage.save(_prefix + level.name.toUpperCase() + ': ' + message);
 };
-
-/**
- * Expose the `ErrorLogger` constructor.
- */
-module.exports = ErrorLogger;

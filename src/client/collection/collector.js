@@ -1,33 +1,51 @@
 /**
  * Proudly created by ohad on 02/12/2016.
+ *
+ * Collects data on events, use with curiosity!
  */
+var Storage = require('../common/storage/storage'),
+    Logger = require('../common/log/logger'),
+    Level = require('../common/log/logger').Level;
 /**
- * Collector is used to collect data about events and log them using the {@link Logger}.
- * @param {Object} options
- * @constructor
+ * Used to save data.
+ * @type {Object}
+ * @private
  */
-function Collector(options) {
-    this.options(options);
-}
-
+var _storage = Storage.getDefault();
 /**
- * Initializes self.
  * @param {Object} options
  *  @property {string} storage
  */
-Collector.prototype.options = function(options) {
+module.exports.options = function (options) {
     if (options.hasOwnProperty('storage')) {
-        this.storage = window.BrainPal.storage.create(options.storage);
-    } else {
-        window.BrainPal.errorLogger.log('Collector: missing storage.');
+        _storage = Storage.get(options.storage);
     }
 };
 
 /**
  * Collects data on subject based on anchor.
- * @param {Anchor} anchor
  * @param {Object} subject
+ * @param {Anchor} [anchor]
  */
-Collector.prototype.collect = function(anchor, subject) {
-    anchor.listen(function() {this.storage.save(subject);});
+module.exports.collect = function (subject, anchor) {
+    if (anchor) {
+        if (!anchor.target) {
+            Logger.log(Level.INFO, 'Collector: refused collection because anchor has no target');
+            return;
+        }
+        anchor.eventNames.map(function (eventName) {
+            var storeFn = function () {
+                if (typeof subject === 'string') {
+                    subject += ',eventName:' + eventName + ',anchor:' + anchor.label;
+                } else {
+                    subject.eventName = eventName;
+                    subject.anchorLabel = anchor.label;
+                }
+                _storage.save(JSON.stringify(subject));
+            };
+            anchor.target.addEventListener(eventName, storeFn);
+        });
+        return;
+    }
+    _storage.save(JSON.stringify(subject));
 };

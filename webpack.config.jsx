@@ -6,6 +6,7 @@ class StrictPlugin {
         this.options = options;
     }
 
+    //noinspection JSUnusedGlobalSymbols
     apply(compiler) {
         compiler.plugin('compilation', compilation => {
             compilation.moduleTemplate.plugin('render', (moduleSource, module, chunk, dependencyTemplates) => {
@@ -23,7 +24,7 @@ class StrictPlugin {
 }
 
 module.exports = {
-    entry: require('glob').sync('./src/client/**/*.js'),
+    entry: './src/client/index.js',
     output: {
         filename: 'brain.js',
         path: './dist'
@@ -41,8 +42,7 @@ module.exports = {
     ],
     plugins: [
         new StrictPlugin({
-            root: __dirname.split('/').slice(0, -1).join('/') + // removes '/tools'
-                  '/src/client'
+            root: __dirname + '/src/client'
         })
     ]
 

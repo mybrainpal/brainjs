@@ -1,13 +1,20 @@
 /**
  * Proudly created by ohad on 04/12/2016.
  */
+var Logger = require('../../common/log/logger'),
+    Level = require('../../common/log/logger').Level,
+    ExperimentGroup = require('./group');
 /**
  * Describes an experiment on window.
  * @param options
  * @constructor
  */
 function Experiment(options) {
-    this.options(options);
+    if (options) {
+        this.options(options);
+    } else {
+        Logger.log(Level.WARNING, 'Experiment: missing options.');
+    }
 }
 
 /**
@@ -19,27 +26,28 @@ function Experiment(options) {
 Experiment.prototype.options = function (options) {
     if (options.hasOwnProperty('id')) {
         this.id = options.id;
-        this.experiments[this.id] = this;
     } else {
-        window.BrainPal.errorLogger.log('Experiment: missing id.');
+        Logger.log(Level.WARNING, 'Experiment: missing id.');
     }
     if (options.hasOwnProperty('name')) {
         this.name = options.name;
     }
-    this.client = {};
-    this.client.included = false;
-    this.client.groups = {};
+    this.isClientIncluded = false;
+    this.clientGroups = [];
     if (options.hasOwnProperty('groups')) {
         this.groups = options.groups.map(function (g) {return new ExperimentGroup(g);});
-        for (var group in this.groups) {
-            if (group.client.included) {
-                this.client.included = true;
-                this.client.groups.push(group);
+        for (var i = 0; i < this.groups.length; i++) {
+            if (this.groups[i].isClientIncluded) {
+                this.isClientIncluded = true;
+                this.clientGroups.push(this.groups[i]);
             }
         }
     } else {
-        window.BrainPal.errorLogger.log('Experiment: missing groups.');
+        Logger.log(Level.WARNING, 'Experiment: missing groups.');
     }
 };
 
-Experiment.prototype.experiments = {};
+/**
+ * Expose the `Experiment` constructor.
+ */
+module.exports = Experiment;

@@ -1,24 +1,19 @@
 /**
  * Proudly created by ohad on 05/12/2016.
+ *
+ * Does nothing. Increases mind peace by 2.
  */
-/**
- * Increases mind peace by 2.
- * @param {Object} [options]
- * @constructor
- */
-function StubExecutor(options) {}
 
 /**
- * Executes big data security in real time.
- * @param {Array} elements
- * @param {Object} options
- *  @property {Function} callback
+ * Executes big data security in real time, and you guessed it, on the cloud!
+ * @param {*} [elements]
+ * @param {*} [specs]
  */
-StubExecutor.prototype.execute = function(elements, options) {};
+module.exports.execute = function (elements, specs) {};
 
 /**
  * Returns whether the executor has valid input.
  * @param {*} [elements]
- * @param {*} [options]
+ * @param {*} [specs]
  */
-StubExecutor.prototype.preconditions = function(elements, options) { return true; };
+module.exports.preconditions = function (elements, specs) { return true; };

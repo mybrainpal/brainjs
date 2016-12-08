@@ -1,55 +1,49 @@
 /**
  * Proudly created by ohad on 05/12/2016.
+ *
+ * Modifies the DOM, but in a good way.
  */
-/**
- * Describes an executor with specification.
- * @param options
- * @constructor
- */
-function Executor(options) {
-    this.options(options);
-}
+var Logger = require('../../common/log/logger'),
+    Level = require('../../common/log/logger').Level,
+    Locator = require('../../common/locator'),
+    StubExecutor = require('./stub-executor'),
+    SwapExecutor = require('./swap-executor');
 
 /**
- * @param options
- *  @property {string} [name=stub]
- *  @property {Array} [descriptors]
- *  @property {Object} [specs]
+ * All existing executors keyed by their names.
+ * @type {{string, Object}}
+ * @private
  */
-Executor.prototype.options = function(options) {
-    if (options.hasOwnProperty('name')) {
-        if (!this.executors.hasOwnProperty(options.name)) {
-            window.BrainPal.Error.log('Executor: executor ' + name + ' is nonexistent.');
-            return;
-        }
-        this.name = options.name;
-    } else {
-        this.name = 'stub';
+var _executorByName = {
+    'stub': StubExecutor,
+    'swap': SwapExecutor
+};
+
+/**
+ * Executes the next big thing.
+ * @param {string} name - of the desired executor.
+ * @param {Array.<string>} [descriptions] - of the target elements.
+ * @param {Object} [specs] - for the actual executor.
+ * @returns {*} delegates returned value to the actual executor.
+ */
+module.exports.execute = function (name, descriptions, specs) {
+    if (!_executorByName.hasOwnProperty(name)) {
+        Logger.log(Level.INFO, 'Executor: executor ' + name + ' is nonexistent.');
+        return;
     }
-    if (options.hasOwnProperty('descriptors')) {
-        this.elements = options.descriptors.map(function(desc) {
-            return (new Descriptor(desc)).locate();
+    specs = specs || {};
+    var elements = [];
+    if (descriptions) {
+        elements = descriptions.map(function (desc) {
+            return Locator.locate(desc);
+        }).filter(function (node) {
+            return node instanceof Node;
         });
     }
-    if (options.hasOwnProperty('specs')) {
-        this.specs = options.specs;
-    }
     // Validates preconditions.
-    if (!this.executors[this.name].preconditions(this.elements, options)) {
-        window.BrainPal.errorLogger.log('Executor: preconditions failed for ' + options);
+    if (!_executorByName[name].preconditions(elements, specs)) {
+        Logger.log(Level.INFO, 'Executor: preconditions failed for ' + name);
+        return;
     }
-};
-
-Executor.prototype.executors = {
-    'stub': new StubExecutor(),
-    'swap': new SwapExecutor()
-};
-
-/**
- * Executes this.executors[this.name]
- * @param {Object} [options]
- * @returns {*} delegates returned value to the executor#execute implementation
- */
-Executor.prototype.execute = function (options) {
-    return this.executors[this.name].execute(this.elements, options);
+    return _executorByName[name].execute(elements, specs);
 };
