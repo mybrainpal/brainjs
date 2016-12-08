@@ -1,17 +1,21 @@
 /**
  * Proudly created by ohad on 03/12/2016.
  */
+var ErrorLogger = require('./log/logger');
 /**
  * Used to describe an element in the DOM.
  * @param {Object} options
  * @constructor
  */
 function Descriptor(options) {
-    this.options(options);
+    if (options) {
+        this.options(options);
+    } else {
+        ErrorLogger().log('Descriptor: missing options.');
+    }
 }
 
 /**
- * Initializes Descriptor object.
  * @param options
  *  @property {Object} description - collection of properties that will be used to locate an
  *                                   element.
@@ -19,6 +23,8 @@ function Descriptor(options) {
 Descriptor.prototype.options = function (options) {
     if (options.hasOwnProperty('description')) {
         this.description = options.description;
+    } else {
+        ErrorLogger().log('Descriptor: missing description.');
     }
 };
 
@@ -30,3 +36,8 @@ Descriptor.prototype.locate = function() {
         return document.getElementById(this.description.id);
     }
 };
+
+/**
+ * Expose the `Descriptor` constructor.
+ */
+module.exports = Descriptor;
