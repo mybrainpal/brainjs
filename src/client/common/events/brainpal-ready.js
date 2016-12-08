@@ -37,6 +37,7 @@ BPReadyEvent.prototype.options = function (options) {};
  * Initializes a CustomEvent
  */
 BPReadyEvent.prototype.init = function () {
+    var intervalHandler;
     this.event = new window.CustomEvent(
         BPReadyEvent.prototype.eventName,
         {
@@ -47,7 +48,7 @@ BPReadyEvent.prototype.init = function () {
             cancelable: true
         }
     );
-    var intervalHandler = setInterval(_fireIfReady, _checkFrequencyMs);
+    intervalHandler = setInterval(_fireIfReady, _checkFrequencyMs);
     window.addEventListener(BPReadyEvent.prototype.eventName, function () {
         clearInterval(intervalHandler);
     });
@@ -67,6 +68,7 @@ function _fireIfReady() {
     if (!Storage.isReady()) {
         return;
     }
+    //noinspection JSUnresolvedFunction
     window.dispatchEvent(_singletonInstance.event);
 }
 

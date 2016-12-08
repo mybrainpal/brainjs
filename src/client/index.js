@@ -12,6 +12,8 @@ var Client = require('./common/client'),
 
 //noinspection JSUnusedLocalSymbols
 window.BrainPal = (function (window, undefined) {
+    var readyEvent;
+    var customerConfiguration;
     var brainPal = window.BrainPal || {};
     if (!Client.canRunBrainPal()) {
         Logger.log(Level.ERROR, 'Seems like this browser and BrainPal ain\'t gonna be friends :-(');
@@ -31,6 +33,9 @@ window.BrainPal = (function (window, undefined) {
      *  @property {string} storage
      */
     function play(customerConfiguration) {
+        var anchors;
+        var j;
+        var i;
         Logger.log(Level.INFO, 'BrainPal: game on!');
         Client.init();
         if (customerConfiguration.hasOwnProperty('storage')) {
@@ -40,14 +45,13 @@ window.BrainPal = (function (window, undefined) {
             return;
         }
         if (customerConfiguration.hasOwnProperty('collect')) {
-            for (var i = 0; i < customerConfiguration.collect.length; i++) {
+            for (i = 0; i < customerConfiguration.collect.length; i++) {
                 Collector.collect(customerConfiguration.collect[i].subject,
                                   new Anchor(customerConfiguration.collect[i].anchor));
             }
         }
         if (customerConfiguration.hasOwnProperty('experiments')) {
-            for (var j = 0; j < customerConfiguration.experiments.length; j++) {
-                var anchors;
+            for (j = 0; j < customerConfiguration.experiments.length; j++) {
                 if (customerConfiguration.experiments[j].options &&
                     customerConfiguration.experiments[j].options.hasOwnProperty('anchors')) {
                     anchors = customerConfiguration.experiments[j].options.anchors.map(
@@ -63,12 +67,12 @@ window.BrainPal = (function (window, undefined) {
         }
     }
 
-    var customerConfiguration = {};
+    customerConfiguration = {};
 
     if (customerConfiguration.hasOwnProperty('storage')) {
         Logger.options({storage: customerConfiguration.storage});
     }
-    var readyEvent = new BPReadyEvent();
+    readyEvent = new BPReadyEvent();
     // Let the games begin.
     window.addEventListener(readyEvent.eventName, function () { play(customerConfiguration); });
 

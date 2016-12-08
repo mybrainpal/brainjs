@@ -32,13 +32,14 @@ module.exports.getDefault = function () {
  *                    If no type is given, returns whether all types in _storageByName are ready.
  */
 function isReady(storageName) {
+    var ready;
     if (storageName) {
         if (!_storageByName.hasOwnProperty(storageName)) {
             return false;
         }
         return getStorage(storageName).isReady();
     }
-    var ready = true;
+    ready = true;
     for (storageName in _storageByName) {
         ready = ready && isReady(storageName);
     }

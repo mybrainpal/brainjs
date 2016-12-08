@@ -22,8 +22,9 @@ function Demographics(options) {
  *  @property {Array} properties
  */
 Demographics.prototype.options = function (options) {
+    var i;
     if (options.hasOwnProperty('properties')) {
-        for (var i = 0; i < options.properties.length; i++) {
+        for (i = 0; i < options.properties.length; i++) {
             this.addProperty(options.properties[i]);
         }
     }

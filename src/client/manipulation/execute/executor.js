@@ -27,12 +27,13 @@ var _executorByName = {
  * @returns {*} delegates returned value to the actual executor.
  */
 module.exports.execute = function (name, descriptions, specs) {
+    var elements;
     if (!_executorByName.hasOwnProperty(name)) {
         Logger.log(Level.INFO, 'Executor: executor ' + name + ' is nonexistent.');
         return;
     }
     specs = specs || {};
-    var elements = [];
+    elements = [];
     if (descriptions) {
         elements = descriptions.map(function (desc) {
             return Locator.locate(desc);

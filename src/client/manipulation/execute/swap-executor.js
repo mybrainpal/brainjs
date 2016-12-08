@@ -12,6 +12,9 @@ var Logger = require('../../common/log/logger'),
  * @param {Object} [specs]
  */
 module.exports.execute = function (elements, specs) {
+    var cloned;
+    var secondNextSibling;
+    var firstNextSibling;
     var firstParent = elements[0].parentNode,
         secondParent = elements[1].parentNode;
     if (firstParent === secondParent) {
@@ -21,18 +24,18 @@ module.exports.execute = function (elements, specs) {
             return;
         }
         if (elements[0].nextSibling && elements[0].nextSibling !== elements[1]) {
-            var firstNextSibling = elements[0].nextSibling;
+            firstNextSibling = elements[0].nextSibling;
             firstParent.insertBefore(elements[0], elements[1]);
             firstParent.insertBefore(elements[1], firstNextSibling);
             return;
         }
         if (elements[1].nextSibling && elements[1].nextSibling !== elements[0]) {
-            var secondNextSibling = elements[1].nextSibling;
+            secondNextSibling = elements[1].nextSibling;
             firstParent.insertBefore(elements[1], elements[0]);
             firstParent.insertBefore(elements[0], secondNextSibling);
         }
     }
-    var cloned = elements[1].cloneNode(true);
+    cloned = elements[1].cloneNode(true);
     secondParent.insertBefore(cloned, elements[1]);
     firstParent.insertBefore(elements[1], elements[0]);
     secondParent.insertBefore(elements[0], cloned);

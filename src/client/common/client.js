@@ -29,6 +29,7 @@ module.exports.agent = _parseUserAgent();
  * @returns {boolean} whether the client and BrainPal can be friends (at least we tried!).
  */
 module.exports.canRunBrainPal = function () {
+    var i;
     var agent = _parseUserAgent();
     var browserToMinVersions = {
         'edge': 14,
@@ -44,7 +45,7 @@ module.exports.canRunBrainPal = function () {
     if (agent.browserVersion < browserToMinVersions[agent.browser.toLowerCase()]) {
         return false;
     }
-    for (var i = 0; i < allowedOs.length; i++) {
+    for (i = 0; i < allowedOs.length; i++) {
         if (agent.os.toLowerCase().indexOf(allowedOs[i]) != -1) {
             return true;
         }

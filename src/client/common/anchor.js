@@ -40,7 +40,9 @@ Anchor.prototype.options = function(options) {
  */
 function _label(target) {
     var label = (target === document) ? 'document' : target.nodeName.toLowerCase();
+    //noinspection JSUnresolvedFunction
     if (target.nodeType === Node.ELEMENT_NODE && target.hasAttribute('id')) {
+        //noinspection JSUnresolvedFunction
         label += '-' + target.getAttribute('id');
     }
     // TODO(ohad): handle nested elements, so that label contains a human context of target.

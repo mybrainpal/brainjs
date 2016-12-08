@@ -9,6 +9,7 @@
  * @param {*} [elements]
  * @param {*} [specs]
  */
+//noinspection JSUnusedLocalSymbols
 module.exports.execute = function (elements, specs) {};
 
 /**
@@ -16,4 +17,5 @@ module.exports.execute = function (elements, specs) {};
  * @param {*} [elements]
  * @param {*} [specs]
  */
+//noinspection JSUnusedLocalSymbols
 module.exports.preconditions = function (elements, specs) { return true; };

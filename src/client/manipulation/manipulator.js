@@ -15,13 +15,15 @@ var Logger = require('../common/log/logger'),
  *  @property {Array} [anchors] - for event logging
  */
 module.exports.experiment = function (experiment, options) {
+    var group;
     var i, j;
     if (experiment.isClientIncluded) {
         Collector.collect(_createSubject(experiment));
         for (i = 0; i < experiment.clientGroups.length; i++) {
-            var group = experiment.clientGroups[i];
+            group = experiment.clientGroups[i];
             Collector.collect(_createSubject(experiment, group));
             for (j = 0; j < group.executors.length; j++) {
+                //noinspection JSUnresolvedVariable
                 Executor.execute(group.executors[j].name || '',
                                  group.executors[j].descriptions || [],
                                  group.executors[j].specs || {});
