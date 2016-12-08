@@ -79,6 +79,12 @@ module.exports.cookiesEnabled = (function () {
  * @private
  */
 function _parseUserAgent() {
+    var cs;
+    var id;
+    var osVersion;
+    var clientStrings;
+    var mobile;
+    var os;
     var nameOffset, verOffset, ix;
     var majorVersion;
     var version;
@@ -158,11 +164,11 @@ function _parseUserAgent() {
     }
 
     // mobile version
-    var mobile = /Mobile|mini|Fennec|Android|iP(ad|od|hone)/.test(nVer);
+    mobile = /Mobile|mini|Fennec|Android|iP(ad|od|hone)/.test(nVer);
 
     // system
-    var os = unknown;
-    var clientStrings = [
+    os = unknown;
+    clientStrings = [
         {s: 'Windows 10', r: /(Windows 10.0|Windows NT 10.0)/},
         {s: 'Windows 8.1', r: /(Windows 8.1|Windows NT 6.3)/},
         {s: 'Windows 8', r: /(Windows 8|Windows NT 6.2)/},
@@ -193,9 +199,9 @@ function _parseUserAgent() {
             r: /(nuhk|Googlebot|Yammybot|Openbot|Slurp|MSNBot|Ask Jeeves\/Teoma|ia_archiver)/
         }
     ];
-    for (var id in clientStrings) {
+    for (id in clientStrings) {
         if (clientStrings.hasOwnProperty(id)) {
-            var cs = clientStrings[id];
+            cs = clientStrings[id];
             if (cs.r.test(nAgt)) {
                 os = cs.s;
                 break;
@@ -203,7 +209,7 @@ function _parseUserAgent() {
         }
     }
 
-    var osVersion = unknown;
+    osVersion = unknown;
 
     if (/Windows/.test(os)) {
         osVersion = /Windows (.*)/.exec(os)[1];
@@ -212,11 +218,11 @@ function _parseUserAgent() {
 
     switch (os) {
         case 'Mac OS X':
-            osVersion = /Mac OS X (10[\.\_\d]+)/.exec(nAgt)[1];
+            osVersion = /Mac OS X (10[._\d]+)/.exec(nAgt)[1];
             break;
 
         case 'Android':
-            osVersion = /Android ([\.\_\d]+)/.exec(nAgt)[1];
+            osVersion = /Android ([._\d]+)/.exec(nAgt)[1];
             break;
 
         case 'iOS':
