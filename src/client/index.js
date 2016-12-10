@@ -5,6 +5,7 @@ var Client = require('./common/client'),
     Logger = require('./common/log/logger'),
     Level = require('./common/log/logger').Level,
     Anchor = require('./common/anchor'),
+    Storage = require('./common/storage/storage'),
     Collector = require('./collection/collector'),
     Manipulator = require('./manipulation/manipulator'),
     Experiment = require('./manipulation/experiment/experiment'),
@@ -12,8 +13,7 @@ var Client = require('./common/client'),
 
 //noinspection JSUnusedLocalSymbols
 window.BrainPal = (function (window, undefined) {
-    var readyEvent;
-    var customerConfiguration;
+    var readyEvent, customerConfiguration, options;
     var brainPal = window.BrainPal || {};
     if (!Client.canRunBrainPal()) {
         Logger.log(Level.ERROR, 'Seems like this browser and BrainPal ain\'t gonna be friends :-(');
@@ -38,12 +38,6 @@ window.BrainPal = (function (window, undefined) {
         var i;
         Logger.log(Level.INFO, 'BrainPal: game on!');
         Client.init();
-        if (customerConfiguration.hasOwnProperty('storage')) {
-            Collector.options({storage: customerConfiguration.storage});
-        } else {
-            Logger.log(Level.WARNING, 'customerConfiguration: missing storage.');
-            return;
-        }
         if (customerConfiguration.hasOwnProperty('collect')) {
             for (i = 0; i < customerConfiguration.collect.length; i++) {
                 Collector.collect(customerConfiguration.collect[i].subject,
@@ -70,7 +64,20 @@ window.BrainPal = (function (window, undefined) {
     customerConfiguration = {};
 
     if (customerConfiguration.hasOwnProperty('storage')) {
-        Logger.options({storage: customerConfiguration.storage});
+        if (customerConfiguration.storage.hasOwnProperty('name')) {
+            options = {};
+            if (customerConfiguration.storage.hasOwnProperty('options')) {
+                options = customerConfiguration.storage.options;
+            }
+            options.onReadyHandler = function () {
+                Logger.options({storage: customerConfiguration.storage.name});
+                Collector.options({storage: customerConfiguration.storage.name});
+            };
+            Storage.create(customerConfiguration.storage.name, options);
+        }
+    } else {
+        Logger.log(Level.WARNING, 'customerConfiguration: missing storage.');
+        return;
     }
     readyEvent = new BPReadyEvent();
     // Let the games begin.

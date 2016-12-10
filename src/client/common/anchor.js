@@ -7,6 +7,7 @@ var Logger = require('./log/logger'),
 /**
  * Container for a DOM node and collection of events associated with it.
  * @param {Object} options
+ * @class Anchor
  * @constructor
  */
 function Anchor(options) {

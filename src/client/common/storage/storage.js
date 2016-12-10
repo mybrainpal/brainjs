@@ -51,31 +51,40 @@ module.exports.isReady = isReady;
  * Instantiates a new instance of storageName in _storageByName, with the key `storageName`.
  * @param {string} storageName - of the storage to create
  * @param {Object} [options] - that will be passed to the specific storage.
+ *  @property {Function} [onReadyHandler] - to invoke after a storage had been initiated.
  * @returns {Object} the created object.
  */
 function create(storageName, options) {
-    // The variables are defined are to avoid premature initialization of Logger.
+    // The variables are defined here to avoid premature initialization of Logger.
     //noinspection LocalVariableNamingConventionJS
-    var logger = require('../log/logger'),
+    var Logger = require('../log/logger'),
         Level = require('../log/logger').Level;
     var storage = (function () {
         switch (storageName) {
             case 'local':
                 return require('./console-log');
+                break;
+            case 'google-analytics':
+                return require('./google-analytics-storage');
+                break;
             default:
-                logger.log(Level.WARNING,
+                Logger.log(Level.WARNING,
                            'storage.js: ' + storageName + ' is not a storage name we know of :-/');
                 return;
         }
     })();
     if (storage) {
-        if (options) {
-            storage.options();
+        if (storage.hasOwnProperty('init')) {
+            storage.init(options || {});
+        }
+        if (options && options.hasOwnProperty('onReadyHandler') &&
+            storage.hasOwnProperty('onReady')) {
+            storage.onReady(options.onReadyHandler);
         }
         _storageByName[storageName] = storage;
         return storage;
     }
-    logger.log(Level.WARNING,
+    Logger.log(Level.WARNING,
                'storage.js: no storage was created');
 }
 module.exports.create = create;

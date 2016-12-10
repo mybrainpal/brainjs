@@ -7,6 +7,7 @@ var Logger = require('../../common/log/logger'),
 /**
  * Describes an experiment on window.
  * @param options
+ * @class Experiment
  * @constructor
  */
 function Experiment(options) {

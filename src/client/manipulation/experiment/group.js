@@ -7,6 +7,7 @@ var Logger = require('../../common/log/logger'),
 /**
  * A group of users having fun participating in an experiment.
  * @param options
+ * @class @ExperimentGroup
  * @constructor
  */
 function ExperimentGroup(options) {

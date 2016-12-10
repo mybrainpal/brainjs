@@ -17,8 +17,8 @@ var Logger = require('../common/log/logger'),
 module.exports.experiment = function (experiment, options) {
     var group;
     var i, j;
+    Collector.collect(_createSubject(experiment));
     if (experiment.isClientIncluded) {
-        Collector.collect(_createSubject(experiment));
         for (i = 0; i < experiment.clientGroups.length; i++) {
             group = experiment.clientGroups[i];
             Collector.collect(_createSubject(experiment, group));
@@ -28,12 +28,12 @@ module.exports.experiment = function (experiment, options) {
                                  group.executors[j].descriptions || [],
                                  group.executors[j].specs || {});
             }
-            if (options) {
-                if (options.hasOwnProperty('anchors')) {
-                    for (j = 0; j < options.anchors.length; j++) {
-                        Collector.collect(_createSubject(experiment), options.anchors[j]);
-                    }
-                }
+        }
+    }
+    if (options) {
+        if (options.hasOwnProperty('anchors')) {
+            for (j = 0; j < options.anchors.length; j++) {
+                Collector.collect(_createSubject(experiment), options.anchors[j]);
             }
         }
     }
@@ -54,6 +54,7 @@ function _createSubject(experiment, group) {
     if (experiment.hasOwnProperty('name')) {
         subject.experiment.name = experiment.name;
     }
+    subject.experiment.participates = experiment.isClientIncluded;
     if (group) {
         subject.experiment.group = {};
         if (group.hasOwnProperty('label')) {

@@ -18,15 +18,29 @@ function BPReadyEvent(options) {
 }
 
 /**
- * @type {string} name of event, as provided to CustomEvent constructor.
+ * Name of event to provide for CustomEvent constructor.
+ * @type {string}
  */
 BPReadyEvent.prototype.eventName = 'brainpal-ready';
 
 /**
- * @type {number} how often to check whether the client is ready to run BrainPal
+ * How often to check whether the client is ready to run BrainPal
+ * @type {number}
  * @private
  */
 var _checkFrequencyMs = 50;
+
+/**
+ * Indicates BrainPal ready event was already fired
+ * @type {boolean}
+ * @private
+ */
+var _ready = false;
+
+/**
+ * @returns {boolean} value of _ready.
+ */
+BPReadyEvent.prototype.isReady = function () { return _ready; };
 
 /**
  * @param {Object} options
@@ -68,6 +82,7 @@ function _fireIfReady() {
     if (!Storage.isReady()) {
         return;
     }
+    _ready = true;
     //noinspection JSUnresolvedFunction
     window.dispatchEvent(_singletonInstance.event);
 }

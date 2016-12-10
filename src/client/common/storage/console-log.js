@@ -20,3 +20,17 @@ module.exports.save = function save(subject) {
  * @returns {boolean} whether #save is ready to be invoked.
  */
 module.exports.isReady = function () { return true; };
+
+/**
+ * Takes care of requirements for this storage.
+ * @param {Object} [options]
+ */
+module.exports.init = function (options) {};
+
+/**
+ * Runs handler as soon as the storage is ready.
+ * @param {Function} handler
+ */
+module.exports.onReady = function (handler) {
+    handler();
+};
