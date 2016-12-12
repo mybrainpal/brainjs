@@ -17,24 +17,6 @@ module.exports.execute = function (elements, specs) {
     var firstNextSibling;
     var firstParent = elements[0].parentNode,
         secondParent = elements[1].parentNode;
-    if (firstParent === secondParent) {
-        if (elements[0].nextSibling === elements[1] ||
-            elements[0].previousSibling === elements[1]) {
-            firstParent.insertBefore(elements[1], elements[0]);
-            return;
-        }
-        if (elements[0].nextSibling && elements[0].nextSibling !== elements[1]) {
-            firstNextSibling = elements[0].nextSibling;
-            firstParent.insertBefore(elements[0], elements[1]);
-            firstParent.insertBefore(elements[1], firstNextSibling);
-            return;
-        }
-        if (elements[1].nextSibling && elements[1].nextSibling !== elements[0]) {
-            secondNextSibling = elements[1].nextSibling;
-            firstParent.insertBefore(elements[1], elements[0]);
-            firstParent.insertBefore(elements[0], secondNextSibling);
-        }
-    }
     cloned = elements[1].cloneNode(true);
     secondParent.insertBefore(cloned, elements[1]);
     firstParent.insertBefore(elements[1], elements[0]);

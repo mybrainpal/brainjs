@@ -41,11 +41,11 @@ module.exports.collect = function (subject, anchor) {
                     subject.eventName = eventName;
                     subject.anchorLabel = anchor.label;
                 }
-                _storage.save(JSON.stringify(subject));
+                _storage.save(subject);
             };
             anchor.target.addEventListener(eventName, storeFn);
         });
         return;
     }
-    _storage.save(JSON.stringify(subject));
+    _storage.save(subject);
 };
