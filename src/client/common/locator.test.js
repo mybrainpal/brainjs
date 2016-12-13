@@ -1,40 +1,20 @@
 /**
  * Proudly created by ohad on 12/12/2016.
  */
-var expect = require('chai').expect,
-    before = require('mocha').before,
-    beforeEach = require('mocha').beforeEach,
-    describe = require('mocha').describe,
-    it = require('mocha').it,
-    Locator = require('./locator');
+var chai = require('chai'),
+    expect = require('chai').expect,
+    rewire = require('rewire'),
+    Locator = rewire('./locator');
+
+chai.use(require('chai-spies'));
 
 describe('Locator', function () {
-    var description, parentDiv, a1, a2, span, itDescription, img;
+    var description,
+        parentDiv, a1, a2, img, span,
+        itDescription,
+        loggerSpy,
+        loggerMock;
     before(function () {
-        parentDiv = document.createElement('div');
-        parentDiv.setAttribute('id', 'id-parent');
-        parentDiv.setAttribute('class', 'class-parent');
-        document.getElementsByTagName("body")[0].appendChild(parentDiv);
-        a1 = document.createElement('a');
-        a1.setAttribute('id', 'a1');
-        a1.setAttribute('class', 'class1 class2');
-        a1.setAttribute('att1', 'foo');
-        a1.setAttribute('att2', 'bar');
-        a1.setAttribute('href', 'http://brainpal.io#winter-is-coming');
-        a1.textContent = 'buy now!!';
-        a2 = a1.cloneNode(true);
-        a2.setAttribute('id', 'a2');
-        a2.setAttribute('att2', '');
-        span = document.createElement('span');
-        span.setAttribute('class', 'class1 class2');
-        span.setAttribute('att1', 'foo');
-        span.setAttribute('att2', 'bar');
-        span.textContent = 'thanks';
-        parentDiv.appendChild(span);
-        parentDiv.appendChild(a1);
-        parentDiv.appendChild(a2);
-    });
-    beforeEach(function () {
         description = {
             id: 'a1',
             classes: [
@@ -54,9 +34,51 @@ describe('Locator', function () {
                 att2: 'bar',
                 href: 'http://brainpal.io'
             },
-            textContent: 'buy now',
+            textContent: '^buy now',
             childNodeIndex: 1
         };
+        parentDiv = document.createElement('div');
+        parentDiv.setAttribute('id', 'id-parent');
+        parentDiv.setAttribute('class', 'class-parent');
+        document.getElementsByTagName("body")[0].appendChild(parentDiv);
+        a1 = document.createElement('a');
+        a1.setAttribute('id', description.id);
+        a1.setAttribute('class', description.classes[0] + ' ' + description.classes[1]);
+        a1.setAttribute('att1', description.attributes.att1);
+        a1.setAttribute('att2', description.attributes.att2);
+        a1.setAttribute('href', description.attributes.href + '#winter-is-coming');
+        a1.textContent = 'buy now!!';
+        a2 = a1.cloneNode(true);
+        a2.setAttribute('id', 'a2');
+        a2.setAttribute('att2', '');
+        span = document.createElement('span');
+        span.setAttribute('class', a1.getAttribute('class'));
+        span.setAttribute('att1', description.attributes.att1);
+        span.setAttribute('att2', description.attributes.att2);
+        span.textContent = 'thanks';
+        img = document.createElement('img');
+        a2.appendChild(img);
+        parentDiv.appendChild(span);
+        parentDiv.appendChild(a1);
+        parentDiv.appendChild(a2);
+        loggerMock = {
+            'log': _logMockFn
+        };
+        Locator.__set__({
+                            'Logger': loggerMock
+                        });
+        loggerSpy = chai.spy.on(loggerMock, 'log');
+    });
+    beforeEach(function () {
+        loggerSpy.reset();
+    });
+    it('no description returns nada', function () {
+        expect(Locator.locate({})).to.not.be.ok;
+        expect(loggerSpy).to.have.been.called.once;
+    });
+    it('don\'t log', function () {
+        expect(Locator.locate({}, {logFailure: false})).to.not.be.ok;
+        expect(loggerSpy).to.not.have.been.called.once;
     });
     it('Locate by ID', function () {
         itDescription = {
@@ -73,11 +95,9 @@ describe('Locator', function () {
     it('Locate by parent', function () {
         itDescription = {
             parent: {
-                id: 'a1'
+                id: 'a2'
             }
         };
-        img = document.createElement('img');
-        a1.appendChild(img);
         expect(Locator.locate(itDescription)).to.equal(img);
     });
     it('Locate by attributes', function () {
@@ -88,7 +108,7 @@ describe('Locator', function () {
     });
     it('Locate by text content', function () {
         itDescription = {
-            textContent: 'thanks'
+            textContent: '^thanks$'
         };
         expect(Locator.locate(itDescription)).to.equal(span);
     });
@@ -97,8 +117,44 @@ describe('Locator', function () {
             parent: {
                 tag: 'div'
             },
-            childNodeIndex: 2
+            childNodeIndex: 1
         };
         expect(Locator.locate(itDescription)).to.equal(a1);
     });
+    it('Single match true', function () {
+        itDescription = {
+            textContent: description.textContent
+        };
+        expect(Locator.locate(itDescription, {singleMatch: true})).to.not.be.ok;
+        expect(loggerSpy).to.have.been.called.once;
+    });
+    it('Single match false', function () {
+        itDescription = {
+            textContent: description.textContent
+        };
+        expect(Locator.locate(itDescription, {singleMatch: false})).to.equal(a1);
+    });
+    it('Could not find parent', function () {
+        itDescription = {
+            parent: {
+                id: 'slim-shady'
+            }
+        };
+        expect(Locator.locate(itDescription)).to.not.be.ok;
+        expect(loggerSpy).to.have.been.called.once;
+    });
+    it('Could not find parent, find by attributes', function () {
+        itDescription = {
+            parent: {
+                id: 'slim-shady'
+            },
+            attributes: description.attributes
+        };
+        expect(Locator.locate(itDescription)).to.equal(a1);
+        expect(loggerSpy).to.not.have.been.called();
+    });
 });
+
+function _logMockFn() {
+    // console.log('failed to locate ' + JSON.stringify(arguments[1]))
+}

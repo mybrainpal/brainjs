@@ -1,5 +1,6 @@
 // Karma configuration
 // Generated on Mon Dec 12 2016 10:48:59 GMT+0200 (IST)
+var RewirePlugin = require("rewire-webpack");
 
 module.exports = function (config) {
     config.set(
@@ -28,6 +29,12 @@ module.exports = function (config) {
             // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
             preprocessors: {
                 '**/*.js': ['webpack']
+            },
+
+            webpack: {
+                plugins: [
+                    new RewirePlugin()
+                ]
             },
 
 
