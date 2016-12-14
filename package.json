@@ -4,7 +4,8 @@
   "description": "increase conversions with a single line of code",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/karma start"
+    "test": "./node_modules/.bin/karma start",
+    "start": "webpack --config webpack.config.jsx --progress --colors"
   },
   "repository": {
     "type": "git",
