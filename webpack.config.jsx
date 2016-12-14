@@ -10,7 +10,9 @@ class StrictPlugin {
     apply(compiler) {
         compiler.plugin('compilation', compilation => {
             compilation.moduleTemplate.plugin('render', (moduleSource, module, chunk, dependencyTemplates) => {
-                if (module.resource && module.resource.startsWith(this.options.root)) {
+                if (module.resource
+                    && module.resource.startsWith(this.options.root)
+                    && module.resource.endsWith('.js')) {
                     return new ConcatSource('\'use strict\';\n', moduleSource);
                 }
                 return moduleSource;
@@ -38,6 +40,11 @@ module.exports = {
             query: {
                 presets: ['es2015']
             }
+        },
+        {
+            test: /\.css/,
+            fallbackLoader: "style-loader",
+            loader: "css-loader"
         }
     ],
     plugins: [
@@ -47,5 +54,4 @@ module.exports = {
     ]
 
 };
-
 // webpack --config tools/webpack.config.jsx --optimize-minimize --optimize-dedupe
