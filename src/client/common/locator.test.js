@@ -153,6 +153,9 @@ describe('Locator', function () {
         expect(Locator.locate(itDescription)).to.equal(a1);
         expect(loggerSpy).to.not.have.been.called();
     });
+    after(function () {
+        parentDiv.parentNode.removeChild(parentDiv);
+    });
 });
 
 function _logMockFn() {
