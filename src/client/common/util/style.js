@@ -16,17 +16,17 @@ var _styleSheet;
 var _identifyingAttribute           = 'brainpal';
 module.exports.identifyingAttribute = _identifyingAttribute;
 /**
- * Creates a new style element and assigns _styleSheet to its correspondent CSSStyleSheet.
+ * Creates a new style styleElement and assigns _styleSheet to its correspondent CSSStyleSheet.
  * @private
  */
 function _init() {
-    var element  = document.createElement('style'),
+    var styleElement  = document.createElement('style'),
         i, ownerNode,
-        entry    = document.getElementsByTagName('script')[0];
-    element.type = 'text/css';
-    element.setAttribute(_identifyingAttribute, 'true');
+        entry         = document.getElementsByTagName('script')[0];
+    styleElement.type = 'text/css';
+    styleElement.setAttribute(_identifyingAttribute, 'true');
 
-    entry.parentNode.insertBefore(element, entry);
+    entry.parentNode.insertBefore(styleElement, entry);
     for (i = 0; i < document.styleSheets.length; i++) {
         //noinspection JSUnresolvedVariable
         ownerNode = document.styleSheets[i].ownerNode;
@@ -53,4 +53,19 @@ module.exports.insertRule = function (selector, cssText, index) {
         cssText = '{' + cssText + '}';
     }
     _styleSheet.insertRule(selector + cssText, index);
+};
+
+/**
+ * Loads cssText styles into a new stylesheet.
+ * @param {string} cssText
+ * @returns {Element} the created style element.
+ */
+module.exports.load = function (cssText) {
+    var styleElement         = document.createElement('style'),
+        entry                = document.getElementsByTagName('script')[0];
+    styleElement.type        = 'text/css';
+    styleElement.textContent = cssText;
+    styleElement.setAttribute(_identifyingAttribute, 'true');
+    entry.parentNode.insertBefore(styleElement, entry);
+    return styleElement;
 };
