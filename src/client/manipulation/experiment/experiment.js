@@ -2,7 +2,7 @@
  * Proudly created by ohad on 04/12/2016.
  */
 var Logger = require('../../common/log/logger'),
-    Level = require('../../common/log/logger').Level,
+    Level  = require('../../common/log/logger').Level,
     ExperimentGroup = require('./group');
 /**
  * Describes an experiment on window.

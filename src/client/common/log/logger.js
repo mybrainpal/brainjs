@@ -16,11 +16,11 @@ var _storage = Storage.getDefault();
 var _prefix = '';
 
 module.exports.Level = Object.freeze({
-                                         FINE: {value: 0, name: 'Fine'},
-                                         INFO: {value: 1, name: 'Info'},
+                                         FINE   : {value: 0, name: 'Fine'},
+                                         INFO   : {value: 1, name: 'Info'},
                                          WARNING: {value: 2, name: 'Warning'},
-                                         ERROR: {value: 3, name: 'Error'},
-                                         FATAL: {value: 4, name: 'Fatal'}
+                                         ERROR  : {value: 3, name: 'Error'},
+                                         FATAL  : {value: 4, name: 'Fatal'}
                                      });
 
 /**

@@ -3,7 +3,7 @@
  * Console.log based storage (i.e. each message to printed in the console)
  */
 var Logger = require('../log/logger'),
-    Level = require('../log/logger').Level;
+    Level  = require('../log/logger').Level;
 /**
  * Logs an entry on subject.
  * @param {Object} subject

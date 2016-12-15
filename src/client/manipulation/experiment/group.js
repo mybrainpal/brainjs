@@ -2,7 +2,7 @@
  * Proudly created by ohad on 05/12/2016.
  */
 var Logger = require('../../common/log/logger'),
-    Level = require('../../common/log/logger').Level,
+    Level  = require('../../common/log/logger').Level,
     Demographics = require('./demographics');
 /**
  * A group of users having fun participating in an experiment.
@@ -26,7 +26,7 @@ function ExperimentGroup(options) {
  *  @property {Array.<Object>} [executors] - array of objects that will be used for execution
  *                                           later.
  */
-ExperimentGroup.prototype.options = function(options) {
+ExperimentGroup.prototype.options = function (options) {
     if (options.hasOwnProperty('experimentId')) {
         this.experimentId = options.experimentId;
     } else {
@@ -38,7 +38,7 @@ ExperimentGroup.prototype.options = function(options) {
     }
     this.isClientIncluded = true;
     if (options.hasOwnProperty('demographics')) {
-        this.demographics = new Demographics(options.demographics);
+        this.demographics     = new Demographics(options.demographics);
         this.isClientIncluded = this.demographics.included;
     }
     if (options.hasOwnProperty('executors')) {

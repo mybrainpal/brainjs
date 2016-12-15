@@ -4,7 +4,7 @@
  * Locates DOM nodes based on a json description.
  */
 var Logger = require('./log/logger'),
-    Level = require('./log/logger').Level;
+    Level  = require('./log/logger').Level;
 
 /**
  * @param {Object} description

@@ -30,15 +30,15 @@ module.exports.agent = _parseUserAgent();
  */
 module.exports.canRunBrainPal = function () {
     var i;
-    var agent = _parseUserAgent();
+    var agent                = _parseUserAgent();
     var browserToMinVersions = {
-        'edge': 14,
-        'chrome': 53,
-        'safari': 10,
+        'edge'   : 14,
+        'chrome' : 53,
+        'safari' : 10,
         'firefox': 50,
-        'opera': 40
+        'opera'  : 40
     };
-    var allowedOs = ['windows', 'ios', 'android', 'mac'];
+    var allowedOs            = ['windows', 'ios', 'android', 'mac'];
     if (!browserToMinVersions.hasOwnProperty(agent.browser.toLowerCase())) {
         return false;
     }
@@ -233,10 +233,10 @@ function _parseUserAgent() {
     }
 
     return {
-        browser: browser,
+        browser       : browser,
         browserVersion: majorVersion,
-        mobile: mobile,
-        os: os,
-        osVersion: osVersion
+        mobile        : mobile,
+        os            : os,
+        osVersion     : osVersion
     };
 }

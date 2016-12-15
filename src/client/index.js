@@ -1,14 +1,14 @@
 /**
  * Proudly created by ohad on 02/12/2016.
  */
-var Client = require('./common/client'),
-    Logger = require('./common/log/logger'),
-    Level = require('./common/log/logger').Level,
-    Anchor = require('./common/anchor'),
-    Storage = require('./common/storage/storage'),
-    Collector = require('./collection/collector'),
-    Manipulator = require('./manipulation/manipulator'),
-    Experiment = require('./manipulation/experiment/experiment'),
+var Client       = require('./common/client'),
+    Logger       = require('./common/log/logger'),
+    Level        = require('./common/log/logger').Level,
+    Anchor       = require('./common/anchor'),
+    Storage      = require('./common/storage/storage'),
+    Collector    = require('./collection/collector'),
+    Manipulator  = require('./manipulation/manipulator'),
+    Experiment   = require('./manipulation/experiment/experiment'),
     BPReadyEvent = require('./common/events/brainpal-ready');
 
 //noinspection JSUnusedLocalSymbols

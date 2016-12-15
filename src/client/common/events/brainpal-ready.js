@@ -55,10 +55,10 @@ BPReadyEvent.prototype.init = function () {
     this.event = new window.CustomEvent(
         BPReadyEvent.prototype.eventName,
         {
-            detail: {
+            detail    : {
                 time: new Date()
             },
-            bubbles: false,
+            bubbles   : false,
             cancelable: true
         }
     );

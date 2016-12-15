@@ -3,8 +3,8 @@
  *
  * Modifies the DOM, but in a good way.
  */
-var Logger = require('../../common/log/logger'),
-    Level = require('../../common/log/logger').Level,
+var Logger  = require('../../common/log/logger'),
+    Level   = require('../../common/log/logger').Level,
     Locator = require('../../common/locator'),
     StubExecutor = require('./stub-executor'),
     SwapExecutor = require('./swap-executor');

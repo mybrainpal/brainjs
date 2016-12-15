@@ -1,9 +1,9 @@
 /**
  * Proudly created by ohad on 12/12/2016.
  */
-var chai = require('chai'),
-    expect = require('chai').expect,
-    rewire = require('rewire'),
+var chai    = require('chai'),
+    expect  = require('chai').expect,
+    rewire  = require('rewire'),
     Locator = rewire('./locator');
 
 chai.use(require('chai-spies'));
@@ -16,28 +16,28 @@ describe('Locator', function () {
         loggerMock;
     before(function () {
         description = {
-            id: 'a1',
-            classes: [
+            id            : 'a1',
+            classes       : [
                 'class1',
                 'class2'
             ],
-            parent: {
-                id: 'id-parent',
+            parent        : {
+                id     : 'id-parent',
                 classes: [
                     'class-parent'
                 ],
-                tag: 'div'
+                tag    : 'div'
             },
-            tag: 'a',
-            attributes: {
+            tag           : 'a',
+            attributes    : {
                 att1: 'foo',
                 att2: 'bar',
                 href: 'http://brainpal.io'
             },
-            textContent: '^buy now',
+            textContent   : '^buy now',
             childNodeIndex: 1
         };
-        parentDiv = document.createElement('div');
+        parentDiv   = document.createElement('div');
         parentDiv.setAttribute('id', 'id-parent');
         parentDiv.setAttribute('class', 'class-parent');
         document.getElementsByTagName("body")[0].appendChild(parentDiv);
@@ -48,7 +48,7 @@ describe('Locator', function () {
         a1.setAttribute('att2', description.attributes.att2);
         a1.setAttribute('href', description.attributes.href + '#winter-is-coming');
         a1.textContent = 'buy now!!';
-        a2 = a1.cloneNode(true);
+        a2          = a1.cloneNode(true);
         a2.setAttribute('id', 'a2');
         a2.setAttribute('att2', '');
         span = document.createElement('span');
@@ -56,7 +56,7 @@ describe('Locator', function () {
         span.setAttribute('att1', description.attributes.att1);
         span.setAttribute('att2', description.attributes.att2);
         span.textContent = 'thanks';
-        img = document.createElement('img');
+        img         = document.createElement('img');
         a2.appendChild(img);
         parentDiv.appendChild(span);
         parentDiv.appendChild(a1);
@@ -114,7 +114,7 @@ describe('Locator', function () {
     });
     it('Locate by child node index', function () {
         itDescription = {
-            parent: {
+            parent        : {
                 tag: 'div'
             },
             childNodeIndex: 1
@@ -145,7 +145,7 @@ describe('Locator', function () {
     });
     it('Could not find parent, find by attributes', function () {
         itDescription = {
-            parent: {
+            parent    : {
                 id: 'slim-shady'
             },
             attributes: description.attributes

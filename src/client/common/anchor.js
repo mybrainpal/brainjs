@@ -2,7 +2,7 @@
  * Proudly created by ohad on 03/12/2016.
  */
 var Logger = require('./log/logger'),
-    Level = require('./log/logger').Level,
+    Level  = require('./log/logger').Level,
     Locator = require('./locator');
 /**
  * Container for a DOM node and collection of events associated with it.
@@ -11,7 +11,7 @@ var Logger = require('./log/logger'),
  * @constructor
  */
 function Anchor(options) {
-   this.options(options);
+    this.options(options);
 }
 
 /**
@@ -19,7 +19,7 @@ function Anchor(options) {
  *  @property {Object} description
  *  @property {Array} eventNames
  */
-Anchor.prototype.options = function(options) {
+Anchor.prototype.options = function (options) {
     if (options.hasOwnProperty('description')) {
         this.target = Locator.locate(options.description);
         if (this.target) {
@@ -29,7 +29,7 @@ Anchor.prototype.options = function(options) {
         }
     }
     if (options.hasOwnProperty('eventNames')) {
-       this.eventNames = options.eventNames;
+        this.eventNames = options.eventNames;
     }
 };
 

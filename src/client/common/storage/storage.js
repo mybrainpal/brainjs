@@ -57,8 +57,8 @@ module.exports.isReady = isReady;
 function create(storageName, options) {
     // The variables are defined here to avoid premature initialization of Logger.
     //noinspection LocalVariableNamingConventionJS
-    var Logger = require('../log/logger'),
-        Level = require('../log/logger').Level;
+    var Logger  = require('../log/logger'),
+        Level   = require('../log/logger').Level;
     var storage = (function () {
         switch (storageName) {
             case 'local':

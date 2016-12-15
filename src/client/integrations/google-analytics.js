@@ -10,7 +10,7 @@
  *     <li> OnLoad event for GA script.</li>
  * </ul>
  */
-var Logger = require('./../common/log/logger'),
+var Logger                   = require('./../common/log/logger'),
     Level = require('./../common/log/logger').Level;
 
 /**
@@ -22,14 +22,14 @@ var Logger = require('./../common/log/logger'),
 module.exports.init = function (options) {
     (function (window, document, scriptTagName, src, name, gaScript, firstScript) {
         window['GoogleAnalyticsObject'] = name;
-        window[name] = window[name] || function () {
+        window[name]   = window[name] || function () {
                 (window[name].q = window[name].q || []).push(arguments)
             };
         window[name].l = 1 * new Date();
-        gaScript = document.createElement(scriptTagName);
-        firstScript = document.getElementsByTagName(scriptTagName)[0];
+        gaScript       = document.createElement(scriptTagName);
+        firstScript    = document.getElementsByTagName(scriptTagName)[0];
         gaScript.async = 1;
-        gaScript.src = src;
+        gaScript.src   = src;
         firstScript.addEventListener('onload', _onload);
         firstScript.parentNode.insertBefore(gaScript, firstScript);
     })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
@@ -45,9 +45,9 @@ module.exports.init = function (options) {
     }
 
     ga('create', {
-        trackingId: _trackingId,
+        trackingId  : _trackingId,
         cookieDomain: _cookieDomain,
-        name: _trackerName
+        name        : _trackerName
     });
     ga(_trackerName + '.send', 'pageview');
 };
@@ -60,7 +60,7 @@ module.exports.init = function (options) {
  * @private
  */
 var _trackerName = 'BrainPal';
-module.exports.tracketName = _trackerName;
+module.exports.tracketName   = _trackerName;
 
 /**
  * Updates internal and exported track names.
@@ -69,7 +69,7 @@ module.exports.tracketName = _trackerName;
  */
 function _updateTrackerName(trackerName) {
     if (typeof trackerName === 'string') {
-        _trackerName = trackerName;
+        _trackerName               = trackerName;
         module.exports.tracketName = _trackerName;
     }
 }
@@ -82,7 +82,7 @@ function _updateTrackerName(trackerName) {
  * @private
  */
 var _trackingId = 'UA-88758826-1';
-module.exports.trackingId = _trackingId;
+module.exports.trackingId    = _trackingId;
 
 /**
  * Updates internal and exported track names.
@@ -91,7 +91,7 @@ module.exports.trackingId = _trackingId;
  */
 function _updateTrackingId(trackingId) {
     if (typeof trackingId === 'string') {
-        _trackingId = trackingId;
+        _trackingId               = trackingId;
         module.exports.trackingId = _trackingId;
     }
 }
@@ -102,7 +102,7 @@ function _updateTrackingId(trackingId) {
  * @private
  */
 var _cookieDomain = 'auto';
-module.exports.cookieDomain = _cookieDomain;
+module.exports.cookieDomain  = _cookieDomain;
 /**
  * Updates internal and exported cookieDomain.
  * @param {string} cookieDomain
@@ -110,7 +110,7 @@ module.exports.cookieDomain = _cookieDomain;
  */
 function _updateCookieDomain(cookieDomain) {
     if (typeof cookieDomain === 'string') {
-        _cookieDomain = cookieDomain;
+        _cookieDomain               = cookieDomain;
         module.exports.cookieDomain = cookieDomain;
     }
 }
@@ -120,7 +120,7 @@ function _updateCookieDomain(cookieDomain) {
  * @type {string}
  * @private
  */
-var _loadEventName = 'google-analytics-loaded';
+var _loadEventName           = 'google-analytics-loaded';
 module.exports.loadEventName = _loadEventName;
 
 /**
@@ -131,10 +131,10 @@ function _onload() {
     var event = new window.CustomEvent(
         _loadEventName,
         {
-            detail: {
+            detail    : {
                 time: new Date()
             },
-            bubbles: false,
+            bubbles   : false,
             cancelable: true
         }
     );

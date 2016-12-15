@@ -3,10 +3,10 @@
  *
  * Manipulates the DOM to fill our customers pockets with them dollars.
  */
-var Logger = require('../common/log/logger'),
-    Level = require('../common/log/logger').Level,
+var Logger    = require('../common/log/logger'),
+    Level     = require('../common/log/logger').Level,
     Collector = require('../collection/collector'),
-    Executor = require('./execute/executor');
+    Executor  = require('./execute/executor');
 
 /**
  * Runs an experiment.
@@ -46,7 +46,7 @@ module.exports.experiment = function (experiment, options) {
  * @private
  */
 function _createSubject(experiment, group) {
-    var subject = {};
+    var subject        = {};
     subject.experiment = {};
     if (experiment.hasOwnProperty('id')) {
         subject.experiment.id = experiment.id;

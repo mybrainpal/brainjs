@@ -3,7 +3,7 @@
  */
 var Client = require('./../../common/client'),
     Logger = require('./../../common/log/logger'),
-    Level = require('./../../common/log/logger').Level;
+    Level  = require('./../../common/log/logger').Level;
 /**
  * Describes a group of users that make or don't make love.
  *

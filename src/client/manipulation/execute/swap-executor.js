@@ -17,7 +17,7 @@ module.exports.execute = function (elements, specs) {
     var firstNextSibling;
     var firstParent = elements[0].parentNode,
         secondParent = elements[1].parentNode;
-    cloned = elements[1].cloneNode(true);
+    cloned          = elements[1].cloneNode(true);
     secondParent.insertBefore(cloned, elements[1]);
     firstParent.insertBefore(elements[1], elements[0]);
     secondParent.insertBefore(elements[0], cloned);
