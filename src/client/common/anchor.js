@@ -1,8 +1,8 @@
 /**
  * Proudly created by ohad on 03/12/2016.
  */
-var Logger = require('./log/logger'),
-    Level  = require('./log/logger').Level,
+var Logger  = require('./log/logger'),
+    Level   = require('./log/logger').Level,
     Locator = require('./locator');
 /**
  * Container for a DOM node and collection of events associated with it.

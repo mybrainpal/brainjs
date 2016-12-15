@@ -1,8 +1,8 @@
 /**
  * Proudly created by ohad on 05/12/2016.
  */
-var Logger = require('../../common/log/logger'),
-    Level  = require('../../common/log/logger').Level,
+var Logger       = require('../../common/log/logger'),
+    Level        = require('../../common/log/logger').Level,
     Demographics = require('./demographics');
 /**
  * A group of users having fun participating in an experiment.

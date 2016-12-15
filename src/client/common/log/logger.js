@@ -1,7 +1,7 @@
 /**
  * Proudly created by ohad on 04/12/2016.
  */
-var Storage = require('../storage/storage');
+var Storage  = require('../storage/storage');
 /**
  * Used to save logs.
  * @type {Object}
@@ -13,7 +13,7 @@ var _storage = Storage.getDefault();
  * @type {Object}
  * @private
  */
-var _prefix = '';
+var _prefix  = '';
 
 module.exports.Level = Object.freeze({
                                          FINE   : {value: 0, name: 'Fine'},

@@ -10,8 +10,8 @@
  *     <li> OnLoad event for GA script.</li>
  * </ul>
  */
-var Logger                   = require('./../common/log/logger'),
-    Level = require('./../common/log/logger').Level;
+var Logger = require('./../common/log/logger'),
+    Level  = require('./../common/log/logger').Level;
 
 /**
  * Initializes Google Analytics script.
@@ -59,8 +59,8 @@ module.exports.init = function (options) {
  * @type {string}
  * @private
  */
-var _trackerName = 'BrainPal';
-module.exports.tracketName   = _trackerName;
+var _trackerName           = 'BrainPal';
+module.exports.tracketName = _trackerName;
 
 /**
  * Updates internal and exported track names.
@@ -81,8 +81,8 @@ function _updateTrackerName(trackerName) {
  * @type {string}
  * @private
  */
-var _trackingId = 'UA-88758826-1';
-module.exports.trackingId    = _trackingId;
+var _trackingId           = 'UA-88758826-1';
+module.exports.trackingId = _trackingId;
 
 /**
  * Updates internal and exported track names.
@@ -101,8 +101,8 @@ function _updateTrackingId(trackingId) {
  * @type {string}
  * @private
  */
-var _cookieDomain = 'auto';
-module.exports.cookieDomain  = _cookieDomain;
+var _cookieDomain           = 'auto';
+module.exports.cookieDomain = _cookieDomain;
 /**
  * Updates internal and exported cookieDomain.
  * @param {string} cookieDomain

@@ -3,9 +3,9 @@
  *
  * Collects data on events, use with curiosity!
  */
-var Storage = require('../common/storage/storage'),
-    Logger  = require('../common/log/logger'),
-    Level   = require('../common/log/logger').Level;
+var Storage  = require('../common/storage/storage'),
+    Logger   = require('../common/log/logger'),
+    Level    = require('../common/log/logger').Level;
 /**
  * Used to save data.
  * @type {Object}

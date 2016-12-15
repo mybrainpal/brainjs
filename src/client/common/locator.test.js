@@ -48,7 +48,7 @@ describe('Locator', function () {
         a1.setAttribute('att2', description.attributes.att2);
         a1.setAttribute('href', description.attributes.href + '#winter-is-coming');
         a1.textContent = 'buy now!!';
-        a2          = a1.cloneNode(true);
+        a2  = a1.cloneNode(true);
         a2.setAttribute('id', 'a2');
         a2.setAttribute('att2', '');
         span = document.createElement('span');
@@ -56,7 +56,7 @@ describe('Locator', function () {
         span.setAttribute('att1', description.attributes.att1);
         span.setAttribute('att2', description.attributes.att2);
         span.textContent = 'thanks';
-        img         = document.createElement('img');
+        img = document.createElement('img');
         a2.appendChild(img);
         parentDiv.appendChild(span);
         parentDiv.appendChild(a1);
