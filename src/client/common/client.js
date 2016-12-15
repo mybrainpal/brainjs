@@ -62,7 +62,7 @@ module.exports.cookiesEnabled = (function () {
 
     if (typeof navigator.cookieEnabled == 'undefined' && !cookieEnabled) {
         document.cookie = 'testcookie';
-        cookieEnabled = document.cookie.indexOf('testcookie') != -1;
+        cookieEnabled   = document.cookie.indexOf('testcookie') != -1;
     }
     return cookieEnabled;
 })();
@@ -95,8 +95,8 @@ function _parseUserAgent() {
     var unknown = '';
 
     // browser
-    nVer = navigator.appVersion;
-    nAgt = navigator.userAgent;
+    nVer    = navigator.appVersion;
+    nAgt    = navigator.userAgent;
     browser = navigator.appName;
     version = '' + parseFloat(navigator.appVersion);
 
@@ -168,7 +168,7 @@ function _parseUserAgent() {
     mobile = /Mobile|mini|Fennec|Android|iP(ad|od|hone)/.test(nVer);
 
     // system
-    os = unknown;
+    os            = unknown;
     clientStrings = [
         {s: 'Windows 10', r: /(Windows 10.0|Windows NT 10.0)/},
         {s: 'Windows 8.1', r: /(Windows 8.1|Windows NT 6.3)/},
@@ -214,7 +214,7 @@ function _parseUserAgent() {
 
     if (/Windows/.test(os)) {
         osVersion = /Windows (.*)/.exec(os)[1];
-        os = 'Windows';
+        os        = 'Windows';
     }
 
     switch (os) {

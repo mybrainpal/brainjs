@@ -3,9 +3,9 @@
  *
  * Modifies the DOM, but in a good way.
  */
-var Logger  = require('../../common/log/logger'),
-    Level   = require('../../common/log/logger').Level,
-    Locator = require('../../common/locator'),
+var Logger       = require('../../common/log/logger'),
+    Level        = require('../../common/log/logger').Level,
+    Locator      = require('../../common/locator'),
     StubExecutor = require('./stub-executor'),
     SwapExecutor = require('./swap-executor');
 
@@ -32,7 +32,7 @@ module.exports.execute = function (name, descriptions, specs) {
         Logger.log(Level.INFO, 'Executor: executor ' + name + ' is nonexistent.');
         return;
     }
-    specs = specs || {};
+    specs    = specs || {};
     elements = [];
     if (descriptions) {
         elements = descriptions.map(function (desc) {

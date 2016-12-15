@@ -3,8 +3,8 @@
  *
  * Saves data as google analytics events by stringify json objects.
  */
-var Logger = require('./../log/logger'),
-    Level  = require('./../log/logger').Level,
+var Logger          = require('./../log/logger'),
+    Level           = require('./../log/logger').Level,
     GoogleAnalytics = require('./../../integrations/google-analytics');
 /**
  * Logs an entry on subject.
@@ -12,9 +12,9 @@ var Logger = require('./../log/logger'),
  */
 module.exports.save = function save(subject) {
     var category = 'BPStorage';
-    var action = JSON.stringify(subject);
-    var label  = '';
-    var value  = 0;
+    var action   = JSON.stringify(subject);
+    var label    = '';
+    var value    = 0;
     try {
         if (subject.hasOwnProperty('category')) {
             category = subject.category;

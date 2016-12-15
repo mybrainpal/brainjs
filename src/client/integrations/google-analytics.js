@@ -22,14 +22,14 @@ var Logger = require('./../common/log/logger'),
 module.exports.init = function (options) {
     (function (window, document, scriptTagName, src, name, gaScript, firstScript) {
         window['GoogleAnalyticsObject'] = name;
-        window[name]   = window[name] || function () {
+        window[name]                    = window[name] || function () {
                 (window[name].q = window[name].q || []).push(arguments)
             };
-        window[name].l = 1 * new Date();
-        gaScript       = document.createElement(scriptTagName);
-        firstScript    = document.getElementsByTagName(scriptTagName)[0];
-        gaScript.async = 1;
-        gaScript.src   = src;
+        window[name].l                  = 1 * new Date();
+        gaScript                        = document.createElement(scriptTagName);
+        firstScript                     = document.getElementsByTagName(scriptTagName)[0];
+        gaScript.async                  = 1;
+        gaScript.src                    = src;
         firstScript.addEventListener('onload', _onload);
         firstScript.parentNode.insertBefore(gaScript, firstScript);
     })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');

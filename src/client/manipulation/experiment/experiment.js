@@ -1,8 +1,8 @@
 /**
  * Proudly created by ohad on 04/12/2016.
  */
-var Logger = require('../../common/log/logger'),
-    Level  = require('../../common/log/logger').Level,
+var Logger          = require('../../common/log/logger'),
+    Level           = require('../../common/log/logger').Level,
     ExperimentGroup = require('./group');
 /**
  * Describes an experiment on window.
@@ -34,7 +34,7 @@ Experiment.prototype.options = function (options) {
         this.name = options.name;
     }
     this.isClientIncluded = false;
-    this.clientGroups = [];
+    this.clientGroups     = [];
     if (options.hasOwnProperty('groups')) {
         this.groups = options.groups.map(function (g) {return new ExperimentGroup(g);});
         for (var i = 0; i < this.groups.length; i++) {

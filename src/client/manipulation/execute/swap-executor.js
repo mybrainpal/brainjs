@@ -4,7 +4,7 @@
  * Swaps two DOM elements.
  */
 var Logger = require('../../common/log/logger'),
-    Level = require('../../common/log/logger').Level;
+    Level  = require('../../common/log/logger').Level;
 
 /**
  * Swaps between elements[0] and elements[1].
@@ -15,9 +15,9 @@ module.exports.execute = function (elements, specs) {
     var cloned;
     var secondNextSibling;
     var firstNextSibling;
-    var firstParent = elements[0].parentNode,
+    var firstParent  = elements[0].parentNode,
         secondParent = elements[1].parentNode;
-    cloned          = elements[1].cloneNode(true);
+    cloned           = elements[1].cloneNode(true);
     secondParent.insertBefore(cloned, elements[1]);
     firstParent.insertBefore(elements[1], elements[0]);
     secondParent.insertBefore(elements[0], cloned);

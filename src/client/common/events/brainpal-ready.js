@@ -52,7 +52,7 @@ BPReadyEvent.prototype.options = function (options) {};
  */
 BPReadyEvent.prototype.init = function () {
     var intervalHandler;
-    this.event = new window.CustomEvent(
+    this.event      = new window.CustomEvent(
         BPReadyEvent.prototype.eventName,
         {
             detail    : {
