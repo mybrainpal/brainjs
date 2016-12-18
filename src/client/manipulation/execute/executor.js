@@ -5,8 +5,8 @@
  */
 var Logger       = require('../../common/log/logger'),
     Level        = require('../../common/log/logger').Level,
-    StubExecutor = require('./stub-executor'),
-    SwapExecutor = require('./swap-executor');
+    SortExecutor = require('./sort'),
+    StubExecutor = require('./stub');
 
 /**
  * All existing executors keyed by their names.
@@ -14,8 +14,8 @@ var Logger       = require('../../common/log/logger'),
  * @private
  */
 var _executorByName = {
-    'stub': StubExecutor,
-    'swap': SwapExecutor
+    'sort': SortExecutor,
+    'stub': StubExecutor
 };
 
 /**
