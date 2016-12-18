@@ -4,7 +4,6 @@
 var Client       = require('./common/client'),
     Logger       = require('./common/log/logger'),
     Level        = require('./common/log/logger').Level,
-    Anchor       = require('./common/anchor'),
     Storage      = require('./common/storage/storage'),
     Collector    = require('./collection/collector'),
     Manipulator  = require('./manipulation/manipulator'),
@@ -41,18 +40,15 @@ window.BrainPal = (function (window, undefined) {
         if (customerConfiguration.hasOwnProperty('collect')) {
             for (i = 0; i < customerConfiguration.collect.length; i++) {
                 Collector.collect(customerConfiguration.collect[i].subject,
-                                  new Anchor(customerConfiguration.collect[i].anchor));
+                                  customerConfiguration.collect[i].anchor);
             }
         }
         if (customerConfiguration.hasOwnProperty('experiments')) {
             for (j = 0; j < customerConfiguration.experiments.length; j++) {
+                anchors = [];
                 if (customerConfiguration.experiments[j].options &&
                     customerConfiguration.experiments[j].options.hasOwnProperty('anchors')) {
-                    anchors = customerConfiguration.experiments[j].options.anchors.map(
-                        function (anchor) {
-                            return new Anchor(anchor);
-                        }
-                    );
+                    anchors = customerConfiguration.experiments[j].options.anchors;
                 }
                 Manipulator.experiment(
                     new Experiment(customerConfiguration.experiments[j].experiment),

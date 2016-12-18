@@ -11,22 +11,20 @@ var Logger          = require('./../log/logger'),
  * @param {Object} subject
  */
 module.exports.save = function save(subject) {
-    var category = 'BPStorage';
+    var category = 'BPStorage:';
     var action   = JSON.stringify(subject);
     var label    = '';
     var value    = 0;
     try {
-        if (subject.hasOwnProperty('category')) {
-            category = subject.category;
+        if (subject.hasOwnProperty('client')) {
+            category += 'client:' + JSON.stringify(subject.client);
         }
-        if (subject.hasOwnProperty('action')) {
-            action = subject.action;
+        if (subject.hasOwnProperty('anchor')) {
+            action = 'anchor:' + JSON.stringify(subject.anchor);
         }
-        if (subject.hasOwnProperty('label')) {
-            label = subject.label;
-        }
-        if (subject.hasOwnProperty('value')) {
-            value = subject.value;
+        if (subject.hasOwnProperty('subject')) {
+            label = JSON.stringify(subject.subject);
+            value = subject.subject.price || subject.subject.count || value;
         }
         ga(GoogleAnalytics.tracketName + '.send', 'event', {
             eventCategory: category,

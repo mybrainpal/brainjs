@@ -4,7 +4,7 @@
 var expect = require('chai').expect;
 var text   = require('./dom').text;
 
-describe.only('text', function () {
+describe('text', function () {
     var ul, li;
     before(function () {
         ul = document.createElement('ul');
