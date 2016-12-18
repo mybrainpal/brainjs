@@ -24,28 +24,18 @@ module.exports.options = function (options) {
 
 /**
  * Collects data on subject based on anchor.
- * @param {Object} subject
- * @param {Anchor} [anchor]
+ * @param {Array<Object>} [subjects]
+ *  @property {string} [name]
+ *  @property {string} [selector]
+ * @param {Object} [anchor]
+ *  @property {string} [selector]
+ *  @property {string} [eventName]
+ * @param {Object} [options]
+ *  @property {string} [clientProperties] - dot separated string of properties of Client, for
+ *                                          example 'agent.os' for `Client.agent.os`
+ *
  */
-module.exports.collect = function (subject, anchor) {
-    if (anchor) {
-        if (!anchor.target) {
-            Logger.log(Level.INFO, 'Collector: refused collection because anchor has no target');
-            return;
-        }
-        anchor.eventNames.map(function (eventName) {
-            var storeFn = function () {
-                if (typeof subject === 'string') {
-                    subject += ',eventName:' + eventName + ',anchor:' + anchor.label;
-                } else {
-                    subject.eventName   = eventName;
-                    subject.anchorLabel = anchor.label;
-                }
-                _storage.save(subject);
-            };
-            anchor.target.addEventListener(eventName, storeFn);
-        });
-        return;
-    }
-    _storage.save(subject);
+module.exports.collect = function (subjects, anchor, options) {
+    var emittedSubject = {}
+
 };
