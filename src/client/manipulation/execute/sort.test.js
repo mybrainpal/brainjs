@@ -3,9 +3,10 @@
  */
 var expect       = require('chai').expect,
     rewire       = require('rewire'),
-    SortExecutor = rewire('./sort');
+    SortExecutor = rewire('./sort'),
+    tinysort     = require('tinysort');
 
-describe.only('SortExecutor', function () {
+describe('SortExecutor', function () {
     var ul, li1, li2, li3;
     beforeEach(function () {
         ul = document.createElement('ul');
@@ -24,16 +25,40 @@ describe.only('SortExecutor', function () {
     afterEach(function () {
         ul.parentNode.removeChild(ul);
     });
-    it('Sort element list', function () {
-        SortExecutor.execute(document.querySelectorAll('#ul>li'), {order: 'desc'});
-        expect(ul.children[0]).to.equal(li3);
+    it('Sort elements', function () {
+        SortExecutor.execute(document.querySelectorAll('#ul>li'), {});
+        expect(ul.children[0]).to.equal(li1);
         expect(ul.children[1]).to.equal(li2);
-        expect(ul.children[2]).to.equal(li1);
+        expect(ul.children[2]).to.equal(li3);
     });
-    it('Sort by selector', function () {
-        SortExecutor.execute('#ul>li', {order: 'desc'});
-        expect(ul.children[0]).to.equal(li3);
+    it('Sort array of elements', function () {
+        SortExecutor.execute([li2, li1, li3], {});
+        expect(ul.children[0]).to.equal(li1);
         expect(ul.children[1]).to.equal(li2);
-        expect(ul.children[2]).to.equal(li1);
+        expect(ul.children[2]).to.equal(li3);
+    });
+    it('don\'t sort a single element', function () {
+        SortExecutor.execute(document.querySelectorAll('#ul:first-child'), {});
+        expect(ul.children[0]).to.equal(li2);
+        expect(ul.children[1]).to.equal(li1);
+        expect(ul.children[2]).to.equal(li3);
+        expect(ul.parentNode).to.equal(document.querySelector('body'));
+    });
+    it('don\'t sort zero elements', function () {
+        SortExecutor.execute(document.querySelectorAll('#ul>a'), {});
+        expect(ul.children[0]).to.equal(li2);
+        expect(ul.children[1]).to.equal(li1);
+        expect(ul.children[2]).to.equal(li3);
+        expect(ul.parentNode).to.equal(document.querySelector('body'));
+    });
+    it('Preconditions', function () {
+        SortExecutor.__set__({
+                                 'tinysort': null
+                             });
+        expect(SortExecutor.preconditions([], {})).to.be.false;
+        SortExecutor.__set__({
+                                 'tinysort': tinysort
+                             });
+        expect(SortExecutor.preconditions([], {})).to.be.true;
     });
 });

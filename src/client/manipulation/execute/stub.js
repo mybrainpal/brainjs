@@ -6,16 +6,32 @@
 
 /**
  * Executes big data security in real time, and you guessed it, on the cloud!
- * @param {*} [elements]
- * @param {*} [specs]
+ * @param {Array.<Element>|NodeList} elements
+ * @param {Object} specs
  */
-//noinspection JSUnusedLocalSymbols
-module.exports.execute = function (elements, specs) {};
+module.exports.execute = function (elements, specs) {
+    if (!module.exports.preconditions(elements, specs)) {
+        throw new TypeError('StubExecutor: Invalid input.');
+    }
+};
 
 /**
- * Returns whether the executor has valid input.
- * @param {*} [elements]
- * @param {*} [specs]
+ * @param {Array<Element>|NodeList} elements
+ * @param {Object} specs
+ * @returns {boolean} whether the executor has a valid input.
  */
-//noinspection JSUnusedLocalSymbols
-module.exports.preconditions = function (elements, specs) { return true; };
+module.exports.preconditions = function (elements, specs) {
+    var i;
+    if (!(elements instanceof Array) && !(elements instanceof NodeList)) {
+        return false;
+    }
+    if (typeof specs !== 'object' || specs === null) {
+        return false;
+    }
+    for (i = 0; i < elements.length; i++) {
+        if (!(elements[i] instanceof Element)) {
+            return false;
+        }
+    }
+    return true;
+};

@@ -5,6 +5,7 @@
  */
 var Logger       = require('../../common/log/logger'),
     Level        = require('../../common/log/logger').Level,
+    FormExecutor = require('./form'),
     SortExecutor = require('./sort'),
     StubExecutor = require('./stub');
 
@@ -14,6 +15,7 @@ var Logger       = require('../../common/log/logger'),
  * @private
  */
 var _executorByName = {
+    'form': FormExecutor,
     'sort': SortExecutor,
     'stub': StubExecutor
 };
