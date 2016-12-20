@@ -21,7 +21,7 @@ describe('Collector', function () {
         div = document.createElement('div');
         div.setAttribute('id', 'fight-club');
         document.querySelector('body').appendChild(div);
-        a1             = document.createElement('a');
+        a1 = document.createElement('a');
         a1.classList.add('fight');
         a1.textContent = 'fight!';
         div.appendChild(a1);
@@ -34,8 +34,8 @@ describe('Collector', function () {
         span2             = document.createElement('span');
         span2.textContent = 'If this is your first night in fight club, you HAVE to fight.';
         div.appendChild(span2);
-        p                = document.createElement('p');
-        p.textContent    = 'YES';
+        p             = document.createElement('p');
+        p.textContent = 'YES';
         div.appendChild(p);
         storageMock = {
             'save': _saveMockFn

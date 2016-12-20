@@ -3,10 +3,10 @@
  */
 var expect        = require('chai').expect,
     StyleExecutor = require('./style'),
-    StyleUtil     = require('./../../common/util/style');
+    _             = require('./../../common/util/wrapper');
 
 describe('StyleExecutor', function () {
-    var ul, li1, li2, li3;
+    var ul, li1, li2, li3, li4;
     before(function () {
         ul = document.createElement('ul');
         ul.setAttribute('id', 'lost');
@@ -17,25 +17,29 @@ describe('StyleExecutor', function () {
         ul.appendChild(li1);
         li2             = document.createElement('li');
         li2.textContent = 'Kate';
-        li1.classList.add('survivor');
+        li2.classList.add('survivor');
         ul.appendChild(li2);
         li3             = document.createElement('li');
         li3.textContent = 'Sawyer';
-        li1.classList.add('conman');
+        li3.classList.add('conman');
         ul.appendChild(li3);
+        li4             = document.createElement('li');
+        li4.textContent = 'Charlie';
+        li4.classList.add('deceased');
+        ul.appendChild(li4);
     });
     beforeEach(function () {
-        StyleUtil.load(require('css!./testdata/style.css')[0][1]);
+        _.css.load(require('css!./testdata/style.css')[0][1]);
         document.querySelectorAll('li').forEach(function (li) {
-            expect(window.getComputedStyle(li).paddingLeft).to.equal('10px');
+            expect(window.getComputedStyle(li).padding).to.equal('10px');
         });
         document.querySelectorAll('.survivor').forEach(function (li) {
-            expect(window.getComputedStyle(li).marginTop).to.equal('30px');
+            expect(window.getComputedStyle(li).margin).to.equal('10px');
         });
     });
     afterEach(function () {
         // Clean all injected styles.
-        document.querySelectorAll('style[' + StyleUtil.identifyingAttribute + ']')
+        document.querySelectorAll('style[' + _.css.identifyingAttribute + ']')
                 .forEach(function (styleElement) {
                     styleElement.parentNode.removeChild(styleElement);
                 });
@@ -56,35 +60,17 @@ describe('StyleExecutor', function () {
             expect(window.getComputedStyle(li).paddingLeft).to.equal('20px');
         });
         document.querySelectorAll('.survivor').forEach(function (li) {
-            expect(window.getComputedStyle(li).marginTop).to.equal('50px');
+            expect(window.getComputedStyle(li).marginLeft).to.equal('50px');
         });
-        li1.focus();
-        expect(window.getComputedStyle(li1).marginBottom).to.equal('10px');
     });
     it('Only affect provided elements', function () {
         var style = require('css!./testdata/custom.css');
-        StyleExecutor.execute([li1], {
+        StyleExecutor.execute([li3], {
             cssText : style[0][1],
-            selector: '.survivor'
+            selector: 'li'
         });
-        expect(window.getComputedStyle(li1).paddingLeft).to.equal('20px');
-        expect(window.getComputedStyle(li2).paddingLeft).to.equal('10px');
-        expect(window.getComputedStyle(li1).marginTop).to.equal('50px');
-        expect(window.getComputedStyle(li2).marginTop).to.equal('30px');
-    });
-    it('Responsive style', function () {
-        var style = require('css!./testdata/responsive.css');
-        StyleExecutor.execute([], {
-            cssText : style[0][1],
-            selector: '.survivor'
-        });
-        //noinspection JSValidateTypes
-        document.innerWidth(400);
-        document.querySelectorAll('li').forEach(function (li) {
-            expect(window.getComputedStyle(li).paddingLeft).to.equal('0');
-        });
-        document.querySelectorAll('.survivor').forEach(function (li) {
-            expect(window.getComputedStyle(li).marginTop).to.equal('20px');
-        });
+        expect(window.getComputedStyle(li3).marginLeft).to.equal('50px');
+        // li1 has .survivor class, and so should have margin-left: 10px.
+        expect(window.getComputedStyle(li4).marginLeft).to.equal('0px');
     });
 });

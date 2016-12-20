@@ -2,6 +2,11 @@
  * Proudly created by ohad on 15/12/2016.
  */
 /**
+ * Identifies the owner Node of _styleSheet.
+ * @type {string}
+ */
+module.exports.identifyingAttribute = 'brainpal';
+/**
  * Loads cssText styles into a new stylesheet.
  * @param {string} cssText
  * @returns {Element} the created style element.

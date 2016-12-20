@@ -20,7 +20,7 @@ exports.execute = function (elements, specs) {
     className = specs.customClass || exports.defaultCustomClass;
     cssText   =
         specs.cssText.replace('.' + className, _generateSelector(specs.selector || '', className));
-    _.loadCss(cssText);
+    _.css.load(cssText);
     if (_.isEmpty(elements) && _.has(specs, 'selector')) {
         elements = document.querySelectorAll(specs.selector);
     }

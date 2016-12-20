@@ -3,7 +3,7 @@
  */
 var _ = require('lodash');
 
-_.loadCss = require('./style').load;
-_.text    = require('./dom').text;
+_.css  = require('./style');
+_.text = require('./dom').text;
 
 module.exports = _;

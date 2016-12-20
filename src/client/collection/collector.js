@@ -54,7 +54,7 @@ exports.collect = function (subjectProps, anchor, options) {
                         }
                     };
                     _.merge(subjectOptions, options);
-                    emitted =  _createSubject(subjectOptions);
+                    emitted = _createSubject(subjectOptions);
                     if (!_.isEmpty(emitted)) {
                         _storage.save(emitted);
                     }
@@ -65,7 +65,7 @@ exports.collect = function (subjectProps, anchor, options) {
         Logger.log(Level.FINE, 'Collector: could not use anchor.');
         subjectOptions = {subjectProps: subjectProps};
         _.merge(subjectOptions, options);
-        immediateEmit =  _createSubject(subjectOptions);
+        immediateEmit = _createSubject(subjectOptions);
         if (!_.isEmpty(immediateEmit)) {
             _storage.save(immediateEmit);
         }
