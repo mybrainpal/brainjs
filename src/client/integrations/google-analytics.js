@@ -10,7 +10,8 @@
  *     <li> OnLoad event for GA script.</li>
  * </ul>
  */
-var Logger = require('./../common/log/logger'),
+var _      = require('./../common/util/wrapper'),
+    Logger = require('./../common/log/logger'),
     Level  = require('./../common/log/logger').Level;
 
 /**
@@ -19,7 +20,7 @@ var Logger = require('./../common/log/logger'),
  *  @property {string} [trackerName=BrainPal]
  *  @property {string} [trackingId=UA-88758826-1]
  */
-module.exports.init = function (options) {
+exports.init = function (options) {
     (function (window, document, scriptTagName, src, name, gaScript, firstScript) {
         window['GoogleAnalyticsObject'] = name;
         window[name]                    = window[name] || function () {
@@ -34,13 +35,13 @@ module.exports.init = function (options) {
         firstScript.parentNode.insertBefore(gaScript, firstScript);
     })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
 
-    if (options.hasOwnProperty('trackerName')) {
+    if (_.has(options, 'trackerName')) {
         _updateTrackerName(options.trackerName);
     }
-    if (options.hasOwnProperty('trackerId')) {
+    if (_.has(options, 'trackerId')) {
         _updateTrackingId(options.trackerId);
     }
-    if (options.hasOwnProperty('cookieDomain')) {
+    if (_.has(options, 'cookieDomain')) {
         _updateCookieDomain(options.cookieDomain);
     }
 
@@ -59,8 +60,8 @@ module.exports.init = function (options) {
  * @type {string}
  * @private
  */
-var _trackerName           = 'BrainPal';
-module.exports.tracketName = _trackerName;
+var _trackerName    = 'BrainPal';
+exports.trackerName = _trackerName;
 
 /**
  * Updates internal and exported track names.
@@ -69,8 +70,8 @@ module.exports.tracketName = _trackerName;
  */
 function _updateTrackerName(trackerName) {
     if (typeof trackerName === 'string') {
-        _trackerName               = trackerName;
-        module.exports.tracketName = _trackerName;
+        _trackerName        = trackerName;
+        exports.trackerName = _trackerName;
     }
 }
 
@@ -81,8 +82,8 @@ function _updateTrackerName(trackerName) {
  * @type {string}
  * @private
  */
-var _trackingId           = 'UA-88758826-1';
-module.exports.trackingId = _trackingId;
+var _trackingId    = 'UA-88758826-1';
+exports.trackingId = _trackingId;
 
 /**
  * Updates internal and exported track names.
@@ -91,8 +92,8 @@ module.exports.trackingId = _trackingId;
  */
 function _updateTrackingId(trackingId) {
     if (typeof trackingId === 'string') {
-        _trackingId               = trackingId;
-        module.exports.trackingId = _trackingId;
+        _trackingId        = trackingId;
+        exports.trackingId = _trackingId;
     }
 }
 
@@ -101,8 +102,8 @@ function _updateTrackingId(trackingId) {
  * @type {string}
  * @private
  */
-var _cookieDomain           = 'auto';
-module.exports.cookieDomain = _cookieDomain;
+var _cookieDomain    = 'auto';
+exports.cookieDomain = _cookieDomain;
 /**
  * Updates internal and exported cookieDomain.
  * @param {string} cookieDomain
@@ -110,8 +111,8 @@ module.exports.cookieDomain = _cookieDomain;
  */
 function _updateCookieDomain(cookieDomain) {
     if (typeof cookieDomain === 'string') {
-        _cookieDomain               = cookieDomain;
-        module.exports.cookieDomain = cookieDomain;
+        _cookieDomain        = cookieDomain;
+        exports.cookieDomain = cookieDomain;
     }
 }
 
@@ -120,8 +121,8 @@ function _updateCookieDomain(cookieDomain) {
  * @type {string}
  * @private
  */
-var _loadEventName           = 'google-analytics-loaded';
-module.exports.loadEventName = _loadEventName;
+var _loadEventName    = 'google-analytics-loaded';
+exports.loadEventName = _loadEventName;
 
 /**
  * Fires a load event.
@@ -147,13 +148,13 @@ function _onload() {
 function isReady() {
     return typeof ga === 'function';
 }
-module.exports.isReady = isReady;
+exports.isReady = isReady;
 
 /**
  * Runs handler as soon as Google Analytics is loaded.
  * @param handler
  */
-module.exports.onReady = function (handler) {
+exports.onReady = function (handler) {
     if (isReady()) {
         ga(handler);
     }

@@ -3,7 +3,8 @@
  *
  * Manipulates the DOM to fill our customers pockets with them dollars.
  */
-var Logger    = require('../common/log/logger'),
+var _         = require('./../common/util/wrapper'),
+    Logger    = require('../common/log/logger'),
     Level     = require('../common/log/logger').Level,
     Collector = require('../collection/collector'),
     Executor  = require('./execute/executor');
@@ -14,7 +15,7 @@ var Logger    = require('../common/log/logger'),
  * @param {Object} [options]
  *  @property {Array} [anchors] - for event logging
  */
-module.exports.experiment = function (experiment, options) {
+exports.experiment = function (experiment, options) {
     var group;
     var i, j;
     Collector.collect(_createSubject(experiment));
@@ -31,7 +32,7 @@ module.exports.experiment = function (experiment, options) {
         }
     }
     if (options) {
-        if (options.hasOwnProperty('anchors')) {
+        if (_.has(options, 'anchors')) {
             for (j = 0; j < options.anchors.length; j++) {
                 Collector.collect(_createSubject(experiment), options.anchors[j]);
             }
@@ -48,16 +49,16 @@ module.exports.experiment = function (experiment, options) {
 function _createSubject(experiment, group) {
     var subject        = {};
     subject.experiment = {};
-    if (experiment.hasOwnProperty('id')) {
+    if (_.has(experiment, 'id')) {
         subject.experiment.id = experiment.id;
     }
-    if (experiment.hasOwnProperty('name')) {
+    if (_.has(experiment, 'name')) {
         subject.experiment.name = experiment.name;
     }
     subject.experiment.participates = experiment.isClientIncluded;
     if (group) {
         subject.experiment.group = {};
-        if (group.hasOwnProperty('label')) {
+        if (_.has(group, 'label')) {
             subject.experiment.group.label = group.label;
         }
     }

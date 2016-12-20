@@ -1,7 +1,8 @@
 /**
  * Proudly created by ohad on 04/12/2016.
  */
-var Logger          = require('../../common/log/logger'),
+var _               = require('./../../common/util/wrapper'),
+    Logger          = require('../../common/log/logger'),
     Level           = require('../../common/log/logger').Level,
     ExperimentGroup = require('./group');
 /**
@@ -25,19 +26,20 @@ function Experiment(options) {
  *  @property {Array} groups
  */
 Experiment.prototype.options = function (options) {
-    if (options.hasOwnProperty('id')) {
+    var i;
+    if (_.has(options, 'id')) {
         this.id = options.id;
     } else {
         Logger.log(Level.WARNING, 'Experiment: missing id.');
     }
-    if (options.hasOwnProperty('name')) {
+    if (_.has(options, 'name')) {
         this.name = options.name;
     }
     this.isClientIncluded = false;
     this.clientGroups     = [];
-    if (options.hasOwnProperty('groups')) {
+    if (_.has(options, 'groups')) {
         this.groups = options.groups.map(function (g) {return new ExperimentGroup(g);});
-        for (var i = 0; i < this.groups.length; i++) {
+        for (i = 0; i < this.groups.length; i++) {
             if (this.groups[i].isClientIncluded) {
                 this.isClientIncluded = true;
                 this.clientGroups.push(this.groups[i]);

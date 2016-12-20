@@ -5,13 +5,14 @@ var chai      = require('chai'),
     expect    = require('chai').expect,
     rewire    = require('rewire'),
     Collector = rewire('./collector'),
+    _         = require('./../common/util/wrapper'),
     _storage  = [];
 
 chai.use(require('chai-spies'));
 
 
 describe('Collector', function () {
-    var div, a, span, p,
+    var div, a1, a2, span1, span2, p,
         storageSpy,
         storageMock,
         loggerSpy,
@@ -20,15 +21,22 @@ describe('Collector', function () {
         div = document.createElement('div');
         div.setAttribute('id', 'fight-club');
         document.querySelector('body').appendChild(div);
-        a             = document.createElement('a');
-        a.textContent = 'fight!';
-        div.appendChild(a);
-        span             = document.createElement('span');
-        span.textContent = 'don\'t talk about fight club';
+        a1             = document.createElement('a');
+        a1.classList.add('fight');
+        a1.textContent = 'fight!';
+        div.appendChild(a1);
+        a2             = document.createElement('a');
+        a2.textContent = 'Hide :-(';
+        div.appendChild(a2);
+        span1             = document.createElement('span');
+        span1.textContent = 'don\'t talk about fight club';
+        div.appendChild(span1);
+        span2             = document.createElement('span');
+        span2.textContent = 'If this is your first night in fight club, you HAVE to fight.';
+        div.appendChild(span2);
         p                = document.createElement('p');
         p.textContent    = 'YES';
         div.appendChild(p);
-        div.appendChild(span);
         storageMock = {
             'save': _saveMockFn
         };
@@ -55,19 +63,23 @@ describe('Collector', function () {
     after(function () {
         div.parentNode.removeChild(div);
     });
+    beforeEach(function () {
+        loggerSpy.reset();
+        storageSpy.reset();
+        _storage = [];
+    });
     afterEach(function () {
         loggerSpy.reset();
         storageSpy.reset();
         _storage = [];
     });
-
     it('save a subject', function () {
         Collector.collect([{name: 'rule', selector: '#fight-club>span'}]);
         expect(storageSpy).to.have.been.called.once;
-        expect(_storage).to.not.be.empty;
+        expect(_storage).to.have.length(1);
         expect(_storage[0]).to.include.keys('subject');
         expect(_storage[0].subject).to.include.keys('rule');
-        expect(_storage[0].subject.rule).to.equal(span.textContent);
+        expect(_storage[0].subject.rule).to.equal(span1.textContent);
     });
     it('save a subject with client', function () {
         Collector.collect([{name: 'rule', selector: '#fight-club>span'}], {},
@@ -77,7 +89,7 @@ describe('Collector', function () {
                               }
                           });
         expect(storageSpy).to.have.been.called.once;
-        expect(_storage).to.not.be.empty;
+        expect(_storage).to.have.length(1);
         expect(_storage[0]).to.include.keys('client');
         expect(_storage[0].client).to.include.keys('agent');
         expect(_storage[0].client.agent).to.include.keys('os', 'browser');
@@ -87,21 +99,27 @@ describe('Collector', function () {
     });
     it('save a subject with anchor', function (done) {
         Collector.collect([{name: 'rule', selector: '#fight-club>span'}],
-                          {selector: '#fight-club>a', event: 'click'});
-        a.click();
-        // anonymous function ensures click handler is executed first.
-        (function () {
-            expect(storageSpy).to.have.been.called.once;
-            expect(_storage).to.not.be.empty;
-            expect(_storage[0]).to.include.keys('subject', 'anchor');
-            expect(_storage[0].subject).to.include.keys('rule');
-            expect(_storage[0].subject.rule).to.equal(span.textContent);
-            expect(_storage[0].anchor).to.include.keys('event', 'target', 'targetText');
-            expect(_storage[0].anchor.event).to.equal('click');
-            expect(_storage[0].anchor.target).to.equal('#fight-club>a');
-            expect(_storage[0].anchor.targetText).to.equal(a.textContent);
-            done();
-        })();
+                          {selector: '#fight-club>a.fight', event: 'click'});
+        a1.click();
+        expect(storageSpy).to.have.been.called.once;
+        expect(_storage).to.have.length(1);
+        expect(_storage[0]).to.include.keys('subject', 'anchor');
+        expect(_storage[0].subject).to.include.keys('rule');
+        expect(_storage[0].subject.rule).to.equal(span1.textContent);
+        expect(_storage[0].anchor).to.include.keys('event', 'selector', 'targetText');
+        expect(_storage[0].anchor.event).to.equal('click');
+        expect(_storage[0].anchor.selector).to.equal('#fight-club>a.fight');
+        expect(_storage[0].anchor.targetText).to.equal(a1.textContent);
+        done();
+    });
+    it('save a subject with anchor with multiple targets', function (done) {
+        Collector.collect([{name: 'rule', selector: '#fight-club>span'}],
+                          {selector: '#fight-club>span', event: 'click'});
+        span1.click();
+        span2.click();
+        expect(storageSpy).to.have.been.called(2);
+        expect(_storage).to.have.length(2);
+        done();
     });
     it('failed to select subject', function () {
         Collector.collect([{name: 'rule', selector: '#fight-club>span.non-existing-class'}]);
@@ -118,37 +136,31 @@ describe('Collector', function () {
     it('missing event name', function () {
         Collector.collect([{name: 'rule', selector: '#fight-club>span'}],
                           {selector: '#fight-club>a'});
-        expect(storageSpy).to.not.have.been.called();
-        expect(_storage).to.be.empty;
+        expect(storageSpy).to.have.been.called.once;
+        expect(_storage).to.have.length(1);
         expect(loggerSpy).to.have.been.called();
     });
     it('client is empty', function (done) {
         Collector.collect([{name: 'rule', selector: '#fight-club>span'}],
-                          {selector: '#fight-club>a', event: 'click'},
+                          {selector: '#fight-club>p', event: 'click'},
                           {client: []});
-        a.click();
-        // anonymous function ensures click handler is executed first.
-        (function () {
-            expect(storageSpy).to.have.been.called();
-            expect(_storage).to.not.be.empty;
-            expect(_storage[0]).to.not.include.keys('client');
-            expect(loggerSpy).to.have.been.called();
-            done();
-        })();
+        p.click();
+        expect(storageSpy).to.have.been.called.once;
+        expect(_storage).to.have.length(1);
+        expect(_storage[0]).to.not.include.keys('client');
+        expect(loggerSpy).to.have.been.called();
+        done();
     });
     it('client properties not found', function (done) {
         Collector.collect([{name: 'rule', selector: '#fight-club>span'}],
-                          {selector: '#fight-club>a', event: 'click'},
+                          {selector: '#fight-club>a:last-of-type', event: 'click'},
                           {client: {properties: ['some-prop', 'agent.garbage']}});
-        a.click();
-        // anonymous function ensures click handler is executed first.
-        (function () {
-            expect(storageSpy).to.have.been.called();
-            expect(_storage).to.not.be.empty;
-            expect(_storage[0]).to.not.include.keys('client');
-            expect(loggerSpy).to.have.been.called();
-            done();
-        })();
+        a2.click();
+        expect(storageSpy).to.have.been.called.once;
+        expect(_storage).to.have.length(1);
+        expect(_storage[0]).to.not.include.keys('client');
+        expect(loggerSpy).to.have.been.called();
+        done();
     });
 });
 

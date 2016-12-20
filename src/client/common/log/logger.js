@@ -1,7 +1,8 @@
 /**
  * Proudly created by ohad on 04/12/2016.
  */
-var Storage  = require('../storage/storage');
+var _        = require('./../../common/util/wrapper'),
+    Storage  = require('../storage/storage');
 /**
  * Used to save logs.
  * @type {Object}
@@ -15,24 +16,24 @@ var _storage = Storage.getDefault();
  */
 var _prefix  = '';
 
-module.exports.Level = Object.freeze({
-                                         FINE   : {value: 0, name: 'Fine'},
-                                         INFO   : {value: 1, name: 'Info'},
-                                         WARNING: {value: 2, name: 'Warning'},
-                                         ERROR  : {value: 3, name: 'Error'},
-                                         FATAL  : {value: 4, name: 'Fatal'}
-                                     });
+exports.Level = Object.freeze({
+                                  FINE   : {value: 0, name: 'Fine'},
+                                  INFO   : {value: 1, name: 'Info'},
+                                  WARNING: {value: 2, name: 'Warning'},
+                                  ERROR  : {value: 3, name: 'Error'},
+                                  FATAL  : {value: 4, name: 'Fatal'}
+                              });
 
 /**
  * @param options
  *  @property {Object} [storage=]
  *  @property {string} [prefix=BP-Logger:]
  */
-module.exports.options = function (options) {
-    if (options.hasOwnProperty('storage')) {
+exports.options = function (options) {
+    if (_.has(options, 'storage')) {
         _storage = Storage.get(options.storage);
     }
-    if (options.hasOwnProperty('prefix')) {
+    if (_.has(options, 'prefix')) {
         _prefix = options.prefix;
     }
 };
@@ -42,6 +43,6 @@ module.exports.options = function (options) {
  * @param {Object} level - severity of the log.
  * @param {Object} message
  */
-module.exports.log = function (level, message) {
+exports.log = function (level, message) {
     _storage.save(_prefix + level.name.toUpperCase() + ': ' + message);
 };

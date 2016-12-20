@@ -8,7 +8,7 @@ var Logger = require('../log/logger'),
  * Logs an entry on subject.
  * @param {Object} subject
  */
-module.exports.save = function save(subject) {
+exports.save = function save(subject) {
     try {
         console.log('BPStorage: ' + JSON.stringify(subject));
     } catch (e) {
@@ -19,18 +19,18 @@ module.exports.save = function save(subject) {
 /**
  * @returns {boolean} whether #save is ready to be invoked.
  */
-module.exports.isReady = function () { return true; };
+exports.isReady = function () { return true; };
 
 /**
  * Takes care of requirements for this storage.
  * @param {Object} [options]
  */
-module.exports.init = function (options) {};
+exports.init = function (options) {};
 
 /**
  * Runs handler as soon as the storage is ready.
  * @param {Function} handler
  */
-module.exports.onReady = function (handler) {
+exports.onReady = function (handler) {
     handler();
 };

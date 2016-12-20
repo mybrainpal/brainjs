@@ -3,101 +3,147 @@
  *
  * Collects data on events, use with curiosity!
  */
-var Client    = require('../common/client'),
-    Storage   = require('../common/storage/storage'),
-    Logger    = require('../common/log/logger'),
-    Level     = require('../common/log/logger').Level,
-    DomUtils  = require('../common/util/dom'),
-    Prototype = require('../common/util/prototype');
+var Client   = require('../common/client'),
+    Storage  = require('../common/storage/storage'),
+    Logger   = require('../common/log/logger'),
+    Level    = require('../common/log/logger').Level,
+    _        = require('../common/util/wrapper');
 /**
  * Used to save data.
  * @type {Object}
  * @private
  */
-var _storage  = Storage.getDefault();
+var _storage = Storage.getDefault();
+
 /**
  * @param {Object} options
  *  @property {string} storage
  */
-module.exports.options = function (options) {
-    if (options.hasOwnProperty('storage')) {
+exports.options = function (options) {
+    if (_.has(options, 'storage')) {
         _storage = Storage.get(options.storage);
     }
 };
 
 /**
- * Collects data on subject based on anchor.
- * @param {Array<Object>} [subjects]
+ * Collects data (subject) based on an event (i.e. anchor).
+ * @param {Array<Object>} [subjectProps] - extra properties to attach to the event.
  *  @property {string} [name]
- *  @property {string} [selector]
- * @param {Object} [anchor]
- *  @property {string} [selector]
- *  @property {string} [event]
+ *  @property {string} [selector] - of the element in the dom whose .text() contains a relevant
+ *                                  piece of data
+ * @param {Object} [anchor] - a container for event and collection of elements
+ *  @property {string} [selector] - of collection of elements to listen for eventName.
+ *  @property {string} [event] - to listen.
  * @param {Object} [options]
- *  @property {Object} [client]
+ *  @property {Object} [client] - container for Client properties to collect.
  *      @property {Array.<string>} [properties] - 'agent.os' for `Client.agent.os`
- *
  */
-module.exports.collect = function (subjects, anchor, options) {
-    var emittedSubject = {}, i, j, target, props, prop = {}, val;
-    if (subjects) {
+exports.collect = function (subjectProps, anchor, options) {
+    var targets, subjectOptions, immediateEmit;
+    if (anchor && _.has(anchor, 'selector') && _.has(anchor, 'event')) {
+        _.forEach(document.querySelectorAll(anchor.selector), function (target) {
+            if (target instanceof EventTarget) {
+                target.addEventListener(anchor.event, function () {
+                    var emitted;
+                    subjectOptions = {
+                        subjectProps: subjectProps,
+                        anchor      : {
+                            event   : anchor.event,
+                            target  : target,
+                            selector: anchor.selector
+                        }
+                    };
+                    _.merge(subjectOptions, options);
+                    emitted =  _createSubject(subjectOptions);
+                    if (!_.isEmpty(emitted)) {
+                        _storage.save(emitted);
+                    }
+                });
+            }
+        });
+    } else {
+        Logger.log(Level.FINE, 'Collector: could not use anchor.');
+        subjectOptions = {subjectProps: subjectProps};
+        _.merge(subjectOptions, options);
+        immediateEmit =  _createSubject(subjectOptions);
+        if (!_.isEmpty(immediateEmit)) {
+            _storage.save(immediateEmit);
+        }
+    }
+};
+
+/**
+ * @param {Object} options
+ *  @property {Array<Object>} [subjectProps] - extra properties to attach to the event.
+ *      @property {string} [name]
+ *      @property {string} [selector] - of the element in the dom whose .text() contains a relevant
+ *                                      piece of data
+ *  @property {Object} [anchor] - a container for event and collection of elements
+ *      @property {string} [selector] - used to select target.
+ *      @property {EventTarget} [target] - that will be listened to save the subject.
+ *      @property {string} [eventName] - to listen.
+ *  @property {Object} [client] - container for Client properties to collect.
+ *      @property {Array.<string>} [properties] - 'agent.os' for `Client.agent.os`
+ * @return {Object} that we want to attach to the event, upon saving.
+ * @private
+ */
+function _createSubject(options) {
+    var emittedSubject = {}, i, j, target, props, val;
+
+    if (_.isEmpty(options)) {
+        Logger.log(Level.WARNING, 'Collector: created an empty subject.');
+        return {};
+    }
+    if (!_.isEmpty(options.subjectProps)) {
         emittedSubject.subject = {};
-        for (i = 0; i < subjects.length; i++) {
-            target = document.querySelector(subjects[i].selector);
+        for (i = 0; i < options.subjectProps.length; i++) {
+            target = document.querySelector(options.subjectProps[i].selector);
             if (target) {
-                emittedSubject.subject[subjects[i].name] = DomUtils.text(target);
+                emittedSubject.subject[options.subjectProps[i].name] = _.text(target);
             } else {
-                Logger.log(Level.WARNING, 'Collector: failed to select ' + subjects[i].selector);
+                Logger.log(Level.WARNING,
+                           'Collector: failed to select ' + options.subjectProps[i].selector);
             }
         }
-        if (Prototype.isEmpty(emittedSubject.subject)) {
+        if (_.isEmpty(emittedSubject.subject)) {
             delete emittedSubject.subject;
             Logger.log(Level.WARNING, 'Collector: subject is empty.');
         }
     }
-    if (options) {
-        if (options.hasOwnProperty('client')) {
-            emittedSubject.client = {};
-            if (options.client.hasOwnProperty('properties')) {
-                for (i = 0; i < options.client.properties.length; i++) {
-                    props = options.client.properties[i].split('.');
-                    val   = Prototype.get(Client, props);
-                    if (val) {
-                        Prototype.set(emittedSubject.client, props, val);
-                    }
+    if (_.has(options, 'client')) {
+        emittedSubject.client = {};
+        if (_.has(options.client, 'properties')) {
+            for (i = 0; i < options.client.properties.length; i++) {
+                val = _.get(Client, options.client.properties[i]);
+                if (val) {
+                    _.set(emittedSubject.client, options.client.properties[i], val);
                 }
-            }
-            if (Prototype.isEmpty(emittedSubject.client)) {
-                Logger.log(Level.WARNING, 'Collector: client is empty.');
-                delete emittedSubject.client;
             }
         }
+        if (_.isEmpty(emittedSubject.client)) {
+            Logger.log(Level.WARNING, 'Collector: client is empty.');
+            delete emittedSubject.client;
+        }
     }
-    if (anchor && !Prototype.isEmpty(anchor)) {
-        if (anchor.hasOwnProperty('selector')) {
-            target = document.querySelector(anchor.selector);
-            if (target) {
-                if (anchor.hasOwnProperty('event')) {
-                    emittedSubject.anchor = {
-                        event     : anchor.event,
-                        target    : anchor.selector,
-                        targetText: DomUtils.text(target)
-                    };
-                    target.addEventListener(anchor.event, function () {
-                        _storage.save(emittedSubject);
-                    });
-                } else {
-                    Logger.log(Level.WARNING, 'Collector: anchor is missing an event name.');
-                }
-            } else {
-                Logger.log(Level.WARNING,
-                           'Collector: could not find anchor\'s target at ' + anchor.selector);
-            }
+    if (!_.isEmpty(options.anchor)) {
+        emittedSubject.anchor = {};
+        if (_.has(options.anchor, 'selector')) {
+            emittedSubject.anchor.selector = options.anchor.selector;
         } else {
             Logger.log(Level.WARNING, 'Collector: anchor is missing a selector.');
         }
-    } else if (!Prototype.isEmpty(emittedSubject)) {
-        Logger.log(Level.FINE, 'Collector: anchor is missing.');
-        _storage.save(emittedSubject);
+        if (_.has(options.anchor, 'event')) {
+            emittedSubject.anchor.event = options.anchor.event;
+        } else {
+            Logger.log(Level.WARNING, 'Collector: anchor is missing a selector.');
+        }
+        if (_.has(options.anchor, 'target')) {
+            emittedSubject.anchor.targetText = _.text(options.anchor.target);
+        }
+        if (_.isEmpty(emittedSubject.anchor)) {
+            Logger.log(Level.WARNING, 'Collector: subject\'s anchor is empty.');
+            delete emittedSubject.anchor;
+        }
     }
-};
+    return emittedSubject;
+}

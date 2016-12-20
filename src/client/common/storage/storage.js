@@ -16,12 +16,12 @@ function getStorage(storageName, options) {
     }
     return create(storageName, options);
 }
-module.exports.get = getStorage;
+exports.get = getStorage;
 
 /**
  * @returns {Object} an instance of the default storage.
  */
-module.exports.getDefault = function () {
+exports.getDefault = function () {
     return getStorage('local');
 };
 
@@ -45,7 +45,7 @@ function isReady(storageName) {
     }
     return ready;
 }
-module.exports.isReady = isReady;
+exports.isReady = isReady;
 
 /**
  * Instantiates a new instance of storageName in _storageByName, with the key `storageName`.
@@ -87,7 +87,7 @@ function create(storageName, options) {
     Logger.log(Level.WARNING,
                'storage.js: no storage was created');
 }
-module.exports.create = create;
+exports.create = create;
 
 /**
  * Maps storage name to its reference.

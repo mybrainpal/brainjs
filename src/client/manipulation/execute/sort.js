@@ -9,8 +9,8 @@ var tinysort     = require('tinysort'),
  * @param {Array.<Element>|NodeList} elements
  * @param {Object} specs - to be used with tinysort.
  */
-module.exports.execute = function (elements, specs) {
-    if (!module.exports.preconditions(elements, specs)) {
+exports.execute = function (elements, specs) {
+    if (!exports.preconditions(elements, specs)) {
         throw new TypeError('SortExecutor: Invalid input.');
     }
     tinysort(elements, specs);
@@ -21,7 +21,7 @@ module.exports.execute = function (elements, specs) {
  * @param {Object} specs - to be used with tinysort.
  * @returns {boolean} whether the executor has a valid input.
  */
-module.exports.preconditions = function (elements, specs) {
+exports.preconditions = function (elements, specs) {
     return StubExecutor.preconditions(elements, specs) &&
            typeof tinysort === 'function';
 };

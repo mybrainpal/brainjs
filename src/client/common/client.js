@@ -7,9 +7,9 @@
  * Initializes with the client properties.
  * @param {Object} [options]
  */
-module.exports.init = function init(options) {
+exports.init = function init(options) {
     // TODO(ohad): populate with real values.
-    module.exports.id = 1234;
+    exports.id = 1234;
 };
 
 
@@ -23,12 +23,12 @@ module.exports.init = function init(options) {
     osVersion: string
  * }}
  */
-module.exports.agent = _parseUserAgent();
+exports.agent = _parseUserAgent();
 
 /**
  * @returns {boolean} whether the client and BrainPal can be friends (at least we tried!).
  */
-module.exports.canRunBrainPal = function () {
+exports.canRunBrainPal = function () {
     var i;
     var agent                = _parseUserAgent();
     var browserToMinVersions = {
@@ -57,7 +57,7 @@ module.exports.canRunBrainPal = function () {
  * Whether the browser has cookies enabled.
  * @type {boolean}
  */
-module.exports.cookiesEnabled = (function () {
+exports.cookiesEnabled = (function () {
     var cookieEnabled = navigator.cookieEnabled;
 
     if (typeof navigator.cookieEnabled == 'undefined' && !cookieEnabled) {

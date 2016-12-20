@@ -3,30 +3,31 @@
  *
  * Saves data as google analytics events by stringify json objects.
  */
-var Logger          = require('./../log/logger'),
+var _               = require('./../../common/util/wrapper'),
+    Logger          = require('./../log/logger'),
     Level           = require('./../log/logger').Level,
     GoogleAnalytics = require('./../../integrations/google-analytics');
 /**
  * Logs an entry on subject.
  * @param {Object} subject
  */
-module.exports.save = function save(subject) {
+exports.save = function save(subject) {
     var category = 'BPStorage:';
     var action   = JSON.stringify(subject);
     var label    = '';
     var value    = 0;
     try {
-        if (subject.hasOwnProperty('client')) {
+        if (_.has(subject, 'client')) {
             category += 'client:' + JSON.stringify(subject.client);
         }
-        if (subject.hasOwnProperty('anchor')) {
+        if (_.has(subject, 'anchor')) {
             action = 'anchor:' + JSON.stringify(subject.anchor);
         }
-        if (subject.hasOwnProperty('subject')) {
+        if (_.has(subject, 'subject')) {
             label = JSON.stringify(subject.subject);
             value = subject.subject.price || subject.subject.count || value;
         }
-        ga(GoogleAnalytics.tracketName + '.send', 'event', {
+        ga(GoogleAnalytics.trackerName + '.send', 'event', {
             eventCategory: category,
             eventAction  : action,
             eventLabel   : label,
@@ -40,7 +41,7 @@ module.exports.save = function save(subject) {
 /**
  * @returns {boolean} whether #save is ready to be invoked.
  */
-module.exports.isReady = function () {
+exports.isReady = function () {
     return GoogleAnalytics.isReady();
 };
 
@@ -48,7 +49,7 @@ module.exports.isReady = function () {
  * Takes care of requirements for this storage.
  * @param {Object} [options]
  */
-module.exports.init = function (options) {
+exports.init = function (options) {
     GoogleAnalytics.init(options);
 };
 
@@ -56,6 +57,6 @@ module.exports.init = function (options) {
  * Runs handler as soon as the storage is ready.
  * @param {Function} handler
  */
-module.exports.onReady = function (handler) {
+exports.onReady = function (handler) {
     GoogleAnalytics.onReady(handler)
 };

@@ -1,7 +1,8 @@
 /**
  * Proudly created by ohad on 04/12/2016.
  */
-var Client = require('./../../common/client'),
+var _      = require('./../../common/util/wrapper'),
+    Client = require('./../../common/client'),
     Logger = require('./../../common/log/logger'),
     Level  = require('./../../common/log/logger').Level;
 /**
@@ -23,7 +24,7 @@ function Demographics(options) {
  */
 Demographics.prototype.options = function (options) {
     var i;
-    if (options.hasOwnProperty('properties')) {
+    if (_.has(options, 'properties')) {
         for (i = 0; i < options.properties.length; i++) {
             this.addProperty(options.properties[i]);
         }
@@ -39,13 +40,13 @@ Demographics.prototype.options = function (options) {
  *  @property {string} [os] - operating system name (case insensitive).
  */
 Demographics.prototype.addProperty = function (property) {
-    if (!property.hasOwnProperty('name')) {
+    if (!_.has(property, 'name')) {
         Logger.log(Level.WARNING, 'Demographics property is missing a name. ' +
                                   property.toString());
     }
     switch (property.name) {
         case 'modulo':
-            if (property.hasOwnProperty('moduloIds') && property.hasOwnProperty('moduloOf')) {
+            if (_.has(property, 'moduloIds') && _.has(property, 'moduloOf')) {
                 this.included = this.included && _moduloInclude();
                 return;
             }
@@ -53,7 +54,7 @@ Demographics.prototype.addProperty = function (property) {
                                       'properties.');
             break;
         case 'os':
-            if (property.hasOwnProperty('os')) {
+            if (_.has(property, 'os')) {
                 this.included = this.included && _osInclude(property.os);
                 return;
             }
@@ -77,7 +78,7 @@ Demographics.prototype.included = true;
  * @private
  */
 function _moduloInclude(moduloIds, moduloOf) {
-    if (Client.hasOwnProperty('id') && Client.id) {
+    if (_.has(Client, 'id') && Client.id) {
         return moduloIds.indexOf(Client.id % moduloOf) != -1;
     }
     return false;

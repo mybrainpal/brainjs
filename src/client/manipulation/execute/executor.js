@@ -27,7 +27,7 @@ var _executorByName = {
  * @param {Object} [specs] - for the actual executor.
  * @returns {*} delegates returned value to the actual executor.
  */
-module.exports.execute = function (name, selectors, specs) {
+exports.execute = function (name, selectors, specs) {
     var elements;
     if (!_executorByName.hasOwnProperty(name)) {
         Logger.log(Level.INFO, 'Executor: executor ' + name + ' is nonexistent.');
