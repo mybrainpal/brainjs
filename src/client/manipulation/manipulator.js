@@ -16,7 +16,7 @@ var _         = require('./../common/util/wrapper'),
  * @param {Object} [options]
  *  @property {Object[]} [anchors] - a container for event and collection of elements
  *      @property {string} selector - of collection of elements to listen for event.
- *      @property {string} event - to listen.
+ *      @property {string} event - to listen
  *  @property {Object} [subjectOptions] - additional options to pass to {@link Collector#collect}
  */
 exports.experiment = function (experiment, options) {
