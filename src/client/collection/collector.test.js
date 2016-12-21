@@ -12,7 +12,7 @@ chai.use(require('chai-spies'));
 
 
 describe('Collector', function () {
-    var div, a1, a2, span1, span2, p,
+    var div, a1, a2, span1, span2, p, a3, span3,
         storageSpy,
         storageMock,
         loggerSpy,
@@ -34,9 +34,16 @@ describe('Collector', function () {
         span2             = document.createElement('span');
         span2.textContent = 'If this is your first night in fight club, you HAVE to fight.';
         div.appendChild(span2);
-        p             = document.createElement('p');
-        p.textContent = 'YES';
+        p              = document.createElement('p');
+        p.textContent  = 'YES';
+        a3             = document.createElement('a');
+        a3.textContent = 'first night';
+        p.appendChild(a3);
+        span3             = document.createElement('span');
+        span3.textContent = 'no shirts';
+        p.appendChild(span3);
         div.appendChild(p);
+        div.appendChild(p.cloneNode(true));
         storageMock = {
             'save': _saveMockFn
         };
@@ -74,7 +81,7 @@ describe('Collector', function () {
         _storage = [];
     });
     it('save a subject', function () {
-        Collector.collect({subjectProps: [{name: 'rule', selector: '#fight-club>span'}]});
+        Collector.collect({dataProps: [{name: 'rule', selector: '#fight-club>span'}]});
         expect(storageSpy).to.have.been.called.once;
         expect(_storage).to.have.length(1);
         expect(_storage[0]).to.include.keys('subject');
@@ -83,8 +90,8 @@ describe('Collector', function () {
     });
     it('save a subject with client', function () {
         Collector.collect({
-                              subjectProps: [{name: 'rule', selector: '#fight-club>span'}],
-                              client      : {
+                              dataProps: [{name: 'rule', selector: '#fight-club>span'}],
+                              client   : {
                                   properties: ['agent.os', 'agent.browser', 'agent.other-property']
                               }
                           });
@@ -99,8 +106,8 @@ describe('Collector', function () {
     });
     it('save a subject with anchor', function (done) {
         Collector.collect({
-                              subjectProps: [{name: 'rule', selector: '#fight-club>span'}],
-                              anchor      : {selector: '#fight-club>a.fight', event: 'click'}
+                              dataProps: [{name: 'rule', selector: '#fight-club>span'}],
+                              anchor   : {selector: '#fight-club>a.fight', event: 'click'}
                           });
         a1.click();
         expect(storageSpy).to.have.been.called.once;
@@ -114,10 +121,32 @@ describe('Collector', function () {
         expect(_storage[0].anchor.targetText).to.equal(a1.textContent);
         done();
     });
+    it('iterative selector', function (done) {
+        Collector.collect({
+                              dataProps   : [{name: 'look', selector: 'span'}],
+                              anchor      : {selector: 'a', event: 'click'},
+                              iterSelector: '#fight-club>p'
+                          });
+        document.querySelectorAll('#fight-club>p>a').forEach(function (a) {
+            a.click();
+        });
+        expect(storageSpy).to.have.been.called(2);
+        expect(_storage).to.have.length(2);
+        _.forEach(_storage, function (item) {
+            expect(item).to.include.keys('subject', 'anchor');
+            expect(item.subject).to.include.keys('look');
+            expect(item.subject.look).to.equal(span3.textContent);
+            expect(item.anchor).to.include.keys('event', 'selector', 'targetText');
+            expect(item.anchor.event).to.equal('click');
+            expect(item.anchor.selector).to.equal('a');
+            expect(item.anchor.targetText).to.equal(a3.textContent);
+        });
+        done();
+    });
     it('save a subject with anchor with multiple targets', function (done) {
         Collector.collect({
-                              subjectProps: [{name: 'rule', selector: '#fight-club>span'}],
-                              anchor      : {selector: '#fight-club>span', event: 'click'}
+                              dataProps: [{name: 'rule', selector: '#fight-club>span'}],
+                              anchor   : {selector: '#fight-club>span', event: 'click'}
                           });
         span1.click();
         span2.click();
@@ -127,7 +156,7 @@ describe('Collector', function () {
     });
     it('failed to select subject', function () {
         Collector.collect(
-            {subjectProps: [{name: 'rule', selector: '#fight-club>span.non-existing-class'}]});
+            {dataProps: [{name: 'rule', selector: '#fight-club>span.non-existing-class'}]});
         expect(storageSpy).to.not.have.been.called();
         expect(_storage).to.be.empty;
         expect(loggerSpy).to.have.been.called();
@@ -140,8 +169,8 @@ describe('Collector', function () {
     });
     it('missing event name', function () {
         Collector.collect({
-                              subjectProps: [{name: 'rule', selector: '#fight-club>span'}],
-                              anchor      : {selector: '#fight-club>a'}
+                              dataProps: [{name: 'rule', selector: '#fight-club>span'}],
+                              anchor   : {selector: '#fight-club>a'}
                           });
         expect(storageSpy).to.have.been.called.once;
         expect(_storage).to.have.length(1);
@@ -149,9 +178,9 @@ describe('Collector', function () {
     });
     it('client is empty', function (done) {
         Collector.collect({
-                              subjectProps: [{name: 'rule', selector: '#fight-club>span'}],
-                              anchor      : {selector: '#fight-club>p', event: 'click'},
-                              client      : []
+                              dataProps: [{name: 'rule', selector: '#fight-club>span'}],
+                              anchor   : {selector: '#fight-club>p', event: 'click'},
+                              client   : []
                           });
         p.click();
         expect(storageSpy).to.have.been.called.once;
@@ -162,11 +191,11 @@ describe('Collector', function () {
     });
     it('client properties not found', function (done) {
         Collector.collect({
-                              subjectProps: [{name: 'rule', selector: '#fight-club>span'}],
-                              anchor      : {
+                              dataProps: [{name: 'rule', selector: '#fight-club>span'}],
+                              anchor   : {
                                   selector: '#fight-club>a:last-of-type', event: 'click'
                               },
-                              client      : {properties: ['some-prop', 'agent.garbage']}
+                              client   : {properties: ['some-prop', 'agent.garbage']}
                           });
         a2.click();
         expect(storageSpy).to.have.been.called.once;

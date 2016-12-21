@@ -13,7 +13,7 @@ chai.use(require('chai-spies'));
 
 describe('Manipulator', function () {
     var experiment, clientGroup, nonClientGroup,
-        anchor, subjectProp,
+        anchor, dataProp,
         div, a, span,
         collectorSpy, collectorMock, executorSpy, executorMock;
     before(function () {
@@ -33,7 +33,7 @@ describe('Manipulator', function () {
         Manipulator.__set__({Collector: collectorMock, Executor: executorMock});
         require('./../common/client').id = 1; // So that demographics apply.
         anchor                           = {selector: '#manipulator>a', event: 'click'};
-        subjectProp                      = {name: 'reaction', selector: '#manipulator>span'};
+        dataProp                         = {name: 'reaction', selector: '#manipulator>span'};
         clientGroup                      = {
             label       : 'client',
             executors   : [
@@ -77,20 +77,31 @@ describe('Manipulator', function () {
     });
     it('experiment runs', function () {
         Manipulator.experiment(new Experiment(experiment),
-                               {subjectProps: [subjectProp], anchors: [anchor]});
-        expect(collectorSpy).to.have.been.called(3);
+                               {subjectOptions: {dataProps: [dataProp], anchor: anchor}});
+        expect(collectorSpy).to.have.been.called(4);
         // collect data based on anchors.
-        expect(_storage[0][0]).to.have.keys('experiment', 'anchor');
+        expect(_storage[0][0]).to.contain.all.keys('experiment', 'anchor');
         // log participation in experiment or lack there of.
-        expect(_storage[1][0]).to.have.keys('experiment');
+        expect(_storage[1][0]).to.contain.all.keys('experiment');
         // experiment participation collection should not have anchor.
-        expect(_storage[1][0]).to.not.have.keys('anchor');
-        // log group participation or lack there of.
-        expect(_storage[2][0]).to.have.keys('experiment', 'experimentGroup');
-        // group participation collection should not have anchor.
-        expect(_storage[2][0]).to.not.have.keys('anchor');
-        // executes for each clientGroup executor.
+        expect(_storage[1][0]).to.not.contain.any.keys('anchor');
+        // collect data on experiment group based on anchors
+        expect(_storage[2][0]).to.contain.all.keys('experiment', 'anchor', 'experimentGroup');
+        // log participation in experiment group or lack there of.
+        expect(_storage[3][0]).to.contain.all.keys('experiment', 'experimentGroup');
+        // experiment group participation collection should not have anchor.
+        expect(_storage[3][0]).to.not.contain.any.keys('anchor');
+        // Executor should be called for each executor in clientGroup.
         expect(executorSpy).to.have.been.called(clientGroup.executors.length);
+    });
+    it('array of subject options', function () {
+        Manipulator.experiment(new Experiment(experiment),
+                               {
+                                   subjectOptions: [{dataProps: [dataProp], anchor: anchor},
+                                                    {dataProps: [dataProp], anchor: anchor}]
+                               });
+        // Executor should be called for twice for each executor in clientGroup.
+        expect(executorSpy).to.have.been.called(2 * clientGroup.executors.length);
     });
     it('experiment with zero groups', function () {
         var noGroupsExperiment    = _.clone(experiment);

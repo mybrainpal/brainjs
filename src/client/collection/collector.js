@@ -27,11 +27,11 @@ exports.options = function (options) {
 
 /**
  * Collects data (subject) based on an event (i.e. anchor).
- * @param {Object} [options]
- *  @property {Array<Object>} [subjectProps] - extra properties to attach to the event.
+ * @param {Object} [options] - can be an array.
+ *  @property {Array<Object>} [dataProps] - extra properties to attach to the event.
  *      @property {string} [name]
  *      @property {string} [selector] - of the element in the dom whose .text() contains a relevant
- *                                      piece of data
+ *          piece of data
  *  @property {Object} [anchor] - a container for event and collection of elements
  *      @property {string} [selector] - of collection of elements to listen for event.
  *      @property {string} [event] - to listen.
@@ -39,12 +39,39 @@ exports.options = function (options) {
  *      @property {Array.<string>} [properties] - 'agent.os' for `Client.agent.os`
  *  @property {Experiment} [experiment] - that encompasses this data collection.
  *  @property {ExperimentGroup} [experimentGroup] - that the client belongs to.
+ *  @property {string} iterSelector - used to iterate over repetitive things in the page.
+ *      Whenever used, all other selectors are used with relation to it.
+ *      Consider a page with multiple products, that each has an identical layout, and we want
+ *      to capture all of them.
+ *  @property {Node} [rootNode = document] - the node from which to execute all selectors.
  */
 exports.collect = function (options) {
-    var targets, subjectOptions, immediateEmit;
+    var targets, subjectOptions, immediateEmit, iterRoots;
+    if (_.isArray(options)) {
+        _.forEach(options, function (item) {
+            exports.collect(item);
+        });
+        return;
+    }
+    if (!_.has(options, 'rootNode')) {
+        options.rootNode = document;
+    }
+    if (_.has(options, 'iterSelector')) {
+        iterRoots = document.querySelectorAll(options.iterSelector);
+        delete options.iterSelector;
+        if (_.isEmpty(iterRoots)) {
+            Logger.log(Level.WARNING,
+                       'Collector: failed to select iterSelector at ' + options.anchor.selector);
+            return;
+        }
+        _.forEach(iterRoots, function (rootNode) {
+            exports.collect(_.merge(_.clone(options), {rootNode: rootNode}));
+        });
+        return;
+    }
     if (_.has(options, 'anchor') && _.has(options.anchor, 'selector') &&
         _.has(options.anchor, 'event')) {
-        targets = document.querySelectorAll(options.anchor.selector);
+        targets = options.rootNode.querySelectorAll(options.anchor.selector);
         if (_.isEmpty(targets)) {
             Logger.log(Level.WARNING,
                        'Collector: failed to select anchor at ' + options.anchor.selector);
@@ -70,19 +97,7 @@ exports.collect = function (options) {
 };
 
 /**
- * @param {Object} options
- *  @property {Array<Object>} [subjectProps] - extra properties to attach to the event.
- *      @property {string} [name]
- *      @property {string} [selector] - of the element in the dom whose .text() contains a relevant
- *                                      piece of data
- *  @property {Object} [anchor] - a container for event and collection of elements
- *      @property {string} [selector] - used to select target.
- *      @property {EventTarget} [target] - that will be listened to save the subject.
- *      @property {string} [eventName] - to listen.
- *  @property {Object} [client] - container for Client properties to collect.
- *      @property {Array.<string>} [properties] - 'agent.os' for `Client.agent.os`
- *  @property {Experiment} [experiment] - that encompasses this data collection.
- *  @property {ExperimentGroup} [experimentGroup] - that the client belongs to.
+ * @param {Object} options - similar to {@link #collect}
  * @return {Object} that we want to attach to the event, upon saving.
  * @private
  */
@@ -93,15 +108,15 @@ function _createSubject(options) {
         Logger.log(Level.WARNING, 'Collector: created an empty subject.');
         return {};
     }
-    if (!_.isEmpty(options.subjectProps)) {
+    if (!_.isEmpty(options.dataProps)) {
         emittedSubject.subject = {};
-        for (i = 0; i < options.subjectProps.length; i++) {
-            target = document.querySelector(options.subjectProps[i].selector);
+        for (i = 0; i < options.dataProps.length; i++) {
+            target = options.rootNode.querySelector(options.dataProps[i].selector);
             if (target) {
-                emittedSubject.subject[options.subjectProps[i].name] = _.text(target);
+                emittedSubject.subject[options.dataProps[i].name] = _.text(target);
             } else {
                 Logger.log(Level.WARNING,
-                           'Collector: failed to select ' + options.subjectProps[i].selector);
+                           'Collector: failed to select ' + options.dataProps[i].selector);
             }
         }
         if (_.isEmpty(emittedSubject.subject)) {

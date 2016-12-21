@@ -14,22 +14,29 @@ var _         = require('./../common/util/wrapper'),
  * web page.
  * @param {Experiment} experiment - describes way to manipulate the dom per various group of users.
  * @param {Object} [options]
- *  @property {Object[]} [anchors] - a container for event and collection of elements
- *      @property {string} selector - of collection of elements to listen for event.
- *      @property {string} event - to listen
- *  @property {Object} [subjectOptions] - additional options to pass to {@link Collector#collect}
+ *  @property {Object|Object[]} [subjectOptions] - options for {@link Collector#collect}
  */
 exports.experiment = function (experiment, options) {
     var subjectOptions;
-    options        = options || {};
-    subjectOptions = _.merge({experiment: experiment}, options.subjectOptions);
-    _.forEach(options.anchors, function (anchor) {
-        Collector.collect(_.merge({anchor: anchor}, subjectOptions));
-    });
-    Collector.collect(subjectOptions);
+    options = options || {};
+    if (_.has(options, 'subjectOptions') && _.isArray(options.subjectOptions)) {
+        _.forEach(options.subjectOptions, function (item) {
+            exports.experiment(experiment, {subjectOptions: item});
+        });
+        return;
+    }
+    subjectOptions = options.subjectOptions || {};
+    subjectOptions = _.merge({experiment: experiment}, subjectOptions);
+    if (_.has(subjectOptions, 'anchor')) {
+        Collector.collect(subjectOptions);
+    }
+    Collector.collect(_.omit(_.clone(subjectOptions), 'anchor'));
     _.forEach(experiment.clientGroups, function (group) {
         var groupSubjectOptions = _.merge({experimentGroup: group}, subjectOptions);
-        Collector.collect(groupSubjectOptions);
+        if (_.has(groupSubjectOptions, 'anchor')) {
+            Collector.collect(groupSubjectOptions);
+        }
+        Collector.collect(_.omit(_.clone(groupSubjectOptions), 'anchor'));
         _.forEach(group.executors, function (executor) {
             Executor.execute(executor.name, executor.selector, {
                 specs: executor.specs

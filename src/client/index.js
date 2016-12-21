@@ -23,8 +23,7 @@ window.BrainPal = (function (window, undefined) {
      * Plays the whole thing.
      * @param {Object} customerConfiguration
      *  @property {Object[]} [collect] - anchors and subjects to collect data about.
-     *      @property {Object} anchor
-     *      @property {Object} [subject]
+     *      @property {Object} [subjectOptions] - see {@link Collector#collect}
      *  @property {Object[]} [experiments] - experiments to execute.
      *      @property {Object} experiment
      *      @property {Object} options
@@ -39,8 +38,7 @@ window.BrainPal = (function (window, undefined) {
         Client.init();
         if (customerConfiguration.hasOwnProperty('collect')) {
             for (i = 0; i < customerConfiguration.collect.length; i++) {
-                Collector.collect(customerConfiguration.collect[i].subject,
-                                  customerConfiguration.collect[i].anchor);
+                Collector.collect(customerConfiguration.collect[i]);
             }
         }
         if (customerConfiguration.hasOwnProperty('experiments')) {
@@ -57,7 +55,36 @@ window.BrainPal = (function (window, undefined) {
         }
     }
 
-    customerConfiguration = {};
+    customerConfiguration = {
+        storage: {
+            name: 'local'
+        },
+        collect: [
+            {
+                dataProps   : [
+                    {
+                        name    : 'downloadCount',
+                        selector: 'span.count'
+                    },
+                    {
+                        name    : 'appName',
+                        selector: 'a.title-soft'
+                    }
+                ],
+                anchor      : {
+                    selector: 'div.list-text',
+                    event   : 'click'
+                },
+                iterSelector: 'div.tabs1>ul.center_softlist>li'
+            },
+            {
+                anchor: {
+                    selector: 'div.search_over_inp>input',
+                    event   : 'focus'
+                }
+            }
+        ]
+    };
 
     if (customerConfiguration.hasOwnProperty('storage')) {
         if (customerConfiguration.storage.hasOwnProperty('name')) {
