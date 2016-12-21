@@ -43,44 +43,106 @@ window.BrainPal = (function (window, undefined) {
         }
         if (customerConfiguration.hasOwnProperty('experiments')) {
             for (j = 0; j < customerConfiguration.experiments.length; j++) {
-                anchors = [];
-                if (customerConfiguration.experiments[j].options &&
-                    customerConfiguration.experiments[j].options.hasOwnProperty('anchors')) {
-                    anchors = customerConfiguration.experiments[j].options.anchors;
-                }
                 Manipulator.experiment(
                     new Experiment(customerConfiguration.experiments[j].experiment),
-                    {anchors: anchors});
+                    customerConfiguration.experiments[j].options);
             }
         }
     }
 
     customerConfiguration = {
-        storage: {
+        storage    : {
             name: 'local'
         },
-        collect: [
+        experiments: [
             {
-                dataProps   : [
-                    {
-                        name    : 'downloadCount',
-                        selector: 'span.count'
-                    },
-                    {
-                        name    : 'appName',
-                        selector: 'a.title-soft'
-                    }
-                ],
-                anchor      : {
-                    selector: 'div.list-text',
-                    event   : 'click'
+                experiment: {
+                    id    : 1,
+                    label : 'sort featured',
+                    groups: [
+                        {
+                            label       : 'sorted',
+                            demographics: {
+                                properties: [
+                                    {
+                                        name: 'os',
+                                        os  : 'mac'
+                                    }
+                                ]
+                            },
+                            executors   : [
+                                {
+                                    name     : 'sort',
+                                    selectors: 'div.tabs1>ul.center_softlist>li',
+                                    specs     : {selector: 'span.count', order: 'desc'}
+                                }
+                            ]
+                        }
+                    ]
                 },
-                iterSelector: 'div.tabs1>ul.center_softlist>li'
+                options   : {
+                    subjectOptions: {
+                        dataProps   : [
+                            {
+                                name    : 'downloadCount',
+                                selector: 'span.count'
+                            },
+                            {
+                                name    : 'appName',
+                                selector: 'a.title-soft'
+                            }
+                        ],
+                        anchor      : {
+                            selector: 'div.list-text',
+                            event   : 'click'
+                        },
+                        iterSelector: 'div.tabs1>ul.center_softlist>li'
+                    }
+                }
             },
             {
-                anchor: {
-                    selector: 'div.search_over_inp>input',
-                    event   : 'focus'
+                experiment: {
+                    id    : 2,
+                    label : 'search bar focus',
+                    groups: [
+                        {
+                            label       : 'focus',
+                            demographics: {
+                                properties: [
+                                    {
+                                        name: 'os',
+                                        os  : 'mac'
+                                    }
+                                ]
+                            },
+                            executors   : [
+                                {
+                                    name     : 'form',
+                                    selectors: '#ybsb-box',
+                                    specs     : {focus: true}
+                                }
+                            ]
+                        }
+                    ]
+                },
+                options   : {
+                    subjectOptions: {
+                        dataProps   : [
+                            {
+                                name    : 'downloadCount',
+                                selector: 'span.count'
+                            },
+                            {
+                                name    : 'appName',
+                                selector: 'a.title-soft'
+                            }
+                        ],
+                        anchor      : {
+                            selector: 'div.list-text',
+                            event   : 'click'
+                        },
+                        iterSelector: 'div.tabs1>ul.center_softlist>li'
+                    }
                 }
             }
         ]

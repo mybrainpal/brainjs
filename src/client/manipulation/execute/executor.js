@@ -42,7 +42,9 @@ exports.execute = function (name, selectors, options) {
     elements      = [];
     selectors     = _.isString(selectors) ? [selectors] : selectors;
     _.forEach(selectors, function (selector) {
-        _.concat(elements, document.querySelectorAll(selector));
+        _.forEach(document.querySelectorAll(selector), function (elem) {
+            elements.push(elem);
+        });
     });
     // TODO(ohad): propagate callback and failureCallback.
     return _executorByName[name].execute(elements, options.specs);

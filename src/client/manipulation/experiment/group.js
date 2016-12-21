@@ -27,12 +27,11 @@ ExperimentGroup.prototype.isClientIncluded = true;
 
 /**
  * @param options
- *  @property {string} experimentId
+ *  @property {string} experimentId - should not be supplied by customerConfiguration.
  *  @property {string} [label]
  *  @property {Object} [demographics] - which part of the population should this group include.
  *                                      By default all users are included. In sharp contrast to
- *     golf clubs.
- *
+ *                                      golf clubs.
  *  @property {Array.<Object>} [executors] - DOM manipulations that should be executed for this
  *                                           group participants.
  *      @property {string} name - of executor, such as 'style'.
