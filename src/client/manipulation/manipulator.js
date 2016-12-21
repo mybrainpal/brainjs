@@ -32,7 +32,7 @@ exports.experiment = function (experiment, options) {
         Collector.collect(groupSubjectOptions);
         _.forEach(group.executors, function (executor) {
             Executor.execute(executor.name, executor.selector, {
-                specs          : executor.specs
+                specs: executor.specs
             });
         });
     });
