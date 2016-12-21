@@ -26,8 +26,8 @@ exports.Level = Object.freeze({
 
 /**
  * @param options
- *  @property {Object} [storage=]
- *  @property {string} [prefix=BP-Logger:]
+ *  @property {Object} [storage]
+ *  @property {string} [prefix]
  */
 exports.options = function (options) {
     if (_.has(options, 'storage')) {
@@ -44,5 +44,14 @@ exports.options = function (options) {
  * @param {Object} message
  */
 exports.log = function (level, message) {
-    _storage.save(_prefix + level.name.toUpperCase() + ': ' + message);
+    var subject = {
+        level: level.name.toUpperCase(),
+        type : 'log'
+    };
+    if (_.isString(message)) {
+        subject.content = message
+    } else {
+        _.merge(subject, message);
+    }
+    _storage.save(subject);
 };

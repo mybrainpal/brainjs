@@ -1,66 +1,39 @@
 /**
  * Proudly created by ohad on 03/12/2016.
  *
- * Manipulates the DOM to fill our customers pockets with them dollars.
+ * Manipulates the DOM to fill our customers pockets with 'em dollars.
  */
 var _         = require('./../common/util/wrapper'),
-    Logger    = require('../common/log/logger'),
-    Level     = require('../common/log/logger').Level,
-    Collector = require('../collection/collector'),
+    Logger    = require('./../common/log/logger'),
+    Level     = require('./../common/log/logger').Level,
+    Collector = require('./../collection/collector'),
     Executor  = require('./execute/executor');
 
 /**
- * Runs an experiment.
- * @param {Experiment} experiment
+ * Runs an experiment, or A/B test, in order to find out an improved versions of the customer's
+ * web page.
+ * @param {Experiment} experiment - describes way to manipulate the dom per various group of users.
  * @param {Object} [options]
- *  @property {Array} [anchors] - for event logging
+ *  @property {Object[]} [anchors] - a container for event and collection of elements
+ *      @property {string} selector - of collection of elements to listen for event.
+ *      @property {string} event - to listen.
+ *  @property {Object} [subjectOptions] - additional options to pass to {@link Collector#collect}
  */
 exports.experiment = function (experiment, options) {
-    var group;
-    var i, j;
-    Collector.collect(_createSubject(experiment));
-    if (experiment.isClientIncluded) {
-        for (i = 0; i < experiment.clientGroups.length; i++) {
-            group = experiment.clientGroups[i];
-            Collector.collect(_createSubject(experiment, group));
-            for (j = 0; j < group.executors.length; j++) {
-                //noinspection JSUnresolvedVariable
-                Executor.execute(group.executors[j].name || '',
-                                 group.executors[j].descriptions || [],
-                                 group.executors[j].specs || {});
-            }
-        }
-    }
-    if (options) {
-        if (_.has(options, 'anchors')) {
-            for (j = 0; j < options.anchors.length; j++) {
-                Collector.collect(_createSubject(experiment), options.anchors[j]);
-            }
-        }
-    }
+    var subjectOptions;
+    options        = options || {};
+    subjectOptions = _.merge({experiment: experiment}, options.subjectOptions);
+    _.forEach(options.anchors, function (anchor) {
+        Collector.collect(_.merge({anchor: anchor}, subjectOptions));
+    });
+    Collector.collect(subjectOptions);
+    _.forEach(experiment.clientGroups, function (group) {
+        var groupSubjectOptions = _.merge({experimentGroup: group}, subjectOptions);
+        Collector.collect(groupSubjectOptions);
+        _.forEach(group.executors, function (executor) {
+            Executor.execute(executor.name, executor.selector, {
+                specs          : executor.specs
+            });
+        });
+    });
 };
-
-/**
- * @param {Experiment} experiment
- * @param {ExperimentGroup} [group]
- * @returns {Object} of option content, while truncating some of its properties.
- * @private
- */
-function _createSubject(experiment, group) {
-    var subject        = {};
-    subject.experiment = {};
-    if (_.has(experiment, 'id')) {
-        subject.experiment.id = experiment.id;
-    }
-    if (_.has(experiment, 'name')) {
-        subject.experiment.name = experiment.name;
-    }
-    subject.experiment.participates = experiment.isClientIncluded;
-    if (group) {
-        subject.experiment.group = {};
-        if (_.has(group, 'label')) {
-            subject.experiment.group.label = group.label;
-        }
-    }
-    return subject;
-}

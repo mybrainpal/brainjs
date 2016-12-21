@@ -27,34 +27,34 @@ exports.options = function (options) {
 
 /**
  * Collects data (subject) based on an event (i.e. anchor).
- * @param {Array<Object>} [subjectProps] - extra properties to attach to the event.
- *  @property {string} [name]
- *  @property {string} [selector] - of the element in the dom whose .text() contains a relevant
- *                                  piece of data
- * @param {Object} [anchor] - a container for event and collection of elements
- *  @property {string} [selector] - of collection of elements to listen for eventName.
- *  @property {string} [event] - to listen.
  * @param {Object} [options]
+ *  @property {Array<Object>} [subjectProps] - extra properties to attach to the event.
+ *      @property {string} [name]
+ *      @property {string} [selector] - of the element in the dom whose .text() contains a relevant
+ *                                      piece of data
+ *  @property {Object} [anchor] - a container for event and collection of elements
+ *      @property {string} [selector] - of collection of elements to listen for event.
+ *      @property {string} [event] - to listen.
  *  @property {Object} [client] - container for Client properties to collect.
  *      @property {Array.<string>} [properties] - 'agent.os' for `Client.agent.os`
+ *  @property {Experiment} [experiment] - that encompasses this data collection.
+ *  @property {ExperimentGroup} [experimentGroup] - that the client belongs to.
  */
-exports.collect = function (subjectProps, anchor, options) {
+exports.collect = function (options) {
     var targets, subjectOptions, immediateEmit;
-    if (anchor && _.has(anchor, 'selector') && _.has(anchor, 'event')) {
-        _.forEach(document.querySelectorAll(anchor.selector), function (target) {
+    if (_.has(options, 'anchor') && _.has(options.anchor, 'selector') &&
+        _.has(options.anchor, 'event')) {
+        targets = document.querySelectorAll(options.anchor.selector);
+        if (_.isEmpty(targets)) {
+            Logger.log(Level.WARNING,
+                       'Collector: failed to select anchor at ' + options.anchor.selector);
+            return;
+        }
+        _.forEach(targets, function (target) {
             if (target instanceof EventTarget) {
-                target.addEventListener(anchor.event, function () {
+                target.addEventListener(options.anchor.event, function () {
                     var emitted;
-                    subjectOptions = {
-                        subjectProps: subjectProps,
-                        anchor      : {
-                            event   : anchor.event,
-                            target  : target,
-                            selector: anchor.selector
-                        }
-                    };
-                    _.merge(subjectOptions, options);
-                    emitted = _createSubject(subjectOptions);
+                    emitted = _createSubject(_.merge({anchor: {target: target}}, options));
                     if (!_.isEmpty(emitted)) {
                         _storage.save(emitted);
                     }
@@ -62,10 +62,7 @@ exports.collect = function (subjectProps, anchor, options) {
             }
         });
     } else {
-        Logger.log(Level.FINE, 'Collector: could not use anchor.');
-        subjectOptions = {subjectProps: subjectProps};
-        _.merge(subjectOptions, options);
-        immediateEmit = _createSubject(subjectOptions);
+        immediateEmit = _createSubject(options);
         if (!_.isEmpty(immediateEmit)) {
             _storage.save(immediateEmit);
         }
@@ -84,6 +81,8 @@ exports.collect = function (subjectProps, anchor, options) {
  *      @property {string} [eventName] - to listen.
  *  @property {Object} [client] - container for Client properties to collect.
  *      @property {Array.<string>} [properties] - 'agent.os' for `Client.agent.os`
+ *  @property {Experiment} [experiment] - that encompasses this data collection.
+ *  @property {ExperimentGroup} [experimentGroup] - that the client belongs to.
  * @return {Object} that we want to attach to the event, upon saving.
  * @private
  */
@@ -122,6 +121,36 @@ function _createSubject(options) {
         }
         if (_.isEmpty(emittedSubject.client)) {
             Logger.log(Level.WARNING, 'Collector: client is empty.');
+            delete emittedSubject.client;
+        }
+    }
+    if (_.has(options, 'experiment')) {
+        emittedSubject.experiment = {};
+        if (_.has(options.experiment, 'id')) {
+            emittedSubject.experiment.id = options.experiment.id;
+        }
+        if (_.has(options.experiment, 'isClientIncluded')) {
+            emittedSubject.experiment.isClientIncluded = options.experiment.isClientIncluded;
+        }
+        if (_.isEmpty(emittedSubject.experiment)) {
+            Logger.log(Level.WARNING, 'Collector: experiment is empty.');
+            delete emittedSubject.client;
+        }
+    }
+    if (_.has(options, 'experimentGroup')) {
+        emittedSubject.experimentGroup = {};
+        if (_.has(options.experimentGroup, 'experimentId')) {
+            emittedSubject.experimentGroup.experimentId = options.experimentGroup.experimentId;
+        }
+        if (_.has(options.experimentGroup, 'isClientIncluded')) {
+            emittedSubject.experimentGroup.isClientIncluded =
+                options.experimentGroup.isClientIncluded;
+        }
+        if (_.has(options.experimentGroup, 'label')) {
+            emittedSubject.experimentGroup.label = options.experimentGroup.label;
+        }
+        if (_.isEmpty(emittedSubject.experiment)) {
+            Logger.log(Level.WARNING, 'Collector: experiment is empty.');
             delete emittedSubject.client;
         }
     }

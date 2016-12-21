@@ -3,7 +3,9 @@
  *
  * Modifies the DOM, but in a good way.
  */
-var Logger       = require('../../common/log/logger'),
+    // TODO(ohad): add `prepare` method that initiates external resource loading.
+var _            = require('./../../common/util/wrapper'),
+    Logger       = require('../../common/log/logger'),
     Level        = require('../../common/log/logger').Level,
     FormExecutor = require('./form'),
     SortExecutor = require('./sort'),
@@ -23,29 +25,25 @@ var _executorByName = {
 /**
  * Executes the next big thing.
  * @param {string} name - of the desired executor.
- * @param {Array.<string>} [selectors] - of the target elements.
- * @param {Object} [specs] - for the actual executor.
+ * @param {Array.<string>|string} [selectors] - of the target elements.
+ * @param {Object} [options]
+ *  @property {Object} [specs] - for the actual executor.
+ *  @property {Function} [callback] - to execute once the executor is complete.
+ *  @property {Function} [failureCallback] - to execute had the executor failed.
  * @returns {*} delegates returned value to the actual executor.
  */
-exports.execute = function (name, selectors, specs) {
+exports.execute = function (name, selectors, options) {
     var elements;
-    if (!_executorByName.hasOwnProperty(name)) {
-        Logger.log(Level.INFO, 'Executor: executor ' + name + ' is nonexistent.');
+    if (!_.has(_executorByName, name)) {
+        Logger.log(Level.WARNING, 'Executor: executor ' + name + ' is nonexistent.');
         return;
     }
-    specs    = specs || {};
-    elements = [];
-    if (selectors) {
-        elements = selectors.map(function (sel) {
-            return document.querySelector(sel);
-        }).filter(function (node) {
-            return node instanceof Node;
-        });
-    }
-    // Validates preconditions.
-    if (!_executorByName[name].preconditions(elements, specs)) {
-        Logger.log(Level.INFO, 'Executor: preconditions failed for ' + name);
-        return;
-    }
-    return _executorByName[name].execute(elements, specs);
+    options.specs = options.specs || {};
+    elements      = [];
+    selectors     = _.isString(selectors) ? [selectors] : selectors;
+    _.forEach(selectors, function (selector) {
+        _.concat(elements, document.querySelectorAll(selector));
+    });
+    // TODO(ohad): propagate callback and failureCallback.
+    return _executorByName[name].execute(elements, options.specs);
 };

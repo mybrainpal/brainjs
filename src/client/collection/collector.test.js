@@ -74,7 +74,7 @@ describe('Collector', function () {
         _storage = [];
     });
     it('save a subject', function () {
-        Collector.collect([{name: 'rule', selector: '#fight-club>span'}]);
+        Collector.collect({subjectProps: [{name: 'rule', selector: '#fight-club>span'}]});
         expect(storageSpy).to.have.been.called.once;
         expect(_storage).to.have.length(1);
         expect(_storage[0]).to.include.keys('subject');
@@ -82,9 +82,9 @@ describe('Collector', function () {
         expect(_storage[0].subject.rule).to.equal(span1.textContent);
     });
     it('save a subject with client', function () {
-        Collector.collect([{name: 'rule', selector: '#fight-club>span'}], {},
-                          {
-                              client: {
+        Collector.collect({
+                              subjectProps: [{name: 'rule', selector: '#fight-club>span'}],
+                              client      : {
                                   properties: ['agent.os', 'agent.browser', 'agent.other-property']
                               }
                           });
@@ -98,8 +98,10 @@ describe('Collector', function () {
         expect(_storage[0].client.agent).to.not.include.keys('other-property');
     });
     it('save a subject with anchor', function (done) {
-        Collector.collect([{name: 'rule', selector: '#fight-club>span'}],
-                          {selector: '#fight-club>a.fight', event: 'click'});
+        Collector.collect({
+                              subjectProps: [{name: 'rule', selector: '#fight-club>span'}],
+                              anchor      : {selector: '#fight-club>a.fight', event: 'click'}
+                          });
         a1.click();
         expect(storageSpy).to.have.been.called.once;
         expect(_storage).to.have.length(1);
@@ -113,8 +115,10 @@ describe('Collector', function () {
         done();
     });
     it('save a subject with anchor with multiple targets', function (done) {
-        Collector.collect([{name: 'rule', selector: '#fight-club>span'}],
-                          {selector: '#fight-club>span', event: 'click'});
+        Collector.collect({
+                              subjectProps: [{name: 'rule', selector: '#fight-club>span'}],
+                              anchor      : {selector: '#fight-club>span', event: 'click'}
+                          });
         span1.click();
         span2.click();
         expect(storageSpy).to.have.been.called(2);
@@ -122,28 +126,33 @@ describe('Collector', function () {
         done();
     });
     it('failed to select subject', function () {
-        Collector.collect([{name: 'rule', selector: '#fight-club>span.non-existing-class'}]);
+        Collector.collect(
+            {subjectProps: [{name: 'rule', selector: '#fight-club>span.non-existing-class'}]});
         expect(storageSpy).to.not.have.been.called();
         expect(_storage).to.be.empty;
         expect(loggerSpy).to.have.been.called();
     });
     it('failed to select anchor', function () {
-        Collector.collect([], {selector: '#effi'});
+        Collector.collect({anchor: {selector: '#effi', event: 'click'}});
         expect(storageSpy).to.not.have.been.called();
         expect(_storage).to.be.empty;
         expect(loggerSpy).to.have.been.called();
     });
     it('missing event name', function () {
-        Collector.collect([{name: 'rule', selector: '#fight-club>span'}],
-                          {selector: '#fight-club>a'});
+        Collector.collect({
+                              subjectProps: [{name: 'rule', selector: '#fight-club>span'}],
+                              anchor      : {selector: '#fight-club>a'}
+                          });
         expect(storageSpy).to.have.been.called.once;
         expect(_storage).to.have.length(1);
         expect(loggerSpy).to.have.been.called();
     });
     it('client is empty', function (done) {
-        Collector.collect([{name: 'rule', selector: '#fight-club>span'}],
-                          {selector: '#fight-club>p', event: 'click'},
-                          {client: []});
+        Collector.collect({
+                              subjectProps: [{name: 'rule', selector: '#fight-club>span'}],
+                              anchor      : {selector: '#fight-club>p', event: 'click'},
+                              client      : []
+                          });
         p.click();
         expect(storageSpy).to.have.been.called.once;
         expect(_storage).to.have.length(1);
@@ -152,9 +161,13 @@ describe('Collector', function () {
         done();
     });
     it('client properties not found', function (done) {
-        Collector.collect([{name: 'rule', selector: '#fight-club>span'}],
-                          {selector: '#fight-club>a:last-of-type', event: 'click'},
-                          {client: {properties: ['some-prop', 'agent.garbage']}});
+        Collector.collect({
+                              subjectProps: [{name: 'rule', selector: '#fight-club>span'}],
+                              anchor      : {
+                                  selector: '#fight-club>a:last-of-type', event: 'click'
+                              },
+                              client      : {properties: ['some-prop', 'agent.garbage']}
+                          });
         a2.click();
         expect(storageSpy).to.have.been.called.once;
         expect(_storage).to.have.length(1);

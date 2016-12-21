@@ -6,7 +6,7 @@ var _               = require('./../../common/util/wrapper'),
     Level           = require('../../common/log/logger').Level,
     ExperimentGroup = require('./group');
 /**
- * Describes an experiment on window.
+ * An experiment, such as A/B testing, that exists to test a hypothesis.
  * @param options
  * @class Experiment
  * @constructor
@@ -20,10 +20,30 @@ function Experiment(options) {
 }
 
 /**
+ * Whether the Client is included in any of the experiment groups.
+ * @type {boolean}
+ */
+Experiment.prototype.isClientIncluded = false;
+/**
+ * All the experiment groups that include the client.
+ * @type {Array.<ExperimentGroup>}
+ */
+Experiment.prototype.clientGroups = [];
+/**
+ * All the groups in the experiment.
+ * @type {Array.<ExperimentGroup>}
+ */
+Experiment.prototype.groups = [];
+
+/**
  * @param options
  *  @property {string} id
- *  @property {string} [name]
- *  @property {Array} groups
+ *  @property {string} [label] - used for logging.
+ *  @property {Array.<Object>} groups - the various experiment groups, each one consists of
+ *  demographics portraits (i.e. which part of the entire population of users using our
+ *  customers website), and executors (i.e. what kind of DOM manipulations should the group
+ *  participants experience).
+ *  @property
  */
 Experiment.prototype.options = function (options) {
     var i;
@@ -32,13 +52,17 @@ Experiment.prototype.options = function (options) {
     } else {
         Logger.log(Level.WARNING, 'Experiment: missing id.');
     }
-    if (_.has(options, 'name')) {
-        this.name = options.name;
+    if (_.has(options, 'label')) {
+        this.label = options.label;
     }
-    this.isClientIncluded = false;
-    this.clientGroups     = [];
     if (_.has(options, 'groups')) {
-        this.groups = options.groups.map(function (g) {return new ExperimentGroup(g);});
+        /**
+         * All the groups in the experiment.
+         * @type {Array.<ExperimentGroup>}
+         */
+        this.groups = options.groups.map(
+            function (g) {return new ExperimentGroup(_.merge({experimentId: options.id}, g));});
+        this.clientGroups = []; // makes sure `this` maintains its own clientGroups.
         for (i = 0; i < this.groups.length; i++) {
             if (this.groups[i].isClientIncluded) {
                 this.isClientIncluded = true;

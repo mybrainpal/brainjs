@@ -1,34 +1,29 @@
 /**
  * Proudly created by ohad on 04/12/2016.
+ *
+ * Describes a group of users that make or don't make love.
+ * The whole purpose of a Demographics instance is to decide whether the client belongs to it.
  */
 var _      = require('./../../common/util/wrapper'),
     Client = require('./../../common/client'),
     Logger = require('./../../common/log/logger'),
     Level  = require('./../../common/log/logger').Level;
 /**
- * Describes a group of users that make or don't make love.
- *
- * The whole purpose of a Demographics instance is to decide whether the client belongs to it.
- * @param options
- * @constructor
+ * @param {Object} [options]
+ *  @property {Array.<Object>} properties - describing which users are part of the demographics
+ *                                          population.
+ * @returns {boolean} Whether the client belongs to this demographics.
  */
-function Demographics(options) {
-    if (options) {
-        this.options(options);
-    }
-}
-
-/**
- * @param options
- *  @property {Array} properties
- */
-Demographics.prototype.options = function (options) {
+exports.included = function (options) {
     var i;
     if (_.has(options, 'properties')) {
         for (i = 0; i < options.properties.length; i++) {
-            this.addProperty(options.properties[i]);
+            if (!_satisfyProperty(options.properties[i])) {
+                return false;
+            }
         }
     }
+    return true;
 };
 
 /**
@@ -38,38 +33,35 @@ Demographics.prototype.options = function (options) {
  *  @property {Array} [moduloIds] - array of accepted modulus (as per moduloOf).
  *  @property {Number} [moduloOf] - modulo base.
  *  @property {string} [os] - operating system name (case insensitive).
+ * @private
  */
-Demographics.prototype.addProperty = function (property) {
+function _satisfyProperty(property) {
     if (!_.has(property, 'name')) {
         Logger.log(Level.WARNING, 'Demographics property is missing a name. ' +
-                                  property.toString());
+                                  JSON.stringify(property));
+        return false;
     }
     switch (property.name) {
         case 'modulo':
             if (_.has(property, 'moduloIds') && _.has(property, 'moduloOf')) {
-                this.included = this.included && _moduloInclude();
-                return;
+                return _moduloInclude(property.moduloIds, property.moduloOf);
             }
             Logger.log(Level.WARNING, 'Demographics modulo property is missing required ' +
                                       'properties.');
             break;
         case 'os':
             if (_.has(property, 'os')) {
-                this.included = this.included && _osInclude(property.os);
-                return;
+                return _osInclude(property.os);
             }
             Logger.log(Level.WARNING, 'Demographics os property is missing required ' +
                                       'properties.');
             break;
         default:
             Logger.log(Level.WARNING, 'Demographics property ' + property.name + ' is unknown.');
+            return false;
     }
-};
-
-/**
- * @type {boolean} Whether the client belongs to this demographics.
- */
-Demographics.prototype.included = true;
+    return false;
+}
 
 /**
  * @param {Array} [moduloIds] - array of accepted modulus (as per moduloOf).
@@ -78,7 +70,7 @@ Demographics.prototype.included = true;
  * @private
  */
 function _moduloInclude(moduloIds, moduloOf) {
-    if (_.has(Client, 'id') && Client.id) {
+    if (_.has(Client, 'id') && _.isNumber(Client.id)) {
         return moduloIds.indexOf(Client.id % moduloOf) != -1;
     }
     return false;
@@ -97,8 +89,3 @@ function _osInclude(os) {
     }
     return false;
 }
-
-/**
- * Expose the `Demographics` constructor.
- */
-module.exports = Demographics;
