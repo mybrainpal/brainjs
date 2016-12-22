@@ -52,7 +52,7 @@ window.BrainPal = (function (window, undefined) {
 
     customerConfiguration = {
         storage    : {
-            name: 'local'
+            name: ''
         },
         experiments: [
             {

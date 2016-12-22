@@ -17,6 +17,12 @@ exports.save = function save(subject) {
     var label    = '';
     var value    = 0;
     try {
+        if (_.has(subject, 'experiment')) {
+            category += 'experiment:' + JSON.stringify(subject.experiment);
+        }
+        if (_.has(subject, 'exerimentGroup')) {
+            category += 'experimentGroup:' + JSON.stringify(subject.group);
+        }
         if (_.has(subject, 'client')) {
             category += 'client:' + JSON.stringify(subject.client);
         }
