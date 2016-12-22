@@ -12,7 +12,7 @@ var _               = require('./../../common/util/wrapper'),
  * @param {Object} subject
  */
 exports.save = function save(subject) {
-    var category = 'BPStorage:';
+    var category = 'BrainPal:';
     var action   = JSON.stringify(subject);
     var label    = '';
     var value    = 0;

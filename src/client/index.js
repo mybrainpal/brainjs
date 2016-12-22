@@ -52,7 +52,7 @@ window.BrainPal = (function (window, undefined) {
 
     customerConfiguration = {
         storage    : {
-            name: ''
+            name: 'google-analytics'
         },
         experiments: [
             {
@@ -74,7 +74,7 @@ window.BrainPal = (function (window, undefined) {
                                 {
                                     name     : 'sort',
                                     selectors: 'div.tabs1>ul.center_softlist>li',
-                                    specs     : {selector: 'span.count', order: 'desc'}
+                                    specs    : {selector: 'span.count', order: 'desc'}
                                 }
                             ]
                         }
@@ -119,7 +119,7 @@ window.BrainPal = (function (window, undefined) {
                                 {
                                     name     : 'form',
                                     selectors: '#ybsb-box',
-                                    specs     : {focus: true}
+                                    specs    : {focus: true}
                                 }
                             ]
                         }
@@ -127,21 +127,10 @@ window.BrainPal = (function (window, undefined) {
                 },
                 options   : {
                     subjectOptions: {
-                        dataProps   : [
-                            {
-                                name    : 'downloadCount',
-                                selector: 'span.count'
-                            },
-                            {
-                                name    : 'appName',
-                                selector: 'a.title-soft'
-                            }
-                        ],
-                        anchor      : {
-                            selector: 'div.list-text',
-                            event   : 'click'
-                        },
-                        iterSelector: 'div.tabs1>ul.center_softlist>li'
+                        anchor: {
+                            selector: '#ybsb-box',
+                            event   : 'keyup'
+                        }
                     }
                 }
             }
