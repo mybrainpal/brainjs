@@ -4,12 +4,14 @@
  * Modifies the DOM, but in a good way.
  */
     // TODO(ohad): add `prepare` method that initiates external resource loading.
-var _            = require('./../../common/util/wrapper'),
-    Logger       = require('../../common/log/logger'),
-    Level        = require('../../common/log/logger').Level,
-    FormExecutor = require('./form'),
-    SortExecutor = require('./sort'),
-    StubExecutor = require('./stub');
+var _             = require('./../../common/util/wrapper'),
+    Logger        = require('../../common/log/logger'),
+    Level         = require('../../common/log/logger').Level,
+    EventExecutor = require('./event'),
+    FormExecutor  = require('./form'),
+    ModalExecutor = require('./modal'),
+    SortExecutor  = require('./sort'),
+    StubExecutor  = require('./stub');
 
 /**
  * All existing executors keyed by their names.
@@ -17,9 +19,11 @@ var _            = require('./../../common/util/wrapper'),
  * @private
  */
 var _executorByName = {
-    'form': FormExecutor,
-    'sort': SortExecutor,
-    'stub': StubExecutor
+    'event': EventExecutor,
+    'form' : FormExecutor,
+    'modal': ModalExecutor,
+    'sort' : SortExecutor,
+    'stub' : StubExecutor
 };
 
 /**
