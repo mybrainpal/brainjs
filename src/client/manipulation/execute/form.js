@@ -7,7 +7,7 @@ var _            = require('./../../common/util/wrapper'),
  * Manipulates form elements, for the good of society.
  * @param {Array.<Element>|NodeList} elements
  * @param {Object} specs
- *  @property {boolean} [focus]
+ *  @property {boolean} [focus] - whether to focus on the first provided element.
  */
 exports.execute = function (elements, specs) {
     if (!exports.preconditions(elements, specs)) {

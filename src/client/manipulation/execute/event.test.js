@@ -8,7 +8,7 @@ var _             = require('./../../common/util/wrapper'),
 
 chai.use(require('chai-spies'));
 
-describe.only('EventExecutor', function () {
+describe('EventExecutor', function () {
     this.timeout(200);
     it('preconditions', function () {
         expect(EventExecutor.preconditions([], {})).to.be.false;

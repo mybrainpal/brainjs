@@ -9,6 +9,7 @@ var _             = require('./../../common/util/wrapper'),
     Level         = require('../../common/log/logger').Level,
     EventExecutor = require('./event'),
     FormExecutor  = require('./form'),
+    InjectExecutor = require('./inject'),
     ModalExecutor = require('./modal'),
     SortExecutor  = require('./sort'),
     StubExecutor  = require('./stub');
@@ -21,6 +22,7 @@ var _             = require('./../../common/util/wrapper'),
 var _executorByName = {
     'event': EventExecutor,
     'form' : FormExecutor,
+    'inject': InjectExecutor,
     'modal': ModalExecutor,
     'sort' : SortExecutor,
     'stub' : StubExecutor
