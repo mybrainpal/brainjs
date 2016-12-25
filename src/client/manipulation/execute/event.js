@@ -37,7 +37,7 @@ exports.execute = function (elements, specs) {
             var target = window;
             if (_.has(listener, 'selector')) {
                 target = document.querySelector(listener.selector);
-                if (_.isEmpty(target)) {
+                if (!_.isElement(target)) {
                     Logger.log(Level.ERROR,
                                'EventExecutor: count not find listener target at ' +
                                listener.selector);
@@ -112,7 +112,7 @@ function _doFn(specs) {
         var target = window;
         if (_.has(trigger, 'selector')) {
             target = document.querySelector(trigger.selector);
-            if (_.isEmpty(target)) {
+            if (!_.isElement(target)) {
                 Logger.log(Level.ERROR,
                            'EventExecutor: count not find trigger target at ' + trigger.selector);
                 return;

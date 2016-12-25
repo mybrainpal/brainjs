@@ -4,15 +4,17 @@
  * Modifies the DOM, but in a good way.
  */
     // TODO(ohad): add `prepare` method that initiates external resource loading.
-var _             = require('./../../common/util/wrapper'),
-    Logger        = require('../../common/log/logger'),
-    Level         = require('../../common/log/logger').Level,
-    EventExecutor = require('./event'),
-    FormExecutor  = require('./form'),
+var _              = require('./../../common/util/wrapper'),
+    Logger         = require('../../common/log/logger'),
+    Level          = require('../../common/log/logger').Level,
+    EventExecutor  = require('./event'),
+    FormExecutor   = require('./form'),
     InjectExecutor = require('./inject'),
-    ModalExecutor = require('./modal'),
-    SortExecutor  = require('./sort'),
-    StubExecutor  = require('./stub');
+    ModalExecutor  = require('./modal'),
+    MoveExecutor   = require('./dom-move'),
+    RemoveExecutor = require('./dom-remove'),
+    SortExecutor   = require('./sort'),
+    StubExecutor   = require('./stub');
 
 /**
  * All existing executors keyed by their names.
@@ -20,12 +22,14 @@ var _             = require('./../../common/util/wrapper'),
  * @private
  */
 var _executorByName = {
-    'event': EventExecutor,
-    'form' : FormExecutor,
+    'event' : EventExecutor,
+    'form'  : FormExecutor,
     'inject': InjectExecutor,
-    'modal': ModalExecutor,
-    'sort' : SortExecutor,
-    'stub' : StubExecutor
+    'modal' : ModalExecutor,
+    'move'  : MoveExecutor,
+    'remove': RemoveExecutor,
+    'sort'  : SortExecutor,
+    'stub'  : StubExecutor
 };
 
 /**
