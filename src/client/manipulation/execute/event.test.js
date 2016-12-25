@@ -57,9 +57,9 @@ describe('EventExecutor', function () {
         window.dispatchEvent(new CustomEvent('listen1'));
     });
     it('event triggered after all listeners fired', function (done) {
-        var emitted = false;
+        var triggered = false;
         window.addEventListener('triggered', function () {
-            emitted = true;
+            triggered = true;
         });
         EventExecutor.execute([], {
             listen    : [{event: 'listen1'}, {event: 'listen2'}],
@@ -67,10 +67,10 @@ describe('EventExecutor', function () {
             trigger   : {event: 'triggered'}
         });
         window.dispatchEvent(new CustomEvent('listen1'));
-        _.defer(function () { expect(emitted).to.be.false; });
+        _.defer(function () { expect(triggered).to.be.false; });
         _.defer(function () {window.dispatchEvent(new CustomEvent('listen2'))});
         _.defer(function () {
-            expect(emitted).to.be.true;
+            expect(triggered).to.be.true;
             done();
         });
     });
