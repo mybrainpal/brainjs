@@ -5,7 +5,7 @@
  * Identifies the owner Node of _styleSheet.
  * @type {string}
  */
-module.exports.identifyingAttribute = 'brainpal';
+module.exports.identifyingAttribute = 'data-brainpal';
 /**
  * Loads cssText styles into a new stylesheet.
  * @param {string} cssText
