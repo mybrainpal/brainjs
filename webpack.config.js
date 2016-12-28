@@ -32,4 +32,3 @@ module.exports = {
     },
     plugins : []
 };
-// webpack --config webpack.config.js --optimize-minimize --optimize-dedupe
