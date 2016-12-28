@@ -5,14 +5,14 @@
  * Identifies the owner Node of _styleSheet.
  * @type {string}
  */
-module.exports.identifyingAttribute = 'data-brainpal';
+exports.identifyingAttribute = 'data-brainpal-style';
 /**
  * Loads cssText styles into a new stylesheet.
  * @param {string} cssText
  * @returns {Element} the created style element.
  */
 exports.load = function (cssText) {
-    var styleElement         = document.createElement('style'),
+    let styleElement         = document.createElement('style'),
         entry                = document.getElementsByTagName('script')[0];
     styleElement.type        = 'text/css';
     styleElement.textContent = cssText;

@@ -1,6 +1,9 @@
 // Karma configuration
 // Generated on Mon Dec 12 2016 10:48:59 GMT+0200 (IST)
-var RewirePlugin = require("rewire-webpack");
+const _            = require('lodash');
+const RewirePlugin = require("rewire-webpack");
+let webpackConfig  = _.clone(require('./webpack.config.js'), true);
+webpackConfig.plugins.push(new RewirePlugin());
 
 module.exports = function (config) {
     config.set(
@@ -32,9 +35,9 @@ module.exports = function (config) {
             },
 
             webpack: {
-                plugins: [
-                    new RewirePlugin()
-                ]
+                plugins: webpackConfig.plugins,
+                module : webpackConfig.module,
+                resolve: webpackConfig.resolve
             },
 
 
