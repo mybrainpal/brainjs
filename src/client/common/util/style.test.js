@@ -7,7 +7,7 @@ const chai      = require('chai'),
       css       = require('./testdata/style.css'),
       scss      = require('./testdata/test.scss');
 
-describe.only('StyleUtil', function () {
+describe('StyleUtil', function () {
     let a1;
     before(() => {
         a1             = document.createElement('a');
@@ -16,15 +16,18 @@ describe.only('StyleUtil', function () {
         a1.setAttribute('id', 'a1');
         document.getElementsByTagName('body')[0].appendChild(a1);
     });
+    it('Input is verified', () => {
+        expect(() => {StyleUtil.load(1)}).to.throw(TypeError);
+    });
     it('Load css from import', () => {
         a1.setAttribute('class', css.locals.stark);
-        StyleUtil.load(css[0][1]);
+        StyleUtil.load(css);
         expect(window.getComputedStyle(a1).paddingLeft).to.equal('100px');
         expect(window.getComputedStyle(a1).paddingTop).to.equal('50px');
     });
     it('Load scss from import', () => {
         a1.setAttribute('class', scss.locals.test);
-        StyleUtil.load(scss[0][1]);
+        StyleUtil.load(scss);
         expect(window.getComputedStyle(a1).marginRight).to.equal('10px');
     });
     it('Load text', () => {
@@ -33,7 +36,7 @@ describe.only('StyleUtil', function () {
     });
     afterEach(() => {
         document.querySelectorAll('style[' + StyleUtil.identifyingAttribute + ']')
-                .forEach(function (styleElement) {
+                .forEach((styleElement) => {
                     styleElement.parentNode.removeChild(styleElement);
                 });
         a1.setAttribute('class', '');

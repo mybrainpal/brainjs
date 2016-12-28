@@ -8,7 +8,7 @@ module.exports = {
     },
     devtools: 'source-map',
     resolve : {
-        extensions: ['.js', '.jsx', '.css', '.scss', '']
+        extensions: ['.js', '.jsx', '.css', '.scss', '.jpg', '']
     },
     module  : {
         loaders: [
@@ -23,10 +23,14 @@ module.exports = {
             {
                 test   : /\.s?css/,
                 loaders: [
-                    'css?sourceMap&modules&importLoaders=1&localIdentName=[name]--[hash:base64:3]',
-                    'sass?sourceMap&localIdentName=[name]--[hash:base64:3]'
+                    'css?sourceMap&modules&importLoaders=1&localIdentName=[local]--[hash:base64:5]',
+                    'sass?sourceMap&localIdentName=[local]--[hash:base64:5]'
                 ],
                 exclude: /node_modules|lib/
+            },
+            {
+                test  : /\.(png|jpe?g|gif)$/,
+                loader: "file-loader?name=img/[name]--[hash:5].[ext]"
             }
         ]
     },

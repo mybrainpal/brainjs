@@ -20,7 +20,8 @@ module.exports = function (config) {
 
             // list of files / patterns to load in the browser
             files: [
-                '**/*.test.js'
+                {pattern: '**/*.test.js'},
+                {pattern: '**/testdata/*.jpg', watched: false, included: false, served: true},
             ],
 
 

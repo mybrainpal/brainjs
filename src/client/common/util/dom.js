@@ -6,7 +6,7 @@
  * @returns {string} returns the text contents of the specified element.
  */
 exports.text = function (elem) {
-    var res = '', i;
+    let res = '', i;
     if (typeof elem === 'string') {
         elem = document.querySelector(elem);
     }
