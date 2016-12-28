@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "./node_modules/.bin/karma start",
-    "start": "webpack --config webpack.config.jsx --progress --colors"
+    "start": "webpack --config webpack.config.js --progress --colors"
   },
   "repository": {
     "type": "git",
@@ -39,9 +39,10 @@
     "karma-webpack": "^1.8.0",
     "lodash": "^4.17.2",
     "mocha": "^3.2.0",
+    "node-sass": "^4.1.1",
     "rewire": "^2.5.2",
     "rewire-webpack": "^1.0.1",
-    "style-loader": "^0.13.1",
+    "sass-loader": "^4.1.1",
     "sweetalert2": "^6.2.4",
     "tinysort": "^2.3.6",
     "webpack": "^1.14.0",
