@@ -8,7 +8,7 @@ module.exports = {
     },
     devtools: 'source-map',
     resolve : {
-        extensions: ['.js', '.jsx', '.css', '.scss', '']
+        extensions: ['.js', '.jsx', '.css', '.scss', '.jpg', '']
     },
     module  : {
         loaders: [

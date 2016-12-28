@@ -8,7 +8,7 @@ const expect          = require('chai').expect,
 require("file-loader?name=img/[name].[ext]!./testdata/sad.jpg");
 require("file-loader?name=img/[name].[ext]!./testdata/diving.jpg");
 
-describe.only('GalleryExecutor', function () {
+describe('GalleryExecutor', function () {
     this.timeout(5000);
     let div            = document.createElement('div');
     let imgNarrow      = document.createElement('img');
@@ -32,6 +32,10 @@ describe.only('GalleryExecutor', function () {
         _.forEach(_.union(container.children, smallContainer.children), (elem) => {
             elem.parentNode.removeChild(elem);
         });
+        document.querySelectorAll('style[' + _.css.identifyingAttribute + ']')
+                .forEach(function (styleElement) {
+                    styleElement.parentNode.removeChild(styleElement);
+                });
     });
     after(() => {
         div.parentNode.removeChild(div);

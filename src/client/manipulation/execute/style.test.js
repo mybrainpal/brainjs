@@ -1,23 +1,25 @@
 /**
  * Proudly created by ohad on 19/12/2016.
  */
-var expect        = require('chai').expect,
-    StyleExecutor = require('./style'),
-    _             = require('./../../common/util/wrapper');
+const expect        = require('chai').expect,
+      StyleExecutor = require('./style'),
+      _             = require('./../../common/util/wrapper'),
+      styles        = require('./testdata/style.css').locals,
+      custom        = require('./testdata/custom.css').locals;
 
-describe('StyleExecutor', function () {
-    var ul, li1, li2, li3, li4;
+describe.only('StyleExecutor', function () {
+    let ul, li1, li2, li3, li4;
     before(function () {
         ul = document.createElement('ul');
         ul.setAttribute('id', 'lost');
         document.querySelector('body').appendChild(ul);
         li1             = document.createElement('li');
         li1.textContent = 'Jack';
-        li1.classList.add('survivor');
+        li1.classList.add(styles.survivor);
         ul.appendChild(li1);
         li2             = document.createElement('li');
         li2.textContent = 'Kate';
-        li2.classList.add('survivor');
+        li2.classList.add(styles.survivor);
         ul.appendChild(li2);
         li3             = document.createElement('li');
         li3.textContent = 'Sawyer';
@@ -29,7 +31,7 @@ describe('StyleExecutor', function () {
         ul.appendChild(li4);
     });
     beforeEach(function () {
-        _.css.load(require('css!./testdata/style.css')[0][1]);
+        _.css.load(require('./testdata/style.css'));
         document.querySelectorAll('li').forEach(function (li) {
             expect(window.getComputedStyle(li).padding).to.equal('10px');
         });
@@ -51,10 +53,11 @@ describe('StyleExecutor', function () {
         expect(StyleExecutor.preconditions([], {})).to.be.false;
     });
     it('Custom style', function () {
-        var style = require('css!./testdata/custom.css');
+        const cssText = require('./testdata/custom.css')[0][1];
         StyleExecutor.execute([], {
-            cssText : style[0][1],
-            selector: '.survivor'
+            cssText    : cssText,
+            selector   : styles.survivor,
+            customClass: custom['brainpal-custom']
         });
         document.querySelectorAll('li').forEach(function (li) {
             expect(window.getComputedStyle(li).paddingLeft).to.equal('20px');
@@ -64,10 +67,11 @@ describe('StyleExecutor', function () {
         });
     });
     it('Only affect provided elements', function () {
-        var style = require('css!./testdata/custom.css');
+        const cssText = require('./testdata/custom.css')[0][1];
         StyleExecutor.execute([li3], {
-            cssText : style[0][1],
-            selector: 'li'
+            cssText    : cssText,
+            selector   : 'li',
+            customClass: custom['brainpal-custom']
         });
         expect(window.getComputedStyle(li3).marginLeft).to.equal('50px');
         // li1 has .survivor class, and so should have margin-left: 10px.
