@@ -5,8 +5,6 @@ const expect          = require('chai').expect,
       _               = require('../../common/util/wrapper'),
       GalleryExecutor = require('./gallery'),
       styles          = require('./gallery.css').locals;
-require("file-loader?name=img/[name].[ext]?!./testdata/sad.jpg");
-require("file-loader?name=img/[name].[ext]?!./testdata/diving.jpg");
 
 describe('GalleryExecutor', function () {
     this.timeout(3000);
@@ -90,6 +88,8 @@ describe('GalleryExecutor', function () {
         expect(document.querySelectorAll(`.${styles.component}`)).to.have.length(2);
     });
     // it.only('narrow and wide', () => {
+    //     require("file-loader?name=img/[name].[ext]?!./testdata/sad.jpg");
+    //     require("file-loader?name=img/[name].[ext]?!./testdata/diving.jpg");
     //     GalleryExecutor.execute([smallContainer], spec);
     //     expect(smallContainer.querySelector('img[narrow]').clientWidth).to.equal(100);
     //     expect(smallContainer.querySelector('img[narrow]').clientHeight).to.be.above(100);
