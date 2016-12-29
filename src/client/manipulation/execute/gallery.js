@@ -22,6 +22,25 @@ const _currentAttribute        = 'data-brainpal-current';
  */
 const _animationCountAttribute = 'data-brainpal-animation-count';
 /**
+ * Available animation classes.
+ * @type Array<string>
+ * @private
+ */
+const _animationClasses =
+          ['fxSoftScale', 'fxPressAway', 'fxSideSwing', 'fxFortuneWheel', 'fxPushReveal',
+           'fxSnapIn',
+           'fxLetMeIn', 'fxStickIt', 'fxArchiveMe', 'fxSlideBehind', 'fxEarthquake',
+           'fxCliffDiving'];
+
+/**
+ * Describes where the gallery navigates to. next is right.
+ * @type {{NEXT: string, PREVIOUS: string}}
+ */
+const NavigationDirection = {
+    NEXT    : 'NEXT',
+    PREVIOUS: 'PREVIOUS'
+};
+/**
  * Creates a gallery and injects it into elements[0].
  * @param {Array.<Element>|NodeList} elements
  * @param {Object} specs
@@ -176,23 +195,3 @@ function _onAnimationEnd() {
         this.classList.add(styles.current);
     }
 }
-
-/**
- * Available animation classes.
- * @type Array<string>
- * @private
- */
-const _animationClasses =
-          ['fxSoftScale', 'fxPressAway', 'fxSideSwing', 'fxFortuneWheel', 'fxPushReveal',
-           'fxSnapIn',
-           'fxLetMeIn', 'fxStickIt', 'fxArchiveMe', 'fxSlideBehind', 'fxEarthquake',
-           'fxCliffDiving'];
-
-/**
- * Describes where the gallery navigates to. next is right.
- * @type {{NEXT: string, PREVIOUS: string}}
- */
-const NavigationDirection = {
-    NEXT    : 'NEXT',
-    PREVIOUS: 'PREVIOUS'
-};
