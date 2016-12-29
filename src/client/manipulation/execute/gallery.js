@@ -85,8 +85,9 @@ function _createGallery(specs) {
         let li = document.createElement('li');
         li.appendChild(elem);
         if (elem.nodeName.toLowerCase() === 'img') {
-            elem.classList.add(
-                elem.naturalHeight > elem.naturalWidth ? styles.narrow : styles.wide);
+            const componentRatio = component.clientWidth / component.clientHeight;
+            const imgRatio       = elem.clientWidth / elem.clientHeight;
+            elem.classList.add(componentRatio > imgRatio ? styles.narrow : styles.wide);
         }
         ul.appendChild(li);
     });
