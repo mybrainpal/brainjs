@@ -1,7 +1,7 @@
 /**
  * Proudly created by ohad on 04/12/2016.
  */
-var _               = require('./../../common/util/wrapper'),
+let _ = require('./../../common/util/wrapper'),
     Logger          = require('../../common/log/logger'),
     Level           = require('../../common/log/logger').Level,
     ExperimentGroup = require('./group');
@@ -46,16 +46,16 @@ Experiment.prototype.groups = [];
  *  @property
  */
 Experiment.prototype.options = function (options) {
-    var i;
-    if (_.has(options, 'id')) {
+    let i;
+    if (options.id) {
         this.id = options.id;
     } else {
         Logger.log(Level.WARNING, 'Experiment: missing id.');
     }
-    if (_.has(options, 'label')) {
+    if (options.label) {
         this.label = options.label;
     }
-    if (_.has(options, 'groups')) {
+    if (options.groups) {
         /**
          * All the groups in the experiment.
          * @type {Array.<ExperimentGroup>}

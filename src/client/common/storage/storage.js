@@ -32,7 +32,7 @@ exports.getDefault = function () {
  *                    If no type is given, returns whether all types in _storageByName are ready.
  */
 function isReady(storageName) {
-    var ready;
+    let ready;
     if (storageName) {
         if (!_storageByName.hasOwnProperty(storageName)) {
             return false;
@@ -57,9 +57,9 @@ exports.isReady = isReady;
 function create(storageName, options) {
     // The variables are defined here to avoid premature initialization of Logger.
     //noinspection LocalVariableNamingConventionJS
-    var Logger  = require('../log/logger'),
+    let Logger  = require('../log/logger'),
         Level   = require('../log/logger').Level;
-    var storage = (function () {
+    let storage = (function () {
         switch (storageName) {
             case 'local':
                 return require('./console-log');
@@ -94,4 +94,4 @@ exports.create = create;
  * @type {{string, Object}}
  * @private
  */
-var _storageByName = {};
+let _storageByName = {};

@@ -4,7 +4,7 @@
  * Describes a group of users that make or don't make love.
  * The whole purpose of a Demographics instance is to decide whether the client belongs to it.
  */
-var _      = require('./../../common/util/wrapper'),
+let _ = require('./../../common/util/wrapper'),
     Client = require('./../../common/client'),
     Logger = require('./../../common/log/logger'),
     Level  = require('./../../common/log/logger').Level;
@@ -15,9 +15,9 @@ var _      = require('./../../common/util/wrapper'),
  * @returns {boolean} Whether the client belongs to this demographics.
  */
 exports.included = function (options) {
-    var i;
-    if (_.has(options, 'properties')) {
-        for (i = 0; i < options.properties.length; i++) {
+    options = options || {};
+    if (options.properties) {
+        for (let i = 0; i < options.properties.length; i++) {
             if (!_satisfyProperty(options.properties[i])) {
                 return false;
             }
@@ -36,21 +36,21 @@ exports.included = function (options) {
  * @private
  */
 function _satisfyProperty(property) {
-    if (!_.has(property, 'name')) {
+    if (!property.name) {
         Logger.log(Level.WARNING, 'Demographics property is missing a name. ' +
                                   JSON.stringify(property));
         return false;
     }
     switch (property.name) {
         case 'modulo':
-            if (_.has(property, 'moduloIds') && _.has(property, 'moduloOf')) {
+            if (property.moduloIds && property.moduloOf) {
                 return _moduloInclude(property.moduloIds, property.moduloOf);
             }
             Logger.log(Level.WARNING, 'Demographics modulo property is missing required ' +
                                       'properties.');
             break;
         case 'os':
-            if (_.has(property, 'os')) {
+            if (property.os) {
                 return _osInclude(property.os);
             }
             Logger.log(Level.WARNING, 'Demographics os property is missing required ' +
@@ -70,7 +70,7 @@ function _satisfyProperty(property) {
  * @private
  */
 function _moduloInclude(moduloIds, moduloOf) {
-    if (_.has(Client, 'id') && _.isNumber(Client.id)) {
+    if (Client.id && _.isNumber(Client.id)) {
         return moduloIds.indexOf(Client.id % moduloOf) != -1;
     }
     return false;

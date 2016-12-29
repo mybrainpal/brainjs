@@ -1,12 +1,12 @@
 /**
  * Proudly created by ohad on 18/12/2016.
  */
-var expect = require('chai').expect;
-var text   = require('./dom').text;
+let expect = require('chai').expect;
+let text   = require('./dom').text;
 
 describe('DomUtils', function () {
     describe('text', function () {
-        var ul, li;
+        let ul, li;
         before(function () {
             ul = document.createElement('ul');
             ul.setAttribute('id', 'heirs');

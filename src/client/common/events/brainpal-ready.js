@@ -1,7 +1,7 @@
 /**
  * Proudly created by ohad on 07/12/2016.
  */
-var _singletonInstance,
+let _singletonInstance,
     Storage = require('../storage/storage');
 /**
  * A CustomEvent that fires when BrainPal is ready to play.
@@ -28,14 +28,14 @@ BPReadyEvent.prototype.eventName = 'brainpal-ready';
  * @type {number}
  * @private
  */
-var _checkFrequencyMs = 50;
+let _checkFrequencyMs = 50;
 
 /**
  * Indicates BrainPal ready event was already fired
  * @type {boolean}
  * @private
  */
-var _ready = false;
+let _ready = false;
 
 /**
  * @returns {boolean} value of _ready.
@@ -51,7 +51,7 @@ BPReadyEvent.prototype.options = function (options) {};
  * Initializes a CustomEvent
  */
 BPReadyEvent.prototype.init = function () {
-    var intervalHandler;
+    let intervalHandler;
     this.event      = new window.CustomEvent(
         BPReadyEvent.prototype.eventName,
         {

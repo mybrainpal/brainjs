@@ -1,7 +1,7 @@
 /**
  * Proudly created by ohad on 25/12/2016.
  */
-var _            = require('./../../common/util/wrapper'),
+let _ = require('./../../common/util/wrapper'),
     StubExecutor = require('./stub');
 /**
  * Removes elements from the DOM, so it becomes leaner than a supermodel.
@@ -23,7 +23,7 @@ exports.execute = function (elements, specs) {
  * @returns {boolean} whether the executor has a valid input.
  */
 exports.preconditions = function (elements, specs) {
-    var i;
+    let i;
     if (!StubExecutor.preconditions(elements, specs) || !elements.length) {
         return false;
     }

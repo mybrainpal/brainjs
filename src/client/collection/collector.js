@@ -3,7 +3,7 @@
  *
  * Collects data on events, use with curiosity!
  */
-var Client   = require('../common/client'),
+let Client   = require('../common/client'),
     Storage  = require('../common/storage/storage'),
     Logger   = require('../common/log/logger'),
     Level    = require('../common/log/logger').Level,
@@ -13,14 +13,14 @@ var Client   = require('../common/client'),
  * @type {Object}
  * @private
  */
-var _storage = Storage.getDefault();
+let _storage = Storage.getDefault();
 
 /**
  * @param {Object} options
  *  @property {string} storage
  */
 exports.options = function (options) {
-    if (_.has(options, 'storage')) {
+    if (options.storage) {
         _storage = Storage.get(options.storage);
     }
 };
@@ -46,17 +46,17 @@ exports.options = function (options) {
  *  @property {Node} [rootNode = document] - the node from which to execute all selectors.
  */
 exports.collect = function (options) {
-    var targets, subjectOptions, immediateEmit, iterRoots;
+    let targets, immediateEmit, iterRoots;
     if (_.isArray(options)) {
         _.forEach(options, function (item) {
             exports.collect(item);
         });
         return;
     }
-    if (!_.has(options, 'rootNode')) {
+    if (!options.rootNode) {
         options.rootNode = document;
     }
-    if (_.has(options, 'iterSelector')) {
+    if (options.iterSelector) {
         iterRoots = document.querySelectorAll(options.iterSelector);
         delete options.iterSelector;
         if (_.isEmpty(iterRoots)) {
@@ -69,8 +69,8 @@ exports.collect = function (options) {
         });
         return;
     }
-    if (_.has(options, 'anchor') && _.has(options.anchor, 'selector') &&
-        _.has(options.anchor, 'event')) {
+    if (options.anchor && options.anchor.selector &&
+        options.anchor.event) {
         targets = options.rootNode.querySelectorAll(options.anchor.selector);
         if (_.isEmpty(targets)) {
             Logger.log(Level.WARNING,
@@ -80,7 +80,7 @@ exports.collect = function (options) {
         _.forEach(targets, function (target) {
             if (target instanceof EventTarget) {
                 target.addEventListener(options.anchor.event, function () {
-                    var emitted;
+                    let emitted;
                     emitted = _createSubject(_.merge({anchor: {target: target}}, options));
                     if (!_.isEmpty(emitted)) {
                         _storage.save(emitted);
@@ -102,7 +102,7 @@ exports.collect = function (options) {
  * @private
  */
 function _createSubject(options) {
-    var emittedSubject = {}, i, j, target, props, val;
+    let emittedSubject = {}, i, target, val;
 
     if (_.isEmpty(options)) {
         Logger.log(Level.WARNING, 'Collector: created an empty subject.');
@@ -124,9 +124,9 @@ function _createSubject(options) {
             Logger.log(Level.WARNING, 'Collector: subject is empty.');
         }
     }
-    if (_.has(options, 'client')) {
+    if (options.client) {
         emittedSubject.client = {};
-        if (_.has(options.client, 'properties')) {
+        if (options.client.properties) {
             for (i = 0; i < options.client.properties.length; i++) {
                 val = _.get(Client, options.client.properties[i]);
                 if (val) {
@@ -139,12 +139,12 @@ function _createSubject(options) {
             delete emittedSubject.client;
         }
     }
-    if (_.has(options, 'experiment')) {
+    if (options.experiment) {
         emittedSubject.experiment = {};
-        if (_.has(options.experiment, 'id')) {
+        if (options.experiment.id) {
             emittedSubject.experiment.id = options.experiment.id;
         }
-        if (_.has(options.experiment, 'isClientIncluded')) {
+        if (options.experiment.isClientIncluded) {
             emittedSubject.experiment.isClientIncluded = options.experiment.isClientIncluded;
         }
         if (_.isEmpty(emittedSubject.experiment)) {
@@ -152,16 +152,16 @@ function _createSubject(options) {
             delete emittedSubject.client;
         }
     }
-    if (_.has(options, 'experimentGroup')) {
+    if (options.experimentGroup) {
         emittedSubject.experimentGroup = {};
-        if (_.has(options.experimentGroup, 'experimentId')) {
+        if (options.experimentGroup.experimentId) {
             emittedSubject.experimentGroup.experimentId = options.experimentGroup.experimentId;
         }
-        if (_.has(options.experimentGroup, 'isClientIncluded')) {
+        if (options.experimentGroup.isClientIncluded) {
             emittedSubject.experimentGroup.isClientIncluded =
                 options.experimentGroup.isClientIncluded;
         }
-        if (_.has(options.experimentGroup, 'label')) {
+        if (options.experimentGroup.label) {
             emittedSubject.experimentGroup.label = options.experimentGroup.label;
         }
         if (_.isEmpty(emittedSubject.experiment)) {
@@ -171,17 +171,17 @@ function _createSubject(options) {
     }
     if (!_.isEmpty(options.anchor)) {
         emittedSubject.anchor = {};
-        if (_.has(options.anchor, 'selector')) {
+        if (options.anchor.selector) {
             emittedSubject.anchor.selector = options.anchor.selector;
         } else {
             Logger.log(Level.WARNING, 'Collector: anchor is missing a selector.');
         }
-        if (_.has(options.anchor, 'event')) {
+        if (options.anchor.event) {
             emittedSubject.anchor.event = options.anchor.event;
         } else {
             Logger.log(Level.WARNING, 'Collector: anchor is missing a selector.');
         }
-        if (_.has(options.anchor, 'target')) {
+        if (options.anchor.target) {
             emittedSubject.anchor.targetText = _.text(options.anchor.target);
         }
         if (_.isEmpty(emittedSubject.anchor)) {

@@ -3,7 +3,7 @@
  *
  * Does nothing. Increases mind peace by 2.
  */
-var _ = require('./../../common/util/wrapper');
+let _ = require('./../../common/util/wrapper');
 /**
  * Executes big data security in real time, and you guessed it, on the cloud!
  * @param {Array.<Element>|NodeList} elements
@@ -21,7 +21,7 @@ exports.execute = function (elements, specs) {
  * @returns {boolean} whether the executor has a valid input.
  */
 exports.preconditions = function (elements, specs) {
-    var i;
+    let i;
     if (!Array.isArray(elements) && !(elements instanceof NodeList)) {
         return false;
     }

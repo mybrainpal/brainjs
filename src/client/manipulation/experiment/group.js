@@ -1,8 +1,7 @@
 /**
  * Proudly created by ohad on 05/12/2016.
  */
-var _            = require('./../../common/util/wrapper'),
-    Logger       = require('../../common/log/logger'),
+let Logger = require('../../common/log/logger'),
     Level        = require('../../common/log/logger').Level,
     Demographics = require('./demographics');
 /**
@@ -40,20 +39,20 @@ ExperimentGroup.prototype.isClientIncluded = true;
  *      @property {Object} specs - extra options, such as ascending or descending sort.
  */
 ExperimentGroup.prototype.options = function (options) {
-    if (_.has(options, 'experimentId')) {
+    if (options.experimentId) {
         this.experimentId = options.experimentId;
     } else {
         Logger.log(Level.INFO, 'ExperimentGroup: missing experimentId.');
     }
     this.label = '';
-    if (_.has(options, 'label')) {
+    if (options.label) {
         this.label = options.label;
     }
     this.isClientIncluded = true;
-    if (_.has(options, 'demographics')) {
+    if (options.demographics) {
         this.isClientIncluded = Demographics.included(options.demographics);
     }
-    if (_.has(options, 'executors')) {
+    if (options.executors) {
         this.executors = options.executors;
     }
 };

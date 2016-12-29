@@ -1,11 +1,11 @@
 /**
  * Proudly created by ohad on 25/12/2016.
  */
-var expect            = require('chai').expect,
+let expect            = require('chai').expect,
     DomRemoveExecutor = require('./dom-remove');
 
 describe('DomRemoveExecutor', function () {
-    var div, a;
+    let div, a;
     before(function () {
         div = document.createElement('div');
         div.setAttribute('id', 'div');

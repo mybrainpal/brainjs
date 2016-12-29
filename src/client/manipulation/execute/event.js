@@ -1,7 +1,7 @@
 /**
  * Proudly created by ohad on 23/12/2016.
  */
-var _            = require('./../../common/util/wrapper'),
+let _ = require('./../../common/util/wrapper'),
     EventFactory = require('./../../common/events/factory'),
     Logger       = require('../../common/log/logger'),
     Level        = require('../../common/log/logger').Level,
@@ -25,17 +25,17 @@ var _            = require('./../../common/util/wrapper'),
  *      @property {Object} [options] - for the event constructor.
  */
 exports.execute = function (elements, specs) {
-    var promises = [];
+    let promises = [];
     if (!exports.preconditions(elements, specs)) {
         throw new TypeError('EventExecutor: Invalid input.');
     }
-    if (_.has(specs, 'listen')) {
+    if (specs.listen) {
         if (!_.isArray(specs.listen)) {
             specs.listen = [specs.listen];
         }
         _.forEach(specs.listen, function (listener) {
-            var target = window;
-            if (_.has(listener, 'selector')) {
+            let target = window;
+            if (listener.selector) {
                 target = document.querySelector(listener.selector);
                 if (!_.isElement(target)) {
                     Logger.log(Level.ERROR,
@@ -44,13 +44,13 @@ exports.execute = function (elements, specs) {
                     return;
                 }
             }
-            promises.push(new Promise(function (resolve, reject) {
+            promises.push(new Promise(function (resolve) {
                 target.addEventListener(listener.event, function () {
                     resolve({event: listener.event, target: target});
                 });
             }));
         });
-        if (_.has(specs, 'waitForAll') && specs.waitForAll) {
+        if (specs.waitForAll && specs.waitForAll) {
             Promise.all(promises).then(function () {
                 _doFn(specs);
             });
@@ -69,25 +69,25 @@ exports.execute = function (elements, specs) {
  * @returns {boolean} whether the executor has a valid input.
  */
 exports.preconditions = function (elements, specs) {
-    var i, j, props = ['listen', 'create', 'trigger'];
+    let i, j, props = ['listen', 'create', 'trigger'];
     if (_.isEmpty(specs)) {
         return false;
     }
-    if (_.has(specs, 'waitForAll') && !_.isBoolean(specs.waitForAll)) {
+    if (specs.waitForAll && !_.isBoolean(specs.waitForAll)) {
         return false;
-    } else if (_.has(specs, 'waitForAll') && _.isEmpty(_.omit(_.clone(specs), 'waitForAll'))) {
+    } else if (specs.waitForAll && _.isEmpty(_.omit(_.clone(specs), 'waitForAll'))) {
         return false;
     }
     for (i = 0; i < props.length; i++) {
-        if (_.has(specs, props[i])) {
+        if (specs[props[i]]) {
             if (_.isArray(specs[props[i]])) {
                 for (j = 0; j < specs[props[i]].length; j++) {
-                    if (!_.has(specs[props[i]][j], 'event') ||
+                    if (!specs[props[i]][j].event ||
                         !_.isString(specs[props[i]][j].event)) {
                         return false;
                     }
                 }
-            } else if (!_.has(specs[props[i]], 'event') || !_.isString(specs[props[i]].event) ||
+            } else if (!specs[props[i]].event || !_.isString(specs[props[i]].event) ||
                        !specs[props[i]].event) {
                 return false;
             }
@@ -109,8 +109,8 @@ function _doFn(specs) {
         specs.trigger = [specs.trigger];
     }
     _.forEach(specs.trigger, function (trigger) {
-        var target = window;
-        if (_.has(trigger, 'selector')) {
+        let target = window;
+        if (trigger.selector) {
             target = document.querySelector(trigger.selector);
             if (!_.isElement(target)) {
                 Logger.log(Level.ERROR,

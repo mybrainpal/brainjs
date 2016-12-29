@@ -1,8 +1,7 @@
 /**
  * Proudly created by ohad on 19/12/2016.
  */
-var _            = require('./../../common/util/wrapper'),
-    StubExecutor = require('./stub');
+let StubExecutor = require('./stub');
 /**
  * Manipulates form elements, for the good of society.
  * @param {Array.<Element>|NodeList} elements
@@ -13,7 +12,7 @@ exports.execute = function (elements, specs) {
     if (!exports.preconditions(elements, specs)) {
         throw new TypeError('FormExecutor: Invalid input.');
     }
-    if (_.has(specs, 'focus')) {
+    if (specs.focus) {
         elements[0].focus();
     }
 };

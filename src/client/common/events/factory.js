@@ -3,8 +3,7 @@
  *
  * Factory for special events, we do double shifts here.
  */
-var _      = require('./../util/wrapper'),
-    Logger = require('../../common/log/logger'),
+let Logger = require('../../common/log/logger'),
     Level  = require('../../common/log/logger').Level;
 
 
@@ -13,7 +12,7 @@ var _      = require('./../util/wrapper'),
  * @type {{string: Object}}
  * @private
  */
-var _eventsByName = {};
+let _eventsByName = {};
 
 /**
  * @param {string} event
@@ -21,7 +20,7 @@ var _eventsByName = {};
  * @returns {CustomEvent}
  */
 exports.create = function (event, options) {
-    if (_.has(_eventsByName, event)) {
+    if (_eventsByName[event]) {
         return _eventsByName[event](options || {});
     }
     Logger.log(Level.ERROR, 'EventFactory: could not find event ' + event);

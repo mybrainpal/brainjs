@@ -4,7 +4,7 @@
  * Modifies the DOM, but in a good way.
  */
     // TODO(ohad): add `prepare` method that initiates external resource loading.
-var _              = require('./../../common/util/wrapper'),
+let _ = require('./../../common/util/wrapper'),
     Logger         = require('../../common/log/logger'),
     Level          = require('../../common/log/logger').Level,
     EventExecutor  = require('./event'),
@@ -21,7 +21,7 @@ var _              = require('./../../common/util/wrapper'),
  * @type {{string, Object}}
  * @private
  */
-var _executorByName = {
+let _executorByName = {
     'event' : EventExecutor,
     'form'  : FormExecutor,
     'inject': InjectExecutor,
@@ -43,8 +43,8 @@ var _executorByName = {
  * @returns {*} delegates returned value to the actual executor.
  */
 exports.execute = function (name, selectors, options) {
-    var elements;
-    if (!_.has(_executorByName, name)) {
+    let elements;
+    if (!_executorByName[name]) {
         Logger.log(Level.WARNING, 'Executor: executor ' + name + ' is nonexistent.');
         return;
     }

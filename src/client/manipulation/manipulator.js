@@ -3,9 +3,7 @@
  *
  * Manipulates the DOM to fill our customers pockets with 'em dollars.
  */
-var _         = require('./../common/util/wrapper'),
-    Logger    = require('./../common/log/logger'),
-    Level     = require('./../common/log/logger').Level,
+let _ = require('./../common/util/wrapper'),
     Collector = require('./../collection/collector'),
     Executor  = require('./execute/executor');
 
@@ -17,9 +15,9 @@ var _         = require('./../common/util/wrapper'),
  *  @property {Object|Object[]} [subjectOptions] - options for {@link Collector#collect}
  */
 exports.experiment = function (experiment, options) {
-    var subjectOptions;
+    let subjectOptions;
     options = options || {};
-    if (_.has(options, 'subjectOptions') && _.isArray(options.subjectOptions)) {
+    if (options.subjectOptions && _.isArray(options.subjectOptions)) {
         _.forEach(options.subjectOptions, function (item) {
             exports.experiment(experiment, {subjectOptions: item});
         });
@@ -27,13 +25,13 @@ exports.experiment = function (experiment, options) {
     }
     subjectOptions = options.subjectOptions || {};
     subjectOptions = _.merge({experiment: experiment}, subjectOptions);
-    if (_.has(subjectOptions, 'anchor')) {
+    if (subjectOptions.anchor) {
         Collector.collect(subjectOptions);
     }
     Collector.collect(_.omit(_.clone(subjectOptions), 'anchor'));
     _.forEach(experiment.clientGroups, function (group) {
-        var groupSubjectOptions = _.merge({experimentGroup: group}, subjectOptions);
-        if (_.has(groupSubjectOptions, 'anchor')) {
+        let groupSubjectOptions = _.merge({experimentGroup: group}, subjectOptions);
+        if (groupSubjectOptions.anchor) {
             Collector.collect(groupSubjectOptions);
         }
         Collector.collect(_.omit(_.clone(groupSubjectOptions), 'anchor'));

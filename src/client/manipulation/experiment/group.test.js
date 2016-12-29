@@ -1,12 +1,12 @@
 /**
  * Proudly created by ohad on 21/12/2016.
  */
-var expect          = require('chai').expect,
+let expect          = require('chai').expect,
     chai            = require('chai'),
     ExperimentGroup = require('./group');
 
 describe('ExperimentGroup', function () {
-    var clientGroup, nonClientGroup, group;
+    let group;
     before(function () {
         require('./../../common/client').id = 1; // So that demographics apply.
     });

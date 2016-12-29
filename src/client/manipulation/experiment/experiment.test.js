@@ -1,13 +1,13 @@
 /**
  * Proudly created by ohad on 21/12/2016.
  */
-var _          = require('./../../common/util/wrapper'),
+let _          = require('./../../common/util/wrapper'),
     expect     = require('chai').expect,
     chai       = require('chai'),
     Experiment = require('./experiment');
 
 describe('Experiment', function () {
-    var clientGroup, nonClientGroup, experiment;
+    let clientGroup, nonClientGroup, experiment;
     before(function () {
         require('./../../common/client').id = 1; // So that demographics apply.
         clientGroup                         =

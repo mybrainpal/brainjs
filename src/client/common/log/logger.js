@@ -1,20 +1,20 @@
 /**
  * Proudly created by ohad on 04/12/2016.
  */
-var _        = require('./../../common/util/wrapper'),
+let _        = require('./../../common/util/wrapper'),
     Storage  = require('../storage/storage');
 /**
  * Used to save logs.
  * @type {Object}
  * @private
  */
-var _storage = Storage.getDefault();
+let _storage = Storage.getDefault();
 /**
  * Prefixed to all logs
  * @type {Object}
  * @private
  */
-var _prefix  = '';
+let _prefix  = '';
 
 exports.Level = Object.freeze({
                                   FINE   : {value: 0, name: 'Fine'},
@@ -30,10 +30,10 @@ exports.Level = Object.freeze({
  *  @property {string} [prefix]
  */
 exports.options = function (options) {
-    if (_.has(options, 'storage')) {
+    if (options.storage) {
         _storage = Storage.get(options.storage);
     }
-    if (_.has(options, 'prefix')) {
+    if (options.prefix) {
         _prefix = options.prefix;
     }
 };
@@ -44,7 +44,7 @@ exports.options = function (options) {
  * @param {Object} message
  */
 exports.log = function (level, message) {
-    var subject = {
+    let subject = {
         level: level.name.toUpperCase(),
         type : 'log'
     };

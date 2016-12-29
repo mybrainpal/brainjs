@@ -1,7 +1,7 @@
 /**
  * Proudly created by ohad on 22/12/2016.
  */
-var _            = require('./../../common/util/wrapper'),
+let _ = require('./../../common/util/wrapper'),
     sweetAlert2  = require('sweetalert2'),
     StubExecutor = require('./stub');
 /**
@@ -27,9 +27,11 @@ exports.execute = function (elements, specs) {
  * @returns {boolean} whether the executor has a valid input.
  */
 exports.preconditions = function (elements, specs) {
-    return _.has(specs, 'modalFn') && _.isFunction(specs.modalFn) &&
-           (!_.has(specs, 'id') || _.isNumber(specs.id) || _.isString(specs.id)) &&
-           StubExecutor.preconditions(elements, specs) && !elements.length;
+    if (!StubExecutor.preconditions(elements, specs)) return false;
+    if (elements.length) return false;
+    if (!_.isFunction(specs.modalFn)) return false;
+    return !(specs.id && !_.isNumber(specs.id) && !_.isString(specs.id));
+
 };
 
 /**

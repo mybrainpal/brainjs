@@ -1,7 +1,7 @@
 /**
  * Proudly created by ohad on 02/12/2016.
  */
-var Client       = require('./common/client'),
+let Client = require('./common/client'),
     Logger       = require('./common/log/logger'),
     Level        = require('./common/log/logger').Level,
     Storage      = require('./common/storage/storage'),
@@ -12,8 +12,8 @@ var Client       = require('./common/client'),
 
 //noinspection JSUnusedLocalSymbols
 window.BrainPal = (function (window, undefined) {
-    var readyEvent, customerConfiguration, options;
-    var brainPal = window.BrainPal || {};
+    let readyEvent, customerConfiguration, options;
+    let brainPal = window.BrainPal || {};
     if (!Client.canRunBrainPal()) {
         Logger.log(Level.ERROR, 'Seems like this browser and BrainPal ain\'t gonna be friends :-(');
         return;
@@ -31,9 +31,8 @@ window.BrainPal = (function (window, undefined) {
      *  @property {string} storage
      */
     function play(customerConfiguration) {
-        var anchors;
-        var j;
-        var i;
+        let j;
+        let i;
         Logger.log(Level.INFO, 'BrainPal: game on!');
         Client.init();
         if (customerConfiguration.hasOwnProperty('collect')) {
