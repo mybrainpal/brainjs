@@ -10,10 +10,6 @@
  *     <li> OnLoad event for GA script.</li>
  * </ul>
  */
-var _      = require('./../common/util/wrapper'),
-    Logger = require('./../common/log/logger'),
-    Level  = require('./../common/log/logger').Level;
-
 /**
  * Initializes Google Analytics script.
  * @param options
@@ -35,13 +31,13 @@ exports.init = function (options) {
         firstScript.parentNode.insertBefore(gaScript, firstScript);
     })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
 
-    if (_.has(options, 'trackerName')) {
+    if (options.trackerName) {
         _updateTrackerName(options.trackerName);
     }
-    if (_.has(options, 'trackerId')) {
+    if (options.trackerId) {
         _updateTrackingId(options.trackerId);
     }
-    if (_.has(options, 'cookieDomain')) {
+    if (options.cookieDomain) {
         _updateCookieDomain(options.cookieDomain);
     }
 
@@ -60,7 +56,7 @@ exports.init = function (options) {
  * @type {string}
  * @private
  */
-var _trackerName    = 'BrainPal';
+let _trackerName    = 'BrainPal';
 exports.trackerName = _trackerName;
 
 /**
@@ -82,7 +78,7 @@ function _updateTrackerName(trackerName) {
  * @type {string}
  * @private
  */
-var _trackingId    = 'UA-88758826-1';
+let _trackingId    = 'UA-88758826-1';
 exports.trackingId = _trackingId;
 
 /**
@@ -102,7 +98,7 @@ function _updateTrackingId(trackingId) {
  * @type {string}
  * @private
  */
-var _cookieDomain    = 'auto';
+let _cookieDomain    = 'auto';
 exports.cookieDomain = _cookieDomain;
 /**
  * Updates internal and exported cookieDomain.
@@ -121,7 +117,7 @@ function _updateCookieDomain(cookieDomain) {
  * @type {string}
  * @private
  */
-var _loadEventName    = 'google-analytics-loaded';
+let _loadEventName    = 'google-analytics-loaded';
 exports.loadEventName = _loadEventName;
 
 /**
@@ -129,7 +125,7 @@ exports.loadEventName = _loadEventName;
  * @private
  */
 function _onload() {
-    var event = new window.CustomEvent(
+    let event = new window.CustomEvent(
         _loadEventName,
         {
             detail    : {

@@ -50,14 +50,21 @@ describe('StyleExecutor', function () {
         ul.parentNode.removeChild(ul);
     });
     it('Preconditions', function () {
+        expect(StyleExecutor.preconditions([], {cssText: 'a {}'})).to.be.true;
         expect(StyleExecutor.preconditions([], {})).to.be.false;
+        expect(StyleExecutor.preconditions([], {cssText: ''})).to.be.false;
+        expect(StyleExecutor.preconditions([], {cssText: 1})).to.be.false;
+        expect(StyleExecutor.preconditions([], {cssText: 'a {}', selector: ''})).to.be.false;
+        expect(StyleExecutor.preconditions([], {cssText: 'a {}', selector: '!!!'})).to.be.false;
+        expect(StyleExecutor.preconditions([], {cssText: 'a {}', customClass: ''})).to.be.false;
+        expect(StyleExecutor.preconditions([], {cssText: 'a {}', customClass: 1})).to.be.false;
     });
     it('Custom style', function () {
         const cssText = require('./testdata/custom.css')[0][1];
         StyleExecutor.execute([], {
             cssText    : cssText,
-            selector   : styles.survivor,
-            customClass: custom['brainpal-custom']
+            selector   : `.${styles.survivor}`,
+            customClass: custom[StyleExecutor.defaultCustomClass]
         });
         document.querySelectorAll('li').forEach(function (li) {
             expect(window.getComputedStyle(li).paddingLeft).to.equal('20px');
@@ -71,7 +78,7 @@ describe('StyleExecutor', function () {
         StyleExecutor.execute([li3], {
             cssText    : cssText,
             selector   : 'li',
-            customClass: custom['brainpal-custom']
+            customClass: custom[StyleExecutor.defaultCustomClass]
         });
         expect(window.getComputedStyle(li3).marginLeft).to.equal('50px');
         // li1 has .survivor class, and so should have margin-left: 10px.

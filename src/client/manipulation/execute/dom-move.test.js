@@ -1,12 +1,12 @@
 /**
  * Proudly created by ohad on 25/12/2016.
  */
-var _               = require('./../../common/util/wrapper'),
+let _               = require('./../../common/util/wrapper'),
     expect          = require('chai').expect,
     DomMoveExecutor = require('./dom-move');
 
 describe('DomMoveExecutor', function () {
-    var div, p1, p2, a, span;
+    let div, p1, p2, a, span;
     before(function () {
         div = document.createElement('div');
         div.setAttribute('id', 'div');

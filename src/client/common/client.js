@@ -3,6 +3,7 @@
  *
  * Properties of the lucky client running BrainPal.
  */
+//noinspection JSUnusedLocalSymbols
 /**
  * Initializes with the client properties.
  * @param {Object} [options]
@@ -29,16 +30,16 @@ exports.agent = _parseUserAgent();
  * @returns {boolean} whether the client and BrainPal can be friends (at least we tried!).
  */
 exports.canRunBrainPal = function () {
-    var i;
-    var agent                = _parseUserAgent();
-    var browserToMinVersions = {
+    let i;
+    let agent                = _parseUserAgent();
+    let browserToMinVersions = {
         'edge'   : 14,
         'chrome' : 53,
         'safari' : 10,
         'firefox': 50,
         'opera'  : 40
     };
-    var allowedOs            = ['windows', 'ios', 'android', 'mac'];
+    let allowedOs            = ['windows', 'ios', 'android', 'mac'];
     if (!browserToMinVersions.hasOwnProperty(agent.browser.toLowerCase())) {
         return false;
     }
@@ -58,7 +59,7 @@ exports.canRunBrainPal = function () {
  * @type {boolean}
  */
 exports.cookiesEnabled = (function () {
-    var cookieEnabled = navigator.cookieEnabled;
+    let cookieEnabled = navigator.cookieEnabled;
 
     if (typeof navigator.cookieEnabled == 'undefined' && !cookieEnabled) {
         document.cookie = 'testcookie';
@@ -80,19 +81,19 @@ exports.cookiesEnabled = (function () {
  * @private
  */
 function _parseUserAgent() {
-    var cs;
-    var id;
-    var osVersion;
-    var clientStrings;
-    var mobile;
-    var os;
-    var nameOffset, verOffset, ix;
-    var majorVersion;
-    var version;
-    var browser;
-    var nVer;
-    var nAgt;
-    var unknown = '';
+    let cs;
+    let id;
+    let osVersion;
+    let clientStrings;
+    let mobile;
+    let os;
+    let nameOffset, verOffset, ix;
+    let majorVersion;
+    let version;
+    let browser;
+    let nVer;
+    let nAgt;
+    let unknown = '';
 
     // browser
     nVer    = navigator.appVersion;

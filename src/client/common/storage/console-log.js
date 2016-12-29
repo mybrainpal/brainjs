@@ -2,7 +2,7 @@
  * Proudly created by ohad on 04/12/2016.
  * Console.log based storage (i.e. each message to printed in the console)
  */
-var Logger = require('../log/logger'),
+let Logger = require('../log/logger'),
     Level  = require('../log/logger').Level;
 /**
  * Logs an entry on subject.

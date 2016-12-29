@@ -1,7 +1,7 @@
 /**
  * Proudly created by ohad on 21/12/2016.
  */
-var expect       = require('chai').expect,
+let expect       = require('chai').expect,
     chai         = require('chai'),
     Demographics = require('./demographics');
 

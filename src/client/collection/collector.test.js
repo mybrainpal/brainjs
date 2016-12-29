@@ -1,7 +1,7 @@
 /**
  * Proudly created by ohad on 18/12/2016.
  */
-var chai      = require('chai'),
+let chai      = require('chai'),
     expect    = require('chai').expect,
     rewire    = require('rewire'),
     Collector = rewire('./collector'),
@@ -12,7 +12,7 @@ chai.use(require('chai-spies'));
 
 
 describe('Collector', function () {
-    var div, a1, a2, span1, span2, p, a3, span3,
+    let div, a1, a2, span1, span2, p, a3, span3,
         storageSpy,
         storageMock,
         loggerSpy,

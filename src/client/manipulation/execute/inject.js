@@ -1,7 +1,7 @@
 /**
  * Proudly created by ohad on 24/12/2016.
  */
-var _            = require('./../../common/util/wrapper'),
+let _ = require('./../../common/util/wrapper'),
     Logger       = require('../../common/log/logger'),
     Level        = require('../../common/log/logger').Level,
     StubExecutor = require('./stub');
@@ -13,11 +13,11 @@ var _            = require('./../../common/util/wrapper'),
  *  @property {string} [sourceSelector] - selector to source element, from which to copy html.
  */
 exports.execute = function (elements, specs) {
-    var innerHTML = '', src;
+    let innerHTML = '', src;
     if (!exports.preconditions(elements, specs)) {
         throw new TypeError('InjectExecutor: Invalid input.');
     }
-    if (_.has(specs, 'sourceSelector')) {
+    if (specs.sourceSelector) {
         src = document.querySelector(specs.sourceSelector);
         if (!_.isElement(src)) {
             Logger.log(Level.ERROR, 'InjectExecutor: could find source at ' + specs.sourceSelector);
@@ -38,17 +38,15 @@ exports.execute = function (elements, specs) {
  * @returns {boolean} whether the executor has a valid input.
  */
 exports.preconditions = function (elements, specs) {
-    if (!_.has(specs, 'html') && !_.has(specs, 'sourceSelector')) {
-        return false;
+    if (!StubExecutor.preconditions(elements, specs)) return false;
+    if (!elements.length) return false;
+    if (!_.has(specs, 'html') && !specs.sourceSelector) return false;
+    if (_.has(specs, 'html') && !_.isString(specs.html)) return false;
+    if (_.has(specs, 'sourceSelector')) {
+        if (!_.isString(specs.sourceSelector)) return false;
+        try {
+            if (!document.querySelector(specs.sourceSelector)) return false;
+        } catch (e) { return false; }
     }
-    if (_.has(specs, 'html') && _.has(specs, 'sourceSelector')) {
-        return false;
-    }
-    if (_.has(specs, 'html') && !_.isString(specs.html)) {
-        return false;
-    }
-    if (_.has(specs, 'sourceSelector') && !_.isString(specs.sourceSelector)) {
-        return false;
-    }
-    return StubExecutor.preconditions(elements, specs) && !!elements.length;
+    return true;
 };

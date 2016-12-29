@@ -1,7 +1,7 @@
 /**
  * Proudly created by ohad on 23/12/2016.
  */
-var _             = require('./../../common/util/wrapper'),
+let _             = require('./../../common/util/wrapper'),
     expect        = require('chai').expect,
     chai          = require('chai'),
     EventExecutor = require('./event');
@@ -27,11 +27,11 @@ describe('EventExecutor', function () {
         EventExecutor.execute([], {trigger: {event: 'triggered'}});
     });
     it('multiple triggers', function (done) {
-        Promise.all([new Promise(function (resolve, reject) {
+        Promise.all([new Promise(function (resolve) {
             window.addEventListener('triggered1', function () {
                 resolve();
             });
-        }), new Promise(function (resolve, reject) {
+        }), new Promise(function (resolve) {
             window.addEventListener('triggered2', function () {
                 resolve();
             });
@@ -57,7 +57,7 @@ describe('EventExecutor', function () {
         window.dispatchEvent(new CustomEvent('listen1'));
     });
     it('event triggered after all listeners fired', function (done) {
-        var triggered = false;
+        let triggered = false;
         window.addEventListener('triggered', function () {
             triggered = true;
         });

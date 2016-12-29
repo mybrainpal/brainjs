@@ -3,8 +3,7 @@
  *
  * Saves data as google analytics events by stringify json objects.
  */
-var _               = require('./../../common/util/wrapper'),
-    Logger          = require('./../log/logger'),
+let Logger = require('./../log/logger'),
     Level           = require('./../log/logger').Level,
     GoogleAnalytics = require('./../../integrations/google-analytics');
 /**
@@ -12,24 +11,24 @@ var _               = require('./../../common/util/wrapper'),
  * @param {Object} subject
  */
 exports.save = function save(subject) {
-    var category = 'BrainPal:';
-    var action   = JSON.stringify(subject);
-    var label    = '';
-    var value    = 0;
+    let category = 'BrainPal:';
+    let action   = JSON.stringify(subject);
+    let label    = '';
+    let value    = 0;
     try {
-        if (_.has(subject, 'experiment')) {
+        if (subject.experiment) {
             category += 'experiment:' + JSON.stringify(subject.experiment);
         }
-        if (_.has(subject, 'exerimentGroup')) {
+        if (subject.exerimentGroup) {
             category += 'experimentGroup:' + JSON.stringify(subject.group);
         }
-        if (_.has(subject, 'client')) {
+        if (subject.client) {
             category += 'client:' + JSON.stringify(subject.client);
         }
-        if (_.has(subject, 'anchor')) {
+        if (subject.anchor) {
             action = 'anchor:' + JSON.stringify(subject.anchor);
         }
-        if (_.has(subject, 'subject')) {
+        if (subject.subject) {
             label = JSON.stringify(subject.subject);
             value = subject.subject.price || subject.subject.count || value;
         }

@@ -1,11 +1,11 @@
 /**
  * Proudly created by ohad on 21/12/2016.
  */
-var expect   = require('chai').expect,
+let expect   = require('chai').expect,
     Executor = require('./executor');
 
 describe('Executor', function () {
-    var form, input;
+    let form, input;
     before(function () {
         form = document.createElement('form');
         form.setAttribute('id', 'form');

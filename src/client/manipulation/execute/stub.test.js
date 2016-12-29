@@ -1,7 +1,7 @@
 /**
  * Proudly created by ohad on 19/12/2016.
  */
-var expect       = require('chai').expect,
+let expect       = require('chai').expect,
     StubExecutor = require('./stub');
 
 describe('StubExecutor', function () {

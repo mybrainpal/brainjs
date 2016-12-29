@@ -8,25 +8,28 @@ const expect          = require('chai').expect,
 
 describe('GalleryExecutor', function () {
     this.timeout(3000);
-    let div             = document.createElement('div');
-    let imgNarrow       = document.createElement('img');
-    let imgWide         = document.createElement('img');
-    let container       = document.createElement('div');
-    let smallContainer  = document.createElement('div');
-    const spec          = {sourceSelectors: 'img'};
-    const animationSpec = _.merge({interval: 100, animationClass: 'fxSnapIn'}, spec);
-    document.querySelector('body').appendChild(div);
-    imgNarrow.src = 'img/sad.jpg';
-    imgNarrow.setAttribute('narrow', 'true');
-    imgWide.src = 'img/diving.jpg';
-    imgWide.setAttribute('wide', 'true');
-    container.setAttribute('id', 'container');
-    smallContainer.setAttribute('id', 'small');
-    smallContainer.style = 'width: 100px; height: 100px';
-    div.appendChild(smallContainer);
-    div.appendChild(container);
-    div.appendChild(imgNarrow);
-    div.appendChild(imgWide);
+    let div, imgNarrow, imgWide, container, smallContainer, spec, animationSpec;
+    before(() => {
+        div            = document.createElement('div');
+        imgNarrow      = document.createElement('img');
+        imgWide        = document.createElement('img');
+        container      = document.createElement('div');
+        smallContainer = document.createElement('div');
+        spec           = {sourceSelectors: 'img'};
+        animationSpec  = _.merge({interval: 100, animationClass: 'fxSnapIn'}, spec);
+        document.querySelector('body').appendChild(div);
+        imgNarrow.src = ''; //'img/sad.jpg';
+        imgNarrow.setAttribute('narrow', 'true');
+        imgWide.src = ''; //'img/diving.jpg';
+        imgWide.setAttribute('wide', 'true');
+        container.setAttribute('id', 'container');
+        smallContainer.setAttribute('id', 'small');
+        smallContainer.style = 'width: 100px; height: 100px';
+        div.appendChild(smallContainer);
+        div.appendChild(container);
+        div.appendChild(imgNarrow);
+        div.appendChild(imgWide);
+    });
     afterEach(() => {
         _.forEach(_.union(container.children, smallContainer.children), (elem) => {
             elem.parentNode.removeChild(elem);
@@ -45,8 +48,8 @@ describe('GalleryExecutor', function () {
                                              spec)).to.be.false;
         expect(GalleryExecutor.preconditions([container], {})).to.be.false;
         expect(GalleryExecutor.preconditions([container], {sourceSelectors: '#nada'})).to.be.false;
+        expect(GalleryExecutor.preconditions([container], {sourceSelectors: ''})).to.be.false;
         expect(GalleryExecutor.preconditions([container], {sourceSelectors: 1})).to.be.false;
-        expect(GalleryExecutor.preconditions([container], _.merge({id: 1}, spec))).to.be.false;
         expect(GalleryExecutor.preconditions([container],
                                              _.merge({animationClass: '1'}, spec))).to.be.false;
     });
@@ -87,7 +90,7 @@ describe('GalleryExecutor', function () {
         GalleryExecutor.execute([smallContainer], _.merge({id: '2'}, spec));
         expect(document.querySelectorAll(`.${styles.component}`)).to.have.length(2);
     });
-    // it.only('narrow and wide', () => {
+    // it('narrow and wide', () => {
     //     require("file-loader?name=img/[name].[ext]?!./testdata/sad.jpg");
     //     require("file-loader?name=img/[name].[ext]?!./testdata/diving.jpg");
     //     GalleryExecutor.execute([smallContainer], spec);

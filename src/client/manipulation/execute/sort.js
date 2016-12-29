@@ -1,7 +1,7 @@
 /**
  * Proudly created by ohad on 18/12/2016.
  */
-var tinysort     = require('tinysort'),
+let tinysort     = require('tinysort'),
     StubExecutor = require('./stub');
 
 /**

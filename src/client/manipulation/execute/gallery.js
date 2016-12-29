@@ -27,6 +27,7 @@ const _animationCountAttribute = 'data-brainpal-animation-count';
  * @param {Object} specs
  *  @property {string|Array.<string>} sourceSelectors - provided as css selectors
  *  @property {string} [animationClass = fxSoftScale]
+ *  @property {string|number} id
  */
 exports.execute = function (elements, specs) {
     if (!exports.preconditions(elements, specs)) {
@@ -43,14 +44,15 @@ exports.execute = function (elements, specs) {
 exports.preconditions = function (elements, specs) {
     if (!StubExecutor.preconditions(elements, specs)) return false;
     if (elements.length !== 1) return false;
-    if (!_.has(specs, 'sourceSelectors')) return false;
+    if (!specs.sourceSelectors) return false;
     if (!_.isArray(specs.sourceSelectors) && !_.isString(specs.sourceSelectors)) return false;
-    if (_.has(specs, 'animationClass') && !_.includes(_animationClasses, specs.animationClass)) {
+    if (specs.animationClass && !_.includes(_animationClasses, specs.animationClass)) {
         return false;
     }
-    if (_.has(specs, 'id') && !_.isString(specs.id)) return false;
+    if (specs.id && !_.isString(specs.id) && !_.isNumber(specs.id)) return false;
     if (_.isString(specs.sourceSelectors)) {
-        return !!document.querySelectorAll(specs.sourceSelectors).length;
+        try { return !!document.querySelectorAll(specs.sourceSelectors).length; }
+        catch (e) { return false; }
     }
     for (let i = 0; i < specs.sourceSelectors.length; i++) {
         if (document.querySelectorAll(specs.sourceSelectors[i]).length) return true;
@@ -77,7 +79,7 @@ function _createGallery(specs) {
     component = document.createElement('div');
     component.classList.add(styles.component, styles.fullwidth,
                             styles[specs.animationClass || 'fxSoftScale']);
-    component.setAttribute('id', _idPrefix + (specs.id ? `-${specs.id}` : ''));
+    component.setAttribute('id', _idPrefix + (specs.id ? `-${_.toString(specs.id)}` : ''));
     ul = document.createElement('ul');
     ul.classList.add(styles.itemwrap);
     _.forEach(sources, (elem) => {

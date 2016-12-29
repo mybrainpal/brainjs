@@ -1,7 +1,7 @@
 /**
  * Proudly created by ohad on 20/12/2016.
  */
-var _           = require('./../common/util/wrapper'),
+let _           = require('./../common/util/wrapper'),
     expect      = require('chai').expect,
     chai        = require('chai'),
     rewire      = require('rewire'),
@@ -12,7 +12,7 @@ var _           = require('./../common/util/wrapper'),
 chai.use(require('chai-spies'));
 
 describe('Manipulator', function () {
-    var experiment, clientGroup, nonClientGroup,
+    let experiment, clientGroup, nonClientGroup,
         anchor, dataProp,
         div, a, span,
         collectorSpy, collectorMock, executorSpy, executorMock;
@@ -104,14 +104,14 @@ describe('Manipulator', function () {
         expect(executorSpy).to.have.been.called(2 * clientGroup.executors.length);
     });
     it('experiment with zero groups', function () {
-        var noGroupsExperiment    = _.clone(experiment);
+        let noGroupsExperiment    = _.clone(experiment);
         noGroupsExperiment.groups = [];
         Manipulator.experiment(new Experiment(noGroupsExperiment));
         expect(collectorSpy).to.have.been.called.once;
         expect(executorSpy).to.not.have.been.called();
     });
     it('experiment without client groups', function () {
-        var noClientGroups    = _.clone(experiment);
+        let noClientGroups    = _.clone(experiment);
         noClientGroups.groups = [nonClientGroup];
         Manipulator.experiment(new Experiment(noClientGroups));
         expect(collectorSpy).to.have.been.called.once;

@@ -1,13 +1,13 @@
 /**
  * Proudly created by ohad on 18/12/2016.
  */
-var expect       = require('chai').expect,
+let expect       = require('chai').expect,
     rewire       = require('rewire'),
     SortExecutor = rewire('./sort'),
     tinysort     = require('tinysort');
 
 describe('SortExecutor', function () {
-    var ul, li1, li2, li3;
+    let ul, li1, li2, li3;
     beforeEach(function () {
         ul = document.createElement('ul');
         ul.setAttribute('id', 'ul');

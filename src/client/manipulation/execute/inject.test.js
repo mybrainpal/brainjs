@@ -1,11 +1,11 @@
 /**
  * Proudly created by ohad on 24/12/2016.
  */
-var expect         = require('chai').expect,
+let expect         = require('chai').expect,
     InjectExecutor = require('./inject');
 
 describe('InjectExecutor', function () {
-    var div, src, target;
+    let div, src, target;
     before(function () {
         div = document.createElement('div');
         div.setAttribute('id', 'westworld');
@@ -47,9 +47,11 @@ describe('InjectExecutor', function () {
                                             {sourceSelector: 1})).to.be.false;
         expect(InjectExecutor.preconditions(document.querySelectorAll('body'),
                                             {html: '', sourceSelector: ''})).to.be.false;
+        expect(InjectExecutor.preconditions(document.querySelectorAll('body'),
+                                            {sourceSelector: ''})).to.be.false;
+        expect(InjectExecutor.preconditions(document.querySelectorAll('body'),
+                                            {sourceSelector: 'body'})).to.be.true;
         expect(
             InjectExecutor.preconditions(document.querySelectorAll('body'), {html: ''})).to.be.true;
-        expect(InjectExecutor.preconditions(document.querySelectorAll('body'),
-                                            {sourceSelector: ''})).to.be.true;
     })
 });
