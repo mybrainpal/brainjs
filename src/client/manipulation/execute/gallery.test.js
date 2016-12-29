@@ -5,10 +5,10 @@ const expect          = require('chai').expect,
       _               = require('../../common/util/wrapper'),
       GalleryExecutor = require('./gallery'),
       styles          = require('./gallery.css').locals;
-require("file-loader?name=img/[name].[ext]!./testdata/sad.jpg");
-require("file-loader?name=img/[name].[ext]!./testdata/diving.jpg");
+require("file-loader?name=img/[name].[ext]?!./testdata/sad.jpg");
+require("file-loader?name=img/[name].[ext]?!./testdata/diving.jpg");
 
-describe.only('GalleryExecutor', function () {
+describe('GalleryExecutor', function () {
     this.timeout(3000);
     let div             = document.createElement('div');
     let imgNarrow       = document.createElement('img');
@@ -89,11 +89,11 @@ describe.only('GalleryExecutor', function () {
         GalleryExecutor.execute([smallContainer], _.merge({id: '2'}, spec));
         expect(document.querySelectorAll(`.${styles.component}`)).to.have.length(2);
     });
-    it('narrow and wide', () => {
-        GalleryExecutor.execute([smallContainer], spec);
-        expect(smallContainer.querySelector('img[narrow]').clientWidth).to.equal(100);
-        expect(smallContainer.querySelector('img[narrow]').clientHeight).to.be.above(100);
-        expect(smallContainer.querySelector('img[wide]').clientWidth).to.above(100);
-        expect(smallContainer.querySelector('img[wide]').clientHeight).to.be.equal(100);
-    });
+    // it.only('narrow and wide', () => {
+    //     GalleryExecutor.execute([smallContainer], spec);
+    //     expect(smallContainer.querySelector('img[narrow]').clientWidth).to.equal(100);
+    //     expect(smallContainer.querySelector('img[narrow]').clientHeight).to.be.above(100);
+    //     expect(smallContainer.querySelector('img[wide]').clientWidth).to.above(100);
+    //     expect(smallContainer.querySelector('img[wide]').clientHeight).to.be.equal(100);
+    // });
 });
