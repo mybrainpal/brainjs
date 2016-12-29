@@ -8,14 +8,15 @@ const expect          = require('chai').expect,
 require("file-loader?name=img/[name].[ext]!./testdata/sad.jpg");
 require("file-loader?name=img/[name].[ext]!./testdata/diving.jpg");
 
-describe('GalleryExecutor', function () {
-    this.timeout(5000);
-    let div            = document.createElement('div');
-    let imgNarrow      = document.createElement('img');
-    let imgWide        = document.createElement('img');
-    let container      = document.createElement('div');
-    let smallContainer = document.createElement('div');
-    const spec         = {sourceSelectors: 'img'};
+describe.only('GalleryExecutor', function () {
+    this.timeout(3000);
+    let div             = document.createElement('div');
+    let imgNarrow       = document.createElement('img');
+    let imgWide         = document.createElement('img');
+    let container       = document.createElement('div');
+    let smallContainer  = document.createElement('div');
+    const spec          = {sourceSelectors: 'img'};
+    const animationSpec = _.merge({interval: 100, animationClass: 'fxSnapIn'}, spec);
     document.querySelector('body').appendChild(div);
     imgNarrow.src = 'img/sad.jpg';
     imgNarrow.setAttribute('narrow', 'true');
@@ -60,28 +61,28 @@ describe('GalleryExecutor', function () {
         expect(container.querySelector(`.${styles.fxSnapIn}`)).to.be.ok;
     });
     it('animation', (done) => {
-        GalleryExecutor.execute([container],
-                                _.merge({interval: 600, animationClass: 'fxSnapIn'}, spec));
-        _.forEach(container.querySelectorAll('li'),
-                  (li) => {li.addEventListener('animationend', () => {done()})});
+        GalleryExecutor.execute([container], animationSpec);
+        expect(container.querySelector(`li.${styles.current}`).classList
+                        .contains(styles.navOutNext)).to.be.false;
+        _.delay(() => {
+            expect(container.querySelector(`li.${styles.current}`).classList
+                            .contains(styles.navOutNext)).to.be.true;
+            done()
+        }, 200);
     });
     it('animation responds to mouse', (done) => {
-        GalleryExecutor.execute([container],
-                                _.merge({interval: 600, animationClass: 'fxSnapIn'}, spec));
-        const errorFn = function () {
-            done('animation started too early');
-        };
-        _.forEach(container.querySelectorAll('li'),
-                  (li) => {li.addEventListener('animationend', errorFn)});
-        container.querySelector(`.${styles.component}`).dispatchEvent(new Event('onmouseover'));
-        setTimeout(() => {
-            container.querySelector(`.${styles.component}`).dispatchEvent(new Event('onmouseout'));
-            _.forEach(container.querySelectorAll('li'),
-                      (li) => {
-                          li.removeEventListener('animationend', errorFn);
-                          li.addEventListener('animationend', () => {done()})
-                      });
-        }, 1000);
+        GalleryExecutor.execute([container], animationSpec);
+        container.querySelector(`.${styles.component}`).dispatchEvent(new Event('mouseover'));
+        _.delay(() => {
+            expect(container.querySelector(`li.${styles.current}`).classList
+                            .contains(styles.navOutNext)).to.be.false;
+            container.querySelector(`.${styles.component}`).dispatchEvent(new Event('mouseout'));
+        }, 200);
+        _.delay(() => {
+            expect(container.querySelector(`li.${styles.current}`).classList
+                            .contains(styles.navOutNext)).to.be.true;
+            done();
+        }, 400);
     });
     it('multiple galleries', () => {
         GalleryExecutor.execute([container], _.merge({id: '1'}, spec));

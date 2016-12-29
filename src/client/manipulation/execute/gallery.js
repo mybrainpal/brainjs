@@ -5,22 +5,22 @@ const _            = require('../../common/util/wrapper'),
       StubExecutor = require('./stub'),
       css          = require('./gallery.css');
 _.css.load(css);
-const styles                = css.locals;
+const styles                   = css.locals;
 /**
  * A prefix to all galleries.
  * @type {string}
  */
-const _idPrefix             = 'brainpal-gallery-component';
+const _idPrefix                = 'brainpal-gallery-component';
 /**
  * Maintains the current item displayed in the gallery.
  * @type {string}
  */
-const _currentAttribute     = 'data-brainpal-current';
+const _currentAttribute        = 'data-brainpal-current';
 /**
  * Whether the gallery is animating.
  * @type {string}
  */
-const _isAnimatingAttribute = 'data-brainpal-is-animating';
+const _animationCountAttribute = 'data-brainpal-animation-count';
 /**
  * Creates a gallery and injects it into elements[0].
  * @param {Array.<Element>|NodeList} elements
@@ -104,7 +104,7 @@ function _createGallery(specs) {
 function _play(component, specs) {
     const intervalMs = specs.interval || 6000;
     let intervalId   = setInterval(function () {
-        _navigate(NavigationDirection.PREVIOUS, component);
+        _navigate(NavigationDirection.NEXT, component);
     }, intervalMs);
     component.addEventListener('mouseover', function () {
         clearInterval(intervalId);
@@ -116,6 +116,7 @@ function _play(component, specs) {
     });
     component.querySelector(`ul.${styles.itemwrap}`).children[0].classList.add(styles.current);
     component.setAttribute(_currentAttribute, _.toString(0));
+    component.setAttribute(_animationCountAttribute, _.toString(0));
 }
 
 /**
@@ -124,14 +125,12 @@ function _play(component, specs) {
  * @private
  */
 function _navigate(direction, component) {
-    if (component.getAttribute(_isAnimatingAttribute) === 'true') return;
+    if (_.parseInt(component.getAttribute(_animationCountAttribute)) > 0) return;
     let items = component.querySelector(`ul.${styles.itemwrap}`).children;
-    component.setAttribute(_isAnimatingAttribute, 'true');
-    let current         = _.parseInt(component.getAttribute(_currentAttribute));
-    let animationsCount = 0;
-
-
+    component.setAttribute(_animationCountAttribute, _.toString(2));
+    let current = _.parseInt(component.getAttribute(_currentAttribute));
     let currentItem = items[current];
+
 
     if (direction === NavigationDirection.NEXT) {
         current = current < items.length - 1 ? current + 1 : 0;
@@ -143,34 +142,36 @@ function _navigate(direction, component) {
 
     let nextItem = items[current];
 
-    const onEndAnimationCurrentItem = function () {
-        this.removeEventListener('animationend', onEndAnimationCurrentItem);
-        this.classList.remove(styles.current,
-                              direction === NavigationDirection.NEXT ? styles.navOutNext :
-                              styles.navOutPrev);
-        ++animationsCount;
-        if (animationsCount === 2) {
-            component.setAttribute(_isAnimatingAttribute, 'false');
-        }
-    };
-
-    const onEndAnimationNextItem = function () {
-        this.removeEventListener('animationend', onEndAnimationNextItem);
-        this.classList.remove(
-            direction === NavigationDirection.NEXT ? styles.navInNext : styles.navInPrev);
-        this.classList.add(styles.current);
-        ++animationsCount;
-        if (animationsCount === 2) {
-            component.setAttribute(_isAnimatingAttribute, 'false');
-        }
-    };
-
-    currentItem.addEventListener('animationend', onEndAnimationCurrentItem);
-    nextItem.addEventListener('animationend', onEndAnimationNextItem);
+    currentItem.addEventListener('animationend', _onAnimationEnd);
+    nextItem.addEventListener('animationend', _onAnimationEnd);
     currentItem.classList.add(
         direction === NavigationDirection.NEXT ? styles.navOutNext : styles.navOutPrev);
     nextItem.classList.add(direction === NavigationDirection.NEXT ? styles.navInNext :
                            styles.navInPrev);
+}
+
+/**
+ * Handler for gallery items animation end.
+ * @private
+ */
+function _onAnimationEnd() {
+    let animationCount = _.parseInt(
+        this.parentNode.parentNode.getAttribute(_animationCountAttribute));
+    // The first animation is over
+    this.parentNode.parentNode.setAttribute(_animationCountAttribute,
+                                            _.toString(animationCount - 1));
+    if (animationCount < 0) {
+        throw new Error('GalleryExecutor: animationCount mustn\'t be negative.');
+    }
+    this.removeEventListener('animationend', _onAnimationEnd);
+    if (this.classList.contains(styles.current)) {
+        this.classList.remove(styles.current,
+                              styles.navOutNext,
+                              styles.navOutPrev);
+    } else {
+        this.classList.remove(styles.navInNext, styles.navInPrev);
+        this.classList.add(styles.current);
+    }
 }
 
 /**

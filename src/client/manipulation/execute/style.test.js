@@ -7,7 +7,7 @@ const expect        = require('chai').expect,
       styles        = require('./testdata/style.css').locals,
       custom        = require('./testdata/custom.css').locals;
 
-describe.only('StyleExecutor', function () {
+describe('StyleExecutor', function () {
     let ul, li1, li2, li3, li4;
     before(function () {
         ul = document.createElement('ul');
