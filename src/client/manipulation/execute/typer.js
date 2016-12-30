@@ -13,7 +13,7 @@ let _            = require('./../../common/util/wrapper'),
  */
 exports.execute = function (elements, specs) {
     if (!exports.preconditions(elements, specs)) {
-        throw new TypeError('TypingExecutor: Invalid input.');
+        throw new TypeError('TyperExecutor: Invalid input.');
     }
     specs.typerFn(typer);
 };

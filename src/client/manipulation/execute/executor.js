@@ -10,11 +10,12 @@ let _ = require('./../../common/util/wrapper'),
     EventExecutor  = require('./event'),
     FormExecutor   = require('./form'),
     InjectExecutor = require('./inject'),
-    ModalExecutor  = require('./modal'),
+    ModalExecutor = require('./sweetalert'),
     MoveExecutor   = require('./dom-move'),
     RemoveExecutor = require('./dom-remove'),
     SortExecutor   = require('./sort'),
-    StubExecutor   = require('./stub');
+    StubExecutor  = require('./stub'),
+    TyperExecutor = require('./typer');
 
 /**
  * All existing executors keyed by their names.
@@ -29,7 +30,8 @@ let _executorByName = {
     'move'  : MoveExecutor,
     'remove': RemoveExecutor,
     'sort'  : SortExecutor,
-    'stub'  : StubExecutor
+    'stub'  : StubExecutor,
+    'typer' : TyperExecutor
 };
 
 /**

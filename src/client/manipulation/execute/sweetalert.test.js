@@ -4,7 +4,7 @@
 let _             = require('./../../common/util/wrapper'),
     expect        = require('chai').expect,
     chai          = require('chai'),
-    ModalExecutor = require('./modal');
+    ModalExecutor = require('./sweetalert');
 
 chai.use(require('chai-spies'));
 
