@@ -51,4 +51,3 @@ function _eventName(id) {
     }
     return exports.eventNamePrefix;
 }
-
