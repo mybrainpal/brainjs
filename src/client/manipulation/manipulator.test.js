@@ -40,7 +40,7 @@ describe('Manipulator', function () {
                 {
                     name    : 'style',
                     selector: '#manipulator>span',
-                    options : {specs: {style: 'span {margin-top: 10px}'}}
+                    options : {options: {style: 'span {margin-top: 10px}'}}
                 }
             ],
             demographics: {properties: [{name: 'modulo', moduloIds: [0], moduloOf: 1}]}
@@ -51,7 +51,7 @@ describe('Manipulator', function () {
                 {
                     name    : 'style',
                     selector: '#manipulator>span',
-                    options : {specs: {style: 'span {margin-bottom: 10px}'}}
+                    options : {options: {style: 'span {margin-bottom: 10px}'}}
                 }
             ],
             demographics: {properties: [{name: 'modulo', moduloIds: [], moduloOf: 1}]}

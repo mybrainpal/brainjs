@@ -3,9 +3,9 @@
  */
 const expect        = require('chai').expect,
       StyleExecutor = require('./style'),
-      _             = require('./../../common/util/wrapper'),
-      styles        = require('./testdata/style.css').locals,
-      custom        = require('./testdata/custom.css').locals;
+      _             = require('./../../../common/util/wrapper'),
+      styles        = require('./../testdata/style.css').locals,
+      custom        = require('./../testdata/custom.css').locals;
 
 describe('StyleExecutor', function () {
     let ul, li1, li2, li3, li4;
@@ -31,7 +31,7 @@ describe('StyleExecutor', function () {
         ul.appendChild(li4);
     });
     beforeEach(function () {
-        _.css.load(require('./testdata/style.css'));
+        _.css.load(require('./../testdata/style.css'));
         document.querySelectorAll('li').forEach(function (li) {
             expect(window.getComputedStyle(li).padding).to.equal('10px');
         });
@@ -60,7 +60,7 @@ describe('StyleExecutor', function () {
         expect(StyleExecutor.preconditions([], {cssText: 'a {}', customClass: 1})).to.be.false;
     });
     it('Custom style', function () {
-        const cssText = require('./testdata/custom.css')[0][1];
+        const cssText = require('./../testdata/custom.css')[0][1];
         StyleExecutor.execute([], {
             cssText    : cssText,
             selector   : `.${styles.survivor}`,
@@ -74,7 +74,7 @@ describe('StyleExecutor', function () {
         });
     });
     it('Only affect provided elements', function () {
-        const cssText = require('./testdata/custom.css')[0][1];
+        const cssText = require('./../testdata/custom.css')[0][1];
         StyleExecutor.execute([li3], {
             cssText    : cssText,
             selector   : 'li',

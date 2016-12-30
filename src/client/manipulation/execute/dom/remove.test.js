@@ -2,7 +2,7 @@
  * Proudly created by ohad on 25/12/2016.
  */
 let expect            = require('chai').expect,
-    DomRemoveExecutor = require('./dom-remove');
+    DomRemoveExecutor = require('./remove');
 
 describe('DomRemoveExecutor', function () {
     let div, a;

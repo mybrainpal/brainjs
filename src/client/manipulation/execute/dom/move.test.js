@@ -1,9 +1,9 @@
 /**
  * Proudly created by ohad on 25/12/2016.
  */
-let _               = require('./../../common/util/wrapper'),
+let _               = require('./../../../common/util/wrapper'),
     expect          = require('chai').expect,
-    DomMoveExecutor = require('./dom-move');
+    DomMoveExecutor = require('./move');
 
 describe('DomMoveExecutor', function () {
     let div, p1, p2, a, span;

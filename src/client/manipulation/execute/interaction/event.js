@@ -1,15 +1,15 @@
 /**
  * Proudly created by ohad on 23/12/2016.
  */
-let _ = require('./../../common/util/wrapper'),
-    EventFactory = require('./../../common/events/factory'),
-    Logger       = require('../../common/log/logger'),
-    Level        = require('../../common/log/logger').Level,
-    StubExecutor = require('./stub');
+let _            = require('./../../../common/util/wrapper'),
+    EventFactory = require('./../../../common/events/factory'),
+    Logger       = require('../../../common/log/logger'),
+    Level        = require('../../../common/log/logger').Level,
+    StubExecutor = require('./../stub');
 /**
  * Creates and triggers events and custom events.
  * @param {Array.<Element>|NodeList} elements
- * @param {Object} specs
+ * @param {Object} options
  *  @property {Object|Array.<Object>} [listen] - listens to a certain event in order to trigger
  *   another one.
  *      @property {string} event
@@ -24,16 +24,16 @@ let _ = require('./../../common/util/wrapper'),
  *      @property {string} event
  *      @property {Object} [options] - for the event constructor.
  */
-exports.execute = function (elements, specs) {
+exports.execute = function (elements, options) {
     let promises = [];
-    if (!exports.preconditions(elements, specs)) {
+    if (!exports.preconditions(elements, options)) {
         throw new TypeError('EventExecutor: Invalid input.');
     }
-    if (specs.listen) {
-        if (!_.isArray(specs.listen)) {
-            specs.listen = [specs.listen];
+    if (options.listen) {
+        if (!_.isArray(options.listen)) {
+            options.listen = [options.listen];
         }
-        _.forEach(specs.listen, function (listener) {
+        _.forEach(options.listen, function (listener) {
             let target = window;
             if (listener.selector) {
                 target = document.querySelector(listener.selector);
@@ -50,65 +50,64 @@ exports.execute = function (elements, specs) {
                 });
             }));
         });
-        if (specs.waitForAll && specs.waitForAll) {
+        if (options.waitForAll && options.waitForAll) {
             Promise.all(promises).then(function () {
-                _doFn(specs);
+                _doFn(options);
             });
         } else {
             Promise.race(promises).then(function () {
-                _doFn(specs);
+                _doFn(options);
             });
         }
     } else {
-        _doFn(specs);
+        _doFn(options);
     }
 };
 /**
  * @param {Array.<Element>|NodeList} elements - must be empty
- * @param {Object} specs
+ * @param {Object} options
  * @returns {boolean} whether the executor has a valid input.
  */
-exports.preconditions = function (elements, specs) {
+exports.preconditions = function (elements, options) {
     let i, j, props = ['listen', 'create', 'trigger'];
-    if (_.isEmpty(specs)) {
+    if (_.isEmpty(options)) {
         return false;
     }
-    if (specs.waitForAll && !_.isBoolean(specs.waitForAll)) {
+    if (options.waitForAll && !_.isBoolean(options.waitForAll)) {
         return false;
-    } else if (specs.waitForAll && _.isEmpty(_.omit(_.clone(specs), 'waitForAll'))) {
+    } else if (options.waitForAll && _.isEmpty(_.omit(_.clone(options), 'waitForAll'))) {
         return false;
     }
     for (i = 0; i < props.length; i++) {
-        if (specs[props[i]]) {
-            if (_.isArray(specs[props[i]])) {
-                for (j = 0; j < specs[props[i]].length; j++) {
-                    if (!specs[props[i]][j].event ||
-                        !_.isString(specs[props[i]][j].event)) {
+        if (options[props[i]]) {
+            if (_.isArray(options[props[i]])) {
+                for (j = 0; j < options[props[i]].length; j++) {
+                    if (!options[props[i]][j].event || !_.isString(options[props[i]][j].event)) {
                         return false;
                     }
                 }
-            } else if (!specs[props[i]].event || !_.isString(specs[props[i]].event) ||
-                       !specs[props[i]].event) {
+            } else if (!options[props[i]].event || !_.isString(options[props[i]].event) ||
+                       !options[props[i]].event) {
                 return false;
             }
         }
     }
-    if (_.isEmpty(specs.create) && _.isEmpty(specs.trigger)) {
+    if (_.isEmpty(options.create) && _.isEmpty(options.trigger)) {
         return false;
     }
-    return StubExecutor.preconditions(elements, specs) && _.isEmpty(elements);
+    return StubExecutor.preconditions(elements, options) && _.isEmpty(elements);
 };
 
 /**
- * @property {Object} specs - see {@link #execute}
+ * @property {Object} options - see {@link #execute}
  * @private
  */
-function _doFn(specs) {
-    specs.trigger = specs.trigger || [];
-    if (!_.isArray(specs.trigger)) {
-        specs.trigger = [specs.trigger];
+function _doFn(options) {
+    options.trigger = options.trigger || [];
+    if (!_.isArray(options.trigger)) {
+        options.trigger = [options.trigger];
     }
-    _.forEach(specs.trigger, function (trigger) {
+    _.forEach(options.trigger, function (trigger) {
         let target = window;
         if (trigger.selector) {
             target = document.querySelector(trigger.selector);
@@ -120,11 +119,11 @@ function _doFn(specs) {
         }
         target.dispatchEvent(new CustomEvent(trigger.event, {detail: trigger.detail || {}}));
     });
-    specs.create = specs.create || [];
-    if (!_.isArray(specs.create)) {
-        specs.create = [specs.create];
+    options.create = options.create || [];
+    if (!_.isArray(options.create)) {
+        options.create = [options.create];
     }
-    _.forEach(specs.create, function (creation) {
+    _.forEach(options.create, function (creation) {
         EventFactory.create(creation.event, creation.options || {});
     });
 }

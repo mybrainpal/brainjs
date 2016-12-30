@@ -1,8 +1,8 @@
 /**
  * Proudly created by ohad on 25/12/2016.
  */
-const _            = require('../../common/util/wrapper'),
-      StubExecutor = require('./stub'),
+const _            = require('../../../common/util/wrapper'),
+      StubExecutor = require('../stub'),
       css          = require('./gallery.css');
 _.css.load(css);
 const styles                   = css.locals;
@@ -43,53 +43,53 @@ const NavigationDirection = {
 /**
  * Creates a gallery and injects it into elements[0].
  * @param {Array.<Element>|NodeList} elements
- * @param {Object} specs
+ * @param {Object} options
  *  @property {string|Array.<string>} sourceSelectors - provided as css selectors
  *  @property {string} [animationClass = fxSoftScale]
  *  @property {string|number} id
  */
-exports.execute = function (elements, specs) {
-    if (!exports.preconditions(elements, specs)) {
+exports.execute = function (elements, options) {
+    if (!exports.preconditions(elements, options)) {
         throw new TypeError('GalleryExecutor: Invalid input.');
     }
-    elements[0].appendChild(_createGallery(specs));
+    elements[0].appendChild(_createGallery(options));
 };
 
 /**
  * @param {Array.<Element>|NodeList} elements
- * @param {Object} specs
+ * @param {Object} options
  * @returns {boolean} whether the executor has a valid input.
  */
-exports.preconditions = function (elements, specs) {
-    if (!StubExecutor.preconditions(elements, specs)) return false;
+exports.preconditions = function (elements, options) {
+    if (!StubExecutor.preconditions(elements, options)) return false;
     if (elements.length !== 1) return false;
-    if (!specs.sourceSelectors) return false;
-    if (!_.isArray(specs.sourceSelectors) && !_.isString(specs.sourceSelectors)) return false;
-    if (specs.animationClass && !_.includes(_animationClasses, specs.animationClass)) {
+    if (!options.sourceSelectors) return false;
+    if (!_.isArray(options.sourceSelectors) && !_.isString(options.sourceSelectors)) return false;
+    if (options.animationClass && !_.includes(_animationClasses, options.animationClass)) {
         return false;
     }
-    if (specs.id && !_.isString(specs.id) && !_.isNumber(specs.id)) return false;
-    if (_.isString(specs.sourceSelectors)) {
-        try { return !!document.querySelectorAll(specs.sourceSelectors).length; }
+    if (options.id && !_.isString(options.id) && !_.isNumber(options.id)) return false;
+    if (_.isString(options.sourceSelectors)) {
+        try { return !!document.querySelectorAll(options.sourceSelectors).length; }
         catch (e) { return false; }
     }
-    for (let i = 0; i < specs.sourceSelectors.length; i++) {
-        if (document.querySelectorAll(specs.sourceSelectors[i]).length) return true;
+    for (let i = 0; i < options.sourceSelectors.length; i++) {
+        if (document.querySelectorAll(options.sourceSelectors[i]).length) return true;
     }
 
     return false;
 };
 
 /**
- * @param {Object} specs
+ * @param {Object} options
  * @returns {Element}
  * @private
  */
-function _createGallery(specs) {
+function _createGallery(options) {
     let sources           = [], component, ul;
-    specs.sourceSelectors =
-        _.isArray(specs.sourceSelectors) ? specs.sourceSelectors : [specs.sourceSelectors];
-    _.forEach(specs.sourceSelectors, (sel) => {
+    options.sourceSelectors =
+        _.isArray(options.sourceSelectors) ? options.sourceSelectors : [options.sourceSelectors];
+    _.forEach(options.sourceSelectors, (sel) => {
         let newSrcs = document.querySelectorAll(sel);
         _.forEach(newSrcs, (elem) => {
             sources.push(elem.cloneNode(true));
@@ -97,8 +97,8 @@ function _createGallery(specs) {
     });
     component = document.createElement('div');
     component.classList.add(styles.component, styles.fullwidth,
-                            styles[specs.animationClass || 'fxSoftScale']);
-    component.setAttribute('id', _idPrefix + (specs.id ? `-${_.toString(specs.id)}` : ''));
+                            styles[options.animationClass || 'fxSoftScale']);
+    component.setAttribute('id', _idPrefix + (options.id ? `-${_.toString(options.id)}` : ''));
     ul = document.createElement('ul');
     ul.classList.add(styles.itemwrap);
     _.forEach(sources, (elem) => {
@@ -113,18 +113,18 @@ function _createGallery(specs) {
         ul.appendChild(li);
     });
     component.appendChild(ul);
-    _play(component, specs);
+    _play(component, options);
     return component;
 }
 
 /**
  * Start auto navigation in the gallery.
  * @param {Element} component
- * @param {Object} specs
+ * @param {Object} options
  * @private
  */
-function _play(component, specs) {
-    const intervalMs = specs.interval || 6000;
+function _play(component, options) {
+    const intervalMs = options.interval || 6000;
     let intervalId   = setInterval(function () {
         _navigate(NavigationDirection.NEXT, component);
     }, intervalMs);

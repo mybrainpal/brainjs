@@ -2,7 +2,7 @@
  * Proudly created by ohad on 25/12/2016.
  */
 const expect          = require('chai').expect,
-      _               = require('../../common/util/wrapper'),
+      _               = require('../../../common/util/wrapper'),
       GalleryExecutor = require('./gallery'),
       styles          = require('./gallery.css').locals;
 

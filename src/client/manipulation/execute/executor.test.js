@@ -18,7 +18,7 @@ describe('Executor', function () {
         form.parentNode.removeChild(form);
     });
     it('Focus element', function () {
-        Executor.execute('form', '#input', {specs: {focus: true}});
+        Executor.execute('form', '#input', {options: {focus: true}});
         expect(document.activeElement).to.be.equal(input);
     });
 });

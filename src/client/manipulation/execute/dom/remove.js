@@ -1,15 +1,15 @@
 /**
  * Proudly created by ohad on 25/12/2016.
  */
-let _ = require('./../../common/util/wrapper'),
-    StubExecutor = require('./stub');
+let _            = require('./../../../common/util/wrapper'),
+    StubExecutor = require('./../stub');
 /**
  * Removes elements from the DOM, so it becomes leaner than a supermodel.
  * @param {Array.<Element>|NodeList} elements
- * @param {Object} specs
+ * @param {Object} options
  */
-exports.execute = function (elements, specs) {
-    if (!exports.preconditions(elements, specs)) {
+exports.execute = function (elements, options) {
+    if (!exports.preconditions(elements, options)) {
         throw new TypeError('DomRemoveExecutor: Invalid input.');
     }
     _.forEach(elements, function (elem) {
@@ -19,12 +19,12 @@ exports.execute = function (elements, specs) {
 
 /**
  * @param {Array.<Element>|NodeList} elements
- * @param {Object} specs
+ * @param {Object} options
  * @returns {boolean} whether the executor has a valid input.
  */
-exports.preconditions = function (elements, specs) {
+exports.preconditions = function (elements, options) {
     let i;
-    if (!StubExecutor.preconditions(elements, specs) || !elements.length) {
+    if (!StubExecutor.preconditions(elements, options) || !elements.length) {
         return false;
     }
     for (i = 0; i < elements.length; i++) {
@@ -35,5 +35,5 @@ exports.preconditions = function (elements, specs) {
             return false;
         }
     }
-    return _.isEmpty(specs);
+    return _.isEmpty(options);
 };

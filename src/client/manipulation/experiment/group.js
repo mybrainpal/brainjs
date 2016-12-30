@@ -36,7 +36,7 @@ ExperimentGroup.prototype.isClientIncluded = true;
  *      @property {string} name - of executor, such as 'style'.
  *      @property {string|Array.<string>} selectors - of the elements that should be manipulated by
  *     the executor.
- *      @property {Object} specs - extra options, such as ascending or descending sort.
+ *      @property {Object} options - extra options, such as ascending or descending sort.
  */
 ExperimentGroup.prototype.options = function (options) {
     if (options.experimentId) {

@@ -4,18 +4,19 @@
  * Modifies the DOM, but in a good way.
  */
     // TODO(ohad): add `prepare` method that initiates external resource loading.
-let _ = require('./../../common/util/wrapper'),
-    Logger         = require('../../common/log/logger'),
-    Level          = require('../../common/log/logger').Level,
-    EventExecutor  = require('./event'),
-    FormExecutor   = require('./form'),
-    InjectExecutor = require('./inject'),
-    ModalExecutor = require('./sweetalert'),
-    MoveExecutor   = require('./dom-move'),
-    RemoveExecutor = require('./dom-remove'),
-    SortExecutor   = require('./sort'),
-    StubExecutor  = require('./stub'),
-    TyperExecutor = require('./typer');
+let _               = require('./../../common/util/wrapper'),
+    Logger          = require('../../common/log/logger'),
+    Level           = require('../../common/log/logger').Level,
+    EventExecutor   = require('./interaction/event'),
+    FormExecutor    = require('./dom/form'),
+    GalleryExecutor = require('./media/gallery'),
+    InjectExecutor  = require('./dom/inject'),
+    SwalExecutor    = require('./interface/sweetalert'),
+    MoveExecutor    = require('./dom/move'),
+    RemoveExecutor  = require('./dom/remove'),
+    SortExecutor    = require('./dom/sort'),
+    StubExecutor    = require('./stub'),
+    TyperExecutor   = require('./interface/typer');
 
 /**
  * All existing executors keyed by their names.
@@ -23,15 +24,16 @@ let _ = require('./../../common/util/wrapper'),
  * @private
  */
 let _executorByName = {
-    'event' : EventExecutor,
-    'form'  : FormExecutor,
-    'inject': InjectExecutor,
-    'modal' : ModalExecutor,
-    'move'  : MoveExecutor,
-    'remove': RemoveExecutor,
-    'sort'  : SortExecutor,
-    'stub'  : StubExecutor,
-    'typer' : TyperExecutor
+    'event'  : EventExecutor,
+    'form'   : FormExecutor,
+    'gallery': GalleryExecutor,
+    'inject' : InjectExecutor,
+    'move'   : MoveExecutor,
+    'remove' : RemoveExecutor,
+    'sort'   : SortExecutor,
+    'stub'   : StubExecutor,
+    'swal'   : SwalExecutor,
+    'typer'  : TyperExecutor
 };
 
 /**
@@ -39,7 +41,7 @@ let _executorByName = {
  * @param {string} name - of the desired executor.
  * @param {Array.<string>|string} [selectors] - of the target elements.
  * @param {Object} [options]
- *  @property {Object} [specs] - for the actual executor.
+ *  @property {Object} [options] - for the actual executor.
  *  @property {Function} [callback] - to execute once the executor is complete.
  *  @property {Function} [failureCallback] - to execute had the executor failed.
  * @returns {*} delegates returned value to the actual executor.
@@ -50,7 +52,7 @@ exports.execute = function (name, selectors, options) {
         Logger.log(Level.WARNING, 'Executor: executor ' + name + ' is nonexistent.');
         return;
     }
-    options.specs = options.specs || {};
+    options.options = options.options || {};
     elements      = [];
     selectors     = _.isString(selectors) ? [selectors] : selectors;
     _.forEach(selectors, function (selector) {
@@ -59,5 +61,5 @@ exports.execute = function (name, selectors, options) {
         });
     });
     // TODO(ohad): propagate callback and failureCallback.
-    return _executorByName[name].execute(elements, options.specs);
+    return _executorByName[name].execute(elements, options.options);
 };

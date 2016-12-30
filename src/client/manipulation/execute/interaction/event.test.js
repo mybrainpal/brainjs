@@ -1,7 +1,7 @@
 /**
  * Proudly created by ohad on 23/12/2016.
  */
-let _             = require('./../../common/util/wrapper'),
+let _             = require('./../../../common/util/wrapper'),
     expect        = require('chai').expect,
     chai          = require('chai'),
     EventExecutor = require('./event');
