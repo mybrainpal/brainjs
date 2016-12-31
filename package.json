@@ -23,9 +23,8 @@
   "homepage": "https://github.com/mybrainpal/brainjs#readme",
   "devDependencies": {
     "alertifyjs": "^1.8.0",
-    "babel-core": "^6.18.2",
-    "babel-loader": "^6.2.8",
-    "babel-preset-es2015": "^6.18.0",
+    "babel-core": "^6.21.0",
+    "babel-loader": "^6.2.10",
     "chai": "^3.5.0",
     "chai-spies": "^0.7.1",
     "css-loader": "^0.26.1",
@@ -33,18 +32,16 @@
     "karma-chrome-launcher": "^2.0.0",
     "karma-mocha": "^1.3.0",
     "karma-mocha-reporter": "^2.2.1",
-    "karma-webpack": "^1.8.0",
-    "lodash": "^4.17.2",
+    "karma-webpack": "^1.8.1",
+    "lodash": "^4.17.3",
     "mocha": "^3.2.0",
     "node-sass": "^4.1.1",
     "rewire": "^2.5.2",
     "rewire-webpack": "^1.0.1",
     "sass-loader": "^4.1.1",
-    "sweetalert2": "^6.2.4",
+    "sweetalert2": "^6.2.9",
     "tinysort": "^2.3.6",
     "typer-js": "^2.2.2",
-    "webpack": "^1.14.0",
-    "webpack-dev-middleware": "^1.8.4",
-    "webpack-sources": "^0.1.3"
+    "webpack": "^1.14.0"
   }
 }
