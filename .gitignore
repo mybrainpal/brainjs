@@ -41,3 +41,6 @@ brainjs.iml
 dist/
 node_modules/
 experimental/
+tests_output/
+tests/
+deps/
