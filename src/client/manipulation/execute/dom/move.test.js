@@ -6,21 +6,30 @@ let _               = require('./../../../common/util/wrapper'),
     DomMoveExecutor = require('./move');
 
 describe('DomMoveExecutor', function () {
-    let div, p1, p2, a, span;
+    let div, p1, p2, a, span, ul, li;
     before(function () {
         div = document.createElement('div');
         div.setAttribute('id', 'div');
         document.querySelector('body').appendChild(div);
         p1 = document.createElement('p');
+        p1.textContent   = 'p1';
         p1.classList.add('first');
         span = document.createElement('span');
+        span.textContent = 'span';
         p1.appendChild(span);
         div.appendChild(p1);
         p2 = document.createElement('p');
+        p2.textContent   = 'p2';
         div.appendChild(p2);
+        ul = document.createElement('ul');
+        li = document.createElement('li');
+        ul.appendChild(li);
+        li.textContent = 'li';
+        div.appendChild(ul);
     });
     beforeEach(function () {
         a = document.createElement('a');
+        a.textContent = 'a';
         p2.appendChild(a);
     });
     afterEach(function () {
@@ -35,6 +44,11 @@ describe('DomMoveExecutor', function () {
         DomMoveExecutor.execute([a], {parentSelector: '#div>.first'});
         expect(a.parentNode).to.be.equal(p1);
         expect(a.previousSibling).to.be.equal(span);
+    });
+    it('move to a ul parent', function () {
+        DomMoveExecutor.execute([a], {parentSelector: '#div>ul'});
+        expect(a.parentNode.nodeName.toLowerCase()).to.be.equal('li');
+        expect(a.parentNode.parentNode).to.be.equal(ul);
     });
     it('move based on sibling', function () {
         DomMoveExecutor.execute([a], {nextSiblingSelector: '#div span'});

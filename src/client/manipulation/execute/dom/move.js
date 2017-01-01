@@ -14,7 +14,7 @@ let _            = require('./../../../common/util/wrapper'),
  *  provided or if failed to select, the element will be appended.
  */
 exports.execute = function (elements, options) {
-    let nextSibling, parent;
+    let nextSibling, parent, toInsert;
     if (!exports.preconditions(elements, options)) {
         throw new TypeError('DomMoveExecutor: Invalid input.');
     }
@@ -23,14 +23,17 @@ exports.execute = function (elements, options) {
         if (!_.isElement(nextSibling)) {
             Logger.log(Level.ERROR, 'DomMoveExecutor: count not find next sibling at ' +
                                     options.nextSiblingSelector);
-        } else {
-            nextSibling.parentNode.insertBefore(elements[0], nextSibling);
-            return;
         }
     }
-    // If code arrives here parent must exist.
-    parent = document.querySelector(options.parentSelector);
-    parent.appendChild(elements[0]);
+    if (options.parentSelector) {
+        parent = document.querySelector(options.parentSelector);
+        if (!_.isElement(parent)) {
+            Logger.log(Level.ERROR, 'DomMoveExecutor: count not find parent at ' +
+                                    options.parentSelector);
+        }
+    }
+    toInsert = _prepare(elements[0], parent);
+    _insert(toInsert, parent, nextSibling);
 };
 
 /**
@@ -76,3 +79,36 @@ exports.preconditions = function (elements, options) {
     return !(_.isElement(parent) && _.isElement(nextSibling) && nextSibling.parentNode !== parent);
 
 };
+
+/**
+ * Prepares elem to be inserted to DOM.
+ * @param {Element} elem
+ * @param {Element} parent
+ * @returns {Element} an element to insert to the DOM.
+ * @private
+ */
+function _prepare(elem, parent) {
+    let prepared;
+    if (parent && parent.nodeName.toLowerCase() === 'ul' && elem.nodeName.toLowerCase() !== 'li') {
+        prepared = document.createElement('li');
+        prepared.appendChild(elem);
+    } else {
+        prepared = elem;
+    }
+    return prepared;
+}
+
+/**
+ * Inserts elem to the DOM.
+ * @param {Element} elem
+ * @param {Element} parent
+ * @param {Element} nextSibling
+ * @private
+ */
+function _insert(elem, parent, nextSibling) {
+    if (nextSibling) {
+        nextSibling.parentNode.insertBefore(elem, nextSibling);
+        return;
+    }
+    parent.appendChild(elem);
+}

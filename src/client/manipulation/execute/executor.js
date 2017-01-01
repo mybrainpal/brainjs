@@ -16,6 +16,7 @@ let _               = require('./../../common/util/wrapper'),
     RemoveExecutor  = require('./dom/remove'),
     SortExecutor    = require('./dom/sort'),
     StubExecutor    = require('./stub'),
+    StyleExecutor = require('./dom/style'),
     TyperExecutor   = require('./interface/typer');
 
 /**
@@ -32,6 +33,7 @@ let _executorByName = {
     'remove' : RemoveExecutor,
     'sort'   : SortExecutor,
     'stub'   : StubExecutor,
+    'style'  : StyleExecutor,
     'swal'   : SwalExecutor,
     'typer'  : TyperExecutor
 };
@@ -53,8 +55,8 @@ exports.execute = function (name, selectors, options) {
         return;
     }
     options.options = options.options || {};
-    elements      = [];
-    selectors     = _.isString(selectors) ? [selectors] : selectors;
+    elements  = [];
+    selectors = _.isString(selectors) ? [selectors] : selectors;
     _.forEach(selectors, function (selector) {
         _.forEach(document.querySelectorAll(selector), function (elem) {
             elements.push(elem);
