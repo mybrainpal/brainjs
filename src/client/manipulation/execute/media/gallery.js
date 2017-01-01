@@ -10,15 +10,17 @@ const styles                   = css.locals;
  * A prefix to all galleries.
  * @type {string}
  */
-const _idPrefix                = 'brainpal-gallery-component';
+exports.idPrefix = 'brainpal-gallery-component';
 /**
  * Maintains the current item displayed in the gallery.
  * @type {string}
+ * @private
  */
 const _currentAttribute        = 'data-brainpal-current';
 /**
  * Whether the gallery is animating.
  * @type {string}
+ * @private
  */
 const _animationCountAttribute = 'data-brainpal-animation-count';
 /**
@@ -28,7 +30,7 @@ const _animationCountAttribute = 'data-brainpal-animation-count';
  */
 const _animationClasses =
           ['fxSoftScale', 'fxPressAway', 'fxSideSwing', 'fxFortuneWheel', 'fxPushReveal',
-           'fxSnapIn',
+           'fxSnapIn', 'fxSoftPulse',
            'fxLetMeIn', 'fxStickIt', 'fxArchiveMe', 'fxSlideBehind', 'fxEarthquake',
            'fxCliffDiving'];
 
@@ -47,12 +49,13 @@ const NavigationDirection = {
  *  @property {string|Array.<string>} sourceSelectors - provided as css selectors
  *  @property {string} [animationClass = fxSoftScale]
  *  @property {string|number} id
+ *  @property {number} interval - time in ms to change items.
  */
 exports.execute = function (elements, options) {
     if (!exports.preconditions(elements, options)) {
         throw new TypeError('GalleryExecutor: Invalid input.');
     }
-    elements[0].appendChild(_createGallery(options));
+    elements[0].appendChild(_createGallery(elements[0], options));
 };
 
 /**
@@ -81,11 +84,12 @@ exports.preconditions = function (elements, options) {
 };
 
 /**
+ * @param {Element} container
  * @param {Object} options
  * @returns {Element}
  * @private
  */
-function _createGallery(options) {
+function _createGallery(container, options) {
     let sources           = [], component, ul;
     options.sourceSelectors =
         _.isArray(options.sourceSelectors) ? options.sourceSelectors : [options.sourceSelectors];
@@ -98,7 +102,8 @@ function _createGallery(options) {
     component = document.createElement('div');
     component.classList.add(styles.component, styles.fullwidth,
                             styles[options.animationClass || 'fxSoftScale']);
-    component.setAttribute('id', _idPrefix + (options.id ? `-${_.toString(options.id)}` : ''));
+    component.setAttribute('id',
+                           exports.idPrefix + (options.id ? `-${_.toString(options.id)}` : ''));
     ul = document.createElement('ul');
     ul.classList.add(styles.itemwrap);
     _.forEach(sources, (elem) => {
@@ -106,9 +111,12 @@ function _createGallery(options) {
         let li = document.createElement('li');
         li.appendChild(elem);
         if (elem.nodeName.toLowerCase() === 'img') {
-            const componentRatio = component.clientWidth / component.clientHeight;
-            const imgRatio       = elem.clientWidth / elem.clientHeight;
-            elem.classList.add(componentRatio > imgRatio ? styles.narrow : styles.wide);
+            const containerRatio = container.clientWidth / container.clientHeight;
+            const imgRatio       = elem.naturalWidth / elem.naturalHeight;
+            elem.classList.add(containerRatio > imgRatio ? styles.narrow : styles.wide);
+            elem.removeAttribute('width');
+            elem.removeAttribute('height');
+            elem.removeAttribute('border');
         }
         ul.appendChild(li);
     });
