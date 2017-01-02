@@ -3,7 +3,8 @@
  */
 let _            = require('../../../common/util/wrapper'),
     typer        = require('./typer-js'),
-    StubExecutor = require('../stub');
+    StubExecutor = require('../stub'),
+    css          = require('typer-js/typer.css');
 /**
  * Creates a typing effect using the magical typer-js library.
  * https://github.com/qodesmith/typer
@@ -14,6 +15,10 @@ let _            = require('../../../common/util/wrapper'),
 exports.execute = function (elements, options) {
     if (!exports.preconditions(elements, options)) {
         throw new TypeError('TyperExecutor: Invalid input.');
+    }
+    if (!_styleLoaded) {
+        _.css.load(css);
+        _styleLoaded = true;
     }
     options.typerFn(typer);
 };
@@ -29,3 +34,10 @@ exports.preconditions = function (elements, options) {
     return _.isFunction(options.typerFn);
 
 };
+
+/**
+ * Indicates whether the style was loaded to the DOM.
+ * @type {boolean}
+ * @private
+ */
+let _styleLoaded = false;

@@ -1,13 +1,5 @@
-'use strict';
-
-let _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ?
-              function (obj) { return typeof obj; } : function (obj) {
-        return obj && typeof Symbol === "function" && obj.constructor === Symbol &&
-               obj !== Symbol.prototype ? "symbol" : typeof obj;
-    };
-
 /**
- * Proudly created by ohad on 01/01/2017.
+ * Proudly created by ohad on 02/01/2017.
  */
 /* The MIT License (MIT)
 
@@ -30,12 +22,8 @@ let _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE. */
-const _   = require('../../../common/util/wrapper'),
-      css = require('./typer.scss');
-_.css.load(css);
-let styles = css.locals;
 
-module.exports = function (el, speed) {
+function typer(el, speed) {
     let q = []; // The main array to contain all the methods called on typer.
 
     // List of HTML void elements (http://goo.gl/SWmyS5),
@@ -55,7 +43,7 @@ module.exports = function (el, speed) {
 
     // Public methods.
     let typerObj = {
-        cursor  : function cursor(cursorObj) {
+        cursor  : function (cursorObj) {
             // Prevent cursor from being run multiple times.
             if (q.cursorRan) {
                 console.log('You can only call ".cursor" once.');
@@ -69,31 +57,30 @@ module.exports = function (el, speed) {
 
             // No cursor.
             if (cursorObj === false) {
-                q.cursor = styles['no-cursor']; // Used as a class.
+                q.cursor = 'no-cursor'; // Used as a class.
                 return this;
             }
 
-            let classes = [];
-            let data    = '[data-typer="' + q.dataNum + '"]';
+            let cursor = [];
+            let data   = `[data-typer="${q.dataNum}"]`;
 
             // Optional cursor color - https://goo.gl/b4Ckz9
             if (cursorObj.color) {
-                addStyle(data + ` .${styles.typer}::after`,
-                         'background-color:' + cursorObj.color);
+                addStyle(`${data} .typer::after`,
+                         `background-color:${cursorObj.color}`);
             }
 
             // Cursor's blinking style - default to soft.
-            cursorObj.blink === 'hard' ? classes.push(styles['cursor-hard']) :
-            classes.push(styles['cursor-soft']);
+            cursorObj.blink === 'hard' ? cursor.push('cursor-hard') : cursor.push('cursor-soft');
 
             // Cursor: block or line.
-            if (cursorObj.block === true) classes.push(styles['cursor-block']);
+            if (cursorObj.block === true) cursor.push('cursor-block');
 
-            q.cursor = classes.join(' '); // Used as a class.
+            q.cursor = cursor.join(' '); // Used as a class.
 
             return this;
         },
-        line    : function line(msg, spd, html) {
+        line    : function (msg, spd, html) {
             msg ? q.push(lineOrContinue('line', msg, spd, html)) : q.push({line: 1});
 
             // Push the first dominoe on the typing iteration,
@@ -105,17 +92,17 @@ module.exports = function (el, speed) {
 
             return this;
         },
-        continue: function _continue(msg, spd, html) {
+        continue: function (msg, spd, html) {
             if (!msg) return this; // Ignore empty continues.
             q.push(lineOrContinue('continue', msg, spd, html));
             return this;
         },
-        pause   : function pause(num) {
+        pause   : function (num) {
             // Default to 500ms.
             q.push({pause: num || 500});
             return this;
         },
-        emit    : function emit(event, el) {
+        emit    : function (event, el) {
             if (!el) el = 'body'; // Default to the body.
 
             // Simple way to throw an error for invalid selectors.
@@ -124,7 +111,7 @@ module.exports = function (el, speed) {
             q.push({emit: event, el: el});
             return this;
         },
-        listen  : function listen(event, el) {
+        listen  : function (event, el) {
             if (!el) el = 'body'; // Default to the body.
 
             // Simple way to throw an error for invalid selectors.
@@ -133,39 +120,38 @@ module.exports = function (el, speed) {
             q.push({listen: event, el: el});
             return this;
         },
-        back    : function back(chars, spd) {
+        back    : function (chars, spd) {
             q.push({back: chars, speed: spd});
             return this;
         },
-        empty   : function empty() {
+        empty   : function () {
             q.push({empty: true});
             return this;
         },
-        run     : function run(fxn) {
+        run     : function (fxn) {
             q.push({run: fxn});
             return this;
         },
-        end     : function end(fxn, e) {
+        end     : function (fxn, e) {
             q.push({end: true});
 
             q.cb = function () {
                 // Finalize the the div class names before ending.
                 // Because wack IE doesn't support multiple parameters for .remove or .add.
                 ['typer', 'cursor-block', 'cursor-soft', 'cursor-hard', 'no-cursor'].forEach(
-                    function (name) {
-                        q.newDiv.classList.remove(styles[name]);
+                    name => {
+                        q.newDiv.classList.remove(name);
                     });
 
-                q.newDiv.classList.add(styles['white-space']);
+                q.newDiv.classList.add('white-space');
                 q.newDiv = '';
 
                 if (fxn && fxn instanceof Function) fxn(el);
-                if (fxn && getType(fxn) === 'Boolean' || e) {
+                if ((fxn && getType(fxn) === 'Boolean') || e) {
                     if (e instanceof Function) e(el);
                     document.body.dispatchEvent(new Event('typerFinished'));
                 }
             };
-
             // A convenient object to warn the user if they
             // try to call any methods after '.end'.
             let catchAll = {
@@ -194,7 +180,7 @@ module.exports = function (el, speed) {
 
     // Private functions.
     function getType(thing) {
-        let type = {}.toString.call(thing);
+        let type = ({}).toString.call(thing);
 
         return type.split(' ')[1].slice(0, -1);
     }
@@ -208,8 +194,7 @@ module.exports = function (el, speed) {
         el.setAttribute('data-typer', q.dataNum);
     }
 
-    function styleSheets() {
-        // https://goo.gl/b4Ckz9
+    function styleSheets() { // https://goo.gl/b4Ckz9
         // Create the style element.
         let style = document.createElement('style');
 
@@ -220,12 +205,11 @@ module.exports = function (el, speed) {
         document.head.appendChild(style);
     }
 
-    function addStyle(selector, rules) {
-        // https://goo.gl/b4Ckz9
+    function addStyle(selector, rules) { // https://goo.gl/b4Ckz9
         let sheet = document.styleSheets[0];
 
         if ('insertRule' in sheet) {
-            sheet.insertRule(selector + '{' + rules + '}', 1);
+            sheet.insertRule(`${selector}{${rules}}`, 1);
         } else {
             sheet.addRule(selector, rules);
         }
@@ -249,8 +233,7 @@ module.exports = function (el, speed) {
         return obj;
     }
 
-    function processq() {
-        // Begin our main iterator.
+    function processq() { // Begin our main iterator.
         if (!(q.item >= 0)) q.item = 0;
         if (q.item === q.length) return document.body.removeEventListener('killTyper', q.kill);
         if (!q.ks) {
@@ -260,32 +243,32 @@ module.exports = function (el, speed) {
 
         // If no cursor is declared, resort to default styling.
         // The cursor will be pinged later by each line.
-        if (!q.cursor) q.cursor = styles['cursor-soft'];
+        if (!q.cursor) q.cursor = 'cursor-soft';
 
         // Main iterator.
         q.type = setInterval(function () {
             let item = q[q.item];
 
             // Various processing functions.
-            item.line ? processLine(item) : item.continue ? processContinue(item) :
-                                            item.pause ? processPause(item) :
-                                            item.emit ? processEmit(item) :
-                                            item.listen ? processListen(item) :
-                                            item.back ? processBack(item) :
-                                            item.empty ? processEmpty() :
-                                            item.run ? processRun(item) :
-                                            item.end && processEnd(item);
+            item.line ? processLine(item) :
+            item.continue ? processContinue(item) :
+            item.pause ? processPause(item) :
+            item.emit ? processEmit(item) :
+            item.listen ? processListen(item) :
+            item.back ? processBack(item) :
+            item.empty ? processEmpty() :
+            item.run ? processRun(item) :
+            item.end && processEnd(item);
         }, 0);
     }
 
-    function processMsg(item) {
-        // Used by 'processLine' & 'processContinue'.
+    function processMsg(item) { // Used by 'processLine' & 'processContinue'.
         let msg        = item.line || item.continue;
         let targetList = [q.newDiv];
         let div        = document.createElement('div');
         let counter    = 0;
 
-        q.iterator = setInterval(function () {
+        q.iterator = setInterval(() => {
             // End of message processing logic.
             if (counter === msg.length) {
                 clearInterval(q.iterator);
@@ -310,46 +293,35 @@ module.exports = function (el, speed) {
             } else {
                 // Open tags.
                 if (piece === '<' && msg[counter + 1] !== '/') {
-                    let _ret = function () {
-                        let tag     = '';
-                        let voidTag = '';
+                    let tag     = '';
+                    let voidTag = '';
 
-                        for (let _i = counter; _i < msg.length; _i++) {
-                            tag += msg[_i];
-                            if (msg[_i] !== '>' && msg[_i] !== '<') voidTag += msg[_i];
-                            if (msg[_i] === '>') break;
-                        }
-
-                        let isVoid = q.voids.some(function (v) {
-                            return v === voidTag;
-                        });
-
-                        // Non-void elements get focused on as the typing target.
-                        if (!isVoid) {
-                            let parent = targetList[0];
-
-                            div.innerHTML = tag;
-                            targetList.unshift(div.firstChild); // Add current tag to beginning of
-                                                                // the 'targetList' array.
-                            parent.appendChild(div.firstChild);
-
-                            // Void elements get added to the contents but are not focused on for
-                            // typing.
-                        } else {
-                            targetList[0].innerHTML += tag;
-                        }
-
-                        return {
-                            v: counter += tag.length
-                        }; // Move the counter passed the current tag.
-
-                        // Closing tags.
-                    }();
-
-                    if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) ===
-                        "object") {
-                        return _ret.v;
+                    for (let i = counter; i < msg.length; i++) {
+                        tag += msg[i];
+                        if (msg[i] !== '>' && msg[i] !== '<') voidTag += msg[i];
+                        if (msg[i] === '>') break;
                     }
+
+                    let isVoid = q.voids.some(v => v === voidTag);
+
+                    // Non-void elements get focused on as the typing target.
+                    if (!isVoid) {
+                        let parent = targetList[0];
+
+                        div.innerHTML = tag;
+                        targetList.unshift(div.firstChild); // Add current tag to beginning of the
+                                                            // 'targetList' array.
+                        parent.appendChild(div.firstChild);
+
+                        // Void elements get added to the contents but are not focused on for
+                        // typing.
+                    } else {
+                        targetList[0].innerHTML += tag;
+                    }
+
+                    return counter += tag.length; // Move the counter passed the current tag.
+
+                    // Closing tags.
                 } else if (piece === '<' && msg[counter + 1] === '/') {
                     targetList.shift(); // Remove the tag from the 'targetList' array.
                     return counter = msg.indexOf('>', counter) + 1; // Move the counter passed the
@@ -371,16 +343,20 @@ module.exports = function (el, speed) {
                     div.innerHTML = char;
 
                     //
-                    let parsed = Number(char.replace('&#', '0').slice(0, -1));
+                    let parsed = Number(
+                        char
+                            .replace('&#', '0')
+                            .slice(0, -1)
+                    );
 
                     // Unicode characters may have a length > 1. `codePointAt(0)` will render the
                     // code point of the WHOLE character IF the string contains it. If not, it will
                     // give the code point of the SINGLE character at the 0 index.
                     let isUnicode = div.innerHTML.codePointAt(0) === parsed;
 
+
                     // if (ucs2decode(div.innerHTML).length === 1) { // Unicode character found.
-                    if (isUnicode) {
-                        // Unicode character found.
+                    if (isUnicode) { // Unicode character found.
                         targetList[0].innerHTML += char;
                         counter = i; // Move the counter to the end of the unicode text.
                     } else {
@@ -402,12 +378,11 @@ module.exports = function (el, speed) {
         // Process the previous line if there was one.
         if (q.newDiv) {
             // Because wack IE doesn't support multiple parameters for .remove or .add.
-            ['typer', 'cursor-block', 'cursor-soft', 'cursor-hard', 'no-cursor'].forEach(
-                function (name) {
-                    q.newDiv.classList.remove(styles[name]);
-                });
+            ['typer', 'cursor-block', 'cursor-soft', 'cursor-hard', 'no-cursor'].forEach(name => {
+                q.newDiv.classList.remove(name);
+            });
 
-            q.newDiv.classList.add(styles['white-space']);
+            q.newDiv.classList.add('white-space');
 
             if (q.newDiv.innerHTML === '') q.newDiv.innerHTML = ' '; // Retains the height of a
                                                                      // single line.
@@ -417,8 +392,8 @@ module.exports = function (el, speed) {
         let div = document.createElement('div');
         div.setAttribute('data-typer-child', q.dataNum);
         div.className = q.cursor;
-        div.classList.add(styles['typer']);
-        div.classList.add(styles['white-space']);
+        div.classList.add('typer');
+        div.classList.add('white-space');
 
         el.appendChild(div);
         q.newDiv = div;
@@ -441,7 +416,7 @@ module.exports = function (el, speed) {
     function processPause(item) {
         clearInterval(q.type); // Stop the main iterator.
 
-        q.pause = setTimeout(function () {
+        q.pause = setTimeout(() => {
             q.item++; // Increment our main item counter.
             processq(); // Restart the main iterator.
         }, item.pause);
@@ -559,32 +534,20 @@ module.exports = function (el, speed) {
 
                         // Void tag check.
                     } else if (contents[i] === '<') {
-                        let _ret2 = function () {
-                            let vTag   = tag.slice(1, tag.length - 1).join('');
-                            let isVoid = q.voids.some(function (v) {
-                                return v === vTag;
-                            });
+                        let vTag   = tag.slice(1, tag.length - 1).join('');
+                        let isVoid = q.voids.some(v => v === vTag);
 
-                            index = i - 1;
+                        index = i - 1;
 
-                            // Remove void tag.
-                            if (isVoid) contents.splice(i, tag.length);
-                            tag.length = 0;
+                        // Remove void tag.
+                        if (isVoid) contents.splice(i, tag.length);
+                        tag.length = 0;
 
-                            // Back-to-back-tags logic.
-                            if (contents[i - 1] === '>') {
-                                return 'continue';
-                            } else {
-                                return 'break';
-                            }
-                        }();
-
-                        switch (_ret2) {
-                            case 'continue':
-                            //continue;
-
-                            case 'break':
-                                break;
+                        // Back-to-back-tags logic.
+                        if (contents[i - 1] === '>') {
+                            //   continue;
+                        } else {
+                            break;
                         }
                     }
                 }
@@ -628,6 +591,7 @@ module.exports = function (el, speed) {
                 q.item++;
                 processq();
             }
+
         }, item.speed || speed);
     }
 
@@ -658,18 +622,20 @@ module.exports = function (el, speed) {
         // Stop all iterations & pauses.
         clearInterval(q.iterator); // From processMsg.
         clearInterval(q.goBack); // From processBack.
-        clearTimeout(q.pause); // From processPause.
+        clearTimeout(q.pause);
 
+
+        // From processPause.
         if (q.item === q.length) return console.log('This typer has completed; removing listener.');
 
         // If typer is in a listener state...
         let ear = q[q.item];
         if (ear && ear.listen) {
-            let _el = document.querySelector(ear.el);
-            _el.dispatchEvent(new Event(ear.listen));
+            let el = document.querySelector(ear.el);
+            el.dispatchEvent(new Event(ear.listen));
         }
     };
-
     // Return 'typerObj' to be able to run the various methods.
     return typerObj;
-};
+}
+module.exports = typer;

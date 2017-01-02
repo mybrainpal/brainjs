@@ -8,7 +8,7 @@ module.exports = {
     },
     devtools: 'source-map',
     resolve : {
-        extensions: ['.js', '.jsx', '.css', '.scss', '']
+        extensions: ['.js', '.jsx', '.scss', '.css', '']
     },
     module  : {
         loaders: [
@@ -21,12 +21,22 @@ module.exports = {
                 }
             },
             {
-                test   : /\.s?css$/,
+                test   : /\.css$/,
+                loaders: [
+                    'css?sourceMap&modules&importLoaders=1&localIdentName=[local]',
+                    'sass?sourceMap&localIdentName=[local]'
+                ],
+                // Used to allow loading css without name localization, such as when loading css
+                // from npm packages.
+                exclude: /\.local\.css$/
+            },
+            {
+                test   : /\.(scss|local\.css)$/,
                 loaders: [
                     'css?sourceMap&modules&importLoaders=1&localIdentName=[local]--[hash:base64:5]',
                     'sass?sourceMap&localIdentName=[local]--[hash:base64:5]'
                 ],
-                exclude: /node_modules|lib/
+                exclude: /node_modules/
             }
         ]
     },

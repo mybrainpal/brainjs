@@ -3,37 +3,13 @@
  */
 const _            = require('../../../common/util/wrapper'),
       StubExecutor = require('../stub'),
-      css          = require('./gallery.css');
-_.css.load(css);
+      css = require('./gallery.scss');
 const styles                   = css.locals;
 /**
  * A prefix to all galleries.
  * @type {string}
  */
 exports.idPrefix = 'brainpal-gallery-component';
-/**
- * Maintains the current item displayed in the gallery.
- * @type {string}
- * @private
- */
-const _currentAttribute        = 'data-brainpal-current';
-/**
- * Whether the gallery is animating.
- * @type {string}
- * @private
- */
-const _animationCountAttribute = 'data-brainpal-animation-count';
-/**
- * Available animation classes.
- * @type Array<string>
- * @private
- */
-const _animationClasses =
-          ['fxSoftScale', 'fxPressAway', 'fxSideSwing', 'fxFortuneWheel', 'fxPushReveal',
-           'fxSnapIn', 'fxSoftPulse',
-           'fxLetMeIn', 'fxStickIt', 'fxArchiveMe', 'fxSlideBehind', 'fxEarthquake',
-           'fxCliffDiving'];
-
 /**
  * Describes where the gallery navigates to. next is right.
  * @type {{NEXT: string, PREVIOUS: string}}
@@ -54,6 +30,10 @@ const NavigationDirection = {
 exports.execute = function (elements, options) {
     if (!exports.preconditions(elements, options)) {
         throw new TypeError('GalleryExecutor: Invalid input.');
+    }
+    if (!_styleLoaded) {
+        _.css.load(css);
+        _styleLoaded = true;
     }
     elements[0].appendChild(_createGallery(elements[0], options));
 };
@@ -203,3 +183,32 @@ function _onAnimationEnd() {
         this.classList.add(styles.current);
     }
 }
+
+/**
+ * Indicates whether the style was loaded to the DOM.
+ * @type {boolean}
+ * @private
+ */
+let _styleLoaded               = false;
+/**
+ * Maintains the current item displayed in the gallery.
+ * @type {string}
+ * @private
+ */
+const _currentAttribute        = 'data-brainpal-current';
+/**
+ * Whether the gallery is animating.
+ * @type {string}
+ * @private
+ */
+const _animationCountAttribute = 'data-brainpal-animation-count';
+/**
+ * Available animation classes.
+ * @type Array<string>
+ * @private
+ */
+const _animationClasses        =
+          ['fxSoftScale', 'fxPressAway', 'fxSideSwing', 'fxFortuneWheel', 'fxPushReveal',
+           'fxSnapIn', 'fxSoftPulse',
+           'fxLetMeIn', 'fxStickIt', 'fxArchiveMe', 'fxSlideBehind', 'fxEarthquake',
+           'fxCliffDiving'];

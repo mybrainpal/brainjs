@@ -4,7 +4,7 @@
 const expect          = require('chai').expect,
       _               = require('../../../common/util/wrapper'),
       GalleryExecutor = require('./gallery'),
-      styles          = require('./gallery.css').locals;
+      styles          = require('./gallery.scss').locals;
 
 describe('GalleryExecutor', function () {
     this.timeout(3000);

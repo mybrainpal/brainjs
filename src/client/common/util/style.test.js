@@ -5,6 +5,7 @@ const chai      = require('chai'),
       expect    = require('chai').expect,
       StyleUtil = require('./style'),
       css       = require('./testdata/style.css'),
+      localCss  = require('./testdata/style.local.css'),
       scss      = require('./testdata/test.scss');
 
 describe('StyleUtil', function () {
@@ -20,10 +21,17 @@ describe('StyleUtil', function () {
         expect(() => {StyleUtil.load(1)}).to.throw(TypeError);
     });
     it('Load css from import', () => {
-        a1.setAttribute('class', css.locals.stark);
+        a1.setAttribute('class', 'stark');
         StyleUtil.load(css);
         expect(window.getComputedStyle(a1).paddingLeft).to.equal('100px');
         expect(window.getComputedStyle(a1).paddingTop).to.equal('50px');
+    });
+    it('Load local css from import', () => {
+        a1.setAttribute('class', 'lannister');
+        StyleUtil.load(localCss);
+        expect(window.getComputedStyle(a1).paddingBottom).to.equal('0px');
+        a1.setAttribute('class', localCss.locals.lannister);
+        expect(window.getComputedStyle(a1).paddingBottom).to.equal('40px');
     });
     it('Load scss from import', () => {
         a1.setAttribute('class', scss.locals.test);

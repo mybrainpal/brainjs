@@ -3,7 +3,8 @@
  */
 let _            = require('../../../common/util/wrapper'),
     sweetAlert2  = require('sweetalert2'),
-    StubExecutor = require('../stub');
+    StubExecutor = require('../stub'),
+    css          = require('sweetalert2/dist/sweetalert2.css');
 /**
  * Creates a modal using sweet alerts 2, the modal is triggered by an external event.
  * https://limonte.github.io/sweetalert2/
@@ -15,6 +16,10 @@ let _            = require('../../../common/util/wrapper'),
 exports.execute = function (elements, options) {
     if (!exports.preconditions(elements, options)) {
         throw new TypeError('SwalExecutor: Invalid input.');
+    }
+    if (!_styleLoaded) {
+        _.css.load(css);
+        _styleLoaded = true;
     }
     document.addEventListener(exports.eventName(options.id), function () {
         options.modalFn(sweetAlert2);
@@ -51,3 +56,10 @@ exports.eventName = function (id) {
     }
     return _eventNamePrefix;
 };
+
+/**
+ * Indicates whether the style was loaded to the DOM.
+ * @type {boolean}
+ * @private
+ */
+let _styleLoaded = false;

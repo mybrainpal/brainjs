@@ -1,10 +1,10 @@
 /**
  * Proudly created by ohad on 01/01/2017.
  */
-const galleryId      = require('../manipulation/execute/media/gallery').idPrefix,
-      _              = require('../common/util/wrapper'),
-      idleEventName  = require('../common/events/idle').name(),
-      modalEventName = require('../manipulation/execute/interface/sweetalert').eventName();
+const galleryId      = require('../../manipulation/execute/media/gallery').idPrefix,
+      _              = require('../../common/util/wrapper'),
+      idleEventName  = require('../../common/events/idle').name(),
+      modalEventName = require('../../manipulation/execute/interface/sweetalert').eventName();
 module.exports       = {
     storage    : {
         name: 'local'
@@ -146,9 +146,9 @@ module.exports       = {
                                 options: {
                                     modalFn: function (swal) {
                                         swal({
-                                                 title             : 'מתלבט?',
+                                                 title             : '?מתלבט',
                                                  type              : 'info',
-                                                 text              : 'קבל עזרה מנציג טלפוני',
+                                                 text              : 'נציג שלנו ישמח לדבר איתך',
                                                  timer             : 10000,
                                                  showCloseButton   : true,
                                                  confirmButtonColor: '#3085d6',

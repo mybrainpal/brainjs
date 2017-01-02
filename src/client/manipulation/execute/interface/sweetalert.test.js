@@ -22,7 +22,7 @@ describe('SwalExecutor', function () {
     it('modal fired', (done) => {
         let options = {modalFn: modalFn}, spy = chai.spy.on(options, 'modalFn');
         SwalExecutor.execute([], options);
-        window.dispatchEvent(new CustomEvent(SwalExecutor.eventName()));
+        document.dispatchEvent(new CustomEvent(SwalExecutor.eventName()));
         _.defer(function () {
             expect(spy).to.have.been.called.once;
             done();
