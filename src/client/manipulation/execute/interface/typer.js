@@ -2,7 +2,7 @@
  * Proudly created by ohad on 30/12/2016.
  */
 let _            = require('../../../common/util/wrapper'),
-    typer        = require('typer-js'),
+    typer        = require('./typer-js'),
     StubExecutor = require('../stub');
 /**
  * Creates a typing effect using the magical typer-js library.

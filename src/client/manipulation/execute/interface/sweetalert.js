@@ -16,7 +16,7 @@ exports.execute = function (elements, options) {
     if (!exports.preconditions(elements, options)) {
         throw new TypeError('SwalExecutor: Invalid input.');
     }
-    window.addEventListener(exports.eventName(options.id), function () {
+    document.addEventListener(exports.eventName(options.id), function () {
         options.modalFn(sweetAlert2);
     });
 };

@@ -3,8 +3,9 @@
  *
  * Factory for special events, we do double shifts here.
  */
-let Logger = require('../../common/log/logger'),
-    Level  = require('../../common/log/logger').Level;
+let IdleEvent = require('./idle'),
+    Logger    = require('../../common/log/logger'),
+    Level     = require('../../common/log/logger').Level;
 
 
 /**
@@ -12,7 +13,9 @@ let Logger = require('../../common/log/logger'),
  * @type {{string: Object}}
  * @private
  */
-let _eventsByName = {};
+let _eventsByName = {
+    'idle': IdleEvent
+};
 
 /**
  * @param {string} event
@@ -21,7 +24,7 @@ let _eventsByName = {};
  */
 exports.create = function (event, options) {
     if (_eventsByName[event]) {
-        return _eventsByName[event](options || {});
+        return new _eventsByName[event](options || {});
     }
     Logger.log(Level.ERROR, 'EventFactory: could not find event ' + event);
 };

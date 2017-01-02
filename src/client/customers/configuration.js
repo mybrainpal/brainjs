@@ -1,8 +1,11 @@
 /**
  * Proudly created by ohad on 01/01/2017.
  */
-const galleryId = require('../manipulation/execute/media/gallery').idPrefix;
-module.exports  = {
+const galleryId      = require('../manipulation/execute/media/gallery').idPrefix,
+      _              = require('../common/util/wrapper'),
+      idleEventName  = require('../common/events/idle').name(),
+      modalEventName = require('../manipulation/execute/interface/sweetalert').eventName();
+module.exports       = {
     storage    : {
         name: 'local'
     },
@@ -48,11 +51,13 @@ module.exports  = {
                                             margin: 10px 0 0 40px}
                                         #daydeal #content div.hotel_deal h2 {
                                             width:100%;
+                                            height: 85px;
+                                            font-size:28px;
                                             padding: 0}
                                         #daydeal #content #${galleryId} ul {
                                             padding: 0;
                                             width: 100%}
-                                        #daydeal #content div#${galleryId} {height: 300px}
+                                        #daydeal #content div#${galleryId} {height: 320px}
                                         #daydeal #content .percent {z-index: 1001}
                                         #daydeal #content .comments_deal_text {z-index: 1001}
                                         #daydeal #content #${galleryId} li {display: block}`
@@ -61,7 +66,7 @@ module.exports  = {
                             {
                                 name     : 'remove',
                                 selectors: ['#content .share', '#content>br',
-                                            '#content div.address']
+                                            '#content div.address', '.comments_deal_text']
                             },
                             {
                                 name     : 'move',
@@ -84,6 +89,94 @@ module.exports  = {
                             {
                                 name     : 'remove',
                                 selectors: ['.group_sale_image>img']
+                            },
+                            {
+                                name   : 'typer',
+                                options: {
+                                    typerFn: function (typer) {
+                                        document.querySelector('.hotel_deal h2').textContent = '';
+                                        _.defer(function () {
+                                            typer('.hotel_deal h2', 40)
+                                                .cursor({blink: 'soft'})
+                                                .line('מבצע סופ"ש 2 לילות במלון דיוויד ים המלח!!',
+                                                      25)
+                                                .pause(500)
+                                                .emit('brainpal-title-1')
+                                                .listen('brainpal-price-1')
+                                                .continue(' מחיר טוב לא?')
+                                                .pause(1500)
+                                                .continue(' לא מספיק!')
+                                                .pause(500)
+                                                .emit('brainpal-title-2')
+                                                .listen('brainpal-price-done')
+                                                .back(23, 10)
+                                                .continue(' רק 473 ש״ח לאדם בחדר דלוקס. ')
+                                                .continue('וכמעט שכחנו... ')
+                                                .pause(1000)
+                                                .continue(' הופעה של טוביה צפיר!')
+                                                .emit('brainpal-title-done')
+                                                .pause(200)
+                                                .end();
+                                        });
+                                        _.defer(function () {
+                                            document.querySelector('#PriceView').textContent = '';
+                                            document.querySelector('#PriceView').style.color =
+                                                'red';
+                                            typer('#PriceView')
+                                                .listen('brainpal-title-1')
+                                                .cursor({blink: 'soft'})
+                                                .line('₪2499')
+                                                .emit('brainpal-price-1')
+                                                .listen('brainpal-title-2')
+                                                .back(10, 10)
+                                                .run(function (elem) {
+                                                    elem.style.color = '';
+                                                })
+                                                .pause(500)
+                                                .continue('₪1890')
+                                                .pause(1500)
+                                                .emit('brainpal-price-done')
+                                                .end();
+                                        });
+                                    }
+                                }
+                            },
+                            {
+                                name   : 'swal',
+                                options: {
+                                    modalFn: function (swal) {
+                                        swal({
+                                                 title             : 'מתלבט?',
+                                                 type              : 'info',
+                                                 text              : 'קבל עזרה מנציג טלפוני',
+                                                 timer             : 10000,
+                                                 showCloseButton   : true,
+                                                 confirmButtonColor: '#3085d6',
+                                                 confirmButtonText : 'חייג עכשיו'
+                                             });
+                                    }
+                                }
+                            },
+                            {
+                                name   : 'event',
+                                options: {
+                                    listen: {event: 'brainpal-title-done', selector: 'body'},
+                                    create: {
+                                        event  : 'idle',
+                                        options: {
+                                            waitTime: 5000
+                                        }
+                                    }
+                                }
+                            },
+                            {
+                                name   : 'event',
+                                options: {
+                                    listen : {event: idleEventName},
+                                    trigger: {
+                                        event: modalEventName
+                                    }
+                                }
                             }
                         ]
                     }

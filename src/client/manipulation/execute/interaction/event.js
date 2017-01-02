@@ -13,12 +13,12 @@ let _            = require('./../../../common/util/wrapper'),
  *  @property {Object|Array.<Object>} [listen] - listens to a certain event in order to trigger
  *   another one.
  *      @property {string} event
- *      @property {string} [selector] - event target, leave empty for window
+ *      @property {string} [selector] - event target, leave empty for document
  *  @property {boolean} [waitForAll = false] - whether to wait for all listen events to fire in
  *  order to execute trigger and create.
  *  @property {Object|Array.<Object>} [trigger] - dispatches a custom event
  *      @property {string} event
- *      @property {string} [selector] - event target, leave empty for window
+ *      @property {string} [selector] - event target, leave empty for document
  *      @property {Object} [detail] - to be passed to CustomEvent constructor.
  *  @property {Object|Array.<Object>} [create] - create a special event.
  *      @property {string} event
@@ -34,7 +34,7 @@ exports.execute = function (elements, options) {
             options.listen = [options.listen];
         }
         _.forEach(options.listen, function (listener) {
-            let target = window;
+            let target = document;
             if (listener.selector) {
                 target = document.querySelector(listener.selector);
                 if (!_.isElement(target)) {
@@ -50,7 +50,7 @@ exports.execute = function (elements, options) {
                 });
             }));
         });
-        if (options.waitForAll && options.waitForAll) {
+        if (options.waitForAll) {
             Promise.all(promises).then(function () {
                 _doFn(options);
             });
@@ -70,12 +70,12 @@ exports.execute = function (elements, options) {
  */
 exports.preconditions = function (elements, options) {
     let i, j, props = ['listen', 'create', 'trigger'];
-    if (_.isEmpty(options)) {
-        return false;
-    }
+    if (!StubExecutor.preconditions(elements, options)) return false;
+    if (_.isEmpty(options)) return false;
     if (options.waitForAll && !_.isBoolean(options.waitForAll)) {
         return false;
-    } else if (options.waitForAll && _.isEmpty(_.omit(_.clone(options), 'waitForAll'))) {
+    } else if (options.waitForAll &&
+               _.isEmpty(_.omit(_.clone(options), 'waitForAll'))) {
         return false;
     }
     for (i = 0; i < props.length; i++) {
@@ -92,10 +92,8 @@ exports.preconditions = function (elements, options) {
             }
         }
     }
-    if (_.isEmpty(options.create) && _.isEmpty(options.trigger)) {
-        return false;
-    }
-    return StubExecutor.preconditions(elements, options) && _.isEmpty(elements);
+    if (_.isEmpty(options.create) && _.isEmpty(options.trigger)) return false;
+    return _.isEmpty(elements);
 };
 
 /**
@@ -108,7 +106,7 @@ function _doFn(options) {
         options.trigger = [options.trigger];
     }
     _.forEach(options.trigger, function (trigger) {
-        let target = window;
+        let target = document;
         if (trigger.selector) {
             target = document.querySelector(trigger.selector);
             if (!_.isElement(target)) {
