@@ -12,6 +12,7 @@ let _            = require('./../../../common/util/wrapper'),
  *  @property {string} [parentSelector] - css selector of parent element.
  *  @property {string} [nextSiblingSelector] - css selector of desired next sibling. If none
  *  provided or if failed to select, the element will be appended.
+ *  @property {boolean} [copy = false] - whether to copy the source element (i.e. elements[0]).
  */
 exports.execute = function (elements, options) {
     let nextSibling, parent, toInsert;
@@ -32,7 +33,7 @@ exports.execute = function (elements, options) {
                                     options.parentSelector);
         }
     }
-    toInsert = _prepare(elements[0], parent);
+    toInsert = _prepare(elements[0], parent, options.copy);
     _insert(toInsert, parent, nextSibling);
 };
 
@@ -63,6 +64,7 @@ exports.preconditions = function (elements, options) {
         (!_.isString(options.parentSelector) || _.isEmpty(options.parentSelector))) {
         return false;
     }
+    if (_.has(options, 'copy') && !_.isBoolean(options.copy)) return false;
     if (options.nextSiblingSelector &&
         (!_.isString(options.nextSiblingSelector) || _.isEmpty(options.nextSiblingSelector))) {
         return false;
@@ -84,11 +86,13 @@ exports.preconditions = function (elements, options) {
  * Prepares elem to be inserted to DOM.
  * @param {Element} elem
  * @param {Element} parent
+ * @param {boolean} copy
  * @returns {Element} an element to insert to the DOM.
  * @private
  */
-function _prepare(elem, parent) {
+function _prepare(elem, parent, copy) {
     let prepared;
+    elem = copy ? elem.cloneNode(true) : elem;
     if (parent && parent.nodeName.toLowerCase() === 'ul' && elem.nodeName.toLowerCase() !== 'li') {
         prepared = document.createElement('li');
         prepared.appendChild(elem);
