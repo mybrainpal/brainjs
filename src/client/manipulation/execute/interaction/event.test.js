@@ -10,7 +10,7 @@ chai.use(require('chai-spies'));
 
 describe('EventExecutor', function () {
     this.timeout(200);
-    it('preconditions', function () {
+    it('preconditions', () => {
         expect(EventExecutor.preconditions([], {})).to.be.false;
         expect(EventExecutor.preconditions(document.querySelectorAll('body'),
                                            {create: {event: 'a'}})).to.be.false;
@@ -18,37 +18,60 @@ describe('EventExecutor', function () {
         expect(EventExecutor.preconditions([], {create: {event: 1}})).to.be.false;
         expect(EventExecutor.preconditions([], {listen: {}})).to.be.false;
         expect(EventExecutor.preconditions([], {listen: {event: 'a'}})).to.be.false;
+        expect(EventExecutor.preconditions([], {create: {event: 'a', id: {}}})).to.be.false;
         expect(EventExecutor.preconditions([], {create: {event: 'a'}})).to.be.true;
     });
-    it('event triggered without listener', function (done) {
-        document.addEventListener('triggered', function () {
+    it('event triggered without listener', (done) => {
+        document.addEventListener('triggered', () => {
             done();
         });
         EventExecutor.execute([], {trigger: {event: 'triggered'}});
     });
-    it('multiple triggers', function (done) {
+    it('multiple triggers', (done) => {
         Promise.all([new Promise(function (resolve) {
-            document.addEventListener('triggered1', function () {
+            document.addEventListener('triggered1', () => {
                 resolve();
             });
         }), new Promise(function (resolve) {
-            document.addEventListener('triggered2', function () {
+            document.addEventListener('triggered2', () => {
                 resolve();
             });
-        })]).then(function () {
+        })]).then(() => {
             done();
         });
         EventExecutor.execute([], {trigger: [{event: 'triggered1'}, {event: 'triggered2'}]});
     });
-    it('event triggered with listener', function (done) {
-        document.addEventListener('triggered', function () {
+    it('event triggered with listener', (done) => {
+        document.addEventListener('triggered', () => {
             done();
         });
         EventExecutor.execute([], {listen: {event: 'listen'}, trigger: {event: 'triggered'}});
         document.dispatchEvent(new CustomEvent('listen'));
     });
-    it('event triggered with multiple listeners and race', function (done) {
-        document.addEventListener('triggered', function () {
+    it('event id fires', (done) => {
+        document.addEventListener('ev', () => {
+            done();
+        });
+        EventExecutor.execute([], {listen: {event: 'listen', id: 1}, trigger: {event: 'ev'}});
+        document.dispatchEvent(new CustomEvent('listen', {detail: {id: 1}}));
+    });
+    it('missing id still fired', (done) => {
+        document.addEventListener('ev', () => {
+            done();
+        });
+        EventExecutor.execute([], {listen: {event: 'listen'}, trigger: {event: 'ev'}});
+        document.dispatchEvent(new CustomEvent('listen', {detail: {id: 1}}));
+    });
+    it('event id - don\'t fire', (done) => {
+        document.addEventListener('ev', () => {
+            done('should not have fired');
+        });
+        EventExecutor.execute([], {listen: {event: 'listen', id: 1}, trigger: {event: 'ev'}});
+        document.dispatchEvent(new CustomEvent('listen', {detail: {id: 2}}));
+        _.delay(() => {done()}, 100);
+    });
+    it('event triggered with multiple listeners and race', (done) => {
+        document.addEventListener('triggered', () => {
             done();
         });
         EventExecutor.execute([], {
@@ -56,9 +79,9 @@ describe('EventExecutor', function () {
         });
         document.dispatchEvent(new CustomEvent('listen1'));
     });
-    it('event triggered after all listeners fired', function (done) {
+    it('event triggered after all listeners fired', (done) => {
         let triggered = false;
-        document.addEventListener('triggered', function () {
+        document.addEventListener('triggered', () => {
             triggered = true;
         });
         EventExecutor.execute([], {
@@ -67,9 +90,9 @@ describe('EventExecutor', function () {
             trigger   : {event: 'triggered'}
         });
         document.dispatchEvent(new CustomEvent('listen1'));
-        _.defer(function () { expect(triggered).to.be.false; });
-        _.defer(function () {document.dispatchEvent(new CustomEvent('listen2'))});
-        _.defer(function () {
+        _.defer(() => { expect(triggered).to.be.false; });
+        _.defer(() => {document.dispatchEvent(new CustomEvent('listen2'))});
+        _.defer(() => {
             expect(triggered).to.be.true;
             done();
         });
