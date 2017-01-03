@@ -72,6 +72,20 @@ module.exports          = {
                                         [class^='swal2'] h2 {
                                             background: none; width: auto; border: none}
                                         [class^='swal2'] { direction: rtl}
+                                        [class^='ajs'] { direction: rtl}
+                                        .alertify-notifier.ajs-left .ajs-message.ajs-visible { 
+                                            border-radius: 10px; border: 1px solid #ccc;
+                                            background: rgba(251, 201, 127, 0.96)}
+                                        .ajs-title {font-size: 18px}
+                                        .ajs-review div.deals_in {margin: 0; float: none; 
+                                            width: 90%; padding: 0; color: #339; 
+                                            background: none}
+                                        .ajs-review div.deals_in div.TotalRating {float: none; 
+                                            width: auto; margin: 5px 0 5px 15px; color: #0e4d8d;}
+                                        @media (min-width: 1025px) {
+                                            .alertify-notifier.ajs-left .ajs-message.ajs-visible {
+                                                right: 290px !important; }
+                                        }
                                         #daydeal #content #${galleryId} li {display: block}`
                                 }
                             },
@@ -141,24 +155,20 @@ module.exports          = {
                                                 .end();
                                         });
                                         _.defer(function () {
-                                            document.querySelector('#PriceView').textContent = '';
+                                            document.querySelector('#PriceView').textContent =
+                                                '';
                                             document.querySelector('#PriceView').style.color =
                                                 'red';
-                                            typer('#PriceView')
-                                                .listen('brainpal-title-1')
-                                                .cursor({blink: 'soft'})
-                                                .line('₪2499')
-                                                .emit('brainpal-price-1')
-                                                .listen('brainpal-title-2')
-                                                .back(10, 10)
-                                                .run(function (elem) {
-                                                    elem.style.color = '';
-                                                })
-                                                .pause(500)
-                                                .continue('₪1890')
-                                                .pause(1500)
-                                                .emit('brainpal-price-done')
-                                                .end();
+                                            typer('#PriceView').listen('brainpal-title-1')
+                                                               .cursor({blink: 'soft'})
+                                                               .line('₪2499')
+                                                               .emit('brainpal-price-1')
+                                                               .listen('brainpal-title-2')
+                                                               .back(10, 10).run(function (elem) {
+                                                elem.style.color =
+                                                    '';
+                                            }).pause(500).continue('₪1890').pause(1500)
+                                                               .emit('brainpal-price-done').end();
                                         });
                                     }
                                 }
@@ -172,7 +182,7 @@ module.exports          = {
                                                  type              : 'info',
                                                  text              : 'נציג שלנו ישמח לדבר איתך',
                                                  timer             : 10000,
-                                                 confirmButtonColor: '#32CD32',
+                                                 confirmButtonColor: '#fbc97f',
                                                  showCloseButton   : true,
                                                  confirmButtonText : 'חייג עכשיו'
                                              });
@@ -183,14 +193,27 @@ module.exports          = {
                                 name   : 'alertify',
                                 options: {
                                     alertifyFn: function (alertify) {
-                                        console.log('alertify');
-                                        let notification       =
-                                                alertify.success('test');
-                                        notification.ondismiss = () => {
+                                        alertify.set('notifier', 'position', 'bottom-left');
+                                        alertify.notify('מה אומרים על המלון הזה', 'title', 200);
+                                        _.delay(() => {
+                                            alertify.notify(_reviewToAlertify(0), 'review', 200);
+                                        }, 1000);
+                                        _.delay(() => {
+                                            alertify.notify('וזו לא הביקורת היחידה', 'title', 200);
+                                        }, 2000);
+                                        _.delay(() => {
+                                            alertify.notify(_reviewToAlertify(1), 'review', 200);
+                                        }, 2500);
+                                        _.delay(() => {
+                                            alertify.notify('ויש יותר ממאה כאלו...', 'title', 200);
+                                        }, 3500);
+                                        _.delay(() => {
+                                            alertify.dismissAll();
                                             document.dispatchEvent(
                                                 new CustomEvent('brainpal-alertify-dismiss'));
-                                        };
-                                    }
+                                        }, 5500);
+                                    },
+                                    rtl       : true
                                 }
                             },
                             {
@@ -201,7 +224,7 @@ module.exports          = {
                                         event  : 'idle',
                                         options: {
                                             waitTime: 3000,
-                                            id      : 'reviews'
+                                            detail  : {id: 'reviews'}
                                         }
                                     }
                                 }
@@ -209,7 +232,7 @@ module.exports          = {
                             {
                                 name   : 'event',
                                 options: {
-                                    listen : {event: idleEventName, id: 'reviews'},
+                                    listen : {event: idleEventName, detail: {id: 'reviews'}},
                                     trigger: {
                                         event: alertifyEventName
                                     }
@@ -218,12 +241,12 @@ module.exports          = {
                             {
                                 name   : 'event',
                                 options: {
-                                    listen: {event: 'brainpal-alertify-dismiss', selector: 'body'},
+                                    listen: {event: 'brainpal-alertify-dismiss'},
                                     create: {
                                         event  : 'idle',
                                         options: {
                                             waitTime: 3000,
-                                            id      : 'modal'
+                                            detail  : {id: 'modal'}
                                         }
                                     }
                                 }
@@ -231,7 +254,7 @@ module.exports          = {
                             {
                                 name   : 'event',
                                 options: {
-                                    listen : {event: idleEventName, id: 'modal'},
+                                    listen : {event: idleEventName, detail: {id: 'modal'}},
                                     trigger: {
                                         event: modalEventName
                                     }
@@ -258,3 +281,14 @@ module.exports          = {
         }
     ]
 };
+
+function _reviewToAlertify(index) {
+    let content = document.querySelectorAll('.deals_in').item(index).cloneNode(true);
+    let rating  = document.querySelector(
+        `.TotalRating:nth-of-type(${index + 2})`).childNodes[0].textContent.trim();
+    let wrapper = document.createElement('div');
+    wrapper.classList.add('TotalRating');
+    wrapper.textContent = rating;
+    content.appendChild(wrapper);
+    return content;
+}

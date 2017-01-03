@@ -3,7 +3,10 @@
  */
 let _            = require('./../../../common/util/wrapper'),
     alertify     = require('alertifyjs'),
+    css    = require('alertifyjs/build/css/alertify.css'),
+    cssRtl = require('alertifyjs/build/css/alertify.rtl.css'),
     StubExecutor = require('./../stub');
+
 /**
  * Creates a modal using sweet alerts 2, the modal is triggered by an external event.
  * https://limonte.github.io/sweetalert2/
@@ -11,12 +14,22 @@ let _            = require('./../../../common/util/wrapper'),
  * @param {Object} options
  *  @property {Function} alertifyFn - runs alertifyjs code
  *  @property {string|number} [id]
+ *  @property {boolean} [rtl = false] - whether to load rtl style.
  */
 exports.execute = function (elements, options) {
     if (!exports.preconditions(elements, options)) {
         throw new TypeError('AlertifyExecutor: Invalid input.');
     }
-    window.addEventListener(exports.eventName(options.id), function () {
+    if (!_styleLoaded) {
+        // TODO(ohad): support multiple style loads.
+        if (options.rtl) {
+            _.css.load(cssRtl);
+        } else {
+            _.css.load(css);
+        }
+        _styleLoaded = true;
+    }
+    document.addEventListener(exports.eventName(options.id), function () {
         options.alertifyFn(alertify);
     });
 };
@@ -51,3 +64,10 @@ exports.eventName = function (id) {
     }
     return _eventNamePrefix;
 };
+
+/**
+ * Indicates whether the style was loaded to the DOM.
+ * @type {boolean}
+ * @private
+ */
+let _styleLoaded = false;
