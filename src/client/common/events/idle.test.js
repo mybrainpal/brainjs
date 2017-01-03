@@ -15,7 +15,7 @@ describe('IdleEvent', function () {
         ++id;
         div = document.createElement('div');
         document.querySelector('body').appendChild(div);
-        options = {waitTime: 10, target: div, id: id, fireOnce: true};
+        options = {waitTime: 10, target: div, detail: {id: id}, fireOnce: true};
     });
     it('construction', () => {
         idle = new IdleEvent({waitTime: 10});
@@ -98,7 +98,7 @@ describe('IdleEvent', function () {
         let first = false, second = false;
         new IdleEvent(options);
         div.addEventListener(IdleEvent.name(), _successFn(id, () => {first = true}));
-        new IdleEvent(_.merge(_.clone(options), {id: ++id}));
+        new IdleEvent(_.merge(_.cloneDeep(options), {detail: {id: ++id}}));
         div.addEventListener(IdleEvent.name(), _successFn(id, () => {second = true}));
         _.delay(() => {
             expect(first).to.be.true;

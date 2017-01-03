@@ -13,7 +13,7 @@ class IdleEvent {
      *  @property {boolean} [fireOnce = true] - whether to fire the idle event every waitTime ms,
      *     or just once.
      *  @property {EventTarget} [target = document] - event target.
-     *  @property {string|number} [id]
+     *  @property {Object} [detail] - for CustomEvent constructor.
      */
     constructor(options) {
         if (!_.isObject(options)) throw new TypeError('IdleEvent: options is invalid.');
@@ -32,11 +32,11 @@ class IdleEvent {
         } else {
             this.target = document;
         }
-        if (options.id) {
-            if (_.isString(options.id) || _.isNumber(options.id)) {
-                this.id = options.id;
+        if (options.detail) {
+            if (_.isObject(options.detail)) {
+                this.detail = options.detail;
             } else {
-                throw new TypeError('IdleEvent: id is not a string or a number.');
+                throw new TypeError('IdleEvent: detail is not an object.');
             }
         }
         this._init();
@@ -69,9 +69,9 @@ class IdleEvent {
     start() {
         const that = this; // To use `this` in the setTimeout handler.
         this.timer = setTimeout(function () {
-            if (_.has(that, 'id')) {
+            if (_.has(that, 'detail')) {
                 that.target.dispatchEvent(
-                    new CustomEvent(IdleEvent.name(), {detail: {id: that.id}}));
+                    new CustomEvent(IdleEvent.name(), {detail: that.detail}));
             } else {
                 that.target.dispatchEvent(new CustomEvent(IdleEvent.name()));
             }
