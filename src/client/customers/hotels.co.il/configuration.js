@@ -40,7 +40,8 @@ module.exports       = {
                                             background: none;
                                             font-size: 32px;
                                             width: auto;
-                                            padding-top: 20px; }
+                                            padding-top: 10px; }
+                                         #daydeal #header h1 img{display: block; padding-top: 10px }
                                         #daydeal #content {
                                             padding-top: 0 !important;
                                             margin-top: 0; }
@@ -60,6 +61,17 @@ module.exports       = {
                                         #daydeal #content div#${galleryId} {height: 320px}
                                         #daydeal #content .percent {z-index: 1001}
                                         #daydeal #content .comments_deal_text {z-index: 1001}
+                                        #daydeal #content .group_sale_image {width: 65%}
+                                        #daydeal #content form {width: 65%; float: left}
+                                        #daydeal #content input.button_res {width: 98%}
+                                        #daydeal #content .reserve {width: 100%}
+                                        #daydeal #content div#other_dates_by_res {width: 90%}
+                                        #daydeal #content button#ToggleResCompo {padding: 0 0 0 10px}
+                                        #daydeal #content .hotel_deal div:nth-child(5) {display: none}
+                                        #daydeal #content .comments_deal_text {z-index: 1001}
+                                        [class^='swal2'] h2 {
+                                            background: none; width: auto; border: none}
+                                        [class^='swal2'] { direction: rtl}
                                         #daydeal #content #${galleryId} li {display: block}`
                                 }
                             },
@@ -72,6 +84,11 @@ module.exports       = {
                                 name     : 'move',
                                 selectors: '#content h1:first-child',
                                 options  : {nextSiblingSelector: '#menu'}
+                            },
+                            {
+                                name     : 'move',
+                                selectors: '#other_dates_by_res',
+                                options  : {parentSelector: 'div.more_option div.date'}
                             },
                             {
                                 name     : 'move',
@@ -146,12 +163,12 @@ module.exports       = {
                                 options: {
                                     modalFn: function (swal) {
                                         swal({
-                                                 title             : '?מתלבט',
+                                                 title             : 'עדיין מתלבט..',
                                                  type              : 'info',
                                                  text              : 'נציג שלנו ישמח לדבר איתך',
-                                                 timer             : 10000,
+                                                 timer             : 1000000,
+                                                 confirmButtonColor: '#32CD32',
                                                  showCloseButton   : true,
-                                                 confirmButtonColor: '#3085d6',
                                                  confirmButtonText : 'חייג עכשיו'
                                              });
                                     }

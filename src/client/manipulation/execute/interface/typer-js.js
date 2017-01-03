@@ -449,7 +449,7 @@ function typer(el, speed) {
         clearInterval(q.type);
 
         // Check for being called on an empty line.
-        if (!q.newDiv.textContent) {
+        if (!q.newDiv || !q.newDiv.textContent) {
             q.item++;
             return processq();
         }

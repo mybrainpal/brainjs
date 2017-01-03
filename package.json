@@ -23,10 +23,10 @@
   "homepage": "https://github.com/mybrainpal/brainjs#readme",
   "dependencies": {
     "alertifyjs": "^1.8.0",
-    "lodash": "^4.17.3",
+    "lodash": "^4.17.4",
     "sweetalert2": "^6.2.9",
     "tinysort": "^2.3.6",
-    "typer-js": "^2.2.2"
+    "typer-js": "^2.2.3"
   },
   "devDependencies": {
     "babel-core": "^6.21.0",
@@ -41,7 +41,7 @@
     "karma-mocha-reporter": "^2.2.1",
     "karma-webpack": "^1.8.1",
     "mocha": "^3.2.0",
-    "nightwatch": "^0.9.11",
+    "nightwatch": "^0.9.12",
     "node-sass": "^4.1.1",
     "rewire": "^2.5.2",
     "rewire-webpack": "^1.0.1",
