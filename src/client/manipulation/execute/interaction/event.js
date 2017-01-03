@@ -13,13 +13,14 @@ let _            = require('./../../../common/util/wrapper'),
  *  @property {Object|Array.<Object>} [listen] - listens to a certain event in order to trigger
  *   another one.
  *      @property {string} event
- *      @property {string|number} [id] - id property attached to the event. If missing, any
+ *      @property {Object} [detail] - as supplied to the CustomEvent constructor. If missing, any
  *      `event` fired will be satisfactory.
  *      @property {string} [selector] - event target, leave empty for document
  *  @property {boolean} [waitForAll = false] - whether to wait for all listen events to fire in
  *  order to execute trigger and create.
  *  @property {Object|Array.<Object>} [trigger] - dispatches a custom event
  *      @property {string} event
+ *      @property {Object} [detail] - for the CustomEvent constructor.
  *      @property {string} [selector] - event target, leave empty for document
  *      @property {Object} [detail] - to be passed to CustomEvent constructor.
  *  @property {Object|Array.<Object>} [create] - create a special event.
@@ -48,8 +49,8 @@ exports.execute = function (elements, options) {
             }
             promises.push(new Promise(function (resolve) {
                 target.addEventListener(listener.event, function (ev) {
-                    if (!_.has(listener, 'id') ||
-                        (ev.detail && _.has(ev.detail, 'id') && ev.detail.id === listener.id)) {
+                    if (!_.has(listener, 'detail') ||
+                        (ev.detail && _.isEqual(ev.detail, listener.detail))) {
                         resolve({event: listener.event, target: target});
                     }
                 });
@@ -101,7 +102,7 @@ exports.preconditions = function (elements, options) {
  * @returns {boolean} whether prop is valid for execution.
  */
 function _isPropertyValid(prop) {
-    if (_.has(prop, 'id') && !_.isString(prop.id) && !_.isNumber(prop.id)) return false;
+    if (_.has(prop, 'id') && !_.isObject(prop.detail)) return false;
     return (prop.event && _.isString(prop.event));
 }
 /**

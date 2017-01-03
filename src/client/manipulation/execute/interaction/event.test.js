@@ -18,7 +18,8 @@ describe('EventExecutor', function () {
         expect(EventExecutor.preconditions([], {create: {event: 1}})).to.be.false;
         expect(EventExecutor.preconditions([], {listen: {}})).to.be.false;
         expect(EventExecutor.preconditions([], {listen: {event: 'a'}})).to.be.false;
-        expect(EventExecutor.preconditions([], {create: {event: 'a', id: {}}})).to.be.false;
+        expect(EventExecutor.preconditions([], {create: {event: 'a', detail: 1}})).to.be.true;
+        expect(EventExecutor.preconditions([], {create: {event: 'a', detail: {}}})).to.be.true;
         expect(EventExecutor.preconditions([], {create: {event: 'a'}})).to.be.true;
     });
     it('event triggered without listener', (done) => {
@@ -48,25 +49,27 @@ describe('EventExecutor', function () {
         EventExecutor.execute([], {listen: {event: 'listen'}, trigger: {event: 'triggered'}});
         document.dispatchEvent(new CustomEvent('listen'));
     });
-    it('event id fires', (done) => {
+    it('event fires with matching detail', (done) => {
         document.addEventListener('ev', () => {
             done();
         });
-        EventExecutor.execute([], {listen: {event: 'listen', id: 1}, trigger: {event: 'ev'}});
+        EventExecutor.execute([],
+                              {listen: {event: 'listen', detail: {id: 1}}, trigger: {event: 'ev'}});
         document.dispatchEvent(new CustomEvent('listen', {detail: {id: 1}}));
     });
-    it('missing id still fired', (done) => {
+    it('missing detail still fired', (done) => {
         document.addEventListener('ev', () => {
             done();
         });
         EventExecutor.execute([], {listen: {event: 'listen'}, trigger: {event: 'ev'}});
         document.dispatchEvent(new CustomEvent('listen', {detail: {id: 1}}));
     });
-    it('event id - don\'t fire', (done) => {
+    it('mismatching detail - don\'t fire', (done) => {
         document.addEventListener('ev', () => {
             done('should not have fired');
         });
-        EventExecutor.execute([], {listen: {event: 'listen', id: 1}, trigger: {event: 'ev'}});
+        EventExecutor.execute([],
+                              {listen: {event: 'listen', detail: {id: 1}}, trigger: {event: 'ev'}});
         document.dispatchEvent(new CustomEvent('listen', {detail: {id: 2}}));
         _.delay(() => {done()}, 100);
     });

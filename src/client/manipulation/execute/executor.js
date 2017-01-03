@@ -4,20 +4,21 @@
  * Modifies the DOM, but in a good way.
  */
     // TODO(ohad): add `prepare` method that initiates external resource loading.
-let _               = require('./../../common/util/wrapper'),
-    Logger          = require('../../common/log/logger'),
-    Level           = require('../../common/log/logger').Level,
-    EventExecutor   = require('./interaction/event'),
-    FormExecutor    = require('./dom/form'),
-    GalleryExecutor = require('./media/gallery'),
-    InjectExecutor  = require('./dom/inject'),
-    SwalExecutor    = require('./interface/sweetalert'),
-    MoveExecutor    = require('./dom/move'),
-    RemoveExecutor  = require('./dom/remove'),
-    SortExecutor    = require('./dom/sort'),
-    StubExecutor    = require('./stub'),
-    StyleExecutor = require('./dom/style'),
-    TyperExecutor   = require('./interface/typer');
+let _                = require('./../../common/util/wrapper'),
+    Logger           = require('../../common/log/logger'),
+    Level            = require('../../common/log/logger').Level,
+    AlertifyExecutor = require('./interface/alertify'),
+    EventExecutor    = require('./interaction/event'),
+    FormExecutor     = require('./dom/form'),
+    GalleryExecutor  = require('./media/gallery'),
+    InjectExecutor   = require('./dom/inject'),
+    SwalExecutor     = require('./interface/sweetalert'),
+    MoveExecutor     = require('./dom/move'),
+    RemoveExecutor   = require('./dom/remove'),
+    SortExecutor     = require('./dom/sort'),
+    StubExecutor     = require('./stub'),
+    StyleExecutor    = require('./dom/style'),
+    TyperExecutor    = require('./interface/typer');
 
 /**
  * All existing executors keyed by their names.
@@ -25,17 +26,18 @@ let _               = require('./../../common/util/wrapper'),
  * @private
  */
 let _executorByName = {
-    'event'  : EventExecutor,
-    'form'   : FormExecutor,
-    'gallery': GalleryExecutor,
-    'inject' : InjectExecutor,
-    'move'   : MoveExecutor,
-    'remove' : RemoveExecutor,
-    'sort'   : SortExecutor,
-    'stub'   : StubExecutor,
-    'style'  : StyleExecutor,
-    'swal'   : SwalExecutor,
-    'typer'  : TyperExecutor
+    'alertify': AlertifyExecutor,
+    'event'   : EventExecutor,
+    'form'    : FormExecutor,
+    'gallery' : GalleryExecutor,
+    'inject'  : InjectExecutor,
+    'move'    : MoveExecutor,
+    'remove'  : RemoveExecutor,
+    'sort'    : SortExecutor,
+    'stub'    : StubExecutor,
+    'style'   : StyleExecutor,
+    'swal'    : SwalExecutor,
+    'typer'   : TyperExecutor
 };
 
 /**

@@ -1,11 +1,12 @@
 /**
  * Proudly created by ohad on 01/01/2017.
  */
-const galleryId      = require('../../manipulation/execute/media/gallery').idPrefix,
-      _              = require('../../common/util/wrapper'),
-      idleEventName  = require('../../common/events/idle').name(),
-      modalEventName = require('../../manipulation/execute/interface/sweetalert').eventName();
-module.exports       = {
+const galleryId         = require('../../manipulation/execute/media/gallery').idPrefix,
+      _                 = require('../../common/util/wrapper'),
+      idleEventName     = require('../../common/events/idle').name(),
+      modalEventName    = require('../../manipulation/execute/interface/sweetalert').eventName(),
+      alertifyEventName = require('../../manipulation/execute/interface/alertify').eventName();
+module.exports          = {
     storage    : {
         name: 'local'
     },
@@ -47,17 +48,16 @@ module.exports       = {
                                             margin-top: 0; }
                                         #daydeal .container {padding: 0}
                                         #daydeal .hotel_phone {
-                                            width: 70%;
-                                            padding: 5px;
-                                            margin: 10px 0 0 40px}
+                                            width: 70%; padding: 5px; margin-top: 10px;
+                                            border-radius: 10px;
+                                            margin-right: 15%; margin-left: 15%}
+                                        #daydeal #content .group_sale_info .TotalRating {
+                                            width: 70%; padding: 5px;
+                                            margin-right: 15%; margin-left: 15%}
                                         #daydeal #content div.hotel_deal h2 {
-                                            width:100%;
-                                            height: 85px;
-                                            font-size:28px;
-                                            padding: 0}
+                                            width:100%; height: 85px; font-size:28px; padding: 0}
                                         #daydeal #content #${galleryId} ul {
-                                            padding: 0;
-                                            width: 100%}
+                                            padding: 0; width: 100%}
                                         #daydeal #content div#${galleryId} {height: 320px}
                                         #daydeal #content .percent {z-index: 1001}
                                         #daydeal #content .comments_deal_text {z-index: 1001}
@@ -94,6 +94,11 @@ module.exports       = {
                                 name     : 'move',
                                 selectors: '#content .hotel_phone',
                                 options  : {parentSelector: '.group_sale_info'}
+                            },
+                            {
+                                name     : 'move',
+                                selectors: '.TotalRating:first-of-type',
+                                options  : {parentSelector: '.group_sale_info', copy: true}
                             },
                             {
                                 name     : 'gallery',
@@ -166,11 +171,25 @@ module.exports       = {
                                                  title             : 'עדיין מתלבט..',
                                                  type              : 'info',
                                                  text              : 'נציג שלנו ישמח לדבר איתך',
-                                                 timer             : 1000000,
+                                                 timer             : 10000,
                                                  confirmButtonColor: '#32CD32',
                                                  showCloseButton   : true,
                                                  confirmButtonText : 'חייג עכשיו'
                                              });
+                                    }
+                                }
+                            },
+                            {
+                                name   : 'alertify',
+                                options: {
+                                    alertifyFn: function (alertify) {
+                                        console.log('alertify');
+                                        let notification       =
+                                                alertify.success('test');
+                                        notification.ondismiss = () => {
+                                            document.dispatchEvent(
+                                                new CustomEvent('brainpal-alertify-dismiss'));
+                                        };
                                     }
                                 }
                             },
@@ -181,7 +200,8 @@ module.exports       = {
                                     create: {
                                         event  : 'idle',
                                         options: {
-                                            waitTime: 5000
+                                            waitTime: 3000,
+                                            id      : 'reviews'
                                         }
                                     }
                                 }
@@ -189,7 +209,29 @@ module.exports       = {
                             {
                                 name   : 'event',
                                 options: {
-                                    listen : {event: idleEventName},
+                                    listen : {event: idleEventName, id: 'reviews'},
+                                    trigger: {
+                                        event: alertifyEventName
+                                    }
+                                }
+                            },
+                            {
+                                name   : 'event',
+                                options: {
+                                    listen: {event: 'brainpal-alertify-dismiss', selector: 'body'},
+                                    create: {
+                                        event  : 'idle',
+                                        options: {
+                                            waitTime: 3000,
+                                            id      : 'modal'
+                                        }
+                                    }
+                                }
+                            },
+                            {
+                                name   : 'event',
+                                options: {
+                                    listen : {event: idleEventName, id: 'modal'},
                                     trigger: {
                                         event: modalEventName
                                     }

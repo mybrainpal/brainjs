@@ -5,6 +5,13 @@ let _            = require('./../../../common/util/wrapper'),
     Logger       = require('../../../common/log/logger'),
     Level        = require('../../../common/log/logger').Level,
     StubExecutor = require('./../stub');
+
+/**
+ * Appending a class to a copied element, so that it is easy to differentiate from the original.
+ * @type {string}
+ */
+exports.copiedClass = 'brainpal-copy';
+
 /**
  * Moves element within the DOM, to ensure the OCD-ness of the entire system.
  * @param {Array.<Element>|NodeList} elements
@@ -46,9 +53,8 @@ exports.execute = function (elements, options) {
  */
 exports.preconditions = function (elements, options) {
     let i, nextSibling, parent;
-    if (!StubExecutor.preconditions(elements, options) || elements.length !== 1) {
-        return false;
-    }
+    if (!StubExecutor.preconditions(elements, options)) return false;
+    if (elements.length !== 1) return false;
     for (i = 0; i < elements.length; i++) {
         if (elements[i] === document || elements[i] === document.documentElement ||
             elements[i] === window || !_.isElement(elements[i].parentNode) ||
@@ -99,6 +105,7 @@ function _prepare(elem, parent, copy) {
     } else {
         prepared = elem;
     }
+    if (copy) prepared.classList.add(exports.copiedClass);
     return prepared;
 }
 
