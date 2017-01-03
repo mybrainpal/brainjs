@@ -10,10 +10,11 @@ let _            = require('./../../../common/util/wrapper'),
  * @param {Array.<Element>|NodeList} elements
  * @param {Object} options
  *  @property {string} [html] - to inject into target elements
+ *  @property {boolean} [append = false] - whether to append the data.
  *  @property {string} [sourceSelector] - selector to source element, from which to copy html.
  */
 exports.execute = function (elements, options) {
-    let innerHTML = '', src;
+    let html = '', src;
     if (!exports.preconditions(elements, options)) {
         throw new TypeError('InjectExecutor: Invalid input.');
     }
@@ -24,13 +25,11 @@ exports.execute = function (elements, options) {
                        'InjectExecutor: could find source at ' + options.sourceSelector);
             return;
         }
-        innerHTML = src.innerHTML;
+        html = src.innerHTML;
     } else if (_.has(options, 'html')) {
-        innerHTML = options.html;
+        html = options.html;
     }
-    _.forEach(elements, function (elem) {
-        elem.innerHTML = innerHTML;
-    });
+    elements[0].innerHTML = options.append ? elements[0].innerHTML + html : html;
 };
 
 /**
@@ -40,9 +39,10 @@ exports.execute = function (elements, options) {
  */
 exports.preconditions = function (elements, options) {
     if (!StubExecutor.preconditions(elements, options)) return false;
-    if (!elements.length) return false;
+    if (elements.length !== 1) return false;
     if (!_.has(options, 'html') && !options.sourceSelector) return false;
     if (_.has(options, 'html') && !_.isString(options.html)) return false;
+    if (_.has(options, 'append') && !_.isBoolean(options.append)) return false;
     if (_.has(options, 'sourceSelector')) {
         if (!_.isString(options.sourceSelector)) return false;
         try {

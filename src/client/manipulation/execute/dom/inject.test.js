@@ -5,8 +5,8 @@ let expect         = require('chai').expect,
     InjectExecutor = require('./inject');
 
 describe('InjectExecutor', function () {
-    let div, src, target;
-    before(function () {
+    let div, src, target, origText;
+    before(() => {
         div = document.createElement('div');
         div.setAttribute('id', 'westworld');
         document.querySelector('body').appendChild(div);
@@ -15,30 +15,39 @@ describe('InjectExecutor', function () {
         src.classList.add('host');
         div.appendChild(src);
         target             = document.createElement('p');
-        target.textContent = 'William';
+        origText           = 'The man in black';
+        target.textContent = origText;
         target.classList.add('human');
         div.appendChild(target);
-        target             = target.cloneNode(true);
-        target.textContent = 'The man in black';
-        div.appendChild(target);
     });
-    after(function () {
+    beforeEach(() => {
+        target.textContent = origText;
+    });
+    after(() => {
         div.parentNode.removeChild(div);
     });
-    it('Inject from source', function () {
+    it('Inject from source', () => {
         InjectExecutor.execute(document.querySelectorAll('#westworld>.human'),
                                {sourceSelector: '#westworld>.host'});
         document.querySelectorAll('#westworld>.human').forEach(function (elem) {
             expect(elem.innerHTML).to.be.equal(src.innerHTML);
         });
     });
-    it('Inject from html', function () {
+    it('Inject from html', () => {
         InjectExecutor.execute(document.querySelectorAll('#westworld>.human'), {html: 'the maze'});
         document.querySelectorAll('#westworld>.human').forEach(function (elem) {
             expect(elem.innerHTML).to.be.equal('the maze');
         });
     });
-    it('Preconditions', function () {
+    it('append html', () => {
+        const toAppend = 'looks for the maze';
+        InjectExecutor.execute(document.querySelectorAll('#westworld>.human'), {
+            html: toAppend, append: true
+        });
+        expect(document.querySelector('#westworld>.human').innerHTML).to.be
+                                                                     .equal(origText + toAppend);
+    });
+    it('Preconditions', () => {
         expect(InjectExecutor.preconditions([], {})).to.be.false;
         expect(InjectExecutor.preconditions([], {html: ''})).to.be.false;
         expect(
@@ -49,6 +58,8 @@ describe('InjectExecutor', function () {
                                             {html: '', sourceSelector: ''})).to.be.false;
         expect(InjectExecutor.preconditions(document.querySelectorAll('body'),
                                             {sourceSelector: ''})).to.be.false;
+        expect(InjectExecutor.preconditions(document.querySelectorAll('body'),
+                                            {html: '', append: 1})).to.be.false;
         expect(InjectExecutor.preconditions(document.querySelectorAll('body'),
                                             {sourceSelector: 'body'})).to.be.true;
         expect(
