@@ -1,11 +1,13 @@
 /**
  * Proudly created by ohad on 01/01/2017.
  */
-const galleryId         = require('../../manipulation/execute/media/gallery').idPrefix,
-      _                 = require('../../common/util/wrapper'),
-      idleEventName     = require('../../common/events/idle').name(),
-      modalEventName    = require('../../manipulation/execute/interface/sweetalert').eventName(),
-      alertifyEventName = require('../../manipulation/execute/interface/alertify').eventName();
+const galleryId         = require('../../client/manipulation/execute/media/gallery').idPrefix,
+      _                 = require('../../client/common/util/wrapper'),
+      idleEventName     = require('../../client/common/events/idle').name(),
+      modalEventName    = require('../../client/manipulation/execute/interface/sweetalert')
+          .eventName(),
+      alertifyEventName = require('../../client/manipulation/execute/interface/alertify')
+          .eventName();
 module.exports          = {
     storage    : {
         name: 'local'
@@ -211,7 +213,7 @@ module.exports          = {
                                             alertify.dismissAll();
                                             document.dispatchEvent(
                                                 new CustomEvent('brainpal-alertify-dismiss'));
-                                        }, 5500);
+                                        }, 8500);
                                     },
                                     rtl       : true
                                 }
@@ -223,7 +225,7 @@ module.exports          = {
                                     create: {
                                         event  : 'idle',
                                         options: {
-                                            waitTime: 3000,
+                                            waitTime: 10000,
                                             detail  : {id: 'reviews'}
                                         }
                                     }
@@ -245,7 +247,7 @@ module.exports          = {
                                     create: {
                                         event  : 'idle',
                                         options: {
-                                            waitTime: 3000,
+                                            waitTime: 10000,
                                             detail  : {id: 'modal'}
                                         }
                                     }
