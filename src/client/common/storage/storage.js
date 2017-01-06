@@ -51,7 +51,7 @@ exports.isReady = isReady;
  * Instantiates a new instance of storageName in _storageByName, with the key `storageName`.
  * @param {string} storageName - of the storage to create
  * @param {Object} [options] - that will be passed to the specific storage.
- *  @property {Function} [onReadyHandler] - to invoke after a storage had been initiated.
+ *  @property {function} [onReadyHandler] - to invoke after a storage had been initiated.
  * @returns {Object} the created object.
  */
 function create(storageName, options) {

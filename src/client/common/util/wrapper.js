@@ -4,6 +4,6 @@
 let _ = require('lodash');
 
 _.css  = require('./style');
-_.text = require('./dom').text;
+_.merge(_, require('./dom'));
 
 module.exports = _;

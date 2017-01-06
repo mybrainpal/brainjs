@@ -3,19 +3,17 @@
  */
 let _            = require('../../../common/util/wrapper'),
     typer        = require('./typer-js'),
-    StubExecutor = require('../stub'),
-    css          = require('typer-js/typer.css');
+    css    = require('typer-js/typer.css'),
+    Master = require('../master');
+Master.register(exports.name, exports);
+exports.name = 'typer';
 /**
  * Creates a typing effect using the magical typer-js library.
  * https://github.com/qodesmith/typer
- * @param {Array.<Element>|NodeList} elements
  * @param {Object} options
- *  @property {Function} typerFn - runs typer-js code
+ *  @property {function} typerFn - runs typer-js code
  */
-exports.execute = function (elements, options) {
-    if (!exports.preconditions(elements, options)) {
-        throw new TypeError('TyperExecutor: Invalid input.');
-    }
+exports.execute = function (options) {
     if (!_styleLoaded) {
         _.css.load(css);
         _styleLoaded = true;
@@ -24,13 +22,10 @@ exports.execute = function (elements, options) {
 };
 
 /**
- * @param {Array.<Element>|NodeList} elements - must be empty, as typer-js works with selector
  * @param {Object} options
  * @returns {boolean} whether the executor has a valid input.
  */
-exports.preconditions = function (elements, options) {
-    if (!StubExecutor.preconditions(elements, options)) return false;
-    if (elements.length) return false;
+exports.preconditions = function (options) {
     return _.isFunction(options.typerFn);
 
 };

@@ -1,27 +1,30 @@
 /**
  * Proudly created by ohad on 19/12/2016.
  */
-let StubExecutor = require('./../stub');
+const _      = require('../../../common/util/wrapper'),
+      Master = require('../master');
+Master.register(exports.name, exports);
+exports.name = 'form';
 /**
  * Manipulates form elements, for the good of society.
- * @param {Array.<Element>|NodeList} elements
  * @param {Object} options
+ *  @property {string} target - css selector
  *  @property {boolean} [focus] - whether to focus on the first provided element.
  */
-exports.execute = function (elements, options) {
-    if (!exports.preconditions(elements, options)) {
-        throw new TypeError('FormExecutor: Invalid input.');
-    }
+exports.execute = function (options) {
+    let target = document.querySelector(options.target);
     if (options.focus) {
-        elements[0].focus();
+        target.focus();
     }
 };
 
 /**
- * @param {Array.<Element>|NodeList} elements
  * @param {Object} options
  * @returns {boolean} whether the executor has a valid input.
  */
-exports.preconditions = function (elements, options) {
-    return StubExecutor.preconditions(elements, options) && !!elements.length;
+exports.preconditions = function (options) {
+    try {
+        if (!document.querySelector(options.target)) return false;
+    } catch (e) { return false; }
+    return _.isNil(options.focus) || _.isBoolean(options.focus);
 };

@@ -60,7 +60,7 @@ exports.init = function (options) {
 
 /**
  * Runs handler as soon as the storage is ready.
- * @param {Function} handler
+ * @param {function} handler
  */
 exports.onReady = function (handler) {
     GoogleAnalytics.onReady(handler)

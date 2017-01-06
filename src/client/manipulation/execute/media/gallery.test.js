@@ -15,7 +15,7 @@ describe('GalleryExecutor', function () {
         imgWide        = document.createElement('img');
         container      = document.createElement('div');
         smallContainer = document.createElement('div');
-        spec           = {sourceSelectors: 'img'};
+        spec = {sourceSelectors: 'img', container: '#container'};
         animationSpec  = _.merge({interval: 100, animationClass: 'fxSnapIn'}, spec);
         document.querySelector('body').appendChild(div);
         imgNarrow.src = ''; //'img/sad.jpg';
@@ -43,26 +43,24 @@ describe('GalleryExecutor', function () {
         div.parentNode.removeChild(div);
     });
     it('preconditions', () => {
-        expect(GalleryExecutor.preconditions([container], spec)).to.be.true;
-        expect(GalleryExecutor.preconditions([container, smallContainer],
-                                             spec)).to.be.false;
-        expect(GalleryExecutor.preconditions([container], {})).to.be.false;
-        expect(GalleryExecutor.preconditions([container], {sourceSelectors: '#nada'})).to.be.false;
-        expect(GalleryExecutor.preconditions([container], {sourceSelectors: ''})).to.be.false;
-        expect(GalleryExecutor.preconditions([container], {sourceSelectors: 1})).to.be.false;
-        expect(GalleryExecutor.preconditions([container],
-                                             _.merge({animationClass: '1'}, spec))).to.be.false;
+        expect(GalleryExecutor.preconditions(spec)).to.be.true;
+        expect(GalleryExecutor.preconditions(
+            {sourceSelectors: 'img', container: '#nada'})).to.be.false;
+        expect(GalleryExecutor.preconditions({})).to.be.false;
+        expect(GalleryExecutor.preconditions(
+            {sourceSelectors: '#nada', container: 'div'})).to.be.false;
+        expect(GalleryExecutor.preconditions(_.merge({animationClass: '1'}, spec))).to.be.false;
     });
     it('creation', () => {
-        GalleryExecutor.execute([container], spec);
+        GalleryExecutor.execute(spec);
         expect(container.querySelectorAll('img')).to.have.length(2);
     });
     it('assign animation class', () => {
-        GalleryExecutor.execute([container], _.merge({animationClass: 'fxSnapIn'}, spec));
+        GalleryExecutor.execute(animationSpec);
         expect(container.querySelector(`.${styles.fxSnapIn}`)).to.be.ok;
     });
     it('animation', (done) => {
-        GalleryExecutor.execute([container], animationSpec);
+        GalleryExecutor.execute(animationSpec);
         expect(container.querySelector(`li.${styles.current}`).classList
                         .contains(styles.navOutNext)).to.be.false;
         _.delay(() => {
@@ -72,7 +70,7 @@ describe('GalleryExecutor', function () {
         }, 200);
     });
     it('animation responds to mouse', (done) => {
-        GalleryExecutor.execute([container], animationSpec);
+        GalleryExecutor.execute(animationSpec);
         container.querySelector(`.${styles.component}`).dispatchEvent(new Event('mouseover'));
         _.delay(() => {
             expect(container.querySelector(`li.${styles.current}`).classList
@@ -86,8 +84,8 @@ describe('GalleryExecutor', function () {
         }, 400);
     });
     it('multiple galleries', () => {
-        GalleryExecutor.execute([container], _.merge({id: '1'}, spec));
-        GalleryExecutor.execute([smallContainer], _.merge({id: '2'}, spec));
+        GalleryExecutor.execute(_.merge({id: 1}, spec));
+        GalleryExecutor.execute(_.merge(_.cloneDeep(spec), {id: 2, container: '#small'}));
         expect(document.querySelectorAll(`.${styles.component}`)).to.have.length(2);
     });
     // it('narrow and wide', () => {

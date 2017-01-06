@@ -18,10 +18,11 @@ describe('FormExecutor', function () {
         form.parentNode.removeChild(form);
     });
     it('Focus element', function () {
-        FormExecutor.execute(document.querySelectorAll('#input'), {focus: true});
+        FormExecutor.execute({target: '#input', focus: true});
         expect(document.activeElement).to.be.equal(input);
     });
     it('Preconditions', function () {
-        expect(FormExecutor.preconditions([], {})).to.be.false;
+        expect(FormExecutor.preconditions({})).to.be.false;
+        expect(FormExecutor.preconditions({target: '#input1'})).to.be.false;
     })
 });

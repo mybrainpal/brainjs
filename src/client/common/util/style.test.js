@@ -1,7 +1,8 @@
 /**
  * Proudly created by ohad on 15/12/2016.
  */
-const chai      = require('chai'),
+const _         = require('lodash'),
+      chai      = require('chai'),
       expect    = require('chai').expect,
       StyleUtil = require('./style'),
       css       = require('./testdata/style.css'),
@@ -19,6 +20,13 @@ describe('StyleUtil', function () {
     });
     it('Input is verified', () => {
         expect(() => {StyleUtil.load(1)}).to.throw(TypeError);
+    });
+    it('loadable', () => {
+        expect(StyleUtil.loadable(1)).to.be.false;
+        const invalid = _.cloneDeep(css).push([]);
+        expect(StyleUtil.loadable(invalid)).to.be.false;
+        expect(StyleUtil.loadable('')).to.be.true;
+        expect(StyleUtil.loadable(css)).to.be.true;
     });
     it('Load css from import', () => {
         a1.setAttribute('class', 'stark');

@@ -27,42 +27,32 @@ describe('InjectExecutor', function () {
         div.parentNode.removeChild(div);
     });
     it('Inject from source', () => {
-        InjectExecutor.execute(document.querySelectorAll('#westworld>.human'),
-                               {sourceSelector: '#westworld>.host'});
+        InjectExecutor.execute({target: '#westworld>.human', sourceSelector: '#westworld>.host'});
         document.querySelectorAll('#westworld>.human').forEach(function (elem) {
             expect(elem.innerHTML).to.be.equal(src.innerHTML);
         });
     });
     it('Inject from html', () => {
-        InjectExecutor.execute(document.querySelectorAll('#westworld>.human'), {html: 'the maze'});
-        document.querySelectorAll('#westworld>.human').forEach(function (elem) {
-            expect(elem.innerHTML).to.be.equal('the maze');
-        });
+        InjectExecutor.execute({target: '#westworld>.human', html: 'the maze'});
+        expect(document.querySelector('#westworld>.human').innerHTML).to.be.equal('the maze');
     });
     it('append html', () => {
         const toAppend = 'looks for the maze';
-        InjectExecutor.execute(document.querySelectorAll('#westworld>.human'), {
-            html: toAppend, append: true
-        });
+        InjectExecutor.execute({target: '#westworld>.human', html: toAppend, append: true});
         expect(document.querySelector('#westworld>.human').innerHTML).to.be
                                                                      .equal(origText + toAppend);
     });
     it('Preconditions', () => {
-        expect(InjectExecutor.preconditions([], {})).to.be.false;
-        expect(InjectExecutor.preconditions([], {html: ''})).to.be.false;
+        expect(InjectExecutor.preconditions({})).to.be.false;
+        expect(InjectExecutor.preconditions({html: ''})).to.be.false;
         expect(
-            InjectExecutor.preconditions(document.querySelectorAll('body'), {html: 1})).to.be.false;
-        expect(InjectExecutor.preconditions(document.querySelectorAll('body'),
-                                            {sourceSelector: 1})).to.be.false;
-        expect(InjectExecutor.preconditions(document.querySelectorAll('body'),
-                                            {html: '', sourceSelector: ''})).to.be.false;
-        expect(InjectExecutor.preconditions(document.querySelectorAll('body'),
-                                            {sourceSelector: ''})).to.be.false;
-        expect(InjectExecutor.preconditions(document.querySelectorAll('body'),
-                                            {html: '', append: 1})).to.be.false;
-        expect(InjectExecutor.preconditions(document.querySelectorAll('body'),
-                                            {sourceSelector: 'body'})).to.be.true;
-        expect(
-            InjectExecutor.preconditions(document.querySelectorAll('body'), {html: ''})).to.be.true;
+            InjectExecutor.preconditions({target: 'body', html: 1})).to.be.false;
+        expect(InjectExecutor.preconditions({target: 'body', sourceSelector: 1})).to.be.false;
+        expect(InjectExecutor.preconditions(
+            {target: 'body', html: '', sourceSelector: ''})).to.be.false;
+        expect(InjectExecutor.preconditions({target: 'body', sourceSelector: ''})).to.be.false;
+        expect(InjectExecutor.preconditions({target: 'body', html: '', append: 1})).to.be.false;
+        expect(InjectExecutor.preconditions({target: 'body', sourceSelector: 'body'})).to.be.true;
+        expect(InjectExecutor.preconditions({target: 'body', html: ''})).to.be.true;
     })
 });

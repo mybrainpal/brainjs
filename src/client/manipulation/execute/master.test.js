@@ -2,11 +2,12 @@
  * Proudly created by ohad on 21/12/2016.
  */
 let expect   = require('chai').expect,
-    Executor = require('./executor');
+    Executor = require('./master');
 
 describe('Executor', function () {
     let form, input;
-    before(function () {
+    before(() => {
+        Executor.register('form', require('./dom/form'));
         form = document.createElement('form');
         form.setAttribute('id', 'form');
         document.querySelector('body').appendChild(form);
@@ -14,11 +15,11 @@ describe('Executor', function () {
         input.setAttribute('id', 'input');
         form.appendChild(input);
     });
-    after(function () {
+    after(() => {
         form.parentNode.removeChild(form);
     });
-    it('Focus element', function () {
-        Executor.execute('form', '#input', {options: {focus: true}});
+    it('Focus element', () => {
+        Executor.execute('form', {options: {target: '#input', focus: true}});
         expect(document.activeElement).to.be.equal(input);
     });
 });

@@ -1,14 +1,15 @@
 /**
  * Proudly created by ohad on 23/12/2016.
  */
-let _            = require('./../../../common/util/wrapper'),
-    EventFactory = require('./../../../common/events/factory'),
+let _            = require('../../../common/util/wrapper'),
+    EventFactory = require('../../../common/events/factory'),
     Logger       = require('../../../common/log/logger'),
     Level        = require('../../../common/log/logger').Level,
-    StubExecutor = require('./../stub');
+    Master       = require('../master');
+Master.register(exports.name, exports);
+exports.name = 'event';
 /**
  * Creates and triggers events and custom events.
- * @param {Array.<Element>|NodeList} elements
  * @param {Object} options
  *  @property {Object|Array.<Object>} [listen] - listens to a certain event in order to trigger
  *   another one.
@@ -27,15 +28,12 @@ let _            = require('./../../../common/util/wrapper'),
  *      @property {string} event
  *      @property {Object} [options] - for the event constructor.
  */
-exports.execute = function (elements, options) {
-    let promises = [];
-    if (!exports.preconditions(elements, options)) {
-        throw new TypeError('EventExecutor: Invalid input.');
-    }
+exports.execute = function (options) {
     if (options.listen) {
         if (!_.isArray(options.listen)) {
             options.listen = [options.listen];
         }
+        let promises = [];
         _.forEach(options.listen, function (listener) {
             let target = document;
             if (listener.selector) {
@@ -48,12 +46,9 @@ exports.execute = function (elements, options) {
                 }
             }
             promises.push(new Promise(function (resolve) {
-                target.addEventListener(listener.event, function (ev) {
-                    if (!_.has(listener, 'detail') ||
-                        (ev.detail && _.isEqual(ev.detail, listener.detail))) {
-                        resolve({event: listener.event, target: target});
-                    }
-                });
+                _.on(listener.event,
+                     () => {resolve({event: listener.event, target: target});},
+                     listener.detail, target);
             }));
         });
         if (options.waitForAll) {
@@ -70,14 +65,11 @@ exports.execute = function (elements, options) {
     }
 };
 /**
- * @param {Array.<Element>|NodeList} elements - must be empty
  * @param {Object} options
  * @returns {boolean} whether the executor has a valid input.
  */
-exports.preconditions = function (elements, options) {
+exports.preconditions = function (options) {
     let i, j, props = ['listen', 'create', 'trigger'];
-    if (!StubExecutor.preconditions(elements, options)) return false;
-    if (_.isEmpty(options)) return false;
     if (options.waitForAll && !_.isBoolean(options.waitForAll)) {
         return false;
     } else if (options.waitForAll &&
@@ -93,8 +85,8 @@ exports.preconditions = function (elements, options) {
             } else if (!_isPropertyValid(options[props[i]])) return false;
         }
     }
-    if (_.isEmpty(options.create) && _.isEmpty(options.trigger)) return false;
-    return _.isEmpty(elements);
+    return !_.isEmpty(options.create) || !_.isEmpty(options.trigger);
+
 };
 
 /**

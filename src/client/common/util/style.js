@@ -16,16 +16,23 @@ exports.load = function (css) {
     let styleElement  = document.createElement('style'),
         entry         = document.getElementsByTagName('script')[0];
     styleElement.type = 'text/css';
+    if (!exports.loadable(css)) throw TypeError('StyleUtil: css is of invalid type.');
     if (_.isString(css)) {
         styleElement.textContent = css;
-    } else if (_.isArray(css) && css.length === 1 && _.isArray(css[0]) && css[0].length === 4 &&
-               _.isString(css[0][1])) { // Handles webpack css and scss require.
-        styleElement.textContent = css[0][1];
     } else {
-        throw TypeError('StyleUtil: css is of invalid type.');
+        styleElement.textContent = _.last(css)[1];
     }
-    styleElement.textContent = typeof css === 'string' ? css : css[0][1];
     styleElement.setAttribute(exports.identifyingAttribute, 'true');
     entry.parentNode.insertBefore(styleElement, entry);
     return styleElement;
+};
+
+/**
+ * @param {Object|string} css - css text or the object provided by using require on css files.
+ */
+exports.loadable = function (css) {
+    if (_.isString(css)) return true;
+    return _.isArray(css) && css.length && _.isArray(_.last(css)) && _.last(css).length === 4 &&
+           _.isString(_.last(css)[1]);
+
 };

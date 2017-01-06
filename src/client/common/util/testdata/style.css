@@ -1,3 +1,6 @@
+/* Adding import for testing */
+@import url(http://fonts.googleapis.com/css?family=Gochi+Hand);
+
 a {
     padding-left : 100px;
 }

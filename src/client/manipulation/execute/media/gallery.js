@@ -2,9 +2,11 @@
  * Proudly created by ohad on 25/12/2016.
  */
 const _            = require('../../../common/util/wrapper'),
-      StubExecutor = require('../stub'),
-      css = require('./gallery.scss');
-const styles                   = css.locals;
+      css    = require('./gallery.scss'),
+      Master = require('../master');
+Master.register(exports.name, exports);
+exports.name = 'gallery';
+const styles = css.locals;
 /**
  * A prefix to all galleries.
  * @type {string}
@@ -20,47 +22,45 @@ const NavigationDirection = {
 };
 /**
  * Creates a gallery and injects it into elements[0].
- * @param {Array.<Element>|NodeList} elements
  * @param {Object} options
+ *  @property {string} container - selector of container element.
  *  @property {string|Array.<string>} sourceSelectors - provided as css selectors
  *  @property {string} [animationClass = fxSoftScale]
  *  @property {string|number} id
  *  @property {number} interval - time in ms to change items.
  */
-exports.execute = function (elements, options) {
-    if (!exports.preconditions(elements, options)) {
-        throw new TypeError('GalleryExecutor: Invalid input.');
-    }
+exports.execute = function (options) {
     if (!_styleLoaded) {
         _.css.load(css);
         _styleLoaded = true;
     }
-    elements[0].appendChild(_createGallery(elements[0], options));
+    let container = document.querySelector(options.container);
+    container.appendChild(_createGallery(container, options));
 };
 
 /**
- * @param {Array.<Element>|NodeList} elements
  * @param {Object} options
  * @returns {boolean} whether the executor has a valid input.
  */
-exports.preconditions = function (elements, options) {
-    if (!StubExecutor.preconditions(elements, options)) return false;
-    if (elements.length !== 1) return false;
+exports.preconditions = function (options) {
+    try {
+        if (!document.querySelector(options.container)) return false;
+    } catch (e) { return false; }
     if (!options.sourceSelectors) return false;
     if (!_.isArray(options.sourceSelectors) && !_.isString(options.sourceSelectors)) return false;
-    if (options.animationClass && !_.includes(_animationClasses, options.animationClass)) {
-        return false;
-    }
-    if (options.id && !_.isString(options.id) && !_.isNumber(options.id)) return false;
-    if (_.isString(options.sourceSelectors)) {
-        try { return !!document.querySelectorAll(options.sourceSelectors).length; }
+    const srcSelectors = _.isArray(options.sourceSelectors) ? options.sourceSelectors :
+                         [options.sourceSelectors];
+    for (let i = 0; i < srcSelectors.length; i++) {
+        try { if (!document.querySelector(srcSelectors[i])) return false; }
         catch (e) { return false; }
     }
-    for (let i = 0; i < options.sourceSelectors.length; i++) {
-        if (document.querySelectorAll(options.sourceSelectors[i]).length) return true;
+    if (!_.isNil(options.animationClass) &&
+        !_.includes(_animationClasses, options.animationClass)) {
+        return false;
     }
+    return _.isNil(options.id) || _.isString(options.id) || _.isNumber(options.id);
 
-    return false;
+
 };
 
 /**
@@ -70,7 +70,7 @@ exports.preconditions = function (elements, options) {
  * @private
  */
 function _createGallery(container, options) {
-    let sources           = [], component, ul;
+    let sources             = [], component, ul;
     options.sourceSelectors =
         _.isArray(options.sourceSelectors) ? options.sourceSelectors : [options.sourceSelectors];
     _.forEach(options.sourceSelectors, (sel) => {
@@ -90,7 +90,7 @@ function _createGallery(container, options) {
         // TODO(ohad): support multiple elements per item.
         let li = document.createElement('li');
         li.appendChild(elem);
-        if (elem.nodeName.toLowerCase() === 'img') {
+        if (elem.nodeName === 'IMG') {
             const containerRatio = container.clientWidth / container.clientHeight;
             const imgRatio       = elem.naturalWidth / elem.naturalHeight;
             elem.classList.add(containerRatio > imgRatio ? styles.narrow : styles.wide);

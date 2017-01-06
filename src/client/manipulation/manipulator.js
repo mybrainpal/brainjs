@@ -3,9 +3,9 @@
  *
  * Manipulates the DOM to fill our customers pockets with 'em dollars.
  */
-let _ = require('./../common/util/wrapper'),
+let _         = require('./../common/util/wrapper'),
     Collector = require('./../collection/collector'),
-    Executor  = require('./execute/executor');
+    Executor  = require('./execute/master');
 
 /**
  * Runs an experiment, or A/B test, in order to find out an improved versions of the customer's

@@ -1,10 +1,12 @@
 /**
  * Proudly created by ohad on 25/12/2016.
  */
-let _            = require('./../../../common/util/wrapper'),
-    Logger       = require('../../../common/log/logger'),
-    Level        = require('../../../common/log/logger').Level,
-    StubExecutor = require('./../stub');
+let _      = require('./../../../common/util/wrapper'),
+    Logger = require('../../../common/log/logger'),
+    Level  = require('../../../common/log/logger').Level,
+    Master = require('../master');
+Master.register(exports.name, exports);
+exports.name = 'move';
 
 /**
  * Appending a class to a copied element, so that it is easy to differentiate from the original.
@@ -14,18 +16,16 @@ exports.copiedClass = 'brainpal-copy';
 
 /**
  * Moves element within the DOM, to ensure the OCD-ness of the entire system.
- * @param {Array.<Element>|NodeList} elements
  * @param {Object} options
+ *  @property {string} target - as css selector.
  *  @property {string} [parentSelector] - css selector of parent element.
  *  @property {string} [nextSiblingSelector] - css selector of desired next sibling. If none
  *  provided or if failed to select, the element will be appended.
- *  @property {boolean} [copy = false] - whether to copy the source element (i.e. elements[0]).
+ *  @property {boolean} [copy = false] - whether to copy target.
  */
-exports.execute = function (elements, options) {
-    let nextSibling, parent, toInsert;
-    if (!exports.preconditions(elements, options)) {
-        throw new TypeError('DomMoveExecutor: Invalid input.');
-    }
+exports.execute = function (options) {
+    let nextSibling, parent, toInsert,
+        target = document.querySelector(options.target);
     if (options.nextSiblingSelector) {
         nextSibling = document.querySelector(options.nextSiblingSelector);
         if (!_.isElement(nextSibling)) {
@@ -40,28 +40,25 @@ exports.execute = function (elements, options) {
                                     options.parentSelector);
         }
     }
-    toInsert = _prepare(elements[0], parent, options.copy);
+    toInsert = _prepare(target, parent, options.copy);
     _insert(toInsert, parent, nextSibling);
 };
 
 /**
- * @param {Array.<Element>|NodeList} elements
  * @param {Object} options
- *  @property {string} [parentSelector]
- *  @property {string} [nextSiblingSelector]
  * @returns {boolean} whether the executor has a valid input.
  */
-exports.preconditions = function (elements, options) {
-    let i, nextSibling, parent;
-    if (!StubExecutor.preconditions(elements, options)) return false;
-    if (elements.length !== 1) return false;
-    for (i = 0; i < elements.length; i++) {
-        if (elements[i] === document || elements[i] === document.documentElement ||
-            elements[i] === window || !_.isElement(elements[i].parentNode) ||
-            (document.querySelector('body') && elements[i] === document.querySelector('body')) ||
-            (document.querySelector('head') && elements[i] === document.querySelector('head'))) {
-            return false;
-        }
+exports.preconditions = function (options) {
+    let nextSibling, parent, target;
+    try {
+        target = document.querySelector(options.target);
+        if (!target) return false;
+    } catch (e) { return false; }
+    if (target === document || target === document.documentElement ||
+        target === window || !_.isElement(target.parentNode) ||
+        (target === document.querySelector('body')) ||
+        (target === document.querySelector('head'))) {
+        return false;
     }
     if (!options.parentSelector && !options.nextSiblingSelector) {
         return false;
@@ -99,7 +96,7 @@ exports.preconditions = function (elements, options) {
 function _prepare(elem, parent, copy) {
     let prepared;
     elem = copy ? elem.cloneNode(true) : elem;
-    if (parent && parent.nodeName.toLowerCase() === 'ul' && elem.nodeName.toLowerCase() !== 'li') {
+    if (parent && parent.nodeName === 'UL' && elem.nodeName !== 'LI') {
         prepared = document.createElement('li');
         prepared.appendChild(elem);
     } else {

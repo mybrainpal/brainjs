@@ -3,20 +3,18 @@
  */
 let _            = require('../../../common/util/wrapper'),
     sweetAlert2  = require('sweetalert2'),
-    StubExecutor = require('../stub'),
-    css          = require('sweetalert2/dist/sweetalert2.css');
+    css    = require('sweetalert2/dist/sweetalert2.css'),
+    Master = require('../master');
+Master.register(exports.name, exports);
+exports.name = 'sweetalert';
 /**
  * Creates a modal using sweet alerts 2, the modal is triggered by an external event.
  * https://limonte.github.io/sweetalert2/
- * @param {Array.<Element>|NodeList} elements
  * @param {Object} options
- *  @property {Function} modalFn - runs sweetalert2 code
+ *  @property {function} modalFn - runs sweetalert2 code
  *  @property {string|number} [id]
  */
-exports.execute = function (elements, options) {
-    if (!exports.preconditions(elements, options)) {
-        throw new TypeError('SwalExecutor: Invalid input.');
-    }
+exports.execute = function (options) {
     if (!_styleLoaded) {
         _.css.load(css);
         _styleLoaded = true;
@@ -27,13 +25,10 @@ exports.execute = function (elements, options) {
 };
 
 /**
- * @param {Array.<Element>|NodeList} elements - must be empty, as modals are full screen.
  * @param {Object} options
  * @returns {boolean} whether the executor has a valid input.
  */
-exports.preconditions = function (elements, options) {
-    if (!StubExecutor.preconditions(elements, options)) return false;
-    if (elements.length) return false;
+exports.preconditions = function (options) {
     if (!_.isFunction(options.modalFn)) return false;
     return !(options.id && !_.isNumber(options.id) && !_.isString(options.id));
 

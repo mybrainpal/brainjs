@@ -115,7 +115,7 @@ describe('IdleEvent', function () {
 /**
  * @param {string|number} id - that was used to create the IdleEvent
  * @param {MochaDone} done - as used in the unit tests.
- * @returns {Function} that invokes done with an error message if id is nil or matches
+ * @returns {function} that invokes done with an error message if id is nil or matches
  *     event.detail.id.
  * @private
  */
@@ -129,7 +129,7 @@ function _errorFn(id, done) {
 /**
  * @param {string|number} id - that was used to create the IdleEvent
  * @param {Function|MochaDone} callback
- * @returns {Function} that invokes done without args if id is nil or matches event.detail.id.
+ * @returns {function} that invokes done without args if id is nil or matches event.detail.id.
  * @private
  */
 function _successFn(id, callback) {

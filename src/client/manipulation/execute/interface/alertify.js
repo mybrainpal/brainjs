@@ -5,21 +5,18 @@ let _            = require('./../../../common/util/wrapper'),
     alertify     = require('alertifyjs'),
     css    = require('alertifyjs/build/css/alertify.css'),
     cssRtl = require('alertifyjs/build/css/alertify.rtl.css'),
-    StubExecutor = require('./../stub');
+    Master = require('../master');
+Master.register(exports.name, exports);
+exports.name = 'alertify';
 
 /**
- * Creates a modal using sweet alerts 2, the modal is triggered by an external event.
- * https://limonte.github.io/sweetalert2/
- * @param {Array.<Element>|NodeList} elements
+ * Notifies the user, using alertifyjs. http://alertifyjs.com/
  * @param {Object} options
- *  @property {Function} alertifyFn - runs alertifyjs code
+ *  @property {function} alertifyFn - runs alertifyjs code
  *  @property {string|number} [id]
  *  @property {boolean} [rtl = false] - whether to load rtl style.
  */
-exports.execute = function (elements, options) {
-    if (!exports.preconditions(elements, options)) {
-        throw new TypeError('AlertifyExecutor: Invalid input.');
-    }
+exports.execute = function (options) {
     if (!_styleLoaded) {
         // TODO(ohad): support multiple style loads.
         if (options.rtl) {
@@ -35,13 +32,10 @@ exports.execute = function (elements, options) {
 };
 
 /**
- * @param {Array.<Element>|NodeList} elements - must be empty, as alerts are independent.
  * @param {Object} options
  * @returns {boolean} whether the executor has a valid input.
  */
-exports.preconditions = function (elements, options) {
-    if (!StubExecutor.preconditions(elements, options)) return false;
-    if (elements.length) return false;
+exports.preconditions = function (options) {
     if (!_.isFunction(options.alertifyFn)) return false;
     return !(options.id && !_.isNumber(options.id) && !_.isString(options.id));
 

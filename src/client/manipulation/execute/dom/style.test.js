@@ -4,12 +4,12 @@
 const expect        = require('chai').expect,
       StyleExecutor = require('./style'),
       _             = require('./../../../common/util/wrapper'),
-      styles        = require('./../testdata/style.scss').locals,
-      custom        = require('./../testdata/custom.scss').locals;
+      styles        = require('./testdata/style.scss').locals,
+      custom        = require('./testdata/custom.scss').locals;
 
 describe('StyleExecutor', function () {
     let ul, li1, li2, li3, li4;
-    before(function () {
+    before(() => {
         ul = document.createElement('ul');
         ul.setAttribute('id', 'lost');
         document.querySelector('body').appendChild(ul);
@@ -30,8 +30,8 @@ describe('StyleExecutor', function () {
         li4.classList.add('deceased');
         ul.appendChild(li4);
     });
-    beforeEach(function () {
-        _.css.load(require('./../testdata/style.scss'));
+    beforeEach(() => {
+        _.css.load(require('./testdata/style.scss'));
         document.querySelectorAll('li').forEach(function (li) {
             expect(window.getComputedStyle(li).padding).to.equal('10px');
         });
@@ -39,49 +39,39 @@ describe('StyleExecutor', function () {
             expect(window.getComputedStyle(li).margin).to.equal('10px');
         });
     });
-    afterEach(function () {
+    afterEach(() => {
         // Clean all injected styles.
         document.querySelectorAll('style[' + _.css.identifyingAttribute + ']')
                 .forEach(function (styleElement) {
                     styleElement.parentNode.removeChild(styleElement);
                 });
     });
-    after(function () {
+    after(() => {
         ul.parentNode.removeChild(ul);
     });
-    it('Preconditions', function () {
-        expect(StyleExecutor.preconditions([], {cssText: 'a {}'})).to.be.true;
-        expect(StyleExecutor.preconditions([], {})).to.be.false;
-        expect(StyleExecutor.preconditions([], {cssText: ''})).to.be.false;
-        expect(StyleExecutor.preconditions([], {cssText: 1})).to.be.false;
-        expect(StyleExecutor.preconditions([], {cssText: 'a {}', selector: ''})).to.be.false;
-        expect(StyleExecutor.preconditions([], {cssText: 'a {}', selector: '!!!'})).to.be.false;
-        expect(StyleExecutor.preconditions([], {cssText: 'a {}', customClass: ''})).to.be.false;
-        expect(StyleExecutor.preconditions([], {cssText: 'a {}', customClass: 1})).to.be.false;
+    it('Preconditions', () => {
+        expect(StyleExecutor.preconditions({css: 'a {}'})).to.be.true;
+        expect(StyleExecutor.preconditions({css: require('./testdata/custom.scss')})).to.be.true;
+        expect(StyleExecutor.preconditions({})).to.be.false;
     });
-    it('Custom style', function () {
-        const cssText = require('./../testdata/custom.scss')[0][1];
-        StyleExecutor.execute([], {
-            cssText    : cssText,
-            selector   : `.${styles.survivor}`,
-            customClass: custom[StyleExecutor.defaultCustomClass]
-        });
+    it('text', () => {
+        const cssText = require('./testdata/custom.scss')[0][1];
+        StyleExecutor.execute({css: cssText});
         document.querySelectorAll('li').forEach(function (li) {
             expect(window.getComputedStyle(li).paddingLeft).to.equal('20px');
         });
-        document.querySelectorAll('.survivor').forEach(function (li) {
+        document.querySelectorAll(`.${custom.survivor}`).forEach(function (li) {
             expect(window.getComputedStyle(li).marginLeft).to.equal('50px');
         });
     });
-    it('Only affect provided elements', function () {
-        const cssText = require('./../testdata/custom.scss')[0][1];
-        StyleExecutor.execute([li3], {
-            cssText    : cssText,
-            selector   : 'li',
-            customClass: custom[StyleExecutor.defaultCustomClass]
+    it('text', () => {
+        const css = require('./testdata/custom.scss');
+        StyleExecutor.execute({css: css});
+        document.querySelectorAll('li').forEach(function (li) {
+            expect(window.getComputedStyle(li).paddingLeft).to.equal('20px');
         });
-        expect(window.getComputedStyle(li3).marginLeft).to.equal('50px');
-        // li1 has .survivor class, and so should have margin-left: 10px.
-        expect(window.getComputedStyle(li4).marginLeft).to.equal('0px');
+        document.querySelectorAll(`.${custom.survivor}`).forEach(function (li) {
+            expect(window.getComputedStyle(li).marginLeft).to.equal('50px');
+        });
     });
 });

@@ -12,17 +12,15 @@ describe('SwalExecutor', function () {
     this.timeout(100);
     const modalFn = function (sweetAlert2) {};
     it('preconditions', () => {
-        expect(SwalExecutor.preconditions([], {modalFn: modalFn})).to.be.true;
-        expect(SwalExecutor.preconditions(document.querySelectorAll('body'),
-                                           {modalFn: modalFn})).to.be.false;
-        expect(SwalExecutor.preconditions([], {})).to.be.false;
-        expect(SwalExecutor.preconditions([], {modalFn: 1})).to.be.false;
-        expect(SwalExecutor.preconditions([], {modalFn: modalFn, id: {}})).to.be.false;
+        expect(SwalExecutor.preconditions({modalFn: modalFn})).to.be.true;
+        expect(SwalExecutor.preconditions({})).to.be.false;
+        expect(SwalExecutor.preconditions({modalFn: 1})).to.be.false;
+        expect(SwalExecutor.preconditions({modalFn: modalFn, id: {}})).to.be.false;
     });
     it('modal fired', (done) => {
         let options = {modalFn: modalFn}, spy = chai.spy.on(options, 'modalFn');
-        SwalExecutor.execute([], options);
-        document.dispatchEvent(new CustomEvent(SwalExecutor.eventName()));
+        SwalExecutor.execute(options);
+        _.trigger(SwalExecutor.eventName());
         _.defer(function () {
             expect(spy).to.have.been.called.once;
             done();
