@@ -95,6 +95,13 @@ function typer(el, speed) {
         continue: function (msg, spd, html) {
             if (!msg) return this; // Ignore empty continues.
             q.push(lineOrContinue('continue', msg, spd, html));
+            // Push the first dominoe on the typing iteration,
+            // ensuring public methods will only call 'processq()' once.
+            if (!q.typing) {
+                q.typing = true;
+                processq();
+            }
+
             return this;
         },
         pause   : function (num) {
@@ -109,6 +116,12 @@ function typer(el, speed) {
             document.querySelector(el);
 
             q.push({emit: event, el: el});
+            // Push the first dominoe on the typing iteration,
+            // ensuring public methods will only call 'processq()' once.
+            if (!q.typing) {
+                q.typing = true;
+                processq();
+            }
             return this;
         },
         listen  : function (event, el) {
@@ -122,20 +135,39 @@ function typer(el, speed) {
         },
         back    : function (chars, spd) {
             q.push({back: chars, speed: spd});
+            // Push the first dominoe on the typing iteration,
+            // ensuring public methods will only call 'processq()' once.
+            if (!q.typing) {
+                q.typing = true;
+                processq();
+            }
             return this;
         },
         empty   : function () {
             q.push({empty: true});
+            // Push the first dominoe on the typing iteration,
+            // ensuring public methods will only call 'processq()' once.
+            if (!q.typing) {
+                q.typing = true;
+                processq();
+            }
             return this;
         },
         run     : function (fxn) {
             q.push({run: fxn});
+            // Push the first dominoe on the typing iteration,
+            // ensuring public methods will only call 'processq()' once.
+            if (!q.typing) {
+                q.typing = true;
+                processq();
+            }
             return this;
         },
         end     : function (fxn, e) {
             q.push({end: true});
 
             q.cb = function () {
+                if (!q.newDiv) createTyperDiv();
                 // Finalize the the div class names before ending.
                 // Because wack IE doesn't support multiple parameters for .remove or .add.
                 ['typer', 'cursor-block', 'cursor-soft', 'cursor-hard', 'no-cursor'].forEach(
@@ -263,6 +295,7 @@ function typer(el, speed) {
     }
 
     function processMsg(item) { // Used by 'processLine' & 'processContinue'.
+        if (!q.newDiv) createTyperDiv();
         let msg        = item.line || item.continue;
         let targetList = [q.newDiv];
         let div        = document.createElement('div');
@@ -371,6 +404,18 @@ function typer(el, speed) {
         }, item.speed || speed); // Function for both line and continue.
     }
 
+    function createTyperDiv() {
+        let div = document.createElement('div');
+        div.setAttribute('data-typer-child', q.dataNum);
+        div.className = q.cursor;
+        div.classList.add('typer');
+        div.classList.add('white-space');
+        div.innerHTML = el.innerHTML;
+        el.innerHTML  = '';
+        el.appendChild(div);
+        q.newDiv = div;
+    }
+
     function processLine(item) {
         // Stop the main iterator.
         clearInterval(q.type);
@@ -389,14 +434,8 @@ function typer(el, speed) {
         }
 
         // Create new div.
-        let div = document.createElement('div');
-        div.setAttribute('data-typer-child', q.dataNum);
-        div.className = q.cursor;
-        div.classList.add('typer');
-        div.classList.add('white-space');
+        createTyperDiv();
 
-        el.appendChild(div);
-        q.newDiv = div;
 
         // If our line has no contents...
         if (item.line === 1) {
@@ -448,8 +487,10 @@ function typer(el, speed) {
         // Stop the main iterator.
         clearInterval(q.type);
 
+        if (!q.newDiv) createTyperDiv();
+
         // Check for being called on an empty line.
-        if (!q.newDiv || !q.newDiv.textContent) {
+        if (!q.newDiv.textContent) {
             q.item++;
             return processq();
         }
@@ -526,7 +567,7 @@ function typer(el, speed) {
 
                         // Back-to-back-tags logic.
                         if (contents[i - 1] === '>') {
-
+                            //continue;
                         } else {
                             index = i - 1;
                             break;

@@ -3,8 +3,9 @@
  */
 let _      = require('./../../../common/util/wrapper'),
     Master = require('../master');
-Master.register(exports.name, exports);
 exports.name = 'remove';
+Master.register(exports);
+
 /**
  * Removes targets from the DOM, so it becomes leaner than a supermodel.
  * @param {Object} options

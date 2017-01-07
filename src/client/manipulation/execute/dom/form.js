@@ -3,8 +3,8 @@
  */
 const _      = require('../../../common/util/wrapper'),
       Master = require('../master');
-Master.register(exports.name, exports);
 exports.name = 'form';
+Master.register(exports);
 /**
  * Manipulates form elements, for the good of society.
  * @param {Object} options

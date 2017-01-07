@@ -36,9 +36,7 @@ exports.experiment = function (experiment, options) {
         }
         Collector.collect(_.omit(_.clone(groupSubjectOptions), 'anchor'));
         _.forEach(group.executors, function (executor) {
-            Executor.execute(executor.name, executor.selectors, {
-                options: executor.options
-            });
+            Executor.execute(executor.name, executor.options);
         });
     });
 };

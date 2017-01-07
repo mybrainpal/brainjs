@@ -27,30 +27,31 @@ exports.text = function (elem) {
  * Adds an event listener, if its detail are missing or match the provided detail.
  * @param {string} event
  * @param {function} handler
- * @param {string|number|Object} [detail] - for CustomEvent, if a string or a number are
+ * @param {string|number|Object} [detailOrId] - for CustomEvent, if a string or a number are
  *  supplied they will be treated as the `id` within the event detail object. Empty objects are
  *  ignored.
  * @param {EventTarget|string} [target = document] - an event target or a selector.
  * @param {boolean} [useCapture = false] - for the addEventListener method.
  * @returns {function} the handler method used.
  */
-exports.on = function (event, handler, detail, target = document, useCapture = false) {
+exports.on = function (event, handler, detailOrId, target = document, useCapture = false) {
     if (!_.isString(event) || !event) {
         throw new TypeError('DomUtil: event is not a string or is empty.');
     }
     if (!_.isFunction(handler)) {
         throw new TypeError('DomUtil: handler is not a function.');
     }
-    if (!_.isNil(detail) && !_.isString(detail) && !_.isNumber(detail) && !_.isObject(detail)) {
+    if (!_.isNil(detailOrId) && !_.isString(detailOrId) && !_.isNumber(detailOrId) &&
+        !_.isObject(detailOrId)) {
         throw new TypeError('DomUtil: detail is illegal.');
-    } else if (!_.isNil(detail) && !_.isObject(detail)) detail = {id: detail};
+    } else if (!_.isNil(detailOrId) && !_.isObject(detailOrId)) detailOrId = {id: detailOrId};
     if (target && !(target instanceof EventTarget) && !_.isString(target)) {
         throw new TypeError('DomUtil: target is not a proper event target.');
     } else if (_.isString(target)) target = document.querySelector(target);
-    const wrapper = _.isEmpty(detail) ? handler : function (ev) {
-                                          if (!_.isEmpty(detail) && ev.detail) {
-                                              if (!_.isEqual(detail, ev.detail) &&
-                                                  detail !== ev.detail.id) {
+    const wrapper = _.isEmpty(detailOrId) ? handler : function (ev) {
+                                              if (!_.isEmpty(detailOrId) && ev.detail) {
+                                                  if (!_.isEqual(detailOrId, ev.detail) &&
+                                                      detailOrId !== ev.detail.id) {
                                                   return;
                                               }
                                           }
@@ -63,23 +64,24 @@ exports.on = function (event, handler, detail, target = document, useCapture = f
 /**
  * Dispatches an event.
  * @param {string} event
- * @param {string|number|Object} [detail] - for CustomEvent, if a string or a number are
+ * @param {string|number|Object} [detailOrId] - for CustomEvent, if a string or a number are
  *  supplied they will be treated as the `id` within the event detail object.
  * @param {EventTarget|string} [target = document] - an event target or a selector.
  */
-exports.trigger = function (event, detail, target = document) {
+exports.trigger = function (event, detailOrId, target = document) {
     if (!_.isString(event) || !event) {
         throw new TypeError('DomUtil: event is not a string or is empty.');
     }
-    if (!_.isNil(detail) && !_.isString(detail) && !_.isNumber(detail) && !_.isObject(detail)) {
+    if (!_.isNil(detailOrId) && !_.isString(detailOrId) && !_.isNumber(detailOrId) &&
+        !_.isObject(detailOrId)) {
         throw new TypeError('DomUtil: detail is illegal.');
-    } else if (!_.isNil(detail) && !_.isObject(detail)) detail = {id: detail};
+    } else if (!_.isNil(detailOrId) && !_.isObject(detailOrId)) detailOrId = {id: detailOrId};
     if (target && !(target instanceof EventTarget) && !_.isString(target)) {
         throw new TypeError('DomUtil: target is not a proper event target.');
     } else if (_.isString(target)) target = document.querySelector(target);
-    if (!_.isEmpty(detail)) {
+    if (!_.isEmpty(detailOrId)) {
         //noinspection JSCheckFunctionSignatures
-        target.dispatchEvent(new CustomEvent(event, {detail: detail}));
+        target.dispatchEvent(new CustomEvent(event, {detail: detailOrId}));
         return;
     }
     target.dispatchEvent(new Event(event));

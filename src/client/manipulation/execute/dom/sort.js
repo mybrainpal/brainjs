@@ -3,8 +3,8 @@
  */
 let tinysort     = require('tinysort'),
     Master = require('../master');
-Master.register(exports.name, exports);
 exports.name = 'sort';
+Master.register(exports);
 
 /**
  * Sorts nodes using tinysort - http://tinysort.sjeiti.com/

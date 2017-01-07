@@ -6,8 +6,8 @@ let _            = require('../../../common/util/wrapper'),
     Logger       = require('../../../common/log/logger'),
     Level        = require('../../../common/log/logger').Level,
     Master       = require('../master');
-Master.register(exports.name, exports);
 exports.name = 'event';
+Master.register(exports);
 /**
  * Creates and triggers events and custom events.
  * @param {Object} options

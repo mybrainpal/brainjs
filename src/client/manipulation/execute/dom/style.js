@@ -3,8 +3,8 @@
  */
 let _      = require('./../../../common/util/wrapper'),
     Master = require('../master');
-Master.register(exports.name, exports);
 exports.name = 'style';
+Master.register(exports);
 /**
  * Changes elements style, because we all have a little beauty hiding inside!
  * @param {Object} options

@@ -3,27 +3,30 @@
  */
 let _            = require('./../../../common/util/wrapper'),
     expect       = require('chai').expect,
-    chai         = require('chai'),
     SwalExecutor = require('./sweetalert');
-
-chai.use(require('chai-spies'));
 
 describe('SwalExecutor', function () {
     this.timeout(100);
-    const modalFn = function (sweetAlert2) {};
+    after(() => {
+        const swal = document.querySelector('.swal2-container');
+        swal.parentNode.removeChild(swal)
+    });
     it('preconditions', () => {
-        expect(SwalExecutor.preconditions({modalFn: modalFn})).to.be.true;
+        expect(SwalExecutor.preconditions({swalFn: () => {}})).to.be.true;
         expect(SwalExecutor.preconditions({})).to.be.false;
-        expect(SwalExecutor.preconditions({modalFn: 1})).to.be.false;
-        expect(SwalExecutor.preconditions({modalFn: modalFn, id: {}})).to.be.false;
+        expect(SwalExecutor.preconditions({swalFn: 1})).to.be.false;
     });
     it('modal fired', (done) => {
-        let options = {modalFn: modalFn}, spy = chai.spy.on(options, 'modalFn');
-        SwalExecutor.execute(options);
-        _.trigger(SwalExecutor.eventName());
-        _.defer(function () {
-            expect(spy).to.have.been.called.once;
-            done();
+        const msg = `I can't make anything of this.`;
+        SwalExecutor.execute({swalFn: (swal) => {swal({text: msg})}});
+        _.defer(() => {
+            expect(document.querySelector('.swal2-container')).to.be.ok;
+            expect(document.querySelector('.swal2-content').textContent).to.equal(msg);
+            _.trigger('click', {}, document.querySelector('.swal2-container'));
+            _.delay(() => {
+                expect(document.querySelector('.swal2-hide')).to.be.ok;
+                done();
+            }, 20);
         });
     });
 });

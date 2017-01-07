@@ -4,8 +4,53 @@
  * Modifies the DOM, but in a good way.
  */
     // TODO(ohad): add `prepare` method that initiates external resource loading.
-let Logger = require('../../common/log/logger'),
+let _      = require('../../common/util/wrapper'),
+    Logger = require('../../common/log/logger'),
     Level  = require('../../common/log/logger').Level;
+
+/**
+ * Registers an executor, and adds it to the _executorByName map.
+ * @param {Object} module - the module.exports object of the executor.
+ */
+exports.register = function (module) {
+    _executorByName[module.name] = module;
+};
+
+/**
+ * Executes the next big thing.
+ * @param {string} name - of the desired executor.
+ * @param {Object} options
+ *  @property {string|number} [id]
+ *  @property {string|boolean} [on] - event name to execute on. use `true` to execute on
+ *  `_.on(eventName(name), .. , id)`
+ *  @property {function} [callback] - to execute once the executor is complete.
+ *  @property {function} [failureCallback] - to execute had the executor failed.
+ * @returns {*} delegates returned value to the actual executor.
+ */
+exports.execute = function (name, options = {}) {
+    if (!_preconditions(name, options)) return module.exports;
+    if (options.on === true) options.on = exports.eventName(name);
+    if (options.on) {
+        _.on(options.on, () => {_executorByName[name].execute(options)}, options.id);
+    } else {
+        _executorByName[name].execute(options);
+    }
+    return module.exports;
+};
+
+/**
+ * @param {string} name - executor name
+ */
+exports.eventName = function (name) {
+    return _eventPrefix + name;
+};
+
+/**
+ * Prefix for executors event names.
+ * @type {string}
+ * @private
+ */
+const _eventPrefix = 'brainpal-';
 
 /**
  * All existing executors keyed by their names.
@@ -15,33 +60,32 @@ let Logger = require('../../common/log/logger'),
 let _executorByName = {};
 
 /**
- * Registers an executor, and adds it to the _executorByName map.
- * @param name
- * @param {Object} module - the module.exports object of the executor.
+ * Makes sure the executor will be able to run smoothly.
+ * @param {string} name - of executor
+ * @param options - for the executor
+ * @returns {boolean} whether the executor is fit to run.
+ * @private
  */
-exports.register = function (name, module) {
-    _executorByName[name] = module;
-};
-
-/**
- * Executes the next big thing.
- * @param {string} name - of the desired executor.
- * @param {Object} [options]
- *  @property {Object} [options] - for the actual executor.
- *  @property {function} [callback] - to execute once the executor is complete.
- *  @property {function} [failureCallback] - to execute had the executor failed.
- * @returns {*} delegates returned value to the actual executor.
- */
-exports.execute = function (name, options) {
+function _preconditions(name, options) {
     if (!_executorByName[name]) {
-        Logger.log(Level.WARNING, 'Executor: executor ' + name + ' is nonexistent.');
-        return;
+        throw new RangeError('Executor: executor ' + name + ' is nonexistent.');
     }
-    options.options = options.options || {};
-    if (!_executorByName[name].preconditions(options.options)) {
+    if (!_.isNil(options.id) && !_.isString(options.id) && !_.isNumber(options.id)) {
+        throw new TypeError('Executor: id must be a string or a number.');
+    }
+    if (!_.isNil(options.on) && !_.isString(options.on) && !_.isBoolean(options.on)) {
+        throw new TypeError('Executor: on must be a string or a boolean.');
+    }
+    if (!_.isNil(options.callback) && !_.isFunction(options.callback)) {
+        throw new TypeError('Executor: callback must be a function.');
+    }
+    if (!_.isNil(options.failureCallback) && !_.isFunction(options.failureCallback)) {
+        throw new TypeError('Executor: callback must be a function.');
+    }
+    if (!_executorByName[name].preconditions(options)) {
         Logger.log(Level.WARNING, 'Executor: executor ' + name + ' preconditions failed.');
-        return;
+        if (options.failureCallback) options.failureCallback(options);
+        return false;
     }
-    // TODO(ohad): propagate callback and failureCallback.
-    return _executorByName[name].execute(options.options);
-};
+    return true;
+}

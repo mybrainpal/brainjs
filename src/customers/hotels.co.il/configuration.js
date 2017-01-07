@@ -1,14 +1,11 @@
 /**
  * Proudly created by ohad on 01/01/2017.
  */
-const galleryId         = require('../../client/manipulation/execute/media/gallery').idPrefix,
-      _                 = require('../../client/common/util/wrapper'),
-      idleEventName     = require('../../client/common/events/idle').name(),
-      modalEventName    = require('../../client/manipulation/execute/interface/sweetalert')
-          .eventName(),
-      alertifyEventName = require('../../client/manipulation/execute/interface/alertify')
-          .eventName();
-module.exports          = {
+const galleryId     = require('../../client/manipulation/execute/media/gallery').idPrefix,
+      _             = require('../../client/common/util/wrapper'),
+      idleEventName = require('../../client/common/events/idle').name(),
+      Executor      = require('../../client/manipulation/execute/master');
+module.exports      = {
     storage    : {
         name: 'local'
     },
@@ -22,14 +19,10 @@ module.exports          = {
                         label    : 'single',
                         executors: [
                             {
-                                name     : 'move',
-                                selectors: '.formsearch',
-                                options  : {parentSelector: 'ul.bg_blue'}
-                            },
-                            {
-                                name   : 'style',
+                                name   : require(
+                                    '../../client/manipulation/execute/dom/style').name,
                                 options: {
-                                    cssText: `
+                                    css: `
                                         #daydeal #menu li:last-child{float:left; padding: 0;}
                                         #daydeal #menu .formsearch{padding: 0; width: 100%}
                                         #daydeal #menu .fieldHolder{
@@ -92,44 +85,62 @@ module.exports          = {
                                 }
                             },
                             {
-                                name     : 'remove',
-                                selectors: ['#content .share', '#content>br',
-                                            '#content div.address', '.comments_deal_text']
+                                name   : require('../../client/manipulation/execute/dom/move').name,
+                                options: {target: '.formsearch', parentSelector: 'ul.bg_blue'}
                             },
                             {
-                                name     : 'move',
-                                selectors: '#content h1:first-child',
-                                options  : {nextSiblingSelector: '#menu'}
+                                name   : require(
+                                    '../../client/manipulation/execute/dom/remove').name,
+                                options: {
+                                    targets: ['#content .share', '#content>br',
+                                              '#content div.address', '.comments_deal_text']
+                                }
                             },
                             {
-                                name     : 'move',
-                                selectors: '#other_dates_by_res',
-                                options  : {parentSelector: 'div.more_option div.date'}
+                                name   : require('../../client/manipulation/execute/dom/move').name,
+                                options: {
+                                    target             : '#content h1:first-child',
+                                    nextSiblingSelector: '#menu'
+                                }
                             },
                             {
-                                name     : 'move',
-                                selectors: '#content .hotel_phone',
-                                options  : {parentSelector: '.group_sale_info'}
+                                name   : require('../../client/manipulation/execute/dom/move').name,
+                                options: {
+                                    target        : '#other_dates_by_res',
+                                    parentSelector: 'div.more_option div.date'
+                                }
                             },
                             {
-                                name     : 'move',
-                                selectors: '.TotalRating:first-of-type',
-                                options  : {parentSelector: '.group_sale_info', copy: true}
+                                name   : require('../../client/manipulation/execute/dom/move').name,
+                                options: {
+                                    target        : '#content .hotel_phone',
+                                    parentSelector: '.group_sale_info'
+                                }
                             },
                             {
-                                name     : 'gallery',
-                                selectors: '.group_sale_image',
-                                options  : {
+                                name   : require('../../client/manipulation/execute/dom/move').name,
+                                options: {
+                                    target        : '.TotalRating:first-of-type',
+                                    parentSelector: '.group_sale_info', copy: true
+                                }
+                            },
+                            {
+                                name   : require(
+                                    '../../client/manipulation/execute/media/gallery').name,
+                                options: {
+                                    container      : '.group_sale_image',
                                     sourceSelectors: ['.group_sale_image>img', '#gallery img'],
                                     animationClass : 'fxSoftPulse'
                                 }
                             },
                             {
-                                name     : 'remove',
-                                selectors: ['.group_sale_image>img']
+                                name   : require(
+                                    '../../client/manipulation/execute/dom/remove').name,
+                                options: {targets: ['.group_sale_image>img']}
                             },
                             {
-                                name   : 'typer',
+                                name   : require(
+                                    '../../client/manipulation/execute/interface/typer').name,
                                 options: {
                                     typerFn: function (typer) {
                                         document.querySelector('.hotel_deal h2').textContent = '';
@@ -176,9 +187,11 @@ module.exports          = {
                                 }
                             },
                             {
-                                name   : 'swal',
+                                name   : require(
+                                    '../../client/manipulation/execute/interface/sweetalert').name,
                                 options: {
-                                    modalFn: function (swal) {
+                                    on    : true,
+                                    swalFn: function (swal) {
                                         swal({
                                                  title             : 'עדיין מתלבט..',
                                                  type              : 'info',
@@ -192,8 +205,10 @@ module.exports          = {
                                 }
                             },
                             {
-                                name   : 'alertify',
+                                name   : require(
+                                    '../../client/manipulation/execute/interface/alertify').name,
                                 options: {
+                                    on        : true,
                                     alertifyFn: function (alertify) {
                                         alertify.set('notifier', 'position', 'bottom-left');
                                         alertify.notify('מה אומרים על המלון הזה', 'title', 200);
@@ -219,7 +234,8 @@ module.exports          = {
                                 }
                             },
                             {
-                                name   : 'event',
+                                name   : require(
+                                    '../../client/manipulation/execute/interaction/event').name,
                                 options: {
                                     listen: {event: 'brainpal-title-done', selector: 'body'},
                                     create: {
@@ -232,16 +248,18 @@ module.exports          = {
                                 }
                             },
                             {
-                                name   : 'event',
+                                name   : require(
+                                    '../../client/manipulation/execute/interaction/event').name,
                                 options: {
                                     listen : {event: idleEventName, detail: {id: 'reviews'}},
                                     trigger: {
-                                        event: alertifyEventName
+                                        event: Executor.eventName('alertify')
                                     }
                                 }
                             },
                             {
-                                name   : 'event',
+                                name   : require(
+                                    '../../client/manipulation/execute/interaction/event').name,
                                 options: {
                                     listen: {event: 'brainpal-alertify-dismiss'},
                                     create: {
@@ -254,11 +272,12 @@ module.exports          = {
                                 }
                             },
                             {
-                                name   : 'event',
+                                name   : require(
+                                    '../../client/manipulation/execute/interaction/event').name,
                                 options: {
                                     listen : {event: idleEventName, detail: {id: 'modal'}},
                                     trigger: {
-                                        event: modalEventName
+                                        event: Executor.eventName('sweetalert')
                                     }
                                 }
                             }

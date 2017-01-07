@@ -5,8 +5,8 @@ let _            = require('./../../../common/util/wrapper'),
     Logger       = require('../../../common/log/logger'),
     Level        = require('../../../common/log/logger').Level,
     Master = require('../master');
-Master.register(exports.name, exports);
 exports.name = 'inject';
+Master.register(exports);
 /**
  * Injects HTML content into target elements.
  * @param {Object} options

@@ -5,8 +5,8 @@ let _            = require('../../../common/util/wrapper'),
     typer        = require('./typer-js'),
     css    = require('typer-js/typer.css'),
     Master = require('../master');
-Master.register(exports.name, exports);
 exports.name = 'typer';
+Master.register(exports);
 /**
  * Creates a typing effect using the magical typer-js library.
  * https://github.com/qodesmith/typer

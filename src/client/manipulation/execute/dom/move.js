@@ -5,8 +5,8 @@ let _      = require('./../../../common/util/wrapper'),
     Logger = require('../../../common/log/logger'),
     Level  = require('../../../common/log/logger').Level,
     Master = require('../master');
-Master.register(exports.name, exports);
 exports.name = 'move';
+Master.register(exports);
 
 /**
  * Appending a class to a copied element, so that it is easy to differentiate from the original.

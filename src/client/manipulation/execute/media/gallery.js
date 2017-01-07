@@ -4,8 +4,8 @@
 const _            = require('../../../common/util/wrapper'),
       css    = require('./gallery.scss'),
       Master = require('../master');
-Master.register(exports.name, exports);
 exports.name = 'gallery';
+Master.register(exports);
 const styles = css.locals;
 /**
  * A prefix to all galleries.

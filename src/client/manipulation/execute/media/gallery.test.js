@@ -11,11 +11,12 @@ describe('GalleryExecutor', function () {
     let div, imgNarrow, imgWide, container, smallContainer, spec, animationSpec;
     before(() => {
         div            = document.createElement('div');
+        div.setAttribute('id', 'div');
         imgNarrow      = document.createElement('img');
         imgWide        = document.createElement('img');
         container      = document.createElement('div');
         smallContainer = document.createElement('div');
-        spec = {sourceSelectors: 'img', container: '#container'};
+        spec = {sourceSelectors: '#div img', container: '#container'};
         animationSpec  = _.merge({interval: 100, animationClass: 'fxSnapIn'}, spec);
         document.querySelector('body').appendChild(div);
         imgNarrow.src = ''; //'img/sad.jpg';
@@ -53,7 +54,7 @@ describe('GalleryExecutor', function () {
     });
     it('creation', () => {
         GalleryExecutor.execute(spec);
-        expect(container.querySelectorAll('img')).to.have.length(2);
+        expect(container.querySelectorAll(`div.${styles.component} img`)).to.have.length(2);
     });
     it('assign animation class', () => {
         GalleryExecutor.execute(animationSpec);

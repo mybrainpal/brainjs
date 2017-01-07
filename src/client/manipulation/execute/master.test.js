@@ -1,10 +1,12 @@
 /**
  * Proudly created by ohad on 21/12/2016.
  */
-let expect   = require('chai').expect,
+let _        = require('../../common/util/wrapper'),
+    expect   = require('chai').expect,
     Executor = require('./master');
 
 describe('Executor', function () {
+    this.timeout(100);
     let form, input;
     before(() => {
         Executor.register('form', require('./dom/form'));
@@ -18,8 +20,31 @@ describe('Executor', function () {
     after(() => {
         form.parentNode.removeChild(form);
     });
-    it('Focus element', () => {
-        Executor.execute('form', {options: {target: '#input', focus: true}});
+    it('preconditions', () => {
+        expect(() => {Executor.execute('form2', {target: '#input'})}).to.throw(RangeError);
+        expect(() => {Executor.execute('form', {target: '#input', id: {}})}).to.throw(TypeError);
+        expect(() => {Executor.execute('form', {target: '#input', on: {}})}).to.throw(TypeError);
+        expect(() => {Executor.execute('form', {target: '#input', callback: 1})}).to
+                                                                                 .throw(TypeError);
+        expect(() => {Executor.execute('form', {target: '#input', failureCallback: 1})}).to.throw(
+            TypeError);
+    });
+    it('execute', () => {
+        Executor.execute('form', {target: '#input', focus: true});
         expect(document.activeElement).to.be.equal(input);
+    });
+    it('on', (done) => {
+        input.blur();
+        Executor.execute('form', {target: '#input', id: 1, focus: true, on: true});
+        expect(document.activeElement).to.not.equal(input);
+        _.trigger(Executor.eventName('form'), 2);
+        _.defer(() => {
+            expect(document.activeElement).to.not.equal(input);
+            _.trigger(Executor.eventName('form'), 1);
+            _.defer(() => {
+                expect(document.activeElement).to.be.equal(input);
+                done();
+            });
+        });
     });
 });
