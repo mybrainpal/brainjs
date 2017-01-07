@@ -1,0 +1,866 @@
+/*****************************************bloated*****************************************/
+@import url(http://fonts.googleapis.com/css?family=Kalam);
+
+.bloated {
+  display  : inline;
+  position : relative;
+  z-index  : 999;
+}
+
+.bloated.content {
+  position                           : absolute;
+  background                         : url(./img/shape1.svg) no-repeat center bottom;
+  background-size                    : 100% 100%;
+  z-index                            : 9999;
+  width                              : 200px;
+  bottom                             : 100%;
+  left                               : 50%;
+  margin-left                        : -100px;
+  padding                            : 50px 30px;
+  text-align                         : center;
+  color                              : #fff;
+  opacity                            : 0;
+  cursor                             : default;
+  font-size                          : 1em;
+  line-height                        : 1.4;
+  pointer-events                     : none;
+  font-family                        : 'Kalam', cursive;
+  -webkit-transform                  : scale3d(0.1, 0.2, 1);
+  transform                          : scale3d(0.1, 0.2, 1);
+  -webkit-transform-origin           : 50% 120%;
+  transform-origin                   : 50% 120%;
+  -webkit-transition                 : opacity 0.4s, -webkit-transform 0.4s;
+  transition                         : opacity 0.4s, transform 0.4s;
+  -webkit-transition-timing-function : ease, cubic-bezier(0.6, 0, 0.4, 1);
+  transition-timing-function         : ease, cubic-bezier(0.6, 0, 0.4, 1);
+}
+
+.bloated.show .bloated.content {
+  opacity           : 1;
+  pointer-events    : auto;
+  -webkit-transform : scale3d(1, 1, 1);
+  transform         : scale3d(1, 1, 1);
+}
+
+/* Arrow */
+.bloated.content::after {
+  content           : '';
+  position          : absolute;
+  width             : 16px;
+  height            : 16px;
+  left              : 50%;
+  margin-left       : -8px;
+  top               : 100%;
+  background        : #00AEEF;
+  -webkit-transform : translate3d(0, -60%, 0) rotate3d(0, 0, 1, 45deg);
+  transform         : translate3d(0, -60%, 0) rotate3d(0, 0, 1, 45deg);
+}
+
+/*****************************************box*****************************************/
+@import url(http://fonts.googleapis.com/css?family=Indie+Flower);
+.box {
+  display  : inline;
+  position : relative;
+  z-index  : 999;
+}
+
+/* Trigger text */
+.box.item {
+  color              : #2fa0ec;
+  cursor             : pointer;
+  z-index            : 100;
+  position           : relative;
+  display            : inline-block;
+  font-weight        : 700;
+  -webkit-transition : background-color 0.3s, color 0.3s, -webkit-transform 0.3s;
+  transition         : background-color 0.3s, color 0.3s, transform 0.3s;
+}
+
+.box.show .box.item {
+  color             : #fff;
+  -webkit-transform : translate3d(0, -0.5em, 0);
+  transform         : translate3d(0, -0.5em, 0);
+}
+
+/* box */
+.box.content {
+  position           : absolute;
+  z-index            : 99;
+  width              : 360px;
+  left               : 50%;
+  margin-left        : -180px;
+  bottom             : -5px;
+  text-align         : left;
+  background         : #2fa0ec;
+  opacity            : 0;
+  font-size          : 0.75em;
+  line-height        : 1.5;
+  padding            : 1.5em;
+  color              : #fff;
+  border-bottom      : 65px solid #2a3035;
+  cursor             : default;
+  pointer-events     : none;
+  border-radius      : 5px;
+  font-family        : 'Indie Flower', cursive;
+  -webkit-transform  : translate3d(0, -0.5em, 0);
+  transform          : translate3d(0, -0.5em, 0);
+  -webkit-transition : opacity 0.3s, -webkit-transform 0.3s;
+  transition         : opacity 0.3s, transform 0.3s;
+}
+
+.box.content a {
+  color : #32434f;
+}
+
+.box.text {
+  opacity            : 0;
+  -webkit-transform  : translate3d(0, 1.5em, 0);
+  transform          : translate3d(0, 1.5em, 0);
+  -webkit-transition : opacity 0.3s, -webkit-transform 0.3s;
+  transition         : opacity 0.3s, transform 0.3s;
+}
+
+.box.show .box.content,
+.box.show .box.text {
+  pointer-events    : auto;
+  opacity           : 1;
+  -webkit-transform : translate3d(0, 0, 0);
+  transform         : translate3d(0, 0, 0);
+}
+
+/*****************************************classic*****************************************/
+.classic {
+  display  : inline;
+  position : relative;
+  z-index  : 999;
+}
+
+/* Trigger text */
+
+.classic.item {
+  background  : rgba(0, 0, 0, 0.3);
+  cursor      : pointer;
+  display     : inline-block;
+  font-weight : 700;
+  padding     : 0 10px;
+}
+
+/* Gap filler */
+
+.classic.item::after {
+  content           : '';
+  position          : absolute;
+  width             : 360px;
+  height            : 20px;
+  bottom            : 100%;
+  left              : 50%;
+  pointer-events    : none;
+  -webkit-transform : translateX(-50%);
+  transform         : translateX(-50%);
+}
+
+.classic.show .classic.item::after {
+  pointer-events : auto;
+}
+
+/* classic */
+
+.classic.content {
+  position       : absolute;
+  z-index        : 9999;
+  width          : 360px;
+  left           : 50%;
+  margin         : 0 0 20px -180px;
+  bottom         : 100%;
+  text-align     : left;
+  font-size      : 0.765em;
+  line-height    : 1.4;
+  box-shadow     : -5px -5px 15px rgba(48, 54, 61, 0.2);
+  background     : #2a3035;
+  opacity        : 0;
+  cursor         : default;
+  pointer-events : none;
+}
+
+.classic.effect-1 .classic.content {
+  -webkit-transform  : translate3d(0, -10px, 0);
+  transform          : translate3d(0, -10px, 0);
+  -webkit-transition : opacity 0.3s, -webkit-transform 0.3s;
+  transition         : opacity 0.3s, transform 0.3s;
+}
+
+.classic.effect-2 .classic.content {
+  -webkit-transform-origin : 50% calc(100% + 10px);
+  transform-origin         : 50% calc(100% + 10px);
+  -webkit-transform        : perspective(1000px) rotate3d(1, 0, 0, 45deg);
+  transform                : perspective(1000px) rotate3d(1, 0, 0, 45deg);
+  -webkit-transition       : opacity 0.2s, -webkit-transform 0.2s;
+  transition               : opacity 0.2s, transform 0.2s;
+}
+
+.classic.effect-3 .classic.content {
+  -webkit-transform  : translate3d(0, 10px, 0) rotate3d(1, 1, 0, 25deg);
+  transform          : translate3d(0, 10px, 0) rotate3d(1, 1, 0, 25deg);
+  -webkit-transition : opacity 0.3s, -webkit-transform 0.3s;
+  transition         : opacity 0.3s, transform 0.3s;
+}
+
+.classic.effect-4 .classic.content {
+  -webkit-transform-origin : 50% 100%;
+  transform-origin         : 50% 100%;
+  -webkit-transform        : scale3d(0.7, 0.3, 1);
+  transform                : scale3d(0.7, 0.3, 1);
+  -webkit-transition       : opacity 0.2s, -webkit-transform 0.2s;
+  transition               : opacity 0.2s, transform 0.2s;
+}
+
+.classic.effect-5 .classic.content {
+  width                              : 180px;
+  margin-left                        : -90px;
+  -webkit-transform-origin           : 50% calc(100% + 6em);
+  transform-origin                   : 50% calc(100% + 6em);
+  -webkit-transform                  : rotate3d(0, 0, 1, 15deg);
+  transform                          : rotate3d(0, 0, 1, 15deg);
+  -webkit-transition                 : opacity 0.2s, -webkit-transform 0.2s;
+  transition                         : opacity 0.2s, transform 0.2s;
+  -webkit-transition-timing-function : ease, cubic-bezier(.17, .67, .4, 1.39);
+  transition-timing-function         : ease, cubic-bezier(.17, .67, .4, 1.39);
+}
+
+.classic.show .classic.content {
+  pointer-events    : auto;
+  opacity           : 1;
+  -webkit-transform : translate3d(0, 0, 0) rotate3d(0, 0, 0, 0);
+  transform         : translate3d(0, 0, 0) rotate3d(0, 0, 0, 0);
+}
+
+.classic.classic.effect-2.show .classic.content {
+  -webkit-transform : perspective(1000px) rotate3d(1, 0, 0, 0deg);
+  transform         : perspective(1000px) rotate3d(1, 0, 0, 0deg);
+}
+
+/* Arrow */
+
+.classic.content::after {
+  content          : '';
+  top              : 100%;
+  left             : 50%;
+  height           : 0;
+  width            : 0;
+  position         : absolute;
+  pointer-events   : none;
+  border           : 10px solid transparent;
+  border-top-color : #2a3035;
+  margin-left      : -10px;
+}
+
+/* classic content*/
+
+.classic.content img {
+  position     : relative;
+  height       : 170px;
+  display      : block;
+  float        : left;
+  margin-right : 1em;
+}
+
+.classic.text {
+  font-size   : 0.68em;
+  line-height : 1.35;
+  display     : block;
+  padding     : 1.31em 1.21em 1.21em 0;
+  color       : #fff;
+}
+
+.classic.effect-5 .classic.text {
+  padding : 1.4em;
+}
+
+.classic.text a {
+  font-weight : bold;
+}
+
+/*****************************************comic*****************************************/
+@import url(http://fonts.googleapis.com/css?family=Bangers);
+.comic {
+  position    : relative;
+  width       : 210px;
+  margin      : 0 auto;
+  font-family : 'Bangers', cursive;
+}
+
+.comic.content {
+  position       : absolute;
+  line-height    : 1.2;
+  pointer-events : none;
+  text-align     : center;
+  z-index        : 100;
+  opacity        : 0;
+  padding        : 1.75em;
+  font-size      : 1.05em;
+  bottom         : 100%;
+}
+
+.comic.effect-1 .comic.content {
+  width              : 180px;
+  right              : 83%;
+  margin             : 0 0 20px 0;
+  -webkit-transform  : scale3d(0, 0, 1);
+  transform          : scale3d(0, 0, 1);
+  -webkit-transition : opacity 0.3s, -webkit-transform 0.3s;
+  transition         : opacity 0.3s, transform 0.3s;
+}
+
+.comic.effect-2 .comic.content {
+  width              : 220px;
+  left               : 50%;
+  margin             : 0 0 40px -110px;
+  -webkit-transform  : translate3d(0, -10px, 0);
+  transform          : translate3d(0, -10px, 0);
+  -webkit-transition : opacity 0.3s, -webkit-transform 0.3s;
+  transition         : opacity 0.3s, transform 0.3s;
+}
+
+.comic.effect-1.show .comic.content {
+  opacity                  : 1;
+  -webkit-transform        : scale3d(1, 1, 1);
+  transform                : scale3d(1, 1, 1);
+  -webkit-transition-delay : 0.15s;
+  transition-delay         : 0.15s;
+}
+
+.comic.effect-2.show .comic.content {
+  opacity                  : 1;
+  -webkit-transform        : translate3d(0, 0, 0);
+  transform                : translate3d(0, 0, 0);
+  -webkit-transition-delay : 0.2s;
+  transition-delay         : 0.2s;
+}
+
+/* Shape */
+.comic.shape {
+  position       : absolute;
+  width          : 220px;
+  height         : 165px;
+  pointer-events : none;
+}
+
+.comic.effect-1 .comic.shape {
+  top               : 0;
+  right             : 65%;
+  -webkit-transform : translate3d(0, -90%, 0);
+  transform         : translate3d(0, -90%, 0);
+}
+
+.comic.effect-2 .comic.shape {
+  bottom : 100%;
+  left   : 50%;
+  margin : 0 0 0 -110px;
+}
+
+.comic.show .comic.shape {
+  pointer-events : auto;
+}
+
+.comic.shape svg {
+  stroke       : #e74c3c;
+  stroke-width : 2;
+}
+
+.comic.effect-1 .comic.shape svg path {
+  fill                     : #fff;
+  opacity                  : 0;
+  -webkit-transform        : scale3d(0, 0, 1);
+  transform                : scale3d(0, 0, 1);
+  -webkit-transform-origin : 50% 50%;
+  transform-origin         : 50% 50%;
+  -webkit-transition       : opacity 0.3s, -webkit-transform 0.3s;
+  transition               : opacity 0.3s, transform 0.3s;
+}
+
+.comic.effect-1.show .comic.shape svg path {
+  opacity           : 1;
+  -webkit-transform : scale3d(1, 1, 1);
+  transform         : scale3d(1, 1, 1);
+}
+
+.comic.effect-1.show .comic.shape svg path#path2 {
+  -webkit-transition-delay : 0.07s;
+  transition-delay         : 0.07s;
+}
+
+.comic.effect-1.show .comic.shape svg path#path3 {
+  -webkit-transition-delay : 0.14s;
+  transition-delay         : 0.14s;
+}
+
+.comic.effect-1.show .comic.shape svg path#path4 {
+  -webkit-transition-delay : 0.21s;
+  transition-delay         : 0.21s;
+}
+
+.comic.effect-2 .comic.shape svg polygon {
+  fill              : transparent;
+  stroke-dasharray  : 580;
+  stroke-dashoffset : 580;
+}
+
+.comic.effect-2.show .comic.shape svg polygon {
+  stroke-dashoffset  : 0;
+  fill               : #fff;
+  -webkit-transition : stroke-dashoffset 0.8s, fill 0.8s;
+  transition         : stroke-dashoffset 0.8s, fill 0.8s;
+}
+
+/*****************************************curved*****************************************/
+@import url(http://fonts.googleapis.com/css?family=Gochi+Hand);
+.curved {
+  display         : flex;
+  justify-content : center;
+  align-items     : center;
+}
+
+/* Trigger item */
+
+@-webkit-keyframes pulse {
+  from { -webkit-transform : scale3d(0.5, 0.5, 1); }
+  to { -webkit-transform : scale3d(1, 1, 1); }
+}
+
+@keyframes pulse {
+  from { -webkit-transform : scale3d(0.5, 0.5, 1); transform : scale3d(0.5, 0.5, 1); }
+  to { -webkit-transform : scale3d(1, 1, 1); transform : scale3d(1, 1, 1); }
+}
+
+.curved:first-child {
+  top  : 20%;
+  left : 20%;
+}
+
+.curved:nth-child(2) {
+  top  : 50%;
+  left : 10%;
+}
+
+.curved:nth-child(3) {
+  top  : 40%;
+  left : 50%;
+}
+
+.curved:nth-child(4) {
+  top  : 70%;
+  left : 70%;
+}
+
+/* tooltip */
+.curved.content {
+  position               : absolute;
+  margin-left            : 50%;
+  margin-right           : 50%;
+  margin-top             : -5%;
+  background             : #e35583;
+  z-index                : 9999;
+  padding                : 20px;
+  border-radius          : 20px;
+  font-size              : 1.1em;
+  text-align             : center;
+  color                  : #fff;
+  opacity                : 0;
+  cursor                 : default;
+  pointer-events         : none;
+  font-family            : 'Gochi Hand', cursive;
+  -webkit-font-smoothing : antialiased;
+  -webkit-transition     : opacity 0.3s, -webkit-transform 0.3s;
+  transition             : opacity 0.3s, transform 0.3s;
+  word-wrap              : break-word;
+  max-width              : 320px;
+  min-width              : 100px;
+}
+
+.curved.right .curved.content {
+  left                     : 4em;
+  -webkit-transform-origin : -2em 50%;
+  transform-origin         : -2em 50%;
+  -webkit-transform        : translate3d(0, 50%, 0) rotate3d(1, 1, 1, 30deg);
+  transform                : translate3d(0, 50%, 0) rotate3d(1, 1, 1, 30deg);
+}
+
+.curved.left .curved.content {
+  right                    : 4em;
+  -webkit-transform-origin : calc(100% + 2em) 50%;
+  transform-origin         : calc(100% + 2em) 50%;
+  -webkit-transform        : translate3d(0, 50%, 0) rotate3d(1, 1, 1, -30deg);
+  transform                : translate3d(0, 50%, 0) rotate3d(1, 1, 1, -30deg);
+}
+
+.curved.show .curved.content {
+  opacity           : 1;
+  -webkit-transform : translate3d(0, 50%, 0) rotate3d(0, 0, 0, 0);
+  transform         : translate3d(0, 50%, 0) rotate3d(0, 0, 0, 0);
+  pointer-events    : auto;
+}
+
+/* Gap "bridge" and arrow */
+.curved.content::before,
+.curved.content::after {
+  content  : '';
+  position : absolute;
+}
+
+.curved.content::before {
+  height : 100%;
+  width  : 3em;
+}
+
+.curved.content::after {
+  width           : 2em;
+  height          : 2em;
+  top             : 50%;
+  margin          : -1em 0 0;
+  background      : url(./img/tooltip2.svg) no-repeat center center;
+  background-size : 100%;
+}
+
+.curved.right .curved.content::before,
+.curved.right .curved.content::after {
+  right : 99%; /* because of FF, otherwise we have a gap */
+}
+
+.curved.left .curved.content::before,
+.curved.left .curved.content::after {
+  left : 99%; /* because of FF, otherwise we have a gap */
+}
+
+.curved.left .curved.content::after {
+  -webkit-transform : scale3d(-1, 1, 1);
+  transform         : scale3d(-1, 1, 1);
+}
+
+/*****************************************line*****************************************/
+@import url(http://fonts.googleapis.com/css?family=Satisfy);
+.line {
+  display  : inline;
+  position : relative;
+  z-index  : 999;
+}
+
+/* Gap filler */
+.line::after {
+  content           : '';
+  position          : absolute;
+  width             : 100%;
+  height            : 20px;
+  bottom            : 100%;
+  left              : 50%;
+  pointer-events    : none;
+  -webkit-transform : translateX(-50%);
+  transform         : translateX(-50%);
+}
+
+.line.show::after {
+  pointer-events : auto;
+}
+
+/* tooltip*/
+.line.content {
+  position               : absolute;
+  z-index                : 9999;
+  width                  : 300px;
+  left                   : 50%;
+  bottom                 : 100%;
+  font-size              : 20px;
+  line-height            : 1.4;
+  text-align             : center;
+  font-weight            : 400;
+  color                  : #fffaf0;
+  background             : transparent;
+  opacity                : 0;
+  margin                 : 0 0 20px -150px;
+  cursor                 : default;
+  pointer-events         : none;
+  font-family            : 'Satisfy', cursive;
+  -webkit-font-smoothing : antialiased;
+  -webkit-transition     : opacity 0.3s 0.3s;
+  transition             : opacity 0.3s 0.3s;
+}
+
+.line.show .line.content {
+  opacity                  : 1;
+  pointer-events           : auto;
+  -webkit-transition-delay : 0s;
+  transition-delay         : 0s;
+}
+
+.line.content span {
+  display : block;
+}
+
+.line.text {
+  border-bottom      : 10px solid #fffaf0;
+  overflow           : hidden;
+  -webkit-transform  : scale3d(0, 1, 1);
+  transform          : scale3d(0, 1, 1);
+  -webkit-transition : -webkit-transform 0.3s 0.3s;
+  transition         : transform 0.3s 0.3s;
+}
+
+.line.show .line.text {
+  -webkit-transition-delay : 0s;
+  transition-delay         : 0s;
+  -webkit-transform        : scale3d(1, 1, 1);
+  transform                : scale3d(1, 1, 1);
+}
+
+.line.inner {
+  background         : rgba(85, 61, 61, 0.95);
+  padding            : 40px;
+  -webkit-transform  : translate3d(0, 100%, 0);
+  transform          : translate3d(0, 100%, 0);
+  -webkit-transition : -webkit-transform 0.3s;
+  transition         : transform 0.3s;
+}
+
+.line.show .line.inner {
+  -webkit-transition-delay : 0.3s;
+  transition-delay         : 0.3s;
+  -webkit-transform        : translate3d(0, 0, 0);
+  transform                : translate3d(0, 0, 0);
+}
+
+/* Arrow */
+.line.content::after {
+  content          : '';
+  bottom           : -20px;
+  left             : 50%;
+  height           : 0;
+  width            : 0;
+  position         : absolute;
+  pointer-events   : none;
+  border           : 10px solid transparent;
+  border-top-color : #fffaf0;
+  margin-left      : -10px;
+}
+
+/*****************************************round*****************************************/
+.round {
+  display  : inline;
+  position : relative;
+  z-index  : 999;
+}
+
+/* tooltip*/
+.round.content {
+  position       : absolute;
+  z-index        : 9999;
+  width          : 80px;
+  height         : 80px;
+  padding-top    : 25px;
+  left           : 50%;
+  margin-left    : -40px;
+  bottom         : 100%;
+  border-radius  : 50%;
+  text-align     : center;
+  background     : #fff;
+  color          : #47c9af;
+  opacity        : 0;
+  margin-bottom  : 20px;
+  cursor         : default;
+  pointer-events : none;
+}
+
+.round.content i {
+  opacity : 0;
+}
+
+.round.show .round.content,
+.round.show .round.content i {
+  opacity : 1;
+}
+
+.round.effect-1 .round.content {
+  -webkit-transform        : translate3d(0, 10px, 0) rotate3d(1, 1, 1, 45deg);
+  transform                : translate3d(0, 10px, 0) rotate3d(1, 1, 1, 45deg);
+  -webkit-transform-origin : 50% 100%;
+  transform-origin         : 50% 100%;
+  -webkit-transition       : opacity 0.3s, -webkit-transform 0.3s;
+  transition               : opacity 0.3s, transform 0.3s;
+}
+
+.round.effect-1 .round.content i {
+  -webkit-transform  : scale3d(0, 0, 1);
+  transform          : scale3d(0, 0, 1);
+  -webkit-transition : opacity 0.3s, -webkit-transform 0.3s;
+  transition         : opacity 0.3s, transform 0.3s;
+}
+
+.round.effect-2 .round.content {
+  -webkit-transform  : translate3d(0, 10px, 0);
+  transform          : translate3d(0, 10px, 0);
+  -webkit-transition : opacity 0.3s, -webkit-transform 0.3s;
+  transition         : opacity 0.3s, transform 0.3s;
+}
+
+.round.effect-2 .round.content i {
+  -webkit-transform  : translate3d(0, 15px, 0);
+  transform          : translate3d(0, 15px, 0);
+  -webkit-transition : opacity 0.3s, -webkit-transform 0.3s;
+  transition         : opacity 0.3s, transform 0.3s;
+}
+
+.round.effect-3 .round.content {
+  -webkit-transform        : translate3d(0, 10px, 0) rotate3d(0, 1, 0, 90deg);
+  transform                : translate3d(0, 10px, 0) rotate3d(0, 1, 0, 90deg);
+  -webkit-transform-origin : 50% 100%;
+  transform-origin         : 50% 100%;
+  -webkit-transition       : opacity 0.3s, -webkit-transform 0.3s;
+  transition               : opacity 0.3s, transform 0.3s;
+}
+
+.round.effect-3 .round.content i {
+  -webkit-transform  : scale3d(0, 0, 1);
+  transform          : scale3d(0, 0, 1);
+  -webkit-transition : opacity 0.3s, -webkit-transform 0.3s;
+  transition         : opacity 0.3s, transform 0.3s;
+}
+
+.round.effect-4 .round.content {
+  -webkit-transform  : translate3d(0, -20px, 0);
+  transform          : translate3d(0, -20px, 0);
+  -webkit-transition : opacity 0.3s, -webkit-transform 0.3s;
+  transition         : opacity 0.3s, transform 0.3s;
+}
+
+.round.effect-4 .round.content i {
+  -webkit-transform  : translate3d(0, 20px, 0);
+  transform          : translate3d(0, 20px, 0);
+  -webkit-transition : opacity 0.3s, -webkit-transform 0.3s;
+  transition         : opacity 0.3s, transform 0.3s;
+}
+
+.round.effect-5 .round.content {
+  -webkit-transform        : scale3d(0, 0, 1);
+  transform                : scale3d(0, 0, 1);
+  -webkit-transform-origin : 50% 100%;
+  transform-origin         : 50% 100%;
+  -webkit-transition       : opacity 0.3s, -webkit-transform 0.3s;
+  transition               : opacity 0.3s, transform 0.3s;
+}
+
+.round-effect-5 .round-content i {
+  -webkit-transform  : translate3d(0, 20px, 0);
+  transform          : translate3d(0, 20px, 0);
+  -webkit-transition : opacity 0.3s, -webkit-transform 0.3s;
+  transition         : opacity 0.3s, transform 0.3s;
+}
+
+.round.show .round.content,
+.round.show .round.content i {
+  pointer-events    : auto;
+  -webkit-transform : translate3d(0, 0, 0) scale3d(1, 1, 1);
+  transform         : translate3d(0, 0, 0) scale3d(1, 1, 1);
+}
+
+.round.effect-1.show .round.content i {
+  -webkit-transform : rotate3d(1, 1, 1, 0);
+  transform         : rotate3d(1, 1, 1, 0);
+}
+
+/* Arrow */
+.round.content::after {
+  content         : '';
+  position        : absolute;
+  top             : 100%;
+  left            : 50%;
+  margin          : -7px 0 0 -15px;
+  width           : 30px;
+  height          : 20px;
+  background      : url(./img/tooltip1.svg) no-repeat center center;
+  background-size : 100%;
+}
+
+/*****************************************sharp*****************************************/
+@import url(http://fonts.googleapis.com/css?family=Kalam:700,400);
+.sharp {
+  position : relative;
+  z-index  : 999;
+}
+
+/* Trigger text */
+.sharp.item {
+  font-weight : bold;
+  cursor      : pointer;
+}
+
+.sharp.content {
+  position           : absolute;
+  font-size          : 16px;
+  background         : #fff;
+  z-index            : 9999;
+  width              : 280px;
+  bottom             : 100%;
+  left               : 50%;
+  margin             : 0 0 105px -140px;
+  padding            : 25px;
+  text-align         : left;
+  border-radius      : 10px/50%;
+  color              : #dd5864;
+  opacity            : 0;
+  cursor             : default;
+  pointer-events     : none;
+  -webkit-transition : opacity 0.3s, -webkit-transform 0.3s;
+  transition         : opacity 0.3s, transform 0.3s;
+}
+
+.sharp.left .sharp.content {
+  -webkit-transform : translate3d(0, 50px, 0) rotate3d(1, 1, 1, 6deg);
+  transform         : translate3d(0, 50px, 0) rotate3d(1, 1, 1, 6deg);
+}
+
+.sharp.right .sharp.content {
+  -webkit-transform : translate3d(0, 50px, 0) rotate3d(1, 1, 1, -6deg);
+  transform         : translate3d(0, 50px, 0) rotate3d(1, 1, 1, -6deg);
+}
+
+.sharp.show .sharp.content {
+  opacity           : 1;
+  pointer-events    : auto;
+  -webkit-transform : translate3d(0, 0, 0);
+  transform         : translate3d(0, 0, 0);
+}
+
+/* Arrow */
+.sharp.content::after {
+  content                  : '';
+  position                 : absolute;
+  width                    : 60px;
+  height                   : 120px;
+  top                      : 100%;
+  background               : url(./img/tooltip3.svg) no-repeat center center;
+  background-size          : 100%;
+  -webkit-transform-origin : 50% 0;
+  transform-origin         : 50% 0;
+  -webkit-transition       : -webkit-transform 0.3s;
+  transition               : transform 0.3s;
+}
+
+.sharp.left .sharp.content::after {
+  left              : 25%;
+  -webkit-transform : scale3d(-1, 1, 1) rotate3d(1, 1, 1, 25deg) translate3d(0, -15px, 0);
+  transform         : scale3d(-1, 1, 1) rotate3d(1, 1, 1, 25deg) translate3d(0, -15px, 0);
+}
+
+.sharp.right .sharp.content::after {
+  right             : 25%;
+  -webkit-transform : rotate3d(1, 1, 1, 25deg) translate3d(0, -15px, 0);
+  transform         : rotate3d(1, 1, 1, 25deg) translate3d(0, -15px, 0);
+}
+
+.sharp.left.show .sharp.content::after {
+  -webkit-transform : scale3d(-1, 1, 1) rotate3d(1, 1, 1, 0) translate3d(0, -5px, 0);
+  transform         : scale3d(-1, 1, 1) rotate3d(1, 1, 1, 0) translate3d(0, -5px, 0);
+}
+
+.sharp.right.show .sharp.content::after {
+  -webkit-transform : rotate3d(1, 1, 1, 0) translate3d(0, -5px, 0);
+  transform         : rotate3d(1, 1, 1, 0) translate3d(0, -5px, 0);
+}

@@ -24,7 +24,8 @@ exports.text = function (elem) {
 };
 
 /**
- * Adds an event listener, if its detail are missing or match the provided detail.
+ * Adds an event listener that is executed only when event.detail.id is missing or matches
+ * detailOrId. By match we mean event.detail.id === detailOrId || event.detail.id === detailOrId.id
  * @param {string} event
  * @param {function} handler
  * @param {string|number|Object} [detailOrId] - for CustomEvent, if a string or a number are
@@ -49,9 +50,8 @@ exports.on = function (event, handler, detailOrId, target = document, useCapture
         throw new TypeError('DomUtil: target is not a proper event target.');
     } else if (_.isString(target)) target = document.querySelector(target);
     const wrapper = _.isEmpty(detailOrId) ? handler : function (ev) {
-                                              if (!_.isEmpty(detailOrId) && ev.detail) {
-                                                  if (!_.isEqual(detailOrId, ev.detail) &&
-                                                      detailOrId !== ev.detail.id) {
+                                              if (!_.isNil(detailOrId.id) && ev.detail) {
+                                                  if (detailOrId.id !== ev.detail.id) {
                                                   return;
                                               }
                                           }

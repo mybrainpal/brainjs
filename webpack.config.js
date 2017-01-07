@@ -37,6 +37,10 @@ module.exports = {
                     'sass?sourceMap&localIdentName=[local]--[hash:base64:5]'
                 ],
                 exclude: /node_modules/
+            },
+            {
+                test  : /\.(png|svg|woff|jpg)$/,
+                loader: 'url-loader?limit=10000&name=[path][name].[ext]'
             }
         ]
     },
