@@ -35,7 +35,7 @@ exports.execute = function (name, options = {}) {
     } else {
         _executorByName[name].execute(options);
     }
-    return module.exports;
+    return exports;
 };
 
 /**
