@@ -17,11 +17,25 @@ class WordEvent {
     static name() {return 'word'};
 
     /**
+     * @returns {string} a class name that is added to the target whenever it matches the regex.
+     */
+    static matchesRegex() { return 'brainpal-match'}
+
+    /**
+     * @returns {string} a class name that is added to the target whenever it mismatches the regex.
+     */
+    static mismatchesRegex() { return 'brainpal-mismatch'}
+
+    /**
      * @param {Object} options
      *  @property {Element|string} target - event target, can be a css selector.
      *  @property {number} [waitTime = 2000] - (in ms) to wait until firing the event if the
      *  input field is idle.
-     *  @property {boolean} [fireOnSpace = false] - whether to fire on white space.
+     *  @property {RegExp} [regex = /^[^\s]+\s$/] - a regular expression that should match
+     *  target.value.
+     *  @property {boolean} [fireOnRegex = false] - whether to fire once target.value matches regex.
+     *  @property {boolean} [enforceRegex = false] - whether to fire only when target.value matches
+     *  regex.
      *  @property {boolean} [fireOnEmpty = false] - whether to fire on empty input.
      *  @property {boolean} [fireOnEnter = true] - whether to fire once the enter key is pressed.
      *  @property {boolean} [fireOnce = true]
@@ -40,10 +54,21 @@ class WordEvent {
         } else {
             this.waitTime = 2000;
         }
-        this.fireOnSpace = _.has(options, 'fireOnSpace') && options.fireOnSpace;
-        this.fireOnEmpty = _.has(options, 'fireOnEmpty') && options.fireOnEmpty;
-        this.fireOnEnter = !_.has(options, 'fireOnEnter') || options.fireOnEnter;
-        this.fireOnce    = !_.has(options, 'fireOnce') || options.fireOnce;
+        this.fireOnRegex  = _.has(options, 'fireOnRegex') && options.fireOnRegex;
+        this.enforceRegex = _.has(options, 'enforceRegex') && options.enforceRegex;
+        this.fireOnEmpty  = _.has(options, 'fireOnEmpty') && options.fireOnEmpty;
+        this.fireOnEnter  = !_.has(options, 'fireOnEnter') || options.fireOnEnter;
+        this.fireOnce     = !_.has(options, 'fireOnce') || options.fireOnce;
+        if (options.regex instanceof RegExp) {
+            this.regex = options.regex;
+        } else if (_.isNil(options.regex)) {
+            this.regex = /^[^\s]+\s$/;
+        } else {
+            throw new TypeError('WordEvent: regex must be a RegExp.');
+        }
+        if (this.enforceRegex && _.isNil(this.regex)) {
+            throw new TypeError('WordEvent: regex must exist when enforceRegex is true.');
+        }
         if (options.target) {
             this.target = _.isString(options.target) ? document.querySelector(options.target) :
                           options.target;
@@ -71,7 +96,29 @@ class WordEvent {
         this.actualChangeHandler = _.on('change', () => {that.changeHandler()}, {}, this.target);
         this.actualKeyupHandler  =
             _.on('keyup', (event) => {that.keyupHandler(event)}, {}, this.target);
+        this._updateClass();
     };
+
+    /**
+     * Updates the target classes, according to the regex.
+     * @param {string} [enforcedClass] - if provided, it will be assigned regardless of the regex.
+     * @private
+     */
+    _updateClass(enforcedClass) {
+        this.target.classList.remove(WordEvent.matchesRegex(), WordEvent.mismatchesRegex());
+        if (enforcedClass) {
+            this.target.classList.add(enforcedClass);
+            return;
+        }
+        if (this.regex) {
+            this.target.classList.add(
+                this.regex.test(this.target.value) ? WordEvent.matchesRegex() :
+                WordEvent.mismatchesRegex());
+            this.target.classList.add(
+                this.regex.test(this.target.value) ? WordEvent.matchesRegex() :
+                WordEvent.mismatchesRegex());
+        }
+    }
 
     /**
      * Stops this word event.
@@ -88,7 +135,8 @@ class WordEvent {
      */
     changeHandler() {
         const that = this; // To use `this` in the listener handler.
-        if (this.fireOnSpace && /\s/.test(this.target.value.slice(-1))) {
+        this._updateClass();
+        if (this.regex && this.fireOnRegex && this.regex.test(this.target.value)) {
             if (this.fireIfShould()) return;
         }
         if (this.idleEvent) {
@@ -107,6 +155,7 @@ class WordEvent {
      * @param {KeyboardEvent} event
      */
     keyupHandler(event) {
+        this._updateClass();
         if (!this.fireOnEnter) return;
         if (_.isNil(event.key)) return;
         if (_fireKeyCodes.indexOf(event.key) !== -1) this.fireIfShould();
@@ -119,9 +168,11 @@ class WordEvent {
     fireIfShould() {
         if (/^\s*$/.test(this.target.value) && !this.fireOnEmpty) return false;
         if (this.fired && this.fireOnce) return false;
-        _.trigger(Factory.eventName(WordEvent.name()), this.detailOrId, this.target);
+        if (this.enforceRegex && this.regex && !this.regex.test(this.target.value)) return false;
+        this._updateClass(WordEvent.matchesRegex());
         if (this.idleEvent) this.idleEvent.stop();
         this.fired = true;
+        _.trigger(Factory.eventName(WordEvent.name()), this.detailOrId, this.target);
         return true;
     }
 }

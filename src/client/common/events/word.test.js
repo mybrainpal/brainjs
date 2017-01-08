@@ -24,8 +24,10 @@ describe('WordEvent', function () {
         expect(wordEvent).to.be.instanceof(WordEvent);
         expect(wordEvent.fireOnce).to.be.true;
         expect(wordEvent.fireOnEmpty).to.be.false;
-        expect(wordEvent.fireOnSpace).to.be.false;
+        expect(wordEvent.fireOnRegex).to.be.false;
+        expect(wordEvent.enforceRegex).to.be.false;
         expect(wordEvent.fireOnEnter).to.be.true;
+        expect(wordEvent.regex).to.be.deep.equal(/^[^\s]+\s$/);
         expect(wordEvent.target).to.be.equal(input);
         expect(wordEvent.waitTime).to.be.equal(2000);
     });
@@ -33,6 +35,7 @@ describe('WordEvent', function () {
         expect(() => {new WordEvent()}).to.throw(TypeError);
         expect(() => {new WordEvent({})}).to.throw(TypeError);
         expect(() => {new WordEvent({target: '#input', waitTime: '1s'})}).to.throw(TypeError);
+        expect(() => {new WordEvent({target: '#input', regex: '/\s/'})}).to.throw(TypeError);
         expect(() => {new WordEvent({target: '#input', waitTime: 1.5})}).to.throw(TypeError);
         expect(() => {new WordEvent({target: 1})}).to.throw(RangeError);
         expect(() => {new WordEvent({target: '#input2'})}).to.throw(RangeError);
@@ -84,7 +87,7 @@ describe('WordEvent', function () {
     });
     it('not fires on empty', (done) => {
         wordEvent   = new WordEvent({
-            target: '#input', detailOrId: id, waitTime: 10, fireOnEmpty: false, fireOnSpace: true
+            target: '#input', detailOrId: id, waitTime: 10, fireOnEmpty: false, fireOnRegex: true
         });
         input.value = ' ';
         _.trigger('change', id, input);
@@ -94,23 +97,33 @@ describe('WordEvent', function () {
     it('fires on empty', (done) => {
         _.on(Factory.eventName(WordEvent.name()), () => {done()}, id, input);
         wordEvent   = new WordEvent({
-            target: '#input', detailOrId: id, waitTime: 10, fireOnEmpty: true, fireOnSpace: true
+            target: '#input', detailOrId: id, waitTime: 10, fireOnEmpty: true, fireOnRegex: true
         });
         input.value = ' ';
         _.trigger('change', id, input);
     });
-    it('fires on space', (done) => {
-        _.on(Factory.eventName(WordEvent.name()), () => {done()}, id, input);
+    it('fires on regex', (done) => {
+        _.on(Factory.eventName(WordEvent.name()), () => {
+            expect(input.classList.contains(WordEvent.matchesRegex())).to.be.true;
+            expect(input.classList.contains(WordEvent.mismatchesRegex())).to.be.false;
+            done()
+        }, id, input);
         wordEvent   =
-            new WordEvent({target: '#input', detailOrId: id, waitTime: 10000, fireOnSpace: true});
+            new WordEvent({
+                target: '#input', detailOrId: id, waitTime: 10000, fireOnRegex: true,
+                regex : /^[^\s]+\s$/
+            });
         input.value = 'a ';
         _.trigger('change', id, input);
     });
-    it('not fires on space', (done) => {
+    it('not fires on regex', (done) => {
         const errorFn = _.on(Factory.eventName(WordEvent.name()), () => {done('come on!')}, id,
                              input);
         wordEvent     =
-            new WordEvent({target: '#input', detailOrId: id, waitTime: 10, fireOnSpace: false});
+            new WordEvent({
+                target: '#input', detailOrId: id, waitTime: 10, fireOnRegex: false,
+                regex : /^[^\s]+\s$/
+            });
         input.value   = 'a ';
         _.trigger('change', id, input);
         _.delay(() => {
@@ -119,10 +132,38 @@ describe('WordEvent', function () {
         }, 5);
 
     });
+    it('regex enforced', (done) => {
+        wordEvent   = new WordEvent({
+            target: '#input', detailOrId: id, regex: /b/, enforceRegex: true, fireOnEnter: true
+        });
+        input.value = 'a';
+        let event   = new KeyboardEvent('keyup', {key: 'Enter'});
+        input.dispatchEvent(event);
+        _.on(Factory.eventName(WordEvent.name()), () => {done('come on!')}, id, input);
+        _.delay(() => {
+            expect(input.classList.contains(WordEvent.mismatchesRegex())).to.be.true;
+            expect(input.classList.contains(WordEvent.matchesRegex())).to.be.false;
+            done()
+        }, 20);
+    });
     it('fires on enter', (done) => {
         _.on(Factory.eventName(WordEvent.name()), () => {done()}, id, input);
         wordEvent   =
             new WordEvent({target: '#input', detailOrId: id, waitTime: 10000, fireOnEnter: true});
+        input.value = 'a';
+        let event   = new KeyboardEvent('keyup', {key: 'Enter'});
+        input.dispatchEvent(event);
+    });
+    it('enter sets class', (done) => {
+        _.on(Factory.eventName(WordEvent.name()), () => {
+            expect(input.classList.contains(WordEvent.matchesRegex())).to.be.true;
+            expect(input.classList.contains(WordEvent.mismatchesRegex())).to.be.false;
+            done()
+        }, id, input);
+        wordEvent   =
+            new WordEvent({
+                target: '#input', detailOrId: id, waitTime: 10000, fireOnEnter: true, regex: /b/
+            });
         input.value = 'a';
         let event   = new KeyboardEvent('keyup', {key: 'Enter'});
         input.dispatchEvent(event);
