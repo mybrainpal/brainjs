@@ -97,7 +97,7 @@ describe('DomUtils', function () {
         });
         it('remove listener', (done) => {
             DomUtils.on(`click${index}`, fireFn);
-            document.removeEventListener(`click${index}`, fireFn);
+            DomUtils.off(`click${index}`, fireFn);
             DomUtils.trigger(`click${index}`);
             _.defer(() => {
                 expect(fired).to.be.false;
@@ -106,7 +106,7 @@ describe('DomUtils', function () {
         });
         it('remove listener with id', (done) => {
             let newHandler = DomUtils.on(`click${index}`, fireFn, 1);
-            document.removeEventListener(`click${index}`, newHandler);
+            DomUtils.off(`click${index}`, newHandler);
             DomUtils.trigger(`click${index}`);
             _.defer(() => {
                 expect(fired).to.be.false;

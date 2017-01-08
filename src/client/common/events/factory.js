@@ -3,19 +3,8 @@
  *
  * Factory for special events, we do double shifts here.
  */
-let IdleEvent = require('./idle'),
-    Logger    = require('../../common/log/logger'),
+let Logger = require('../../common/log/logger'),
     Level     = require('../../common/log/logger').Level;
-
-
-/**
- * Maps event names to their module counterpart.
- * @type {{string: Object}}
- * @private
- */
-let _eventsByName = {
-    'idle': IdleEvent
-};
 
 /**
  * @param {string} event
@@ -28,3 +17,32 @@ exports.create = function (event, options) {
     }
     Logger.log(Level.ERROR, 'EventFactory: could not find event ' + event);
 };
+
+/**
+ * Registers an event, and adds it to the _eventsByName map.
+ * @param {Object} module - the class prototype of the event.
+ */
+exports.register = function (module) {
+    _eventsByName[module.name()] = module;
+};
+
+/**
+ * Prefix for BrainPal event names.
+ * @type {string}
+ */
+exports.prefix = 'brainpal-';
+
+/**
+ * @param {string} name
+ * @returns {string} prefixed name.
+ */
+exports.eventName = function (name) {
+    return exports.prefix + name;
+};
+
+/**
+ * Maps event names to their module counterpart.
+ * @type {{string: Object}}
+ * @private
+ */
+let _eventsByName = {};

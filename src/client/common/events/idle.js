@@ -3,41 +3,51 @@
  *
  * An event that's fired after the user had been idle.
  */
-const _ = require('../util/wrapper');
+const _       = require('../util/wrapper'),
+      Factory = require('./factory');
+
 class IdleEvent {
-    static name() {return 'brainpal-idle'};
+    /**
+     * @returns {string} name of event.
+     */
+    static name() {return 'idle'};
 
     /**
-     * @param {Object} options
-     *  @property {number} waitTime - (in ms) to wait until idle event is dispatched.
+     * @param {Object} [options]
+     *  @property {number} [waitTime = 60000] - (in ms) to wait until idle event is dispatched.
      *  @property {boolean} [fireOnce = true] - whether to fire the idle event every waitTime ms,
      *     or just once.
-     *  @property {EventTarget} [target = document] - event target.
-     *  @property {Object} [detail] - for CustomEvent constructor.
+     *  @property {EventTarget|string} [target = document] - event target.
+     *  @property {Object|string|number} [detailOrId] - for triggering.
      */
     constructor(options) {
         if (!_.isObject(options)) throw new TypeError('IdleEvent: options is invalid.');
-        if (options.waitTime && _.isNumber(options.waitTime) && options.waitTime > 0) {
-            this.waitTime = options.waitTime;
+        if (_.isInteger(options.waitTime)) {
+            if (options.waitTime > 0) {
+                this.waitTime = options.waitTime;
+            } else {
+                throw new TypeError('IdleEvent: waitTime must be positive.');
+            }
+        } else if (!_.isNil(options.waitTime)) {
+            throw new TypeError('IdleEvent: waitTime must be an integer.');
         } else {
-            throw new TypeError('IdleEvent: waitTime missing or invalid.');
+            this.waitTime = 60000;
         }
         this.fireOnce = !_.has(options, 'fireOnce') || options.fireOnce;
         if (options.target) {
-            if (options.target instanceof EventTarget) {
-                this.target = options.target;
-            } else {
-                throw new TypeError('IdleEvent: target is not of instance EventTarget.');
+            this.target = _.isString(options.target) ? document.querySelector(options.target) :
+                          options.target;
+            if (!(this.target instanceof EventTarget)) {
+                throw new RangeError('IdleEvent: could not find target at ' + options.target);
             }
         } else {
             this.target = document;
         }
-        if (options.detail) {
-            if (_.isObject(options.detail)) {
-                this.detail = options.detail;
-            } else {
-                throw new TypeError('IdleEvent: detail is not an object.');
-            }
+        if (_.isObject(options.detailOrId) || _.isNumber(options.detailOrId) ||
+            _.isString(options.detailOrId)) {
+            this.detailOrId = options.detailOrId;
+        } else if (!_.isNil(options.detailOrId)) {
+            throw new TypeError('IdleEvent: detailOrId is not an object.');
         }
         this._init();
     }
@@ -51,7 +61,7 @@ class IdleEvent {
         this.start();
         for (let i = 0; i < _activeEvents.length; i++) {
             // useCapture is used so that every event will trigger reset.
-            window.addEventListener(_activeEvents[i], () => {that.reset()}, true);
+            _.on(_activeEvents[i], () => {that.reset()}, {}, this.target, true);
         }
     };
 
@@ -61,6 +71,7 @@ class IdleEvent {
     reset() {
         this.stop();
         this.start();
+        return this;
     };
 
     /**
@@ -69,14 +80,10 @@ class IdleEvent {
     start() {
         const that = this; // To use `this` in the setTimeout handler.
         this.timer = setTimeout(function () {
-            if (_.has(that, 'detail')) {
-                that.target.dispatchEvent(
-                    new CustomEvent(IdleEvent.name(), {detail: that.detail}));
-            } else {
-                that.target.dispatchEvent(new CustomEvent(IdleEvent.name()));
-            }
+            _.trigger(Factory.eventName(IdleEvent.name()), that.detailOrId, that.target);
             if (_.has(that, 'fireOnce') && !that.fireOnce) that.reset();
         }, this.waitTime);
+        return this;
     };
 
     /**
@@ -84,6 +91,7 @@ class IdleEvent {
      */
     stop() {
         if (this.timer) clearTimeout(this.timer);
+        return this;
     }
 }
 
@@ -99,3 +107,4 @@ const _activeEvents = ['mousemove', 'mousedown', 'click', 'touchstart', 'scroll'
  * @type {IdleEvent}
  */
 module.exports = IdleEvent;
+Factory.register(IdleEvent);

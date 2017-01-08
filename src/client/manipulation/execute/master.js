@@ -4,9 +4,10 @@
  * Modifies the DOM, but in a good way.
  */
     // TODO(ohad): add `prepare` method that initiates external resource loading.
-let _      = require('../../common/util/wrapper'),
-    Logger = require('../../common/log/logger'),
-    Level  = require('../../common/log/logger').Level;
+let _             = require('../../common/util/wrapper'),
+    EventFactory = require('../../common/events/factory'),
+    Logger        = require('../../common/log/logger'),
+    Level         = require('../../common/log/logger').Level;
 
 /**
  * Registers an executor, and adds it to the _executorByName map.
@@ -25,10 +26,10 @@ exports.register = function (module) {
  *  `_.on(eventName(name), .. , id)`
  *  @property {function} [callback] - to execute once the executor is complete.
  *  @property {function} [failureCallback] - to execute had the executor failed.
- * @returns {*} delegates returned value to the actual executor.
+ * @returns {Object} this module.
  */
 exports.execute = function (name, options = {}) {
-    if (!_preconditions(name, options)) return module.exports;
+    if (!_preconditions(name, options)) return exports;
     if (options.on === true) options.on = exports.eventName(name);
     if (options.on) {
         _.on(options.on, () => {_executorByName[name].execute(options)}, options.id);
@@ -38,19 +39,7 @@ exports.execute = function (name, options = {}) {
     return exports;
 };
 
-/**
- * @param {string} name - executor name
- */
-exports.eventName = function (name) {
-    return _eventPrefix + name;
-};
-
-/**
- * Prefix for executors event names.
- * @type {string}
- * @private
- */
-const _eventPrefix = 'brainpal-';
+exports.eventName = EventFactory.eventName;
 
 /**
  * All existing executors keyed by their names.

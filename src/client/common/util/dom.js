@@ -46,9 +46,10 @@ exports.on = function (event, handler, detailOrId, target = document, useCapture
         !_.isObject(detailOrId)) {
         throw new TypeError('DomUtil: detail is illegal.');
     } else if (!_.isNil(detailOrId) && !_.isObject(detailOrId)) detailOrId = {id: detailOrId};
-    if (target && !(target instanceof EventTarget) && !_.isString(target)) {
+    if (_.isString(target)) target = document.querySelector(target);
+    if (!(target instanceof EventTarget)) {
         throw new TypeError('DomUtil: target is not a proper event target.');
-    } else if (_.isString(target)) target = document.querySelector(target);
+    }
     const wrapper = _.isEmpty(detailOrId) ? handler : function (ev) {
                                               if (!_.isNil(detailOrId.id) && ev.detail) {
                                                   if (detailOrId.id !== ev.detail.id) {
@@ -59,6 +60,28 @@ exports.on = function (event, handler, detailOrId, target = document, useCapture
                                       };
     target.addEventListener(event, wrapper, useCapture);
     return wrapper;
+};
+
+/**
+ * Removes an event listener
+ * @param {string} event
+ * @param {function} handler
+ * @param {EventTarget|string} [target = document] - an event target or a selector.
+ * @param {boolean} [useCapture = false] - for the addEventListener method.
+ * @returns {function} the handler method used.
+ */
+exports.off = function (event, handler, target = document, useCapture = false) {
+    if (!_.isString(event) || !event) {
+        throw new TypeError('DomUtil: event is not a string or is empty.');
+    }
+    if (!_.isFunction(handler)) {
+        throw new TypeError('DomUtil: handler is not a function.');
+    }
+    if (_.isString(target)) target = document.querySelector(target);
+    if (!(target instanceof EventTarget)) {
+        throw new TypeError('DomUtil: target is not a proper event target.');
+    }
+    target.removeEventListener(event, handler, useCapture);
 };
 
 /**
@@ -76,9 +99,10 @@ exports.trigger = function (event, detailOrId, target = document) {
         !_.isObject(detailOrId)) {
         throw new TypeError('DomUtil: detail is illegal.');
     } else if (!_.isNil(detailOrId) && !_.isObject(detailOrId)) detailOrId = {id: detailOrId};
-    if (target && !(target instanceof EventTarget) && !_.isString(target)) {
+    if (_.isString(target)) target = document.querySelector(target);
+    if (!(target instanceof EventTarget)) {
         throw new TypeError('DomUtil: target is not a proper event target.');
-    } else if (_.isString(target)) target = document.querySelector(target);
+    }
     if (!_.isEmpty(detailOrId)) {
         //noinspection JSCheckFunctionSignatures
         target.dispatchEvent(new CustomEvent(event, {detail: detailOrId}));

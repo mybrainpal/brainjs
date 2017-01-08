@@ -116,14 +116,12 @@ function _play(component, options) {
     let intervalId   = setInterval(function () {
         _navigate(NavigationDirection.NEXT, component);
     }, intervalMs);
-    component.addEventListener('mouseover', function () {
-        clearInterval(intervalId);
-    });
-    component.addEventListener('mouseout', function () {
+    _.on('mouseover', () => { clearInterval(intervalId); }, {}, component, true);
+    _.on('mouseout', () => {
         intervalId = setInterval(function () {
             _navigate(NavigationDirection.NEXT, component);
         }, intervalMs);
-    });
+    }, {}, component, true);
     component.querySelector(`ul.${styles.itemwrap}`).children[0].classList.add(styles.current);
     component.setAttribute(_currentAttribute, _.toString(0));
     component.setAttribute(_animationCountAttribute, _.toString(0));
@@ -152,8 +150,8 @@ function _navigate(direction, component) {
 
     let nextItem = items[current];
 
-    currentItem.addEventListener('animationend', _onAnimationEnd);
-    nextItem.addEventListener('animationend', _onAnimationEnd);
+    _.on('animationend', _onAnimationEnd, {}, currentItem);
+    _.on('animationend', _onAnimationEnd, {}, nextItem);
     currentItem.classList.add(
         direction === NavigationDirection.NEXT ? styles.navOutNext : styles.navOutPrev);
     nextItem.classList.add(direction === NavigationDirection.NEXT ? styles.navInNext :
@@ -173,7 +171,7 @@ function _onAnimationEnd() {
     if (animationCount < 0) {
         throw new Error('GalleryExecutor: animationCount mustn\'t be negative.');
     }
-    this.removeEventListener('animationend', _onAnimationEnd);
+    _.off('animationend', _onAnimationEnd, {}, this);
     if (this.classList.contains(styles.current)) {
         this.classList.remove(styles.current,
                               styles.navOutNext,
