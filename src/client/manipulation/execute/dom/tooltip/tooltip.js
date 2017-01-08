@@ -12,6 +12,8 @@ const styles = css.locals;
  * Creates a tooltip and injects it into element.
  * @param {Object} options
  *  @property {string} target - css selector of target.
+ *  @property {number} [timer = 5000] - time in ms to hide the tooltip. use a negative number to
+ *  disable.
  *  @property {string} [type = classic] - the type of the tooltip
  *  @property {string} [htmlContent] - the html content of the tooltip
  *  @property {string|number} [id]
@@ -42,6 +44,7 @@ exports.preconditions = function (options) {
                              document.querySelector('head'), document.documentElement];
     if (illegalElements.indexOf(target) >= 0)  return false;
     if (options.id && !_.isString(options.id) && !_.isNumber(options.id)) return false;
+    if (!_.isNil(options.timer) && !_.isNumber(options.timer)) return false;
     if (_.has(options, 'htmlContent') && !_.isString(options.htmlContent)) return false;
     if (!options.type || !_.isString(options.type)) return false;
     if (!_.has(_tooltipInfo, options.type)) return false;
@@ -141,6 +144,9 @@ function _attachTooltip(options) {
     let parent  = target.parentNode;
     let tooltip = _tooltipInfo[options.type].buildTypeTemplate(options);
     tooltip.setAttribute('id', exports.tooltipId(options.id));
+    if (_.isNil(options.timer) || options.timer > 0) {
+        tooltip.setAttribute(_timerAttribute, (options.timer || 5000).toString());
+    }
     parent.insertBefore(tooltip, target);
     exports.curateTooltip(tooltip, target, options.htmlContent);
     _attachEvents(tooltip, options.id);
@@ -173,7 +179,13 @@ function _attachEvents(tooltip, id) {
                 tooltip.classList.add(styles.show);
             }
         }
-
+        if (tooltip.hasAttribute(_timerAttribute) && tooltip.classList.contains(styles.show)) {
+            const timeToHide = _.parseInt(tooltip.getAttribute(_timerAttribute));
+            if (timeToHide <= 0) throw new RangeError('Tooltip: illegal timer');
+            setTimeout(() => {
+                tooltip.classList.remove(styles.show);
+            }, timeToHide);
+        }
     }, id);
 }
 
@@ -221,9 +233,9 @@ const _tooltipInfo = {
             let inner = document.createElement('span');
             inner.classList.add(styles[options.type], styles.inner);
             inner.setAttribute(exports.contentAttribute, 'true');
+            text.appendChild(inner);
             let content = tooltip.querySelector(`.${styles.content}`);
             content.setAttribute(_targetNextSiblingAttribute, 'true');
-            content.appendChild(inner);
             content.appendChild(text);
             return tooltip;
         }
@@ -339,6 +351,13 @@ function _buildTemplate(type, effectNum, direction) {
  * @private
  */
 let _styleLoaded = false;
+
+/**
+ * Time in ms to hide the tooltip in.
+ * @type {string}
+ * @private
+ */
+const _timerAttribute = exports.tooltipAttribute + '-timer';
 
 /**
  * Marks the element to which one should append the tooltip's target.

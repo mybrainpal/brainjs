@@ -16,6 +16,7 @@ describe('EventExecutor', function () {
         expect(EventExecutor.preconditions({create: {event: 1}})).to.be.false;
         expect(EventExecutor.preconditions({listen: {}})).to.be.false;
         expect(EventExecutor.preconditions({listen: {event: 'a'}})).to.be.false;
+        expect(EventExecutor.preconditions({create: {event: 'a'}, callback: 1})).to.be.false;
         expect(EventExecutor.preconditions({create: {event: 'a', detail: 1}})).to.be.true;
         expect(EventExecutor.preconditions({create: {event: 'a', detail: {}}})).to.be.true;
         expect(EventExecutor.preconditions({create: {event: 'a'}})).to.be.true;
@@ -33,6 +34,10 @@ describe('EventExecutor', function () {
     it('event triggered with listener', (done) => {
         _.on('triggered', () => { done(); });
         EventExecutor.execute({listen: {event: 'listen'}, trigger: {event: 'triggered'}});
+        _.trigger('listen');
+    });
+    it('callback called', (done) => {
+        EventExecutor.execute({listen: {event: 'listen'}, callback: () => { done() }});
         _.trigger('listen');
     });
     it('event fires with matching detail', (done) => {

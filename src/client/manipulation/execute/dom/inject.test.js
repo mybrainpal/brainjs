@@ -38,7 +38,8 @@ describe('InjectExecutor', function () {
     });
     it('append html', () => {
         const toAppend = 'looks for the maze';
-        InjectExecutor.execute({target: '#westworld>.human', html: toAppend, append: true});
+        InjectExecutor.execute(
+            {target: '#westworld>.human', html: toAppend, position: 'beforeEnd'});
         expect(document.querySelector('#westworld>.human').innerHTML).to.be
                                                                      .equal(origText + toAppend);
     });
@@ -51,8 +52,10 @@ describe('InjectExecutor', function () {
         expect(InjectExecutor.preconditions(
             {target: 'body', html: '', sourceSelector: ''})).to.be.false;
         expect(InjectExecutor.preconditions({target: 'body', sourceSelector: ''})).to.be.false;
-        expect(InjectExecutor.preconditions({target: 'body', html: '', append: 1})).to.be.false;
+        expect(InjectExecutor.preconditions({target: 'body', html: '', position: 1})).to.be.false;
         expect(InjectExecutor.preconditions({target: 'body', sourceSelector: 'body'})).to.be.true;
         expect(InjectExecutor.preconditions({target: 'body', html: ''})).to.be.true;
+        expect(InjectExecutor.preconditions(
+            {target: 'body', html: '', position: 'beforeEnd'})).to.be.true;
     })
 });

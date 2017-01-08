@@ -1,11 +1,12 @@
 /**
  * Proudly created by ohad on 01/01/2017.
  */
-const galleryId     = require('../../client/manipulation/execute/media/gallery').idPrefix,
-      _             = require('../../client/common/util/wrapper'),
-      idleEventName = require('../../client/common/events/idle').name(),
-      Executor      = require('../../client/manipulation/execute/master');
-module.exports      = {
+const galleryId = require('../../client/manipulation/execute/media/gallery').idPrefix,
+      _         = require('../../client/common/util/wrapper'),
+      IdleEvent = require('../../client/common/events/idle'),
+      Factory   = require('../../client/common/events/factory'),
+      Executor  = require('../../client/manipulation/execute/master');
+module.exports  = {
     storage    : {
         name: 'local'
     },
@@ -200,7 +201,7 @@ module.exports      = {
                                                  confirmButtonColor: '#fbc97f',
                                                  showCloseButton   : true,
                                                  confirmButtonText : 'חייג עכשיו'
-                                             });
+                                             }).catch(swal.noop);
                                     }
                                 }
                             },
@@ -251,7 +252,10 @@ module.exports      = {
                                 name   : require(
                                     '../../client/manipulation/execute/interaction/event').name,
                                 options: {
-                                    listen : {event: idleEventName, detail: {id: 'reviews'}},
+                                    listen : {
+                                        event : Factory.eventName(IdleEvent.name()),
+                                        detail: {id: 'reviews'}
+                                    },
                                     trigger: {
                                         event: Executor.eventName('alertify')
                                     }
@@ -275,7 +279,10 @@ module.exports      = {
                                 name   : require(
                                     '../../client/manipulation/execute/interaction/event').name,
                                 options: {
-                                    listen : {event: idleEventName, detail: {id: 'modal'}},
+                                    listen : {
+                                        event : Factory.eventName(IdleEvent.name()),
+                                        detail: {id: 'modal'}
+                                    },
                                     trigger: {
                                         event: Executor.eventName('sweetalert')
                                     }

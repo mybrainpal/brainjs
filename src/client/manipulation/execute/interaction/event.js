@@ -16,14 +16,15 @@ Master.register(exports);
  *      @property {string} event
  *      @property {Object} [detail] - as supplied to the CustomEvent constructor. If missing, any
  *      `event` fired will be satisfactory.
- *      @property {string} [selector] - event target, leave empty for document
+ *      @property {string} [target] - event target, leave empty for document
  *  @property {boolean} [waitForAll = false] - whether to wait for all listen events to fire in
  *  order to execute trigger and create.
  *  @property {Object|Array.<Object>} [trigger] - dispatches a custom event
  *      @property {string} event
  *      @property {Object} [detail] - for the CustomEvent constructor.
- *      @property {string} [selector] - event target, leave empty for document
+ *      @property {string} [target] - event target, leave empty for document
  *      @property {Object} [detail] - to be passed to CustomEvent constructor.
+ *  @property {function} [callback] - executes callback, once all the listeners had been invoked.
  *  @property {Object|Array.<Object>} [create] - create a special event.
  *      @property {string} event
  *      @property {Object} [options] - for the event constructor.
@@ -36,12 +37,12 @@ exports.execute = function (options) {
         let promises = [];
         _.forEach(options.listen, function (listener) {
             let target = document;
-            if (listener.selector) {
-                target = document.querySelector(listener.selector);
+            if (listener.target) {
+                target = document.querySelector(listener.target);
                 if (!_.isElement(target)) {
                     Logger.log(Level.ERROR,
                                'EventExecutor: count not find listener target at ' +
-                               listener.selector);
+                               listener.target);
                     return;
                 }
             }
@@ -76,6 +77,7 @@ exports.preconditions = function (options) {
                _.isEmpty(_.omit(_.clone(options), 'waitForAll'))) {
         return false;
     }
+    if (options.callback && !_.isFunction(options.callback)) return false;
     for (i = 0; i < props.length; i++) {
         if (options[props[i]]) {
             if (_.isArray(options[props[i]])) {
@@ -85,7 +87,7 @@ exports.preconditions = function (options) {
             } else if (!_isPropertyValid(options[props[i]])) return false;
         }
     }
-    return !_.isEmpty(options.create) || !_.isEmpty(options.trigger);
+    return !_.isEmpty(options.create) || !_.isEmpty(options.trigger) || !_.isNil(options.callback);
 
 };
 
@@ -102,21 +104,22 @@ function _isPropertyValid(prop) {
  * @private
  */
 function _doFn(options) {
+    if (options.callback) options.callback();
     options.trigger = options.trigger || [];
     if (!_.isArray(options.trigger)) {
         options.trigger = [options.trigger];
     }
     _.forEach(options.trigger, function (trigger) {
         let target = document;
-        if (trigger.selector) {
-            target = document.querySelector(trigger.selector);
+        if (trigger.target) {
+            target = document.querySelector(trigger.target);
             if (!_.isElement(target)) {
                 Logger.log(Level.ERROR,
-                           'EventExecutor: count not find trigger target at ' + trigger.selector);
+                           'EventExecutor: count not find trigger target at ' + trigger.target);
                 return;
             }
         }
-        target.dispatchEvent(new CustomEvent(trigger.event, {detail: trigger.detail || {}}));
+        _.trigger(trigger.event, trigger.detail, target);
     });
     options.create = options.create || [];
     if (!_.isArray(options.create)) {

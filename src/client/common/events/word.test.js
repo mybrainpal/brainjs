@@ -44,13 +44,13 @@ describe('WordEvent', function () {
         _.on(Factory.eventName(WordEvent.name()), () => {done()}, id, input);
         wordEvent   = new WordEvent(options);
         input.value = 'a';
-        _.trigger('change', id, input);
+        _.trigger('input', id, input);
     });
     it('stops', (done) => {
         wordEvent   = new WordEvent(options);
         input.value = 'a';
         wordEvent.stop();
-        _.trigger('change', id, input);
+        _.trigger('input', id, input);
         _.on(Factory.eventName(WordEvent.name()), () => {done('come on!')}, id, input);
         _.delay(() => {done()}, 20);
     });
@@ -63,7 +63,7 @@ describe('WordEvent', function () {
         input.value = 'a';
         let event   = new Event('keyup', {which: 13});
         input.dispatchEvent(event);
-        _.trigger('change', id, input);
+        _.trigger('input', id, input);
         _.delay(() => {
             expect(count).to.equal(1);
             done()
@@ -75,10 +75,10 @@ describe('WordEvent', function () {
         wordEvent   =
             new WordEvent({target: '#input', detailOrId: id, waitTime: 10, fireOnce: false});
         input.value = 'a';
-        _.trigger('change', id, input);
+        _.trigger('input', id, input);
         _.delay(() => {
             input.value = 'b';
-            _.trigger('change', id, input);
+            _.trigger('input', id, input);
             _.delay(() => {
                 expect(count).to.equal(2);
                 done();
@@ -90,7 +90,7 @@ describe('WordEvent', function () {
             target: '#input', detailOrId: id, waitTime: 10, fireOnEmpty: false, fireOnRegex: true
         });
         input.value = ' ';
-        _.trigger('change', id, input);
+        _.trigger('input', id, input);
         _.on(Factory.eventName(WordEvent.name()), () => {done('come on!')}, id, input);
         _.delay(() => {done()}, 20);
     });
@@ -100,7 +100,7 @@ describe('WordEvent', function () {
             target: '#input', detailOrId: id, waitTime: 10, fireOnEmpty: true, fireOnRegex: true
         });
         input.value = ' ';
-        _.trigger('change', id, input);
+        _.trigger('input', id, input);
     });
     it('fires on regex', (done) => {
         _.on(Factory.eventName(WordEvent.name()), () => {
@@ -114,7 +114,7 @@ describe('WordEvent', function () {
                 regex : /^[^\s]+\s$/
             });
         input.value = 'a ';
-        _.trigger('change', id, input);
+        _.trigger('input', id, input);
     });
     it('not fires on regex', (done) => {
         const errorFn = _.on(Factory.eventName(WordEvent.name()), () => {done('come on!')}, id,
@@ -125,7 +125,7 @@ describe('WordEvent', function () {
                 regex : /^[^\s]+\s$/
             });
         input.value   = 'a ';
-        _.trigger('change', id, input);
+        _.trigger('input', id, input);
         _.delay(() => {
             _.off(Factory.eventName(WordEvent.name()), errorFn, input);
             _.on(Factory.eventName(WordEvent.name()), () => {done()}, id, input);
@@ -176,7 +176,7 @@ describe('WordEvent', function () {
         input.value   = 'a';
         let event     = new KeyboardEvent('keyup', {key: 'Enter'});
         input.dispatchEvent(event);
-        _.trigger('change', id, input);
+        _.trigger('input', id, input);
         _.delay(() => {
             _.off(Factory.eventName(WordEvent.name()), errorFn, input);
             _.on(Factory.eventName(WordEvent.name()), () => {done()}, id, input);

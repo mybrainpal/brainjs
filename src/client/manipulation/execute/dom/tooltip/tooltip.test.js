@@ -31,6 +31,8 @@ describe('TooltipExecutor', function () {
     });
     it('preconditions', () => {
         expect(TooltipExecutor.preconditions({target: '#huwayej', type: 'bloated'})).to.be.true;
+        expect(TooltipExecutor.preconditions(
+            {target: '#huwayej', type: 'bloated', timer: {}})).to.be.false;
         expect(
             TooltipExecutor.preconditions(
                 {target: '#huwayej', type: 'bloated', htmlContent: ''})).to.be.true;
@@ -73,6 +75,19 @@ describe('TooltipExecutor', function () {
                 expect(tooltip.classList.contains(styles.show)).to.be.false;
                 done();
             }, 10);
+        }, 10);
+    });
+    it('flow with timer', (done) => {
+        TooltipExecutor.execute(
+            {target: '#huwayej', type: 'bloated', htmlContent: 'Huwayej', timer: 20});
+        const tooltip = document.querySelector(`div>.${styles.bloated}`);
+        _.trigger(Master.eventName(TooltipExecutor.name), {state: TooltipExecutor.State.SHOW});
+        _.delay(() => {
+            expect(tooltip.classList.contains(styles.show)).to.be.true;
+            _.delay(() => {
+                expect(tooltip.classList.contains(styles.show)).to.be.false;
+                done();
+            }, 20);
         }, 10);
     });
     it('flow without state', (done) => {

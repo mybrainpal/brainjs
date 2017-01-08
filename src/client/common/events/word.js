@@ -93,7 +93,7 @@ class WordEvent {
      */
     _init() {
         const that               = this; // To use `this` in the listener handler.
-        this.actualChangeHandler = _.on('change', () => {that.changeHandler()}, {}, this.target);
+        this.actualInputHandler = _.on('input', () => {that.inputHandler()}, {}, this.target);
         this.actualKeyupHandler  =
             _.on('keyup', (event) => {that.keyupHandler(event)}, {}, this.target);
         this._updateClass();
@@ -125,15 +125,15 @@ class WordEvent {
      */
     stop() {
         if (this.idleEvent) this.idleEvent.stop();
-        _.off('change', this.actualChangeHandler, this.target);
+        _.off('input', this.actualInputHandler, this.target);
         _.off('keyup', this.actualKeyupHandler, this.target);
         this.fired = false;
     }
 
     /**
-     * Handles changes.
+     * Handles inputs.
      */
-    changeHandler() {
+    inputHandler() {
         const that = this; // To use `this` in the listener handler.
         this._updateClass();
         if (this.regex && this.fireOnRegex && this.regex.test(this.target.value)) {

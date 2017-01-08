@@ -211,5 +211,5 @@ function _saveMockFn() {
 }
 
 function _logMockFn() {
-    console.log(JSON.stringify(arguments[1]))
+    //console.log(JSON.stringify(arguments[1]))
 }
