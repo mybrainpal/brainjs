@@ -109,7 +109,7 @@ describe('TyperExecutor', function () {
         }, 20);
     });
     it('emit', (done) => {
-        _.on('ev', () => {done()}, {}, 'body');
+        _.on('ev', () => {done()});
         TyperExecutor.execute({typerFn: (typer) => {typer('#div', 1).emit('ev').end();}});
     });
     it('listen', (done) => {
@@ -117,7 +117,7 @@ describe('TyperExecutor', function () {
             {typerFn: (typer) => {typer('#div', 1).listen('ev').continue('123').end();}});
         setTimeout(() => {
             expect(div.textContent).to.equal('');
-            _.trigger('ev', {}, 'body');
+            _.trigger('ev');
             setTimeout(() => {
                 expect(div.textContent).to.equal('123');
                 done();
@@ -150,7 +150,7 @@ describe('TyperExecutor', function () {
                               });
     });
     it('end', (done) => {
-        _.on('typerFinished', () => {done()}, {}, 'body');
+        _.on('typerFinished', () => {done()});
         TyperExecutor.execute({
                                   typerFn: typer => {
                                       typer('#div', 1).line('123').end((el) => {
