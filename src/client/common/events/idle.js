@@ -21,15 +21,15 @@ class IdleEvent {
      *  @property {Object|string|number} [detailOrId] - for triggering.
      */
     constructor(options) {
-        if (!_.isObject(options)) throw new TypeError('IdleEvent: options is invalid.');
-        if (_.isInteger(options.waitTime)) {
+        if (!_.isObject(options)) throw new Error('IdleEvent: options is invalid.');
+        if (Number.isInteger(options.waitTime)) {
             if (options.waitTime > 0) {
                 this.waitTime = options.waitTime;
             } else {
-                throw new TypeError('IdleEvent: waitTime must be positive.');
+                throw new Error('IdleEvent: waitTime must be positive.');
             }
         } else if (!_.isNil(options.waitTime)) {
-            throw new TypeError('IdleEvent: waitTime must be an integer.');
+            throw new Error('IdleEvent: waitTime must be an integer.');
         } else {
             this.waitTime = 60000;
         }
@@ -38,7 +38,7 @@ class IdleEvent {
             this.target = _.isString(options.target) ? document.querySelector(options.target) :
                           options.target;
             if (!(this.target instanceof EventTarget)) {
-                throw new RangeError('IdleEvent: could not find target at ' + options.target);
+                throw new Error('IdleEvent: could not find target at ' + options.target);
             }
         } else {
             this.target = document;
@@ -47,7 +47,7 @@ class IdleEvent {
             _.isString(options.detailOrId)) {
             this.detailOrId = options.detailOrId;
         } else if (!_.isNil(options.detailOrId)) {
-            throw new TypeError('IdleEvent: detailOrId is not an object.');
+            throw new Error('IdleEvent: detailOrId is not an object.');
         }
         this._init();
     }

@@ -31,15 +31,15 @@ Master.register(exports);
  */
 exports.execute = function (options) {
     if (options.listen) {
-        if (!_.isArray(options.listen)) {
+        if (!Array.isArray(options.listen)) {
             options.listen = [options.listen];
         }
         let promises = [];
-        _.forEach(options.listen, function (listener) {
+        options.listen.forEach(function (listener) {
             let target = document;
             if (listener.target) {
                 target = document.querySelector(listener.target);
-                if (!_.isElement(target)) {
+                if (_.isNil(target)) {
                     Logger.log(Level.ERROR,
                                'EventExecutor: count not find listener target at ' +
                                listener.target);
@@ -53,11 +53,11 @@ exports.execute = function (options) {
             }));
         });
         if (options.waitForAll) {
-            Promise.all(promises).then(function () {
+            Promise.all(promises).then(() => {
                 _doFn(options);
             });
         } else {
-            Promise.race(promises).then(function () {
+            Promise.race(promises).then(() => {
                 _doFn(options);
             });
         }
@@ -73,14 +73,11 @@ exports.preconditions = function (options) {
     let i, j, props = ['listen', 'create', 'trigger'];
     if (options.waitForAll && !_.isBoolean(options.waitForAll)) {
         return false;
-    } else if (options.waitForAll &&
-               _.isEmpty(_.omit(_.clone(options), 'waitForAll'))) {
-        return false;
     }
     if (options.callback && !_.isFunction(options.callback)) return false;
     for (i = 0; i < props.length; i++) {
         if (options[props[i]]) {
-            if (_.isArray(options[props[i]])) {
+            if (Array.isArray(options[props[i]])) {
                 for (j = 0; j < options[props[i]].length; j++) {
                     if (!_isPropertyValid(options[props[i]][j])) return false;
                 }
@@ -106,26 +103,27 @@ function _isPropertyValid(prop) {
 function _doFn(options) {
     if (options.callback) options.callback();
     options.trigger = options.trigger || [];
-    if (!_.isArray(options.trigger)) {
+    if (!Array.isArray(options.trigger)) {
         options.trigger = [options.trigger];
     }
-    _.forEach(options.trigger, function (trigger) {
+    for (let i = 0; i < options.trigger.length; i++) {
         let target = document;
-        if (trigger.target) {
-            target = document.querySelector(trigger.target);
-            if (!_.isElement(target)) {
+        if (options.trigger[i].target) {
+            target = document.querySelector(options.trigger[i].target);
+            if (_.isNil(target)) {
                 Logger.log(Level.ERROR,
-                           'EventExecutor: count not find trigger target at ' + trigger.target);
+                           'EventExecutor: count not find trigger target at ' +
+                           options.trigger[i].target);
                 return;
             }
         }
-        _.trigger(trigger.event, trigger.detail, target);
-    });
+        _.trigger(options.trigger[i].event, options.trigger[i].detail, target);
+    }
     options.create = options.create || [];
-    if (!_.isArray(options.create)) {
+    if (!Array.isArray(options.create)) {
         options.create = [options.create];
     }
-    _.forEach(options.create, function (creation) {
-        EventFactory.create(creation.event, creation.options || {});
-    });
+    for (let i = 0; i < options.create; i++) {
+        EventFactory.create(options.create[i].event, options.create[i].options || {});
+    }
 }

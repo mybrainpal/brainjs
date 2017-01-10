@@ -2,7 +2,6 @@
  * Proudly created by ohad on 01/01/2017.
  */
 const galleryId = require('../../client/manipulation/execute/media/gallery').idPrefix,
-      _         = require('../../client/common/util/wrapper'),
       IdleEvent = require('../../client/common/events/idle'),
       Factory   = require('../../client/common/events/factory'),
       Executor  = require('../../client/manipulation/execute/master');
@@ -145,7 +144,7 @@ module.exports  = {
                                 options: {
                                     typerFn: function (typer) {
                                         document.querySelector('.hotel_deal h2').textContent = '';
-                                        _.defer(function () {
+                                        setTimeout(() => {
                                             typer('.hotel_deal h2', 40)
                                                 .cursor({blink: 'soft'})
                                                 .line('מבצע סופ"ש 2 לילות במלון דיוויד ים המלח!!',
@@ -168,7 +167,7 @@ module.exports  = {
                                                 .pause(200)
                                                 .end();
                                         });
-                                        _.defer(function () {
+                                        setTimeout(() => {
                                             document.querySelector('#PriceView').textContent =
                                                 '';
                                             document.querySelector('#PriceView').style.color =
@@ -179,8 +178,7 @@ module.exports  = {
                                                                .emit('brainpal-price-1')
                                                                .listen('brainpal-title-2')
                                                                .back(10, 10).run(function (elem) {
-                                                elem.style.color =
-                                                    '';
+                                                elem.style.color = '';
                                             }).pause(500).continue('₪1890').pause(1500)
                                                                .emit('brainpal-price-done').end();
                                         });
@@ -213,19 +211,19 @@ module.exports  = {
                                     alertifyFn: function (alertify) {
                                         alertify.set('notifier', 'position', 'bottom-left');
                                         alertify.notify('מה אומרים על המלון הזה', 'title', 200);
-                                        _.delay(() => {
+                                        setTimeout(() => {
                                             alertify.notify(_reviewToAlertify(0), 'review', 200);
                                         }, 1000);
-                                        _.delay(() => {
+                                        setTimeout(() => {
                                             alertify.notify('וזו לא הביקורת היחידה', 'title', 200);
                                         }, 2000);
-                                        _.delay(() => {
+                                        setTimeout(() => {
                                             alertify.notify(_reviewToAlertify(1), 'review', 200);
                                         }, 2500);
-                                        _.delay(() => {
+                                        setTimeout(() => {
                                             alertify.notify('ויש יותר ממאה כאלו...', 'title', 200);
                                         }, 3500);
-                                        _.delay(() => {
+                                        setTimeout(() => {
                                             alertify.dismissAll();
                                             document.dispatchEvent(
                                                 new CustomEvent('brainpal-alertify-dismiss'));

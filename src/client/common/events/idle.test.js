@@ -21,10 +21,10 @@ describe('IdleEvent', function () {
         expect(idle.waitTime).to.be.equal(60000);
     });
     it('construction should fail', () => {
-        expect(() => {new IdleEvent()}).to.throw(TypeError);
-        expect(() => {new IdleEvent({waitTime: '1s'})}).to.throw(TypeError);
-        expect(() => {new IdleEvent({waitTime: 1.5})}).to.throw(TypeError);
-        expect(() => {new IdleEvent({waitTime: 10, target: 1})}).to.throw(RangeError);
+        expect(() => {new IdleEvent()}).to.throw(Error);
+        expect(() => {new IdleEvent({waitTime: '1s'})}).to.throw(Error);
+        expect(() => {new IdleEvent({waitTime: 1.5})}).to.throw(Error);
+        expect(() => {new IdleEvent({waitTime: 10, target: 1})}).to.throw(Error);
     });
     it('event fires', (done) => {
         _.on(Factory.eventName(IdleEvent.name()), () => {done()}, id);
@@ -39,8 +39,8 @@ describe('IdleEvent', function () {
     it('reset works', (done) => {
         const errorFn = _.on(Factory.eventName(IdleEvent.name()), () => {done('too early')}, id);
         idle          = new IdleEvent(options);
-        _.delay(() => {idle.reset()}, 5);
-        _.delay(() => {
+        setTimeout(() => {idle.reset()}, 5);
+        setTimeout(() => {
             _.off(Factory.eventName(IdleEvent.name()), errorFn);
             _.on(Factory.eventName(IdleEvent.name()), () => {done()}, id);
         }, 12);
@@ -48,8 +48,8 @@ describe('IdleEvent', function () {
     it('activity resets counter', (done) => {
         const errorFn = _.on(Factory.eventName(IdleEvent.name()), () => {done('too early')}, id);
         idle          = new IdleEvent(options);
-        _.delay(() => {_.trigger('click')}, 5);
-        _.delay(() => {
+        setTimeout(() => {_.trigger('click')}, 5);
+        setTimeout(() => {
             _.off(Factory.eventName(IdleEvent.name()), errorFn);
             _.on(Factory.eventName(IdleEvent.name()), () => {done()}, id);
         }, 12);
@@ -58,13 +58,13 @@ describe('IdleEvent', function () {
         _.on(Factory.eventName(IdleEvent.name()), () => {done('too early')}, id);
         idle = new IdleEvent(options);
         idle.stop();
-        _.delay(() => {done()}, 100);
+        setTimeout(() => {done()}, 100);
     });
     it('fireOnce = true', (done) => {
         let count = 0;
         _.on(Factory.eventName(IdleEvent.name()), () => {count++;}, id);
         idle = new IdleEvent(options);
-        _.delay(() => {
+        setTimeout(() => {
             expect(count).to.be.equal(1);
             done();
         }, 50);
@@ -72,8 +72,8 @@ describe('IdleEvent', function () {
     it('fireOnce = false', (done) => {
         let count = 0;
         _.on(Factory.eventName(IdleEvent.name()), () => {count++;}, id);
-        idle = new IdleEvent(_.merge(_.cloneDeep(options), {fireOnce: false}));
-        _.delay(() => {
+        idle = new IdleEvent(_.deepExtend({}, options, {fireOnce: false}));
+        setTimeout(() => {
             expect(count).to.be.above(1);
             done();
         }, 50);
@@ -82,9 +82,9 @@ describe('IdleEvent', function () {
         let first = false, second = false;
         new IdleEvent(options);
         _.on(Factory.eventName(IdleEvent.name()), () => {first = true}, id);
-        new IdleEvent(_.merge(_.cloneDeep(options), {detailOrId: ++id}));
+        new IdleEvent(_.deepExtend({}, options, {detailOrId: ++id}));
         _.on(Factory.eventName(IdleEvent.name()), () => {second = true}, id);
-        _.delay(() => {
+        setTimeout(() => {
             expect(first).to.be.true;
             expect(second).to.be.true;
             done();

@@ -6,7 +6,7 @@ let expect       = require('chai').expect,
 
 describe('FormExecutor', function () {
     let form, input;
-    before(function () {
+    before(() => {
         form = document.createElement('form');
         form.setAttribute('id', 'form');
         document.querySelector('body').appendChild(form);
@@ -14,14 +14,14 @@ describe('FormExecutor', function () {
         input.setAttribute('id', 'input');
         form.appendChild(input);
     });
-    after(function () {
+    after(() => {
         form.parentNode.removeChild(form);
     });
-    it('Focus element', function () {
+    it('Focus element', () => {
         FormExecutor.execute({target: '#input', focus: true});
         expect(document.activeElement).to.be.equal(input);
     });
-    it('Preconditions', function () {
+    it('Preconditions', () => {
         expect(FormExecutor.preconditions({})).to.be.false;
         expect(FormExecutor.preconditions({target: '#input1'})).to.be.false;
     })

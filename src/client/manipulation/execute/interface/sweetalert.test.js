@@ -19,11 +19,11 @@ describe('SwalExecutor', function () {
     it('modal fired', (done) => {
         const msg = `I can't make anything of this.`;
         SwalExecutor.execute({swalFn: (swal) => {swal({text: msg})}});
-        _.defer(() => {
+        setTimeout(() => {
             expect(document.querySelector('.swal2-container')).to.be.ok;
             expect(document.querySelector('.swal2-content').textContent).to.equal(msg);
             _.trigger('click', {}, document.querySelector('.swal2-container'));
-            _.delay(() => {
+            setTimeout(() => {
                 expect(document.querySelector('.swal2-hide')).to.be.ok;
                 done();
             }, 20);

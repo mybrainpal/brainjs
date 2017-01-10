@@ -6,12 +6,12 @@ let expect       = require('chai').expect,
     Demographics = require('./demographics');
 
 describe('Demographics', function () {
-    before(function () {
+    before(() => {
         // So that demographics apply.
         require('./../../common/client').id       = 1;
         require('./../../common/client').agent.os = 'BrainOs'; // we are going to make it. period.
     });
-    it('client included', function () {
+    it('client included', () => {
         expect(Demographics.included()).to.be.true;
         expect(Demographics.included({
                                          properties: [
@@ -31,7 +31,7 @@ describe('Demographics', function () {
                                              }]
                                      })).to.be.true;
     });
-    it('client not included', function () {
+    it('client not included', () => {
         expect(Demographics.included({
                                          properties: [
                                              {

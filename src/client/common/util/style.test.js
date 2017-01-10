@@ -19,7 +19,7 @@ describe('StyleUtil', function () {
         document.getElementsByTagName('body')[0].appendChild(a1);
     });
     it('Input is verified', () => {
-        expect(() => {StyleUtil.load(1)}).to.throw(TypeError);
+        expect(() => {StyleUtil.load(1)}).to.throw(Error);
     });
     it('loadable', () => {
         expect(StyleUtil.loadable(1)).to.be.false;

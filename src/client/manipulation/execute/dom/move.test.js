@@ -33,7 +33,7 @@ describe('DomMoveExecutor', function () {
         p2.appendChild(a);
     });
     afterEach(() => {
-        _.forEach(document.querySelectorAll('a'), (elem) => {elem.parentNode.removeChild(elem)});
+        document.querySelectorAll('a').forEach((elem) => {elem.parentNode.removeChild(elem)});
     });
     after(() => {
         div.parentNode.removeChild(div);
@@ -56,7 +56,7 @@ describe('DomMoveExecutor', function () {
     it('move based on sibling', () => {
         DomMoveExecutor.execute({target: '#div a', nextSiblingSelector: '#div span'});
         expect(a.parentNode).to.be.equal(p1);
-        expect(_.isElement(a.previousSibling)).to.not.be.ok;
+        expect(_.isNil(a.previousSibling)).to.not.be.ok;
     });
     it('do not move if parent is not changed', () => {
         DomMoveExecutor.execute({target: '#div a', parentSelector: '#div>p:nth-child(2)'});
@@ -67,7 +67,7 @@ describe('DomMoveExecutor', function () {
         p1.insertBefore(a, span);
         DomMoveExecutor.execute({target: '#div a', nextSiblingSelector: '#div span'});
         expect(a.parentNode).to.be.equal(p1);
-        expect(_.isElement(a.previousSibling)).to.not.be.ok;
+        expect(_.isNil(a.previousSibling)).to.not.be.ok;
     });
     it('Preconditions', () => {
         expect(DomMoveExecutor.preconditions([], {})).to.be.false;

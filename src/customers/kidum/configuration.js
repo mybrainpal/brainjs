@@ -142,9 +142,9 @@ module.exports         = {
                                     alertifyFn: function (alertify) {
                                         alertify.set('notifier', 'position', 'bottom-left');
                                         alertify.notify('לא שיפרת, לא שילמת!', 'message', 20);
-                                        _.delay(() => {
+                                        setTimeout(() => {
                                             alertify.notify('המבצע תקף עד ה-31.1', 'message', 20);
-                                            _.delay(() => {
+                                            setTimeout(() => {
                                                 alertify.dismissAll();
                                                 _.trigger('alertify-dismissed');
                                             }, 5000);
@@ -168,10 +168,9 @@ module.exports         = {
                                         let span       =
                                                 document.querySelector('div.brainpal span.typer');
                                         span.style.top =
-                                            _.parseInt(span.clientHeight - document.querySelector(
-                                                           'input.brainpal').clientHeight)
-                                             .toString() +
-                                            'px';
+                                            (span.clientHeight -
+                                             document.querySelector('input.brainpal').clientHeight)
+                                                .toString() + 'px';
                                         let typerObj   = typer('div.brainpal span.typer', 40)
                                             .cursor({blink: 'soft'});
                                         for (let j = 0; j < 3; j++) {
@@ -305,7 +304,7 @@ function focusInput() {
     document.querySelector('div.brainpal .white-space').classList
             .add('brainpal-hide');
     document.querySelector('input.brainpal').focus();
-    _.delay(() => {
+    setTimeout(() => {
         document.querySelector('div.brainpal span.typer').style.display = 'none';
     }, 500);
 }

@@ -28,14 +28,14 @@ exports.execute = function (options) {
         target = document.querySelector(options.target);
     if (options.nextSiblingSelector) {
         nextSibling = document.querySelector(options.nextSiblingSelector);
-        if (!_.isElement(nextSibling)) {
+        if (_.isNil(nextSibling)) {
             Logger.log(Level.ERROR, 'DomMoveExecutor: count not find next sibling at ' +
                                     options.nextSiblingSelector);
         }
     }
     if (options.parentSelector) {
         parent = document.querySelector(options.parentSelector);
-        if (!_.isElement(parent)) {
+        if (_.isNil(parent)) {
             Logger.log(Level.ERROR, 'DomMoveExecutor: count not find parent at ' +
                                     options.parentSelector);
         }
@@ -55,7 +55,7 @@ exports.preconditions = function (options) {
         if (!target) return false;
     } catch (e) { return false; }
     if (target === document || target === document.documentElement ||
-        target === window || !_.isElement(target.parentNode) ||
+        target === window || _.isNil(target.parentNode) ||
         (target === document.querySelector('body')) ||
         (target === document.querySelector('head'))) {
         return false;
@@ -78,10 +78,8 @@ exports.preconditions = function (options) {
     if (options.parentSelector) {
         parent = document.querySelector(options.parentSelector);
     }
-    if (!_.isElement(parent) && !_.isElement(nextSibling)) {
-        return false;
-    }
-    return !(_.isElement(parent) && _.isElement(nextSibling) && nextSibling.parentNode !== parent);
+    if (_.isNil(parent) && _.isNil(nextSibling)) return false;
+    return _.isNil(parent) || _.isNil(nextSibling) || nextSibling.parentNode === parent;
 
 };
 

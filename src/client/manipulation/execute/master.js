@@ -57,19 +57,19 @@ let _executorByName = {};
  */
 function _preconditions(name, options) {
     if (!_executorByName[name]) {
-        throw new RangeError('Executor: executor ' + name + ' is nonexistent.');
+        throw new Error('Executor: executor ' + name + ' is nonexistent.');
     }
     if (!_.isNil(options.id) && !_.isString(options.id) && !_.isNumber(options.id)) {
-        throw new TypeError('Executor: id must be a string or a number.');
+        throw new Error('Executor: id must be a string or a number.');
     }
     if (!_.isNil(options.on) && !_.isString(options.on) && !_.isBoolean(options.on)) {
-        throw new TypeError('Executor: on must be a string or a boolean.');
+        throw new Error('Executor: on must be a string or a boolean.');
     }
     if (!_.isNil(options.callback) && !_.isFunction(options.callback)) {
-        throw new TypeError('Executor: callback must be a function.');
+        throw new Error('Executor: callback must be a function.');
     }
     if (!_.isNil(options.failureCallback) && !_.isFunction(options.failureCallback)) {
-        throw new TypeError('Executor: callback must be a function.');
+        throw new Error('Executor: callback must be a function.');
     }
     if (!_executorByName[name].preconditions(options)) {
         Logger.log(Level.WARNING, 'Executor: executor ' + name + ' preconditions failed.');

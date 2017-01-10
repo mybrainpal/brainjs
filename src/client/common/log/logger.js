@@ -51,7 +51,7 @@ exports.log = function (level, message) {
     if (_.isString(message)) {
         subject.content = message
     } else {
-        _.merge(subject, message);
+        _.deepExtend(subject, message);
     }
     _storage.save(subject);
 };

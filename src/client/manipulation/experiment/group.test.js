@@ -7,10 +7,10 @@ let expect          = require('chai').expect,
 
 describe('ExperimentGroup', function () {
     let group;
-    before(function () {
+    before(() => {
         require('./../../common/client').id = 1; // So that demographics apply.
     });
-    it('client included', function () {
+    it('client included', () => {
         group = new ExperimentGroup({
             demographics: {
                 properties: [{
@@ -20,7 +20,7 @@ describe('ExperimentGroup', function () {
         });
         expect(group.isClientIncluded).to.be.true;
     });
-    it('client not included', function () {
+    it('client not included', () => {
         group = new ExperimentGroup({
             demographics: {
                 properties: [{
@@ -30,7 +30,7 @@ describe('ExperimentGroup', function () {
         });
         expect(group.isClientIncluded).to.be.false;
     });
-    it('default constructor', function () {
+    it('default constructor', () => {
         group = new ExperimentGroup();
         expect(group.isClientIncluded).to.be.true;
     });

@@ -51,8 +51,8 @@ exports.preconditions = function (options) {
     for (let prop in _tooltipInfo[options.type]) {
         if (!_.has(_tooltipInfo[options.type], prop)) continue;
         if (_.isFunction(_tooltipInfo[options.type][prop])) continue;
-        if (!_.isArray(_tooltipInfo[options.type][prop])) {
-            throw new TypeError('TooltipExecutor: _tooltipInfo nested properties must be' +
+        if (!Array.isArray(_tooltipInfo[options.type][prop])) {
+            throw new Error('TooltipExecutor: _tooltipInfo nested properties must be' +
                                 ' arrays or functions.')
         }
         if (_tooltipInfo[options.type][prop].indexOf(options[prop]) < 0) return false;
@@ -86,7 +86,7 @@ exports.detachTooltip = function (target) {
     if (!target.parentNode) return;
     let tooltip = target.parentNode;
     while (tooltip && !tooltip.hasAttribute(exports.tooltipAttribute)) tooltip = tooltip.parentNode;
-    if (!_.isElement(tooltip) || !tooltip.hasAttribute(exports.tooltipAttribute)) return;
+    if (_.isNil(tooltip) || !tooltip.hasAttribute(exports.tooltipAttribute)) return;
     tooltip.parentNode.insertBefore(target, tooltip);
     tooltip.parentNode.removeChild(tooltip);
     target.removeAttribute(exports.targetAttribute);
@@ -168,8 +168,8 @@ function _attachEvents(tooltip, id) {
                     tooltip.classList.remove(styles.show);
                 }
             } else {
-                throw new RangeError('TooltipExecutor: ' + state.toString() + ' is an illegal' +
-                                     ' tooltip state.');
+                throw new Error('TooltipExecutor: ' + state.toString() + ' is an illegal' +
+                                ' tooltip state.');
             }
         } else {
             // If state is missing just inverse the current state.
@@ -180,8 +180,8 @@ function _attachEvents(tooltip, id) {
             }
         }
         if (tooltip.hasAttribute(_timerAttribute) && tooltip.classList.contains(styles.show)) {
-            const timeToHide = _.parseInt(tooltip.getAttribute(_timerAttribute));
-            if (timeToHide <= 0) throw new RangeError('Tooltip: illegal timer');
+            const timeToHide = Number.parseInt(tooltip.getAttribute(_timerAttribute));
+            if (timeToHide <= 0) throw new Error('Tooltip: illegal timer');
             setTimeout(() => {
                 tooltip.classList.remove(styles.show);
             }, timeToHide);

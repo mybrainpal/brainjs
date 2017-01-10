@@ -32,13 +32,13 @@ describe('WordEvent', function () {
         expect(wordEvent.waitTime).to.be.equal(2000);
     });
     it('construction should fail', () => {
-        expect(() => {new WordEvent()}).to.throw(TypeError);
-        expect(() => {new WordEvent({})}).to.throw(TypeError);
-        expect(() => {new WordEvent({target: '#input', waitTime: '1s'})}).to.throw(TypeError);
-        expect(() => {new WordEvent({target: '#input', regex: '/\s/'})}).to.throw(TypeError);
-        expect(() => {new WordEvent({target: '#input', waitTime: 1.5})}).to.throw(TypeError);
-        expect(() => {new WordEvent({target: 1})}).to.throw(RangeError);
-        expect(() => {new WordEvent({target: '#input2'})}).to.throw(RangeError);
+        expect(() => {new WordEvent()}).to.throw(Error);
+        expect(() => {new WordEvent({})}).to.throw(Error);
+        expect(() => {new WordEvent({target: '#input', waitTime: '1s'})}).to.throw(Error);
+        expect(() => {new WordEvent({target: '#input', regex: '/\s/'})}).to.throw(Error);
+        expect(() => {new WordEvent({target: '#input', waitTime: 1.5})}).to.throw(Error);
+        expect(() => {new WordEvent({target: 1})}).to.throw(Error);
+        expect(() => {new WordEvent({target: '#input2'})}).to.throw(Error);
     });
     it('fires on idle', (done) => {
         _.on(Factory.eventName(WordEvent.name()), () => {done()}, id, input);
@@ -52,7 +52,7 @@ describe('WordEvent', function () {
         wordEvent.stop();
         _.trigger('input', id, input);
         _.on(Factory.eventName(WordEvent.name()), () => {done('come on!')}, id, input);
-        _.delay(() => {done()}, 20);
+        setTimeout(() => {done()}, 20);
     });
     it('fires once', (done) => {
         let count = 0;
@@ -64,7 +64,7 @@ describe('WordEvent', function () {
         let event   = new Event('keyup', {which: 13});
         input.dispatchEvent(event);
         _.trigger('input', id, input);
-        _.delay(() => {
+        setTimeout(() => {
             expect(count).to.equal(1);
             done()
         }, 50);
@@ -76,10 +76,10 @@ describe('WordEvent', function () {
             new WordEvent({target: '#input', detailOrId: id, waitTime: 10, fireOnce: false});
         input.value = 'a';
         _.trigger('input', id, input);
-        _.delay(() => {
+        setTimeout(() => {
             input.value = 'b';
             _.trigger('input', id, input);
-            _.delay(() => {
+            setTimeout(() => {
                 expect(count).to.equal(2);
                 done();
             }, 20);
@@ -92,7 +92,7 @@ describe('WordEvent', function () {
         input.value = ' ';
         _.trigger('input', id, input);
         _.on(Factory.eventName(WordEvent.name()), () => {done('come on!')}, id, input);
-        _.delay(() => {done()}, 20);
+        setTimeout(() => {done()}, 20);
     });
     it('fires on empty', (done) => {
         _.on(Factory.eventName(WordEvent.name()), () => {done()}, id, input);
@@ -126,7 +126,7 @@ describe('WordEvent', function () {
             });
         input.value   = 'a ';
         _.trigger('input', id, input);
-        _.delay(() => {
+        setTimeout(() => {
             _.off(Factory.eventName(WordEvent.name()), errorFn, input);
             _.on(Factory.eventName(WordEvent.name()), () => {done()}, id, input);
         }, 5);
@@ -140,7 +140,7 @@ describe('WordEvent', function () {
         let event   = new KeyboardEvent('keyup', {key: 'Enter'});
         input.dispatchEvent(event);
         _.on(Factory.eventName(WordEvent.name()), () => {done('come on!')}, id, input);
-        _.delay(() => {
+        setTimeout(() => {
             expect(input.classList.contains(WordEvent.mismatchesRegex())).to.be.true;
             expect(input.classList.contains(WordEvent.matchesRegex())).to.be.false;
             done()
@@ -177,7 +177,7 @@ describe('WordEvent', function () {
         let event     = new KeyboardEvent('keyup', {key: 'Enter'});
         input.dispatchEvent(event);
         _.trigger('input', id, input);
-        _.delay(() => {
+        setTimeout(() => {
             _.off(Factory.eventName(WordEvent.name()), errorFn, input);
             _.on(Factory.eventName(WordEvent.name()), () => {done()}, id, input);
         }, 5);

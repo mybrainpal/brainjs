@@ -1,8 +1,7 @@
 /**
  * Proudly created by ohad on 25/12/2016.
  */
-let _                 = require('./../../../common/util/wrapper'),
-    expect            = require('chai').expect,
+let expect            = require('chai').expect,
     DomRemoveExecutor = require('./remove');
 
 describe('DomRemoveExecutor', function () {
@@ -17,7 +16,9 @@ describe('DomRemoveExecutor', function () {
         div.appendChild(a);
     });
     afterEach(() => {
-        _.forEach(div.children, (elem) => {elem.parentNode.removeChild(elem)});
+        for (let i = 0; i < div.children.length; i++) {
+            div.children[i].parentNode.removeChild(div.children[i]);
+        }
     });
     after(() => {
         div.parentNode.removeChild(div);

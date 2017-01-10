@@ -15,28 +15,34 @@ let _         = require('./../common/util/wrapper'),
  *  @property {Object|Object[]} [subjectOptions] - options for {@link Collector#collect}
  */
 exports.experiment = function (experiment, options) {
-    let subjectOptions;
+    let subjectOptions, i;
     options = options || {};
-    if (options.subjectOptions && _.isArray(options.subjectOptions)) {
-        _.forEach(options.subjectOptions, function (item) {
-            exports.experiment(experiment, {subjectOptions: item});
-        });
+    if (options.subjectOptions && Array.isArray(options.subjectOptions)) {
+        for (i = 0; i < options.subjectOptions.length; i++) {
+            exports.experiment(experiment, {subjectOptions: options.subjectOptions[i]});
+        }
         return;
     }
     subjectOptions = options.subjectOptions || {};
-    subjectOptions = _.merge({experiment: experiment}, subjectOptions);
+    subjectOptions = _.deepExtend({experiment: experiment}, subjectOptions);
     if (subjectOptions.anchor) {
         Collector.collect(subjectOptions);
     }
-    Collector.collect(_.omit(_.clone(subjectOptions), 'anchor'));
-    _.forEach(experiment.clientGroups, function (group) {
-        let groupSubjectOptions = _.merge({experimentGroup: group}, subjectOptions);
+    let noAnchor = _.deepExtend({}, subjectOptions);
+    delete noAnchor.anchor;
+    Collector.collect(noAnchor);
+    for (i = 0; i < experiment.clientGroups.length; i++) {
+        let groupSubjectOptions = _.deepExtend({experimentGroup: experiment.clientGroups[i]},
+                                               subjectOptions);
         if (groupSubjectOptions.anchor) {
             Collector.collect(groupSubjectOptions);
         }
-        Collector.collect(_.omit(_.clone(groupSubjectOptions), 'anchor'));
-        _.forEach(group.executors, function (executor) {
-            Executor.execute(executor.name, executor.options);
-        });
-    });
+        noAnchor = _.deepExtend({}, groupSubjectOptions);
+        delete noAnchor.anchor;
+        Collector.collect(noAnchor);
+        for (let j = 0; j < experiment.clientGroups[i].executors.length; j++) {
+            Executor.execute(experiment.clientGroups[i].executors[j].name,
+                             experiment.clientGroups[i].executors[j].options);
+        }
+    }
 };

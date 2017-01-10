@@ -2,7 +2,7 @@
  * Proudly created by ohad on 02/12/2016.
  */
 let Client        = require('./common/client'),
-    configuration = require('./../customers/kidum/configuration'),
+    configuration = {},
     Logger        = require('./common/log/logger'),
     Level         = require('./common/log/logger').Level,
     Storage       = require('./common/storage/storage'),
@@ -56,7 +56,7 @@ window.BrainPal = (function (window, undefined) {
             if (configuration.storage.hasOwnProperty('options')) {
                 options = configuration.storage.options;
             }
-            options.onReadyHandler = function () {
+            options.onReadyHandler = () => {
                 Logger.options({storage: configuration.storage.name});
                 Collector.options({storage: configuration.storage.name});
             };
