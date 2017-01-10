@@ -56,7 +56,7 @@ window.BrainPal = (function (window, undefined) {
             if (configuration.storage.hasOwnProperty('options')) {
                 options = configuration.storage.options;
             }
-            options.onReadyHandler = function () {
+            options.onReadyHandler = () => {
                 Logger.options({storage: configuration.storage.name});
                 Collector.options({storage: configuration.storage.name});
             };

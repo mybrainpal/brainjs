@@ -42,15 +42,15 @@ class WordEvent {
      *  @property {Object|string|number} [detailOrId] - for triggering.
      */
     constructor(options) {
-        if (!_.isObject(options)) throw new TypeError('WordEvent: options is invalid.');
-        if (_.isInteger(options.waitTime)) {
+        if (!_.isObject(options)) throw new Error('WordEvent: options is invalid.');
+        if (Number.isInteger(options.waitTime)) {
             if (options.waitTime > 0) {
                 this.waitTime = options.waitTime;
             } else {
-                throw new TypeError('WordEvent: waitTime must be positive.');
+                throw new Error('WordEvent: waitTime must be positive.');
             }
         } else if (!_.isNil(options.waitTime)) {
-            throw new TypeError('WordEvent: waitTime must be an integer.');
+            throw new Error('WordEvent: waitTime must be an integer.');
         } else {
             this.waitTime = 2000;
         }
@@ -64,25 +64,25 @@ class WordEvent {
         } else if (_.isNil(options.regex)) {
             this.regex = /^[^\s]+\s$/;
         } else {
-            throw new TypeError('WordEvent: regex must be a RegExp.');
+            throw new Error('WordEvent: regex must be a RegExp.');
         }
         if (this.enforceRegex && _.isNil(this.regex)) {
-            throw new TypeError('WordEvent: regex must exist when enforceRegex is true.');
+            throw new Error('WordEvent: regex must exist when enforceRegex is true.');
         }
         if (options.target) {
             this.target = _.isString(options.target) ? document.querySelector(options.target) :
                           options.target;
             if (!(this.target instanceof EventTarget)) {
-                throw new RangeError('WordEvent: could not find target at ' + options.target);
+                throw new Error('WordEvent: could not find target at ' + options.target);
             }
         } else {
-            throw new TypeError('WordEvent: target is missing.');
+            throw new Error('WordEvent: target is missing.');
         }
         if (_.isObject(options.detailOrId) || _.isNumber(options.detailOrId) ||
             _.isString(options.detailOrId)) {
             this.detailOrId = options.detailOrId;
         } else if (!_.isNil(options.detailOrId)) {
-            throw new TypeError('IdleEvent: detailOrId is not an object.');
+            throw new Error('IdleEvent: detailOrId is not an object.');
         }
         this._init();
     }

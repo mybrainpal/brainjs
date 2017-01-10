@@ -63,7 +63,7 @@ BPReadyEvent.prototype.init = function () {
         }
     );
     intervalHandler = setInterval(_fireIfReady, _checkFrequencyMs);
-    window.addEventListener(BPReadyEvent.prototype.eventName, function () {
+    window.addEventListener(BPReadyEvent.prototype.eventName, () => {
         clearInterval(intervalHandler);
     });
 };

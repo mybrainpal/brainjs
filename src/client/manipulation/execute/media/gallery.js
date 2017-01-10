@@ -11,7 +11,7 @@ const styles = css.locals;
  * A prefix to all galleries.
  * @type {string}
  */
-exports.idPrefix = 'brainpal-gallery-component';
+exports.idPrefix = 'brainpal-gallery';
 /**
  * Describes where the gallery navigates to. next is right.
  * @type {{NEXT: string, PREVIOUS: string}}
@@ -47,15 +47,17 @@ exports.preconditions = function (options) {
         if (!document.querySelector(options.container)) return false;
     } catch (e) { return false; }
     if (!options.sourceSelectors) return false;
-    if (!_.isArray(options.sourceSelectors) && !_.isString(options.sourceSelectors)) return false;
-    const srcSelectors = _.isArray(options.sourceSelectors) ? options.sourceSelectors :
+    if (!Array.isArray(options.sourceSelectors) && !_.isString(options.sourceSelectors)) {
+        return false;
+    }
+    const srcSelectors = Array.isArray(options.sourceSelectors) ? options.sourceSelectors :
                          [options.sourceSelectors];
     for (let i = 0; i < srcSelectors.length; i++) {
         try { if (!document.querySelector(srcSelectors[i])) return false; }
         catch (e) { return false; }
     }
     if (!_.isNil(options.animationClass) &&
-        !_.includes(_animationClasses, options.animationClass)) {
+        _animationClasses.indexOf(options.animationClass) === -1) {
         return false;
     }
     return _.isNil(options.id) || _.isString(options.id) || _.isNumber(options.id);
@@ -70,36 +72,37 @@ exports.preconditions = function (options) {
  * @private
  */
 function _createGallery(container, options) {
-    let sources             = [], component, ul;
+    let sources             = [], component, ul, i;
     options.sourceSelectors =
-        _.isArray(options.sourceSelectors) ? options.sourceSelectors : [options.sourceSelectors];
-    _.forEach(options.sourceSelectors, (sel) => {
-        let newSrcs = document.querySelectorAll(sel);
-        _.forEach(newSrcs, (elem) => {
-            sources.push(elem.cloneNode(true));
-        })
-    });
+        Array.isArray(options.sourceSelectors) ? options.sourceSelectors :
+        [options.sourceSelectors];
+    for (i = 0; i < options.sourceSelectors.length; i++) {
+        let newSrcs = document.querySelectorAll(options.sourceSelectors[i]);
+        for (let j = 0; j < newSrcs.length; j++) {
+            sources.push(newSrcs[j].cloneNode(true));
+        }
+    }
     component = document.createElement('div');
     component.classList.add(styles.component, styles.fullwidth,
                             styles[options.animationClass || 'fxSoftScale']);
     component.setAttribute('id',
-                           exports.idPrefix + (options.id ? `-${_.toString(options.id)}` : ''));
+                           exports.idPrefix + (options.id ? `-${options.id}` : ''));
     ul = document.createElement('ul');
     ul.classList.add(styles.itemwrap);
-    _.forEach(sources, (elem) => {
+    for (i = 0; i < sources.length; i++) {
         // TODO(ohad): support multiple elements per item.
         let li = document.createElement('li');
-        li.appendChild(elem);
-        if (elem.nodeName === 'IMG') {
+        li.appendChild(sources[i]);
+        if (sources[i].nodeName === 'IMG') {
             const containerRatio = container.clientWidth / container.clientHeight;
-            const imgRatio       = elem.naturalWidth / elem.naturalHeight;
-            elem.classList.add(containerRatio > imgRatio ? styles.narrow : styles.wide);
-            elem.removeAttribute('width');
-            elem.removeAttribute('height');
-            elem.removeAttribute('border');
+            const imgRatio = sources[i].naturalWidth / sources[i].naturalHeight;
+            sources[i].classList.add(containerRatio > imgRatio ? styles.narrow : styles.wide);
+            sources[i].removeAttribute('width');
+            sources[i].removeAttribute('height');
+            sources[i].removeAttribute('border');
         }
         ul.appendChild(li);
-    });
+    }
     component.appendChild(ul);
     _play(component, options);
     return component;
@@ -113,18 +116,18 @@ function _createGallery(container, options) {
  */
 function _play(component, options) {
     const intervalMs = options.interval || 6000;
-    let intervalId   = setInterval(function () {
+    let intervalId = setInterval(() => {
         _navigate(NavigationDirection.NEXT, component);
     }, intervalMs);
     _.on('mouseover', () => { clearInterval(intervalId); }, {}, component, true);
     _.on('mouseout', () => {
-        intervalId = setInterval(function () {
+        intervalId = setInterval(() => {
             _navigate(NavigationDirection.NEXT, component);
         }, intervalMs);
     }, {}, component, true);
     component.querySelector(`ul.${styles.itemwrap}`).children[0].classList.add(styles.current);
-    component.setAttribute(_currentAttribute, _.toString(0));
-    component.setAttribute(_animationCountAttribute, _.toString(0));
+    component.setAttribute(_currentAttribute, '0');
+    component.setAttribute(_animationCountAttribute, '0');
 }
 
 /**
@@ -133,10 +136,10 @@ function _play(component, options) {
  * @private
  */
 function _navigate(direction, component) {
-    if (_.parseInt(component.getAttribute(_animationCountAttribute)) > 0) return;
+    if (Number.parseInt(component.getAttribute(_animationCountAttribute)) > 0) return;
     let items = component.querySelector(`ul.${styles.itemwrap}`).children;
-    component.setAttribute(_animationCountAttribute, _.toString(2));
-    let current = _.parseInt(component.getAttribute(_currentAttribute));
+    component.setAttribute(_animationCountAttribute, '2');
+    let current = Number.parseInt(component.getAttribute(_currentAttribute));
     let currentItem = items[current];
 
 
@@ -146,7 +149,7 @@ function _navigate(direction, component) {
     else if (direction === NavigationDirection.PREVIOUS) {
         current = current > 0 ? current - 1 : items.length - 1;
     }
-    component.setAttribute(_currentAttribute, _.toString(current));
+    component.setAttribute(_currentAttribute, current.toString());
 
     let nextItem = items[current];
 
@@ -163,11 +166,11 @@ function _navigate(direction, component) {
  * @private
  */
 function _onAnimationEnd() {
-    let animationCount = _.parseInt(
+    let animationCount = Number.parseInt(
         this.parentNode.parentNode.getAttribute(_animationCountAttribute));
     // The first animation is over
     this.parentNode.parentNode.setAttribute(_animationCountAttribute,
-                                            _.toString(animationCount - 1));
+                                            (animationCount - 1).toString());
     if (animationCount < 0) {
         throw new Error('GalleryExecutor: animationCount mustn\'t be negative.');
     }

@@ -61,7 +61,9 @@ Experiment.prototype.options = function (options) {
          * @type {Array.<ExperimentGroup>}
          */
         this.groups = options.groups.map(
-            function (g) {return new ExperimentGroup(_.merge({experimentId: options.id}, g));});
+            function (g) {
+                return new ExperimentGroup(_.deepExtend({experimentId: options.id}, g));
+            });
         this.clientGroups = []; // makes sure `this` maintains its own clientGroups.
         for (i = 0; i < this.groups.length; i++) {
             if (this.groups[i].isClientIncluded) {

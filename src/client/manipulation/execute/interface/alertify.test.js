@@ -1,8 +1,7 @@
 /**
  * Proudly created by ohad on 30/12/2016.
  */
-let _                = require('./../../../common/util/wrapper'),
-    expect           = require('chai').expect,
+let expect           = require('chai').expect,
     AlertifyExecutor = require('./alertify');
 
 describe('AlertifyExecutor', function () {
@@ -15,14 +14,14 @@ describe('AlertifyExecutor', function () {
     });
     it('alertify works', (done) => {
         AlertifyExecutor.execute({alertifyFn: (alertify) => {alertify.notify(msg);}});
-        _.defer(() => {
+        setTimeout(() => {
             const notification = document.querySelector('.alertify-notifier');
             expect(notification).to.be.ok;
             expect(notification.textContent).to.equal(msg);
             expect(document.querySelector('div.alertify-notifier div').classList
                            .contains('ajs-visible')).to.be.true;
             AlertifyExecutor.execute({alertifyFn: (alertify) => {alertify.dismissAll();}});
-            _.delay(() => {
+            setTimeout(() => {
                 expect(document.querySelector('div.alertify-notifier div').classList
                                .contains('ajs-visible')).to.be.false;
                 done();

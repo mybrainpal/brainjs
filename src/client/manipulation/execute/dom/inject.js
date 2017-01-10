@@ -21,7 +21,7 @@ exports.execute = function (options) {
     let src, html = '';
     if (options.sourceSelector) {
         src = document.querySelector(options.sourceSelector);
-        if (!_.isElement(src)) {
+        if (_.isNil(src)) {
             Logger.log(Level.ERROR,
                        'InjectExecutor: could find source at ' + options.sourceSelector);
             return;

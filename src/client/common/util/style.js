@@ -1,7 +1,7 @@
 /**
  * Proudly created by ohad on 15/12/2016.
  */
-const _ = require('lodash');
+const _ = require('./prototype');
 /**
  * Identifies the owner Node of _styleSheet.
  * @type {string}
@@ -16,11 +16,11 @@ exports.load = function (css) {
     let styleElement  = document.createElement('style'),
         entry         = document.getElementsByTagName('script')[0];
     styleElement.type = 'text/css';
-    if (!exports.loadable(css)) throw TypeError('StyleUtil: css is of invalid type.');
+    if (!exports.loadable(css)) throw Error('StyleUtil: css is of invalid type.');
     if (_.isString(css)) {
         styleElement.textContent = css;
     } else {
-        styleElement.textContent = _.last(css)[1];
+        styleElement.textContent = css[css.length - 1][1];
     }
     styleElement.setAttribute(exports.identifyingAttribute, 'true');
     entry.parentNode.insertBefore(styleElement, entry);
@@ -32,7 +32,8 @@ exports.load = function (css) {
  */
 exports.loadable = function (css) {
     if (_.isString(css)) return true;
-    return _.isArray(css) && css.length && _.isArray(_.last(css)) && _.last(css).length === 4 &&
-           _.isString(_.last(css)[1]);
+    return Array.isArray(css) && css.length && Array.isArray(css[css.length - 1]) &&
+           css[css.length - 1].length === 4 &&
+           _.isString(css[css.length - 1][1]);
 
 };

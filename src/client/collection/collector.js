@@ -46,11 +46,9 @@ exports.options = function (options) {
  *  @property {Node} [rootNode = document] - the node from which to execute all selectors.
  */
 exports.collect = function (options) {
-    let targets, immediateEmit, iterRoots;
-    if (_.isArray(options)) {
-        _.forEach(options, function (item) {
-            exports.collect(item);
-        });
+    let targets, immediateEmit, iterRoots, i;
+    if (Array.isArray(options)) {
+        for (i = 0; i < options.length; i++) exports.collect(options[i]);
         return;
     }
     if (!options.rootNode) {
@@ -64,9 +62,11 @@ exports.collect = function (options) {
                        'Collector: failed to select iterSelector at ' + options.anchor.selector);
             return;
         }
-        _.forEach(iterRoots, function (rootNode) {
-            exports.collect(_.merge(_.clone(options), {rootNode: rootNode}));
-        });
+        for (i = 0; i < iterRoots.length; i++) {
+            let newOptions = _.deepExtend({}, options, {rootNode: iterRoots[i]});
+            delete newOptions.iterSelector;
+            exports.collect(newOptions);
+        }
         return;
     }
     if (options.anchor && options.anchor.selector &&
@@ -77,11 +77,11 @@ exports.collect = function (options) {
                        'Collector: failed to select anchor at ' + options.anchor.selector);
             return;
         }
-        _.forEach(targets, function (target) {
+        targets.forEach((target) => {
             if (target instanceof EventTarget) {
-                target.addEventListener(options.anchor.event, function () {
+                target.addEventListener(options.anchor.event, () => {
                     let emitted;
-                    emitted = _createSubject(_.merge({anchor: {target: target}}, options));
+                    emitted = _createSubject(_.deepExtend({anchor: {target: target}}, options));
                     if (!_.isEmpty(emitted)) {
                         _storage.save(emitted);
                     }
@@ -113,7 +113,7 @@ function _createSubject(options) {
         for (i = 0; i < options.dataProps.length; i++) {
             target = options.rootNode.querySelector(options.dataProps[i].selector);
             if (target) {
-                emittedSubject.subject[options.dataProps[i].name] = _.text(target);
+                emittedSubject.subject[options.dataProps[i].name] = target.textContent;
             } else {
                 Logger.log(Level.WARNING,
                            'Collector: failed to select ' + options.dataProps[i].selector);
@@ -182,7 +182,7 @@ function _createSubject(options) {
             Logger.log(Level.WARNING, 'Collector: anchor is missing a selector.');
         }
         if (options.anchor.target) {
-            emittedSubject.anchor.targetText = _.text(options.anchor.target);
+            emittedSubject.anchor.targetText = options.anchor.target.textContent;
         }
         if (_.isEmpty(emittedSubject.anchor)) {
             Logger.log(Level.WARNING, 'Collector: subject\'s anchor is empty.');

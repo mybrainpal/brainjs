@@ -23,7 +23,6 @@
   "homepage": "https://github.com/mybrainpal/brainjs#readme",
   "dependencies": {
     "alertifyjs": "^1.8.0",
-    "lodash": "^4.17.4",
     "sweetalert2": "^6.3.0",
     "tinysort": "^2.3.6",
     "typer-js": "^2.2.4"

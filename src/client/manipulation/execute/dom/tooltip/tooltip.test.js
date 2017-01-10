@@ -68,10 +68,10 @@ describe('TooltipExecutor', function () {
         TooltipExecutor.execute({target: '#huwayej', type: 'bloated', htmlContent: 'Huwayej'});
         const tooltip = document.querySelector(`div>.${styles.bloated}`);
         _.trigger(Master.eventName(TooltipExecutor.name), {state: TooltipExecutor.State.SHOW});
-        _.delay(() => {
+        setTimeout(() => {
             expect(tooltip.classList.contains(styles.show)).to.be.true;
             _.trigger(Master.eventName(TooltipExecutor.name), {state: TooltipExecutor.State.HIDE});
-            _.delay(() => {
+            setTimeout(() => {
                 expect(tooltip.classList.contains(styles.show)).to.be.false;
                 done();
             }, 10);
@@ -82,9 +82,9 @@ describe('TooltipExecutor', function () {
             {target: '#huwayej', type: 'bloated', htmlContent: 'Huwayej', timer: 20});
         const tooltip = document.querySelector(`div>.${styles.bloated}`);
         _.trigger(Master.eventName(TooltipExecutor.name), {state: TooltipExecutor.State.SHOW});
-        _.delay(() => {
+        setTimeout(() => {
             expect(tooltip.classList.contains(styles.show)).to.be.true;
-            _.delay(() => {
+            setTimeout(() => {
                 expect(tooltip.classList.contains(styles.show)).to.be.false;
                 done();
             }, 20);
@@ -94,10 +94,10 @@ describe('TooltipExecutor', function () {
         TooltipExecutor.execute({target: '#huwayej', type: 'bloated', htmlContent: 'Huwayej'});
         const tooltip = document.querySelector(`div>.${styles.bloated}`);
         _.trigger(Master.eventName(TooltipExecutor.name));
-        _.delay(() => {
+        setTimeout(() => {
             expect(tooltip.classList.contains(styles.show)).to.be.true;
             _.trigger(Master.eventName(TooltipExecutor.name));
-            _.delay(() => {
+            setTimeout(() => {
                 expect(tooltip.classList.contains(styles.show)).to.be.false;
                 done();
             }, 10);
@@ -115,22 +115,22 @@ describe('TooltipExecutor', function () {
               tooltip2 = document.querySelector(`#${TooltipExecutor.tooltipId(2)}`);
         _.trigger(Master.eventName(TooltipExecutor.name),
                   {id: 1, state: TooltipExecutor.State.SHOW});
-        _.delay(() => {
+        setTimeout(() => {
             expect(tooltip1.classList.contains(styles.show)).to.be.true;
             expect(tooltip2.classList.contains(styles.show)).to.be.false;
             _.trigger(Master.eventName(TooltipExecutor.name),
                       {id: 2, state: TooltipExecutor.State.SHOW});
-            _.delay(() => {
+            setTimeout(() => {
                 expect(tooltip1.classList.contains(styles.show)).to.be.true;
                 expect(tooltip2.classList.contains(styles.show)).to.be.true;
                 _.trigger(Master.eventName(TooltipExecutor.name),
                           {id: 1, state: TooltipExecutor.State.HIDE});
-                _.delay(() => {
+                setTimeout(() => {
                     expect(tooltip1.classList.contains(styles.show)).to.be.false;
                     expect(tooltip2.classList.contains(styles.show)).to.be.true;
                     _.trigger(Master.eventName(TooltipExecutor.name),
                               {id: 2, state: TooltipExecutor.State.HIDE});
-                    _.delay(() => {
+                    setTimeout(() => {
                         expect(tooltip1.classList.contains(styles.show)).to.be.false;
                         expect(tooltip2.classList.contains(styles.show)).to.be.false;
                         done();

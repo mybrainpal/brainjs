@@ -16,7 +16,7 @@ describe('Manipulator', function () {
         anchor, dataProp,
         div, a, span,
         collectorSpy, collectorMock, executorSpy, executorMock;
-    before(function () {
+    before(() => {
         div = document.createElement('div');
         div.setAttribute('id', 'manipulator');
         document.querySelector('body').appendChild(div);
@@ -62,7 +62,7 @@ describe('Manipulator', function () {
             groups: [clientGroup, nonClientGroup]
         };
     });
-    afterEach(function () {
+    afterEach(() => {
         _storage = [];
         collectorSpy.reset();
         executorSpy.reset();
@@ -72,10 +72,10 @@ describe('Manipulator', function () {
                     styleElement.parentNode.removeChild(styleElement);
                 });
     });
-    after(function () {
+    after(() => {
         div.parentNode.removeChild(div);
     });
-    it('experiment runs', function () {
+    it('experiment runs', () => {
         Manipulator.experiment(new Experiment(experiment),
                                {subjectOptions: {dataProps: [dataProp], anchor: anchor}});
         expect(collectorSpy).to.have.been.called(4);
@@ -94,7 +94,7 @@ describe('Manipulator', function () {
         // Executor should be called for each executor in clientGroup.
         expect(executorSpy).to.have.been.called(clientGroup.executors.length);
     });
-    it('array of subject options', function () {
+    it('array of subject options', () => {
         Manipulator.experiment(new Experiment(experiment),
                                {
                                    subjectOptions: [{dataProps: [dataProp], anchor: anchor},
@@ -103,15 +103,15 @@ describe('Manipulator', function () {
         // Executor should be called for twice for each executor in clientGroup.
         expect(executorSpy).to.have.been.called(2 * clientGroup.executors.length);
     });
-    it('experiment with zero groups', function () {
-        let noGroupsExperiment    = _.clone(experiment);
+    it('experiment with zero groups', () => {
+        let noGroupsExperiment    = _.deepExtend({}, experiment);
         noGroupsExperiment.groups = [];
         Manipulator.experiment(new Experiment(noGroupsExperiment));
         expect(collectorSpy).to.have.been.called.once;
         expect(executorSpy).to.not.have.been.called();
     });
-    it('experiment without client groups', function () {
-        let noClientGroups    = _.clone(experiment);
+    it('experiment without client groups', () => {
+        let noClientGroups    = _.deepExtend({}, experiment);
         noClientGroups.groups = [nonClientGroup];
         Manipulator.experiment(new Experiment(noClientGroups));
         expect(collectorSpy).to.have.been.called.once;

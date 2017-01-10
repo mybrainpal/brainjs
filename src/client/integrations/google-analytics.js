@@ -154,7 +154,7 @@ exports.onReady = function (handler) {
     if (isReady()) {
         ga(handler);
     }
-    window.addEventListener(_loadEventName, function () {
+    window.addEventListener(_loadEventName, () => {
         ga(handler);
     });
 };

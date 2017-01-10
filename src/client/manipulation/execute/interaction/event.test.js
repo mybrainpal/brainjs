@@ -54,7 +54,7 @@ describe('EventExecutor', function () {
         _.on('ev', () => { done('should not have fired'); });
         EventExecutor.execute({listen: {event: 'listen', detail: {id: 1}}, trigger: {event: 'ev'}});
         _.trigger('listen', 2);
-        _.delay(() => {done()}, 100);
+        setTimeout(() => {done()}, 100);
     });
     it('event triggered with multiple listeners and race', (done) => {
         _.on('triggered', () => { done(); });
@@ -72,9 +72,9 @@ describe('EventExecutor', function () {
             trigger   : {event: 'triggered'}
         });
         _.trigger('listen1');
-        _.defer(() => { expect(triggered).to.be.false; });
-        _.defer(() => {_.trigger('listen2');});
-        _.defer(() => {
+        setTimeout(() => { expect(triggered).to.be.false; });
+        setTimeout(() => {_.trigger('listen2');});
+        setTimeout(() => {
             expect(triggered).to.be.true;
             done();
         });

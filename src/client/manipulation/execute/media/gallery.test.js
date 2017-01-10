@@ -17,7 +17,7 @@ describe('GalleryExecutor', function () {
         container      = document.createElement('div');
         smallContainer = document.createElement('div');
         spec = {sourceSelectors: '#div img', container: '#container'};
-        animationSpec  = _.merge({interval: 100, animationClass: 'fxSnapIn'}, spec);
+        animationSpec = _.deepExtend({interval: 100, animationClass: 'fxSnapIn'}, spec);
         document.querySelector('body').appendChild(div);
         imgNarrow.src = ''; //'img/sad.jpg';
         imgNarrow.setAttribute('narrow', 'true');
@@ -32,9 +32,13 @@ describe('GalleryExecutor', function () {
         div.appendChild(imgWide);
     });
     afterEach(() => {
-        _.forEach(_.union(container.children, smallContainer.children), (elem) => {
-            elem.parentNode.removeChild(elem);
-        });
+        let i;
+        for (i = 0; i < container.children.length; i++) {
+            container.children[i].parentNode.removeChild(container.children[i]);
+        }
+        for (i = 0; i < smallContainer.children.length; i++) {
+            smallContainer.children[i].parentNode.removeChild(smallContainer.children[i]);
+        }
         document.querySelectorAll('style[' + _.css.identifyingAttribute + ']')
                 .forEach(function (styleElement) {
                     styleElement.parentNode.removeChild(styleElement);
@@ -50,7 +54,8 @@ describe('GalleryExecutor', function () {
         expect(GalleryExecutor.preconditions({})).to.be.false;
         expect(GalleryExecutor.preconditions(
             {sourceSelectors: '#nada', container: 'div'})).to.be.false;
-        expect(GalleryExecutor.preconditions(_.merge({animationClass: '1'}, spec))).to.be.false;
+        expect(
+            GalleryExecutor.preconditions(_.deepExtend({animationClass: '1'}, spec))).to.be.false;
     });
     it('creation', () => {
         GalleryExecutor.execute(spec);
@@ -64,7 +69,7 @@ describe('GalleryExecutor', function () {
         GalleryExecutor.execute(animationSpec);
         expect(container.querySelector(`li.${styles.current}`).classList
                         .contains(styles.navOutNext)).to.be.false;
-        _.delay(() => {
+        setTimeout(() => {
             expect(container.querySelector(`li.${styles.current}`).classList
                             .contains(styles.navOutNext)).to.be.true;
             done()
@@ -73,20 +78,20 @@ describe('GalleryExecutor', function () {
     it('animation responds to mouse', (done) => {
         GalleryExecutor.execute(animationSpec);
         container.querySelector(`.${styles.component}`).dispatchEvent(new Event('mouseover'));
-        _.delay(() => {
+        setTimeout(() => {
             expect(container.querySelector(`li.${styles.current}`).classList
                             .contains(styles.navOutNext)).to.be.false;
             container.querySelector(`.${styles.component}`).dispatchEvent(new Event('mouseout'));
         }, 200);
-        _.delay(() => {
+        setTimeout(() => {
             expect(container.querySelector(`li.${styles.current}`).classList
                             .contains(styles.navOutNext)).to.be.true;
             done();
         }, 400);
     });
     it('multiple galleries', () => {
-        GalleryExecutor.execute(_.merge({id: 1}, spec));
-        GalleryExecutor.execute(_.merge(_.cloneDeep(spec), {id: 2, container: '#small'}));
+        GalleryExecutor.execute(_.deepExtend({id: 1}, spec));
+        GalleryExecutor.execute(_.deepExtend({}, spec, {id: 2, container: '#small'}));
         expect(document.querySelectorAll(`.${styles.component}`)).to.have.length(2);
     });
     // it('narrow and wide', () => {

@@ -1,27 +1,7 @@
 /**
  * Proudly created by ohad on 18/12/2016.
  */
-const _ = require('lodash');
-/**
- * @param {Node|string} elem
- * @returns {string} returns the text contents of the specified element.
- */
-exports.text = function (elem) {
-    let res = '', i;
-    if (_.isString(elem)) {
-        elem = document.querySelector(elem);
-    }
-
-    if (elem && elem.nodeType === Node.TEXT_NODE) {
-        res += elem.textContent;
-    } else if (elem && elem.childNodes && elem.nodeType !== Node.COMMENT_NODE) {
-        for (i = 0; i < elem.childNodes.length; i++) {
-            res += exports.text(elem.childNodes[i]);
-        }
-    }
-
-    return res;
-};
+const _ = require('./prototype');
 
 /**
  * Adds an event listener that is executed only when event.detail.id is missing or matches
@@ -37,18 +17,18 @@ exports.text = function (elem) {
  */
 exports.on = function (event, handler, detailOrId, target = document, useCapture = false) {
     if (!_.isString(event) || !event) {
-        throw new TypeError('DomUtil: event is not a string or is empty.');
+        throw new Error('DomUtil: event is not a string or is empty.');
     }
     if (!_.isFunction(handler)) {
-        throw new TypeError('DomUtil: handler is not a function.');
+        throw new Error('DomUtil: handler is not a function.');
     }
     if (!_.isNil(detailOrId) && !_.isString(detailOrId) && !_.isNumber(detailOrId) &&
         !_.isObject(detailOrId)) {
-        throw new TypeError('DomUtil: detail is illegal.');
+        throw new Error('DomUtil: detail is illegal.');
     } else if (!_.isNil(detailOrId) && !_.isObject(detailOrId)) detailOrId = {id: detailOrId};
     if (_.isString(target)) target = document.querySelector(target);
     if (!(target instanceof EventTarget)) {
-        throw new TypeError('DomUtil: target is not a proper event target.');
+        throw new Error('DomUtil: target is not a proper event target.');
     }
     const wrapper = _.isEmpty(detailOrId) ? handler : function (ev) {
                                               if (!_.isNil(detailOrId.id) && ev.detail) {
@@ -72,14 +52,14 @@ exports.on = function (event, handler, detailOrId, target = document, useCapture
  */
 exports.off = function (event, handler, target = document, useCapture = false) {
     if (!_.isString(event) || !event) {
-        throw new TypeError('DomUtil: event is not a string or is empty.');
+        throw new Error('DomUtil: event is not a string or is empty.');
     }
     if (!_.isFunction(handler)) {
-        throw new TypeError('DomUtil: handler is not a function.');
+        throw new Error('DomUtil: handler is not a function.');
     }
     if (_.isString(target)) target = document.querySelector(target);
     if (!(target instanceof EventTarget)) {
-        throw new TypeError('DomUtil: target is not a proper event target.');
+        throw new Error('DomUtil: target is not a proper event target.');
     }
     target.removeEventListener(event, handler, useCapture);
 };
@@ -93,15 +73,15 @@ exports.off = function (event, handler, target = document, useCapture = false) {
  */
 exports.trigger = function (event, detailOrId, target = document) {
     if (!_.isString(event) || !event) {
-        throw new TypeError('DomUtil: event is not a string or is empty.');
+        throw new Error('DomUtil: event is not a string or is empty.');
     }
     if (!_.isNil(detailOrId) && !_.isString(detailOrId) && !_.isNumber(detailOrId) &&
         !_.isObject(detailOrId)) {
-        throw new TypeError('DomUtil: detail is illegal.');
+        throw new Error('DomUtil: detail is illegal.');
     } else if (!_.isNil(detailOrId) && !_.isObject(detailOrId)) detailOrId = {id: detailOrId};
     if (_.isString(target)) target = document.querySelector(target);
     if (!(target instanceof EventTarget)) {
-        throw new TypeError('DomUtil: target is not a proper event target.');
+        throw new Error('DomUtil: target is not a proper event target.');
     }
     if (!_.isEmpty(detailOrId)) {
         //noinspection JSCheckFunctionSignatures

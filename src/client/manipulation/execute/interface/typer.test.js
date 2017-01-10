@@ -23,15 +23,15 @@ describe('TyperExecutor', function () {
     });
     it('new line', (done) => {
         TyperExecutor.execute({typerFn: (typer) => {typer('#div', 1).line('123').end()}});
-        _.delay(() => {
+        setTimeout(() => {
             expect(div.textContent).to.equal('123');
             done();
-        }, 50);
+        }, 200);
     });
     it('new line html', (done) => {
         TyperExecutor.execute(
             {typerFn: (typer) => {typer('#div', 1).line(`<span>123</span>`)}});
-        _.delay(() => {
+        setTimeout(() => {
             expect(div.textContent).to.equal('123');
             expect(div.querySelector('span')).to.be.ok;
             done();
@@ -39,7 +39,7 @@ describe('TyperExecutor', function () {
     });
     it('back', (done) => {
         TyperExecutor.execute({typerFn: (typer) => {typer('#div', 1).line('123').back(2).end()}});
-        _.delay(() => {
+        setTimeout(() => {
             expect(div.textContent).to.equal('1');
             done();
         }, 50);
@@ -47,7 +47,7 @@ describe('TyperExecutor', function () {
     it('back existing content', (done) => {
         div.innerHTML = '123';
         TyperExecutor.execute({typerFn: (typer) => {typer('#div', 1).back(2).end()}});
-        _.delay(() => {
+        setTimeout(() => {
             expect(div.textContent).to.equal('1');
             done();
         }, 50);
@@ -55,7 +55,7 @@ describe('TyperExecutor', function () {
     it('back html', (done) => {
         TyperExecutor.execute(
             {typerFn: (typer) => {typer('#div', 1).line(`<span>123</span>`).back(1).end()}});
-        _.delay(() => {
+        setTimeout(() => {
             expect(div.textContent).to.equal('12');
             expect(div.querySelector('span')).to.be.ok;
             done();
@@ -63,9 +63,9 @@ describe('TyperExecutor', function () {
     });
     it('cursor', (done) => {
         TyperExecutor.execute({typerFn: (typer) => {typer('#div', 5).line('123').end();}});
-        _.delay(() => {
+        setTimeout(() => {
             expect(div.querySelector(`[class^='cursor']`)).to.be.ok;
-            _.delay(() => {
+            setTimeout(() => {
                 expect(div.querySelector(`[class^='cursor']`)).to.not.be.ok;
                 done();
             }, 30)
@@ -74,51 +74,51 @@ describe('TyperExecutor', function () {
     it('continue', (done) => {
         TyperExecutor.execute(
             {typerFn: (typer) => {typer('#div', 1).line('1').continue('23').end()}});
-        _.delay(() => {
+        setTimeout(() => {
             expect(div.textContent).to.equal('123');
             done();
         }, 50);
     });
     it('continue from empty', (done) => {
         TyperExecutor.execute({typerFn: (typer) => {typer('#div', 1).continue('123').end()}});
-        _.delay(() => {
+        setTimeout(() => {
             expect(div.textContent).to.equal('123');
             done();
         }, 50);
     });
     it('pause', (done) => {
         TyperExecutor.execute(
-            {typerFn: (typer) => {typer('#div', 1).line('1').pause(50).continue('23').end()}});
-        _.delay(() => {
+            {typerFn: (typer) => {typer('#div', 1).line('1').pause(100).continue('23').end()}});
+        setTimeout(() => {
             expect(div.textContent).to.equal('1');
-            _.delay(() => {
+            setTimeout(() => {
                 expect(div.textContent).to.equal('123');
                 done();
-            }, 70)
+            }, 200)
         }, 20);
     });
     it('pause from empty', (done) => {
         TyperExecutor.execute(
-            {typerFn: (typer) => {typer('#div', 1).pause(20).continue('123').end()}});
-        _.delay(() => {
+            {typerFn: (typer) => {typer('#div', 1).pause(100).continue('123').end()}});
+        setTimeout(() => {
             expect(div.textContent).to.equal('');
-            _.delay(() => {
+            setTimeout(() => {
                 expect(div.textContent).to.equal('123');
                 done();
-            }, 50);
-        }, 10);
+            }, 200);
+        }, 20);
     });
     it('emit', (done) => {
-        _.on('ev', () => {done()});
+        _.on('ev', () => {done()}, {}, 'body');
         TyperExecutor.execute({typerFn: (typer) => {typer('#div', 1).emit('ev').end();}});
     });
     it('listen', (done) => {
         TyperExecutor.execute(
             {typerFn: (typer) => {typer('#div', 1).listen('ev').continue('123').end();}});
-        _.delay(() => {
+        setTimeout(() => {
             expect(div.textContent).to.equal('');
-            _.trigger('ev');
-            _.delay(() => {
+            _.trigger('ev', {}, 'body');
+            setTimeout(() => {
                 expect(div.textContent).to.equal('123');
                 done();
             }, 30);
@@ -126,15 +126,15 @@ describe('TyperExecutor', function () {
     });
     it('empty', (done) => {
         TyperExecutor.execute({typerFn: (typer) => {typer('#div', 1).line('123').empty().end();}});
-        _.delay(() => {
+        setTimeout(() => {
             expect(div.textContent).to.equal('');
             done();
-        }, 50);
+        }, 200);
     });
     it('empty as first command', (done) => {
         div.innerHTML = '123';
         TyperExecutor.execute({typerFn: (typer) => {typer('#div', 1).empty().end();}});
-        _.delay(() => {
+        setTimeout(() => {
             expect(div.textContent).to.equal('');
             done();
         }, 20);
@@ -150,7 +150,7 @@ describe('TyperExecutor', function () {
                               });
     });
     it('end', (done) => {
-        _.on('typerFinished', () => {done()});
+        _.on('typerFinished', () => {done()}, {}, 'body');
         TyperExecutor.execute({
                                   typerFn: typer => {
                                       typer('#div', 1).line('123').end((el) => {

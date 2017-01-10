@@ -21,13 +21,13 @@ describe('Executor', function () {
         form.parentNode.removeChild(form);
     });
     it('preconditions', () => {
-        expect(() => {Executor.execute('form2', {target: '#input'})}).to.throw(RangeError);
-        expect(() => {Executor.execute('form', {target: '#input', id: {}})}).to.throw(TypeError);
-        expect(() => {Executor.execute('form', {target: '#input', on: {}})}).to.throw(TypeError);
+        expect(() => {Executor.execute('form2', {target: '#input'})}).to.throw(Error);
+        expect(() => {Executor.execute('form', {target: '#input', id: {}})}).to.throw(Error);
+        expect(() => {Executor.execute('form', {target: '#input', on: {}})}).to.throw(Error);
         expect(() => {Executor.execute('form', {target: '#input', callback: 1})}).to
-                                                                                 .throw(TypeError);
+                                                                                 .throw(Error);
         expect(() => {Executor.execute('form', {target: '#input', failureCallback: 1})}).to.throw(
-            TypeError);
+            Error);
     });
     it('execute', () => {
         Executor.execute('form', {target: '#input', focus: true});
@@ -38,10 +38,10 @@ describe('Executor', function () {
         Executor.execute('form', {target: '#input', id: 1, focus: true, on: true});
         expect(document.activeElement).to.not.equal(input);
         _.trigger(Executor.eventName('form'), 2);
-        _.defer(() => {
+        setTimeout(() => {
             expect(document.activeElement).to.not.equal(input);
             _.trigger(Executor.eventName('form'), 1);
-            _.defer(() => {
+            setTimeout(() => {
                 expect(document.activeElement).to.be.equal(input);
                 done();
             });

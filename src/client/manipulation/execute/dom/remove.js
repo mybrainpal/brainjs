@@ -12,8 +12,8 @@ Master.register(exports);
  *  @property {string} targets - css selectors of targets to remove.
  */
 exports.execute = function (options) {
-    _.forEach(document.querySelectorAll(options.targets),
-              (elem) => { elem.parentNode.removeChild(elem); });
+    document.querySelectorAll(options.targets)
+            .forEach((elem) => { elem.parentNode.removeChild(elem); });
 };
 
 /**
@@ -28,7 +28,7 @@ exports.preconditions = function (options) {
     } catch (e) { return false; }
     for (let i = 0; i < targets.length; i++) {
         if (targets[i] === document || targets[i] === document.documentElement ||
-            targets[i] === window || !_.isElement(targets[i].parentNode) ||
+            targets[i] === window || _.isNil(targets[i].parentNode) ||
             (targets[i] === document.querySelector('body')) ||
             (targets[i] === document.querySelector('head'))) {
             return false;

@@ -1,19 +1,11 @@
 /**
  * Proudly created by ohad on 01/01/2017.
  */
-const _                = require('../../client/common/util/wrapper'),
-      Factory          = require('../../client/common/events/factory'),
-      IdleEvent        = require('../../client/common/events/idle'),
-      GalleryExecutor  = require('../../client/manipulation/execute/media/gallery'),
-      Executor         = require('../../client/manipulation/execute/master'),
-      StyleExecutor    = require('../../client/manipulation/execute/dom/style'),
-      MoveExecutor     = require('../../client/manipulation/execute/dom/move'),
-      RemoveExecutor   = require('../../client/manipulation/execute/dom/remove'),
-      EventExecutor    = require('../../client/manipulation/execute/interaction/event'),
-      AlertifyExecutor = require('../../client/manipulation/execute/interface/alertify'),
-      TyperExecutor    = require('../../client/manipulation/execute/interface/typer'),
-      SwalExecutor     = require('../../client/manipulation/execute/interface/sweetalert');
-module.exports         = {
+const galleryId = require('../../client/manipulation/execute/media/gallery').idPrefix,
+      IdleEvent = require('../../client/common/events/idle'),
+      Factory   = require('../../client/common/events/factory'),
+      Executor  = require('../../client/manipulation/execute/master');
+module.exports  = {
     storage    : {
         name: 'local'
     },
@@ -27,7 +19,8 @@ module.exports         = {
                         label    : 'single',
                         executors: [
                             {
-                                name   : StyleExecutor.name,
+                                name   : require(
+                                    '../../client/manipulation/execute/dom/style').name,
                                 options: {
                                     css: `
                                         #daydeal #menu li:last-child{float:left; padding: 0;}
@@ -58,9 +51,9 @@ module.exports         = {
                                             margin-right: 15%; margin-left: 15%}
                                         #daydeal #content div.hotel_deal h2 {
                                             width:100%; height: 85px; font-size:28px; padding: 0}
-                                        #daydeal #content #${GalleryExecutor.idPrefix} ul {
+                                        #daydeal #content #${galleryId} ul {
                                             padding: 0; width: 100%}
-                                        #daydeal #content div#${GalleryExecutor.idPrefix} {height: 320px}
+                                        #daydeal #content div#${galleryId} {height: 320px}
                                         #daydeal #content .percent {z-index: 1001}
                                         #daydeal #content .comments_deal_text {z-index: 1001}
                                         #daydeal #content .group_sale_image {width: 65%}
@@ -88,50 +81,52 @@ module.exports         = {
                                             .alertify-notifier.ajs-left .ajs-message.ajs-visible {
                                                 right: 290px !important; }
                                         }
-                                        #daydeal #content #${GalleryExecutor.idPrefix} li {display: block}`
+                                        #daydeal #content #${galleryId} li {display: block}`
                                 }
                             },
                             {
-                                name   : MoveExecutor.name,
+                                name   : require('../../client/manipulation/execute/dom/move').name,
                                 options: {target: '.formsearch', parentSelector: 'ul.bg_blue'}
                             },
                             {
-                                name   : RemoveExecutor.name,
+                                name   : require(
+                                    '../../client/manipulation/execute/dom/remove').name,
                                 options: {
                                     targets: ['#content .share', '#content>br',
                                               '#content div.address', '.comments_deal_text']
                                 }
                             },
                             {
-                                name   : MoveExecutor.name,
+                                name   : require('../../client/manipulation/execute/dom/move').name,
                                 options: {
                                     target             : '#content h1:first-child',
                                     nextSiblingSelector: '#menu'
                                 }
                             },
                             {
-                                name   : MoveExecutor.name,
+                                name   : require('../../client/manipulation/execute/dom/move').name,
                                 options: {
                                     target        : '#other_dates_by_res',
                                     parentSelector: 'div.more_option div.date'
                                 }
                             },
                             {
-                                name   : MoveExecutor.name,
+                                name   : require('../../client/manipulation/execute/dom/move').name,
                                 options: {
                                     target        : '#content .hotel_phone',
                                     parentSelector: '.group_sale_info'
                                 }
                             },
                             {
-                                name   : MoveExecutor.name,
+                                name   : require('../../client/manipulation/execute/dom/move').name,
                                 options: {
                                     target        : '.TotalRating:first-of-type',
                                     parentSelector: '.group_sale_info', copy: true
                                 }
                             },
                             {
-                                name   : GalleryExecutor.name,
+                                name   : require(
+                                    '../../client/manipulation/execute/media/gallery').name,
                                 options: {
                                     container      : '.group_sale_image',
                                     sourceSelectors: ['.group_sale_image>img', '#gallery img'],
@@ -139,15 +134,17 @@ module.exports         = {
                                 }
                             },
                             {
-                                name   : RemoveExecutor.name,
+                                name   : require(
+                                    '../../client/manipulation/execute/dom/remove').name,
                                 options: {targets: ['.group_sale_image>img']}
                             },
                             {
-                                name   : TyperExecutor.name,
+                                name   : require(
+                                    '../../client/manipulation/execute/interface/typer').name,
                                 options: {
                                     typerFn: function (typer) {
                                         document.querySelector('.hotel_deal h2').textContent = '';
-                                        _.defer(function () {
+                                        setTimeout(() => {
                                             typer('.hotel_deal h2', 40)
                                                 .cursor({blink: 'soft'})
                                                 .line('מבצע סופ"ש 2 לילות במלון דיוויד ים המלח!!',
@@ -170,7 +167,7 @@ module.exports         = {
                                                 .pause(200)
                                                 .end();
                                         });
-                                        _.defer(function () {
+                                        setTimeout(() => {
                                             document.querySelector('#PriceView').textContent =
                                                 '';
                                             document.querySelector('#PriceView').style.color =
@@ -180,19 +177,17 @@ module.exports         = {
                                                                .line('₪2499')
                                                                .emit('brainpal-price-1')
                                                                .listen('brainpal-title-2')
-                                                               .back(10, 10)
-                                                               .run(function (elem) {
-                                                                   elem.style.color = '';
-                                                               })
-                                                               .pause(500)
-                                                               .continue('₪1890').pause(1500)
+                                                               .back(10, 10).run(function (elem) {
+                                                elem.style.color = '';
+                                            }).pause(500).continue('₪1890').pause(1500)
                                                                .emit('brainpal-price-done').end();
                                         });
                                     }
                                 }
                             },
                             {
-                                name   : SwalExecutor.name,
+                                name   : require(
+                                    '../../client/manipulation/execute/interface/sweetalert').name,
                                 options: {
                                     on    : true,
                                     swalFn: function (swal) {
@@ -209,79 +204,85 @@ module.exports         = {
                                 }
                             },
                             {
-                                name   : AlertifyExecutor.name,
+                                name   : require(
+                                    '../../client/manipulation/execute/interface/alertify').name,
                                 options: {
                                     on        : true,
                                     alertifyFn: function (alertify) {
                                         alertify.set('notifier', 'position', 'bottom-left');
                                         alertify.notify('מה אומרים על המלון הזה', 'title', 200);
-                                        _.delay(() => {
+                                        setTimeout(() => {
                                             alertify.notify(_reviewToAlertify(0), 'review', 200);
                                         }, 1000);
-                                        _.delay(() => {
+                                        setTimeout(() => {
                                             alertify.notify('וזו לא הביקורת היחידה', 'title', 200);
                                         }, 2000);
-                                        _.delay(() => {
+                                        setTimeout(() => {
                                             alertify.notify(_reviewToAlertify(1), 'review', 200);
                                         }, 2500);
-                                        _.delay(() => {
+                                        setTimeout(() => {
                                             alertify.notify('ויש יותר ממאה כאלו...', 'title', 200);
                                         }, 3500);
-                                        _.delay(() => {
+                                        setTimeout(() => {
                                             alertify.dismissAll();
-                                            _.trigger('brainpal-alertify-dismiss');
+                                            document.dispatchEvent(
+                                                new CustomEvent('brainpal-alertify-dismiss'));
                                         }, 8500);
                                     },
                                     rtl       : true
                                 }
                             },
                             {
-                                name   : EventExecutor.name,
+                                name   : require(
+                                    '../../client/manipulation/execute/interaction/event').name,
                                 options: {
-                                    listen: {event: 'brainpal-title-done'},
+                                    listen: {event: 'brainpal-title-done', selector: 'body'},
                                     create: {
                                         event  : 'idle',
                                         options: {
-                                            waitTime  : 5000,
-                                            detailOrId: 'reviews'
+                                            waitTime: 10000,
+                                            detail  : {id: 'reviews'}
                                         }
                                     }
                                 }
                             },
                             {
-                                name   : EventExecutor.name,
+                                name   : require(
+                                    '../../client/manipulation/execute/interaction/event').name,
                                 options: {
                                     listen : {
                                         event : Factory.eventName(IdleEvent.name()),
                                         detail: {id: 'reviews'}
                                     },
                                     trigger: {
-                                        event: Executor.eventName(AlertifyExecutor.name)
+                                        event: Executor.eventName('alertify')
                                     }
                                 }
                             },
                             {
-                                name   : EventExecutor.name,
+                                name   : require(
+                                    '../../client/manipulation/execute/interaction/event').name,
                                 options: {
                                     listen: {event: 'brainpal-alertify-dismiss'},
                                     create: {
                                         event  : 'idle',
                                         options: {
-                                            waitTime  : 5000,
-                                            detailOrId: 'modal'
+                                            waitTime: 10000,
+                                            detail  : {id: 'modal'}
                                         }
                                     }
                                 }
                             },
                             {
-                                name   : EventExecutor.name,
+                                name   : require(
+                                    '../../client/manipulation/execute/interaction/event').name,
                                 options: {
                                     listen : {
                                         event : Factory.eventName(IdleEvent.name()),
                                         detail: {id: 'modal'}
                                     },
                                     trigger: {
-                                        event: Executor.eventName(SwalExecutor.name)
+                                        event: Executor.eventName('sweetalert')
                                     }
                                 }
                             }

@@ -12,12 +12,13 @@ chai.use(require('chai-spies'));
 
 
 describe('Collector', function () {
+    this.timeout(10);
     let div, a1, a2, span1, span2, p, a3, span3,
         storageSpy,
         storageMock,
         loggerSpy,
         loggerMock;
-    before(function () {
+    before(() => {
         div = document.createElement('div');
         div.setAttribute('id', 'fight-club');
         document.querySelector('body').appendChild(div);
@@ -67,20 +68,20 @@ describe('Collector', function () {
                               }
                           });
     });
-    after(function () {
+    after(() => {
         div.parentNode.removeChild(div);
     });
-    beforeEach(function () {
+    beforeEach(() => {
         loggerSpy.reset();
         storageSpy.reset();
         _storage = [];
     });
-    afterEach(function () {
+    afterEach(() => {
         loggerSpy.reset();
         storageSpy.reset();
         _storage = [];
     });
-    it('save a subject', function () {
+    it('save a subject', () => {
         Collector.collect({dataProps: [{name: 'rule', selector: '#fight-club>span'}]});
         expect(storageSpy).to.have.been.called.once;
         expect(_storage).to.have.length(1);
@@ -88,7 +89,7 @@ describe('Collector', function () {
         expect(_storage[0].subject).to.include.keys('rule');
         expect(_storage[0].subject.rule).to.equal(span1.textContent);
     });
-    it('save a subject with client', function () {
+    it('save a subject with client', () => {
         Collector.collect({
                               dataProps: [{name: 'rule', selector: '#fight-club>span'}],
                               client   : {
@@ -104,70 +105,74 @@ describe('Collector', function () {
         expect(_storage[0].client.agent.browser).to.equal('Safari');
         expect(_storage[0].client.agent).to.not.include.keys('other-property');
     });
-    it('save a subject with anchor', function (done) {
+    it('save a subject with anchor', (done) => {
         Collector.collect({
                               dataProps: [{name: 'rule', selector: '#fight-club>span'}],
                               anchor   : {selector: '#fight-club>a.fight', event: 'click'}
                           });
-        a1.click();
-        expect(storageSpy).to.have.been.called.once;
-        expect(_storage).to.have.length(1);
-        expect(_storage[0]).to.include.keys('subject', 'anchor');
-        expect(_storage[0].subject).to.include.keys('rule');
-        expect(_storage[0].subject.rule).to.equal(span1.textContent);
-        expect(_storage[0].anchor).to.include.keys('event', 'selector', 'targetText');
-        expect(_storage[0].anchor.event).to.equal('click');
-        expect(_storage[0].anchor.selector).to.equal('#fight-club>a.fight');
-        expect(_storage[0].anchor.targetText).to.equal(a1.textContent);
-        done();
+        _.trigger('click', {}, a1);
+        setTimeout(() => {
+            expect(storageSpy).to.have.been.called.once;
+            expect(_storage).to.have.length(1);
+            expect(_storage[0]).to.include.keys('subject', 'anchor');
+            expect(_storage[0].subject).to.include.keys('rule');
+            expect(_storage[0].subject.rule).to.equal(span1.textContent);
+            expect(_storage[0].anchor).to.include.keys('event', 'selector', 'targetText');
+            expect(_storage[0].anchor.event).to.equal('click');
+            expect(_storage[0].anchor.selector).to.equal('#fight-club>a.fight');
+            expect(_storage[0].anchor.targetText).to.equal(a1.textContent);
+            done();
+        });
     });
-    it('iterative selector', function (done) {
+    it('iterative selector', (done) => {
         Collector.collect({
                               dataProps   : [{name: 'look', selector: 'span'}],
                               anchor      : {selector: 'a', event: 'click'},
                               iterSelector: '#fight-club>p'
                           });
         document.querySelectorAll('#fight-club>p>a').forEach(function (a) {
-            a.click();
+            _.trigger('click', {}, a);
         });
         expect(storageSpy).to.have.been.called(2);
         expect(_storage).to.have.length(2);
-        _.forEach(_storage, function (item) {
-            expect(item).to.include.keys('subject', 'anchor');
-            expect(item.subject).to.include.keys('look');
-            expect(item.subject.look).to.equal(span3.textContent);
-            expect(item.anchor).to.include.keys('event', 'selector', 'targetText');
-            expect(item.anchor.event).to.equal('click');
-            expect(item.anchor.selector).to.equal('a');
-            expect(item.anchor.targetText).to.equal(a3.textContent);
-        });
+        for (let i = 0; i < _storage.length; i++) {
+            expect(_storage[i]).to.include.keys('subject', 'anchor');
+            expect(_storage[i].subject).to.include.keys('look');
+            expect(_storage[i].subject.look).to.equal(span3.textContent);
+            expect(_storage[i].anchor).to.include.keys('event', 'selector', 'targetText');
+            expect(_storage[i].anchor.event).to.equal('click');
+            expect(_storage[i].anchor.selector).to.equal('a');
+            expect(_storage[i].anchor.targetText).to.equal(a3.textContent);
+        }
         done();
     });
-    it('save a subject with anchor with multiple targets', function (done) {
+    it('save a subject with anchor with multiple targets', (done) => {
         Collector.collect({
                               dataProps: [{name: 'rule', selector: '#fight-club>span'}],
                               anchor   : {selector: '#fight-club>span', event: 'click'}
                           });
-        span1.click();
-        span2.click();
-        expect(storageSpy).to.have.been.called(2);
-        expect(_storage).to.have.length(2);
-        done();
+        _.trigger('click', {}, span1);
+        _.trigger('click', {}, span2);
+        setTimeout(() => {
+            expect(storageSpy).to.have.been.called(2);
+            expect(_storage).to.have.length(2);
+            done();
+        });
     });
-    it('failed to select subject', function () {
+    it('failed to select subject', () => {
         Collector.collect(
             {dataProps: [{name: 'rule', selector: '#fight-club>span.non-existing-class'}]});
         expect(storageSpy).to.not.have.been.called();
         expect(_storage).to.be.empty;
         expect(loggerSpy).to.have.been.called();
     });
-    it('failed to select anchor', function () {
+    it('failed to select anchor', () => {
         Collector.collect({anchor: {selector: '#effi', event: 'click'}});
         expect(storageSpy).to.not.have.been.called();
         expect(_storage).to.be.empty;
         expect(loggerSpy).to.have.been.called();
     });
-    it('missing event name', function () {
+    it('missing event name', () => {
         Collector.collect({
                               dataProps: [{name: 'rule', selector: '#fight-club>span'}],
                               anchor   : {selector: '#fight-club>a'}
@@ -176,20 +181,22 @@ describe('Collector', function () {
         expect(_storage).to.have.length(1);
         expect(loggerSpy).to.have.been.called();
     });
-    it('client is empty', function (done) {
+    it('client is empty', (done) => {
         Collector.collect({
                               dataProps: [{name: 'rule', selector: '#fight-club>span'}],
                               anchor   : {selector: '#fight-club>p', event: 'click'},
                               client   : []
                           });
-        p.click();
-        expect(storageSpy).to.have.been.called.once;
-        expect(_storage).to.have.length(1);
-        expect(_storage[0]).to.not.include.keys('client');
-        expect(loggerSpy).to.have.been.called();
-        done();
+        _.trigger('click', {}, p);
+        setTimeout(() => {
+            expect(storageSpy).to.have.been.called.once;
+            expect(_storage).to.have.length(1);
+            expect(_storage[0]).to.not.include.keys('client');
+            expect(loggerSpy).to.have.been.called();
+            done();
+        });
     });
-    it('client properties not found', function (done) {
+    it('client properties not found', (done) => {
         Collector.collect({
                               dataProps: [{name: 'rule', selector: '#fight-club>span'}],
                               anchor   : {
@@ -197,12 +204,14 @@ describe('Collector', function () {
                               },
                               client   : {properties: ['some-prop', 'agent.garbage']}
                           });
-        a2.click();
-        expect(storageSpy).to.have.been.called.once;
-        expect(_storage).to.have.length(1);
-        expect(_storage[0]).to.not.include.keys('client');
-        expect(loggerSpy).to.have.been.called();
-        done();
+        _.trigger('click', {}, a2);
+        setTimeout(() => {
+            expect(storageSpy).to.have.been.called.once;
+            expect(_storage).to.have.length(1);
+            expect(_storage[0]).to.not.include.keys('client');
+            expect(loggerSpy).to.have.been.called();
+            done();
+        });
     });
 });
 

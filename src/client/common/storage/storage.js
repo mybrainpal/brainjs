@@ -59,7 +59,7 @@ function create(storageName, options) {
     //noinspection LocalVariableNamingConventionJS
     let Logger  = require('../log/logger'),
         Level   = require('../log/logger').Level;
-    let storage = (function () {
+    let storage = (() => {
         switch (storageName) {
             case 'local':
                 return require('./console-log');
