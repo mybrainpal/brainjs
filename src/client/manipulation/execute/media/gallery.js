@@ -171,7 +171,7 @@ function _onAnimationEnd() {
     if (animationCount < 0) {
         throw new Error('GalleryExecutor: animationCount mustn\'t be negative.');
     }
-    _.off('animationend', _onAnimationEnd, {}, this);
+    _.off('animationend', _onAnimationEnd, this);
     if (this.classList.contains(styles.current)) {
         this.classList.remove(styles.current,
                               styles.navOutNext,

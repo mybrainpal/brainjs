@@ -26,7 +26,7 @@ describe('TyperExecutor', function () {
         _.delay(() => {
             expect(div.textContent).to.equal('123');
             done();
-        }, 200);
+        }, 50);
     });
     it('new line html', (done) => {
         TyperExecutor.execute(
@@ -88,28 +88,28 @@ describe('TyperExecutor', function () {
     });
     it('pause', (done) => {
         TyperExecutor.execute(
-            {typerFn: (typer) => {typer('#div', 1).line('1').pause(100).continue('23').end()}});
+            {typerFn: (typer) => {typer('#div', 1).line('1').pause(50).continue('23').end()}});
         _.delay(() => {
             expect(div.textContent).to.equal('1');
             _.delay(() => {
                 expect(div.textContent).to.equal('123');
                 done();
-            }, 200)
+            }, 70)
         }, 20);
     });
     it('pause from empty', (done) => {
         TyperExecutor.execute(
-            {typerFn: (typer) => {typer('#div', 1).pause(100).continue('123').end()}});
+            {typerFn: (typer) => {typer('#div', 1).pause(20).continue('123').end()}});
         _.delay(() => {
             expect(div.textContent).to.equal('');
             _.delay(() => {
                 expect(div.textContent).to.equal('123');
                 done();
-            }, 200);
-        }, 20);
+            }, 50);
+        }, 10);
     });
     it('emit', (done) => {
-        _.on('ev', () => {done()}, {}, 'body');
+        _.on('ev', () => {done()});
         TyperExecutor.execute({typerFn: (typer) => {typer('#div', 1).emit('ev').end();}});
     });
     it('listen', (done) => {
@@ -117,7 +117,7 @@ describe('TyperExecutor', function () {
             {typerFn: (typer) => {typer('#div', 1).listen('ev').continue('123').end();}});
         _.delay(() => {
             expect(div.textContent).to.equal('');
-            _.trigger('ev', {}, 'body');
+            _.trigger('ev');
             _.delay(() => {
                 expect(div.textContent).to.equal('123');
                 done();
@@ -129,7 +129,7 @@ describe('TyperExecutor', function () {
         _.delay(() => {
             expect(div.textContent).to.equal('');
             done();
-        }, 200);
+        }, 50);
     });
     it('empty as first command', (done) => {
         div.innerHTML = '123';
@@ -150,7 +150,7 @@ describe('TyperExecutor', function () {
                               });
     });
     it('end', (done) => {
-        _.on('typerFinished', () => {done()}, {}, 'body');
+        _.on('typerFinished', () => {done()});
         TyperExecutor.execute({
                                   typerFn: typer => {
                                       typer('#div', 1).line('123').end((el) => {

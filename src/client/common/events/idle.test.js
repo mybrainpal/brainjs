@@ -58,7 +58,7 @@ describe('IdleEvent', function () {
         _.on(Factory.eventName(IdleEvent.name()), () => {done('too early')}, id);
         idle = new IdleEvent(options);
         idle.stop();
-        _.delay(() => {done()}, 100);
+        _.delay(() => {done()}, 50);
     });
     it('fireOnce = true', (done) => {
         let count = 0;

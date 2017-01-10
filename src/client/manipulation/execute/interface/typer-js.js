@@ -110,10 +110,11 @@ function typer(el, speed) {
             return this;
         },
         emit    : function (event, el) {
-            if (!el) el = 'body'; // Default to the body.
-
-            // Simple way to throw an error for invalid selectors.
-            document.querySelector(el);
+            if (el) {
+                el = document.querySelector(el);
+            } else {
+                el = document;
+            }
 
             q.push({emit: event, el: el});
             // Push the first dominoe on the typing iteration,
@@ -125,10 +126,11 @@ function typer(el, speed) {
             return this;
         },
         listen  : function (event, el) {
-            if (!el) el = 'body'; // Default to the body.
-
-            // Simple way to throw an error for invalid selectors.
-            document.querySelector(el);
+            if (el) {
+                el = document.querySelector(el);
+            } else {
+                el = document;
+            }
 
             q.push({listen: event, el: el});
             return this;
@@ -181,7 +183,7 @@ function typer(el, speed) {
                 if (fxn && fxn instanceof Function) fxn(el);
                 if ((fxn && getType(fxn) === 'Boolean') || e) {
                     if (e instanceof Function) e(el);
-                    document.body.dispatchEvent(new Event('typerFinished'));
+                    document.dispatchEvent(new Event('typerFinished'));
                 }
             };
             // A convenient object to warn the user if they
@@ -267,10 +269,10 @@ function typer(el, speed) {
 
     function processq() { // Begin our main iterator.
         if (!(q.item >= 0)) q.item = 0;
-        if (q.item === q.length) return document.body.removeEventListener('killTyper', q.kill);
+        if (q.item === q.length) return document.removeEventListener('killTyper', q.kill);
         if (!q.ks) {
             q.ks = true;
-            document.body.addEventListener('killTyper', q.kill);
+            document.addEventListener('killTyper', q.kill);
         }
 
         // If no cursor is declared, resort to default styling.
@@ -463,7 +465,7 @@ function typer(el, speed) {
 
     function processEmit(item) {
         clearInterval(q.type); // Stop the main iterator.
-        document.querySelector(item.el).dispatchEvent(new Event(item.emit));
+        item.el.dispatchEvent(new Event(item.emit));
 
         q.item++;
         processq();
@@ -472,11 +474,9 @@ function typer(el, speed) {
     function processListen(item) {
         clearInterval(q.type); // Stop the main iterator.
 
-        let el = document.querySelector(item.el);
-
         // One-time event listener.
-        el.addEventListener(item.listen, function handler(e) {
-            el.removeEventListener(e.type, handler);
+        item.el.addEventListener(item.listen, function handler(e) {
+            item.el.removeEventListener(e.type, handler);
             if (q.killed) return; // Prevent error if kill switch is engaged.
             q.item++;
             processq();
@@ -657,7 +657,7 @@ function typer(el, speed) {
 
     // The kill switch.
     q.kill = function (e) {
-        document.body.removeEventListener(e.type, q.kill);
+        document.removeEventListener(e.type, q.kill);
         q.killed = true; // For processListen.
 
         // Stop all iterations & pauses.

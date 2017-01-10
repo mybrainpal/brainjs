@@ -175,12 +175,14 @@ module.exports         = {
                                         let typerObj   = typer('div.brainpal span.typer', 40)
                                             .cursor({blink: 'soft'});
                                         for (let j = 0; j < 3; j++) {
-                                            typerObj.back('all').continue('איך קוראים לך?', 25);
+                                            typerObj.back('all')
+                                                    .continue('איך קוראים לך?', 25)
+                                                    .pause(1500);
                                             for (let i = 0; i < names.length; i++) {
-                                                typerObj.pause(1500)
-                                                        .back('all', 10)
+                                                typerObj.back('all', 10)
                                                         .pause()
-                                                        .continue(names[i % names.length] + '?');
+                                                        .continue(names[i % names.length] + '?')
+                                                        .pause(1500);
                                             }
                                         }
                                         typerObj.run(focusInput);
