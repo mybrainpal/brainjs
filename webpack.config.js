@@ -1,12 +1,12 @@
 'use strict';
+const webpack = require('webpack');
 
 module.exports = {
     entry   : './src/client/index.js',
     output  : {
-        filename: 'brain.js',
+        filename: '[name].js',
         path    : './dist'
     },
-    devtools: 'source-map',
     resolve : {
         extensions: ['.js', '.jsx', '.scss', '.css', '']
     },
@@ -45,6 +45,14 @@ module.exports = {
         ]
     },
     plugins : [
+        new webpack.optimize.UglifyJsPlugin({
+            // Preserves the source map comment in minified code.
+            sourceMap: true
+        }),
+        new webpack.SourceMapDevToolPlugin({
+            filename: "[name].js.map",
+            append  : ""
+        }),
         function () {
             this.plugin('watch-run', function (watching, callback) {
                 console.log('Begin compile at ' + new Date());
