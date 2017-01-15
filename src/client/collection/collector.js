@@ -8,22 +8,6 @@ let Client   = require('../common/client'),
     Logger   = require('../common/log/logger'),
     Level    = require('../common/log/logger').Level,
     _        = require('../common/util/wrapper');
-/**
- * Used to save data.
- * @type {Object}
- * @private
- */
-let _storage = Storage.getDefault();
-
-/**
- * @param {Object} options
- *  @property {string} storage
- */
-exports.options = function (options) {
-    if (options.storage) {
-        _storage = Storage.get(options.storage);
-    }
-};
 
 /**
  * Collects data (subject) based on an event (i.e. anchor).
@@ -83,7 +67,7 @@ exports.collect = function (options) {
                     let emitted;
                     emitted = _createSubject(_.deepExtend({anchor: {target: target}}, options));
                     if (!_.isEmpty(emitted)) {
-                        _storage.save(emitted);
+                        Storage.save(emitted);
                     }
                 });
             }
@@ -91,7 +75,7 @@ exports.collect = function (options) {
     } else {
         immediateEmit = _createSubject(options);
         if (!_.isEmpty(immediateEmit)) {
-            _storage.save(immediateEmit);
+            Storage.save(immediateEmit);
         }
     }
 };

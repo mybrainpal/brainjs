@@ -4,94 +4,59 @@
  * A communication interface to store data in a data warehouse. The interface is often
  * implemented by integrations.
  */
+const InMemoryStorage = require('./in-memory.storage');
+/**
+ * Saves message using _storage.
+ * @param message
+ */
+exports.save = function (message) {
+    _storage.save(message);
+};
+let _storage = InMemoryStorage;
 
 /**
- * @param {string} storageName
- * @param {Object} [options]
- * @returns {Object} an instance of the wanted type
+ * Sets _storage to `require('./name')`
+ * @param {string} name
+ * @param {Object} [options] - for the new storage initialization.
  */
-function getStorage(storageName, options) {
-    if (_storageByName.hasOwnProperty(storageName)) {
-        return _storageByName[storageName];
+exports.set = function (name, options) {
+    switch (name) {
+        case exports.names.IN_MEMORY:
+            _storage = InMemoryStorage;
+            return;
+        case exports.names.CONSOLE:
+            require.ensure('./console.storage', function (require) {
+                _storageSwitch(require('./console.storage'));
+            });
+            break;
+        case exports.names.GOOGLE_ANALYTICS:
+            require.ensure('./google-analytics.storage', function (require) {
+                _storageSwitch(require('./google-analytics.storage'), options);
+            });
+            break;
     }
-    return create(storageName, options);
-}
-exports.get = getStorage;
-
-/**
- * @returns {Object} an instance of the default storage.
- */
-exports.getDefault = function () {
-    return getStorage('local');
 };
 
-/**
- * @param {string} [storageName]
- * @returns {boolean} whether the specific storage is ready to save, in case the type is not
- *                    found returns false.
- *                    If no type is given, returns whether all types in _storageByName are ready.
- */
-function isReady(storageName) {
-    let ready;
-    if (storageName) {
-        if (!_storageByName.hasOwnProperty(storageName)) {
-            return false;
-        }
-        return getStorage(storageName).isReady();
-    }
-    ready = true;
-    for (storageName in _storageByName) {
-        ready = ready && isReady(storageName);
-    }
-    return ready;
-}
-exports.isReady = isReady;
+exports.names = Object.freeze({
+                                  IN_MEMORY       : 'in-memory',
+                                  CONSOLE         : 'console',
+                                  GOOGLE_ANALYTICS: 'google-analytics'
+                              });
 
 /**
- * Instantiates a new instance of storageName in _storageByName, with the key `storageName`.
- * @param {string} storageName - of the storage to create
- * @param {Object} [options] - that will be passed to the specific storage.
- *  @property {function} [onReadyHandler] - to invoke after a storage had been initiated.
- * @returns {Object} the created object.
- */
-function create(storageName, options) {
-    // The variables are defined here to avoid premature initialization of Logger.
-    //noinspection LocalVariableNamingConventionJS
-    let Logger  = require('../log/logger'),
-        Level   = require('../log/logger').Level;
-    let storage = (() => {
-        switch (storageName) {
-            case 'local':
-                return require('./console-log');
-                break;
-            case 'google-analytics':
-                return require('./google-analytics-storage');
-                break;
-            default:
-                Logger.log(Level.WARNING,
-                           'storage.js: ' + storageName + ' is not a storage name we know of :-/');
-                return;
-        }
-    })();
-    if (storage) {
-        if (storage.hasOwnProperty('init')) {
-            storage.init(options || {});
-        }
-        if (options && options.hasOwnProperty('onReadyHandler') &&
-            storage.hasOwnProperty('onReady')) {
-            storage.onReady(options.onReadyHandler);
-        }
-        _storageByName[storageName] = storage;
-        return storage;
-    }
-    Logger.log(Level.WARNING,
-               'storage.js: no storage was created');
-}
-exports.create = create;
-
-/**
- * Maps storage name to its reference.
- * @type {{string, Object}}
+ * Switches _storage to newStorage.
+ * @param {Object} newStorage - the new storage module.
+ * @param {Object} [options] - for the new storage initialization.
  * @private
  */
-let _storageByName = {};
+function _storageSwitch(newStorage, options) {
+    const onReady = () => {
+        _storage = newStorage;
+        for (let i = 0; i < InMemoryStorage.storage.length; i++) {
+            _storage.save(InMemoryStorage.storage[i])
+        }
+        InMemoryStorage.flush();
+    };
+    if (newStorage.init) { newStorage.init(options, onReady()); }
+    else { onReady(); }
+}

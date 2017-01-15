@@ -1,8 +1,7 @@
 /**
  * Proudly created by ohad on 07/12/2016.
  */
-let _singletonInstance,
-    Storage = require('../storage/storage');
+let _singletonInstance;
 /**
  * A CustomEvent that fires when BrainPal is ready to play.
  * @param {Object} [options]
@@ -77,9 +76,6 @@ function _fireIfReady() {
         return;
     }
     if (!document || !document.readyState || document.readyState === 'loading') {
-        return;
-    }
-    if (!Storage.isReady()) {
         return;
     }
     _ready = true;

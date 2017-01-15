@@ -1,17 +1,21 @@
 'use strict';
-const webpack = require('webpack');
+const webpack = require('webpack'),
+      path    = require('path');
 
 module.exports = {
-    entry   : './src/client/index.js',
-    output  : {
-        filename: 'brain.js',
-        path    : './dist'
+    context: path.join(__dirname, "./src/client"),
+    entry  : {
+        brain: "./index.js"
     },
-    devtools: 'source-map',
-    resolve : {
+    output : {
+        path    : path.join(__dirname, "dist"),
+        filename: "[name].js",
+        pathinfo: true
+    },
+    resolve: {
         extensions: ['.js', '.jsx', '.scss', '.css', '']
     },
-    module  : {
+    module : {
         loaders: [
             {
                 test   : /\.js$/,
@@ -45,7 +49,19 @@ module.exports = {
             }
         ]
     },
-    plugins : [
+    plugins: [
+        new webpack.optimize.UglifyJsPlugin({
+            // Preserves the source map comment in minified code.
+            sourceMap  : true,
+            compress   : {
+                warnings: false
+            },
+            cacheFolder: path.resolve(__dirname, 'cached_uglify/')
+        }),
+        new webpack.SourceMapDevToolPlugin({
+            filename: "[name].js.map",
+            append  : ""
+        }),
         function () {
             this.plugin('watch-run', function (watching, callback) {
                 console.log('Begin compile at ' + new Date());

@@ -44,24 +44,12 @@ exports.save = function save(subject) {
 };
 
 /**
- * @returns {boolean} whether #save is ready to be invoked.
- */
-exports.isReady = function () {
-    return GoogleAnalytics.isReady();
-};
-
-/**
  * Takes care of requirements for this storage.
  * @param {Object} [options]
+ * @param {function} onReady
  */
-exports.init = function (options) {
+exports.init = function (options, onReady) {
     GoogleAnalytics.init(options);
+    GoogleAnalytics.onReady(onReady);
 };
 
-/**
- * Runs handler as soon as the storage is ready.
- * @param {function} handler
- */
-exports.onReady = function (handler) {
-    GoogleAnalytics.onReady(handler)
-};
