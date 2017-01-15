@@ -3,18 +3,6 @@
  */
 let _        = require('./../../common/util/wrapper'),
     Storage  = require('../storage/storage');
-/**
- * Used to save logs.
- * @type {Object}
- * @private
- */
-let _storage = Storage.getDefault();
-/**
- * Prefixed to all logs
- * @type {Object}
- * @private
- */
-let _prefix  = '';
 
 exports.Level = Object.freeze({
                                   FINE   : {value: 0, name: 'Fine'},
@@ -23,20 +11,6 @@ exports.Level = Object.freeze({
                                   ERROR  : {value: 3, name: 'Error'},
                                   FATAL  : {value: 4, name: 'Fatal'}
                               });
-
-/**
- * @param options
- *  @property {Object} [storage]
- *  @property {string} [prefix]
- */
-exports.options = function (options) {
-    if (options.storage) {
-        _storage = Storage.get(options.storage);
-    }
-    if (options.prefix) {
-        _prefix = options.prefix;
-    }
-};
 
 /**
  * Logs msg onto storage.
@@ -53,5 +27,5 @@ exports.log = function (level, message) {
     } else {
         _.deepExtend(subject, message);
     }
-    _storage.save(subject);
+    Storage.save(subject);
 };

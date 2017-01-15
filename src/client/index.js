@@ -56,11 +56,7 @@ window.BrainPal = (function (window, undefined) {
             if (configuration.storage.hasOwnProperty('options')) {
                 options = configuration.storage.options;
             }
-            options.onReadyHandler = () => {
-                Logger.options({storage: configuration.storage.name});
-                Collector.options({storage: configuration.storage.name});
-            };
-            Storage.create(configuration.storage.name, options);
+            Storage.set(configuration.storage.name, options);
         }
     } else {
         Logger.log(Level.WARNING, 'configuration: missing storage.');
