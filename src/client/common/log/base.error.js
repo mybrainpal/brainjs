@@ -1,9 +1,8 @@
 /**
  * Proudly created by ohad on 10/01/2017.
  */
-const Logger = require('./logger'),
-      Level  = require('./logger').Level,
-      _      = require('../util/wrapper');
+const Storage = require('../storage/storage'),
+      _       = require('../util/wrapper');
 
 /**
  * @param {string} [message]
@@ -11,7 +10,6 @@ const Logger = require('./logger'),
 function BaseError(message) {
     Error.prototype.constructor.apply(this, arguments);
     this.message = message;
-    this.stack   = (new Error()).stack;
 }
 BaseError.prototype = new Error;
 
@@ -28,12 +26,17 @@ function _baseErrorHandler(event) {
     if (!_shouldHandle(event)) return;
     //noinspection JSUnresolvedVariable
     let error = event.error;
-    if (_.isNil(error) || !(error instanceof BaseError)) {
+    if (_.isNil(error)) {
         //noinspection JSUnresolvedVariable
         error = new BaseError(event.message);
     }
-    // TODO(ohad): add stacktrace-js
-    Logger.log(Level.ERROR, error);
+    require.ensure('stacktrace-js', function (require) {
+        require('stacktrace-js').fromError(error)
+                                .then((stackFrame) => {
+                                    error.stack = stackFrame;
+                                    Storage.save(error);
+                                });
+    });
 }
 
 //noinspection JSValidateJSDoc

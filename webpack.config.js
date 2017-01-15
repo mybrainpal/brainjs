@@ -2,6 +2,33 @@
 const webpack = require('webpack'),
       path    = require('path');
 
+const isProduction = process.env.NODE_ENV === 'production';
+let plugins        = [
+    new webpack.SourceMapDevToolPlugin({
+        filename: "[name].js.map",
+        append  : ""
+    }),
+    new webpack.DefinePlugin({
+        'process.env': {
+            NODE_ENV: JSON.stringify(process.env.NODE_ENV)
+        }
+    })];
+if (isProduction) {
+    plugins.push(new webpack.optimize.UglifyJsPlugin({
+        // Preserves the source map comment in minified code.
+        sourceMap: true,
+        compress : {
+            warnings: false
+        }
+    }));
+} else {
+    plugins.push(function () {
+        this.plugin('watch-run', function (watching, callback) {
+            console.log('Begin compile at ' + new Date());
+            callback();
+        })
+    });
+}
 module.exports = {
     context: path.join(__dirname, "./src/client"),
     entry  : {
@@ -49,29 +76,5 @@ module.exports = {
             }
         ]
     },
-    plugins: [
-        new webpack.optimize.UglifyJsPlugin({
-            // Preserves the source map comment in minified code.
-            sourceMap  : true,
-            compress   : {
-                warnings: false
-            },
-            cacheFolder: path.resolve(__dirname, 'cached_uglify/')
-        }),
-        new webpack.SourceMapDevToolPlugin({
-            filename: "[name].js.map",
-            append  : ""
-        }),
-        function () {
-            this.plugin('watch-run', function (watching, callback) {
-                console.log('Begin compile at ' + new Date());
-                callback();
-            })
-        },
-        new webpack.DefinePlugin({
-            'process.env': {
-                NODE_ENV: JSON.stringify(process.env.NODE_ENV)
-            }
-        }),
-    ]
+    plugins: plugins
 };
