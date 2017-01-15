@@ -1,4 +1,5 @@
 'use strict';
+const webpack = require('webpack');
 
 module.exports = {
     entry   : './src/client/index.js',
@@ -50,6 +51,11 @@ module.exports = {
                 console.log('Begin compile at ' + new Date());
                 callback();
             })
-        }
+        },
+        new webpack.DefinePlugin({
+            'process.env': {
+                NODE_ENV: JSON.stringify(process.env.NODE_ENV)
+            }
+        }),
     ]
 };

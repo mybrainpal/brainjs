@@ -9,12 +9,6 @@ let _        = require('./../../common/util/wrapper'),
  * @private
  */
 let _storage = Storage.getDefault();
-/**
- * Prefixed to all logs
- * @type {Object}
- * @private
- */
-let _prefix  = '';
 
 exports.Level = Object.freeze({
                                   FINE   : {value: 0, name: 'Fine'},
@@ -27,14 +21,10 @@ exports.Level = Object.freeze({
 /**
  * @param options
  *  @property {Object} [storage]
- *  @property {string} [prefix]
  */
 exports.options = function (options) {
     if (options.storage) {
         _storage = Storage.get(options.storage);
-    }
-    if (options.prefix) {
-        _prefix = options.prefix;
     }
 };
 
@@ -49,7 +39,7 @@ exports.log = function (level, message) {
         type : 'log'
     };
     if (_.isString(message)) {
-        subject.content = message
+        subject.message = message;
     } else {
         _.deepExtend(subject, message);
     }
