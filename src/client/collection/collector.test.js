@@ -13,7 +13,7 @@ chai.use(require('chai-spies'));
 
 
 describe('Collector', function () {
-    this.timeout(10);
+    this.timeout(100);
     let div, a1, a2, span1, span2, p, a3, span3;
     before(() => {
         div = document.createElement('div');

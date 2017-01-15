@@ -6,7 +6,7 @@ const expect          = require('chai').expect,
       Storage         = require('../storage/storage'),
       InMemoryStorage = require('../storage/in-memory.storage');
 
-describe.only('BaseError', function () {
+describe('BaseError', function () {
     this.timeout(100);
     before(() => {
         Storage.set(Storage.names.IN_MEMORY)
