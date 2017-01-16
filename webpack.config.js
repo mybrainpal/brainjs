@@ -3,41 +3,14 @@ const webpack = require('webpack'),
       path    = require('path');
 
 const isProduction = process.env.NODE_ENV === 'production';
-let plugins        = [
-    new webpack.SourceMapDevToolPlugin({
-        filename: '[file].map',
-        append  : ""
-    }),
-    new webpack.DefinePlugin({
-        'process.env': {
-            NODE_ENV: JSON.stringify(process.env.NODE_ENV)
-        }
-    })];
-if (isProduction) {
-    plugins.push(new webpack.optimize.UglifyJsPlugin({
-        // Preserves the source map comment in minified code.
-        sourceMap: true,
-        compress : {
-            warnings: false
-        }
-    }));
-    plugins.push(new webpack.optimize.MinChunkSizePlugin({minChunkSize: 50000}));
-    plugins.push(new webpack.optimize.DedupePlugin());
-} else {
-    plugins.push(function () {
-        this.plugin('watch-run', function (watching, callback) {
-            console.log('Begin compile at ' + new Date());
-            callback();
-        })
-    });
-}
-module.exports = {
+let webpackConfig = {
     context: path.join(__dirname, './src/client'),
     entry  : {
         brain: './index.js'
     },
     output : {
         path         : path.join(__dirname, 'dist'),
+        publicPath   : 'http://brainpal.dev/',
         filename     : '[name].js',
         chunkFilename: '[chunkhash].js',
         pathinfo     : true
@@ -79,5 +52,36 @@ module.exports = {
             }
         ]
     },
-    plugins: plugins
+    plugins: [
+        new webpack.SourceMapDevToolPlugin({
+            filename: '[file].map',
+            append  : ""
+        }),
+        new webpack.DefinePlugin({
+            'process.env': {
+                NODE_ENV: JSON.stringify(process.env.NODE_ENV)
+            }
+        })]
 };
+
+if (isProduction) {
+    webpackConfig.plugins.push(new webpack.optimize.UglifyJsPlugin({
+        // Preserves the source map comment in minified code.
+        sourceMap: true,
+        compress : {
+            warnings: false
+        }
+    }));
+    webpackConfig.plugins.push(new webpack.optimize.MinChunkSizePlugin({minChunkSize: 50000}));
+    webpackConfig.plugins.push(new webpack.optimize.DedupePlugin());
+} else {
+    webpackConfig.plugins.push(function () {
+        this.plugin('watch-run', function (watching, callback) {
+            console.log('Begin compile at ' + new Date());
+            callback();
+        })
+    });
+    webpackConfig.headers = {'Access-Control-Allow-Origin': '*'};
+}
+
+module.exports = webpackConfig;
