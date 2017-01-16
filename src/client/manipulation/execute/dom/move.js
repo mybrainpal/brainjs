@@ -1,11 +1,12 @@
 /**
  * Proudly created by ohad on 25/12/2016.
  */
-let _      = require('./../../../common/util/wrapper'),
-    Logger = require('../../../common/log/logger'),
-    Level  = require('../../../common/log/logger').Level,
-    Master = require('../master');
-exports.name = 'move';
+let _         = require('./../../../common/util/wrapper'),
+    BaseError = require('../../../common/log/base.error'),
+    Logger    = require('../../../common/log/logger'),
+    Level     = require('../../../common/log/logger').Level,
+    Master    = require('../master');
+exports.name  = 'move';
 Master.register(exports);
 
 /**
@@ -29,14 +30,14 @@ exports.execute = function (options) {
     if (options.nextSiblingSelector) {
         nextSibling = document.querySelector(options.nextSiblingSelector);
         if (_.isNil(nextSibling)) {
-            Logger.log(Level.ERROR, 'DomMoveExecutor: count not find next sibling at ' +
+            Logger.log(Level.ERROR, 'MoveExecutor: count not find next sibling at ' +
                                     options.nextSiblingSelector);
         }
     }
     if (options.parentSelector) {
         parent = document.querySelector(options.parentSelector);
         if (_.isNil(parent)) {
-            Logger.log(Level.ERROR, 'DomMoveExecutor: count not find parent at ' +
+            Logger.log(Level.ERROR, 'MoveExecutor: count not find parent at ' +
                                     options.parentSelector);
         }
     }
@@ -46,41 +47,43 @@ exports.execute = function (options) {
 
 /**
  * @param {Object} options
- * @returns {boolean} whether the executor has a valid input.
  */
 exports.preconditions = function (options) {
     let nextSibling, parent, target;
-    try {
-        target = document.querySelector(options.target);
-        if (!target) return false;
-    } catch (e) { return false; }
-    if (target === document || target === document.documentElement ||
-        target === window || _.isNil(target.parentNode) ||
-        (target === document.querySelector('body')) ||
-        (target === document.querySelector('head'))) {
-        return false;
+    target = document.querySelector(options.target);
+    if (!target) {
+        throw new BaseError('MoveExecutor : could not find target at ' + options.target);
     }
-    if (!options.parentSelector && !options.nextSiblingSelector) {
-        return false;
+    if (_.isNil(target.parentNode)) {
+        throw new BaseError('MoveExecutor : target must have a parent node.');
     }
-    if (options.parentSelector &&
-        (!_.isString(options.parentSelector) || _.isEmpty(options.parentSelector))) {
-        return false;
+    if (_.has(options, 'copy') && !_.isBoolean(options.copy)) {
+        throw new BaseError('MoveExecutor : copy must be nil or a boolean.');
     }
-    if (_.has(options, 'copy') && !_.isBoolean(options.copy)) return false;
-    if (options.nextSiblingSelector &&
-        (!_.isString(options.nextSiblingSelector) || _.isEmpty(options.nextSiblingSelector))) {
-        return false;
-    }
-    if (options.nextSiblingSelector) {
-        nextSibling = document.querySelector(options.nextSiblingSelector);
-    }
-    if (options.parentSelector) {
+    if (options.parentSelector && !_.isString(options.parentSelector)) {
+        throw new BaseError('MoveExecutor : parentSelector must be nil or a string.');
+    } else if (options.parentSelector) {
         parent = document.querySelector(options.parentSelector);
+        if (!parent) {
+            throw new BaseError('MoveExecutor : could not find parent at ' +
+                                options.parentSelector);
+        }
     }
-    if (_.isNil(parent) && _.isNil(nextSibling)) return false;
-    return _.isNil(parent) || _.isNil(nextSibling) || nextSibling.parentNode === parent;
-
+    if (options.nextSiblingSelector && !_.isString(options.nextSiblingSelector)) {
+        throw new BaseError('MoveExecutor : nextSiblingSelector must be nil or a string.');
+    } else if (options.nextSiblingSelector) {
+        nextSibling = document.querySelector(options.nextSiblingSelector);
+        if (!nextSibling) {
+            throw new BaseError('MoveExecutor : could not find next sibling at ' +
+                                options.nextSiblingSelector);
+        }
+    }
+    if (_.isNil(parent) && _.isNil(nextSibling)) {
+        throw new BaseError('MoveExecutor : must have parent or next sibling.');
+    }
+    if (!_.isNil(parent) && !_.isNil(nextSibling) && nextSibling.parentNode !== parent) {
+        throw new BaseError('MoveExecutor : oh boy! next sibling parent should the new parent.');
+    }
 };
 
 /**

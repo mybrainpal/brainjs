@@ -2,6 +2,7 @@
  * Proudly created by ohad on 19/12/2016.
  */
 let _      = require('./../../../common/util/wrapper'),
+    BaseError = require('../../../common/log/base.error'),
     Master = require('../master');
 exports.name = 'style';
 Master.register(exports);
@@ -17,8 +18,9 @@ exports.execute = function (options) {
 
 /**
  * @param {Object} options
- * @returns {boolean} whether the executor has a valid input.
  */
 exports.preconditions = function (options) {
-    return _.css.loadable(options.css);
+    if (!_.css.loadable(options.css)) {
+        throw new BaseError('StyleExecutor: css is not loadable.');
+    }
 };

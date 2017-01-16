@@ -1,11 +1,12 @@
 /**
  * Proudly created by ohad on 25/12/2016.
  */
-let _               = require('./../../../common/util/wrapper'),
-    expect          = require('chai').expect,
-    DomMoveExecutor = require('./move');
+let _            = require('./../../../common/util/wrapper'),
+    BaseError    = require('../../../common/log/base.error'),
+    expect       = require('chai').expect,
+    MoveExecutor = require('./move');
 
-describe('DomMoveExecutor', function () {
+describe('MoveExecutor', function () {
     let div, p1, p2, a, span, ul, li;
     before(() => {
         div = document.createElement('div');
@@ -39,57 +40,63 @@ describe('DomMoveExecutor', function () {
         div.parentNode.removeChild(div);
     });
     it('move based on parent', () => {
-        DomMoveExecutor.execute({target: '#div a', parentSelector: '#div>.first'});
+        MoveExecutor.execute({target: '#div a', parentSelector: '#div>.first'});
         expect(a.parentNode).to.be.equal(p1);
         expect(a.previousSibling).to.be.equal(span);
     });
     it('copy to another parent', () => {
-        DomMoveExecutor.execute({target: '#div a', parentSelector: '#div>.first', copy: true});
+        MoveExecutor.execute({target: '#div a', parentSelector: '#div>.first', copy: true});
         expect(a.parentNode).to.be.equal(p2);
         expect(p2.querySelector('a')).to.be.ok;
     });
     it('move to a ul parent', () => {
-        DomMoveExecutor.execute({target: '#div a', parentSelector: '#div>ul'});
+        MoveExecutor.execute({target: '#div a', parentSelector: '#div>ul'});
         expect(a.parentNode.nodeName).to.be.equal('LI');
         expect(a.parentNode.parentNode).to.be.equal(ul);
     });
     it('move based on sibling', () => {
-        DomMoveExecutor.execute({target: '#div a', nextSiblingSelector: '#div span'});
+        MoveExecutor.execute({target: '#div a', nextSiblingSelector: '#div span'});
         expect(a.parentNode).to.be.equal(p1);
         expect(_.isNil(a.previousSibling)).to.not.be.ok;
     });
     it('do not move if parent is not changed', () => {
-        DomMoveExecutor.execute({target: '#div a', parentSelector: '#div>p:nth-child(2)'});
+        MoveExecutor.execute({target: '#div a', parentSelector: '#div>p:nth-child(2)'});
         expect(a.parentNode).to.be.equal(p2);
     });
     it('do not move if next sibling is not changed', () => {
         a.parentNode.removeChild(a);
         p1.insertBefore(a, span);
-        DomMoveExecutor.execute({target: '#div a', nextSiblingSelector: '#div span'});
+        MoveExecutor.execute({target: '#div a', nextSiblingSelector: '#div span'});
         expect(a.parentNode).to.be.equal(p1);
         expect(_.isNil(a.previousSibling)).to.not.be.ok;
     });
     it('Preconditions', () => {
-        expect(DomMoveExecutor.preconditions([], {})).to.be.false;
-        expect(DomMoveExecutor.preconditions({target: '#div a',})).to.be.false;
-        expect(DomMoveExecutor.preconditions({
-                                                 target        : '#div a',
-                                                 parentSelector: 'effy', nextSiblingSelector: 'effy'
-                                             })).to.be.false;
-        expect(DomMoveExecutor.preconditions({target: 'body', parentSelector: 'div'})).to.be.false;
-        expect(DomMoveExecutor.preconditions({target: 'head', parentSelector: 'div'})).to.be.false;
-        expect(DomMoveExecutor.preconditions({target: 'html', parentSelector: 'div'})).to.be.false;
-        expect(DomMoveExecutor.preconditions({
-                                                 target             : '#div a',
-                                                 parentSelector     : '#div>.first',
-                                                 nextSiblingSelector: '#div'
-                                             })).to.be.false;
-        expect(DomMoveExecutor.preconditions(
-            {target: '#div a', parentSelector: 'div', copy: 1})).to.be.false;
-        expect(DomMoveExecutor.preconditions({target: '#div a', parentSelector: 'div'})).to.be.true;
-        expect(DomMoveExecutor.preconditions({
-                                                 target        : '#div a',
-                                                 parentSelector: 'div', nextSiblingSelector: 'effy'
-                                             })).to.be.true;
+        expect(() => {MoveExecutor.preconditions({})}).to.throw(BaseError);
+        expect(() => {MoveExecutor.preconditions({target: '#div a',})}).to.throw(BaseError);
+        expect(() => {
+            MoveExecutor.preconditions({
+                                           target        : '#div a',
+                                           parentSelector: 'effy', nextSiblingSelector: 'effy'
+                                       })
+        }).to.throw(BaseError);
+        expect(() => {
+            MoveExecutor.preconditions({
+                                           target             : '#div a',
+                                           parentSelector     : '#div>.first',
+                                           nextSiblingSelector: '#div'
+                                       })
+        }).to.throw(BaseError);
+        expect(() => {
+            MoveExecutor.preconditions({target: '#div a', parentSelector: 'div', copy: 1})
+        }).to.throw(BaseError);
+        expect(() => {
+            MoveExecutor.preconditions({target: '#div a', parentSelector: 'div'})
+        }).to.not.throw(Error);
+        expect(() => {
+            MoveExecutor.preconditions({
+                                           target        : '#div a',
+                                           parentSelector: 'div', nextSiblingSelector: 'effy'
+                                       })
+        }).to.throw(BaseError);
     })
 });

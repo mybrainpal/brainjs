@@ -2,6 +2,7 @@
  * Proudly created by ohad on 24/12/2016.
  */
 let expect         = require('chai').expect,
+    BaseError      = require('../../../common/log/base.error'),
     InjectExecutor = require('./inject');
 
 describe('InjectExecutor', function () {
@@ -44,18 +45,28 @@ describe('InjectExecutor', function () {
                                                                      .equal(origText + toAppend);
     });
     it('Preconditions', () => {
-        expect(InjectExecutor.preconditions({})).to.be.false;
-        expect(InjectExecutor.preconditions({html: ''})).to.be.false;
-        expect(
-            InjectExecutor.preconditions({target: 'body', html: 1})).to.be.false;
-        expect(InjectExecutor.preconditions({target: 'body', sourceSelector: 1})).to.be.false;
-        expect(InjectExecutor.preconditions(
-            {target: 'body', html: '', sourceSelector: ''})).to.be.false;
-        expect(InjectExecutor.preconditions({target: 'body', sourceSelector: ''})).to.be.false;
-        expect(InjectExecutor.preconditions({target: 'body', html: '', position: 1})).to.be.false;
-        expect(InjectExecutor.preconditions({target: 'body', sourceSelector: 'body'})).to.be.true;
-        expect(InjectExecutor.preconditions({target: 'body', html: ''})).to.be.true;
-        expect(InjectExecutor.preconditions(
-            {target: 'body', html: '', position: 'beforeEnd'})).to.be.true;
+        expect(() => {InjectExecutor.preconditions({})}).to.throw(BaseError);
+        expect(() => {InjectExecutor.preconditions({target: 'body', html: 1})}).to.throw(BaseError);
+        expect(() => {
+            InjectExecutor.preconditions({target: 'body', sourceSelector: 1})
+        }).to.throw(BaseError);
+        expect(() => {
+            InjectExecutor.preconditions({target: 'body', html: '', sourceSelector: ''})
+        }).to.throw(Error);
+        expect(() => {
+            InjectExecutor.preconditions({target: 'body', sourceSelector: ''})
+        }).to.throw(Error);
+        expect(() => {
+            InjectExecutor.preconditions({target: 'body', html: '', position: 1})
+        }).to.throw(BaseError);
+        expect(() => {
+            InjectExecutor.preconditions({target: 'body', sourceSelector: 'body'})
+        }).to.not.throw(Error);
+        expect(() => {
+            InjectExecutor.preconditions({target: 'body', html: ''})
+        }).to.not.throw(Error);
+        expect(() => {
+            InjectExecutor.preconditions({target: 'body', html: '', position: 'beforeEnd'})
+        }).to.not.throw(Error);
     })
 });

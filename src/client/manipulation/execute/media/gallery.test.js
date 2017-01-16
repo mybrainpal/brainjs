@@ -3,6 +3,7 @@
  */
 const expect          = require('chai').expect,
       _               = require('../../../common/util/wrapper'),
+      BaseError       = require('../../../common/log/base.error'),
       GalleryExecutor = require('./gallery'),
       styles          = require('./gallery.scss').locals;
 
@@ -10,7 +11,7 @@ describe('GalleryExecutor', function () {
     this.timeout(3000);
     let div, imgNarrow, imgWide, container, smallContainer, spec, animationSpec;
     before(() => {
-        div            = document.createElement('div');
+        div  = document.createElement('div');
         div.setAttribute('id', 'div');
         imgNarrow      = document.createElement('img');
         imgWide        = document.createElement('img');
@@ -48,14 +49,17 @@ describe('GalleryExecutor', function () {
         div.parentNode.removeChild(div);
     });
     it('preconditions', () => {
-        expect(GalleryExecutor.preconditions(spec)).to.be.true;
-        expect(GalleryExecutor.preconditions(
-            {sourceSelectors: 'img', container: '#nada'})).to.be.false;
-        expect(GalleryExecutor.preconditions({})).to.be.false;
-        expect(GalleryExecutor.preconditions(
-            {sourceSelectors: '#nada', container: 'div'})).to.be.false;
-        expect(
-            GalleryExecutor.preconditions(_.deepExtend({animationClass: '1'}, spec))).to.be.false;
+        expect(() => {GalleryExecutor.preconditions(spec)}).to.not.throw(Error);
+        expect(() => {
+            GalleryExecutor.preconditions({sourceSelectors: 'img', container: '#nada'})
+        }).to.throw(BaseError);
+        expect(() => {GalleryExecutor.preconditions({})}).to.throw(BaseError);
+        expect(() => {
+            GalleryExecutor.preconditions({sourceSelectors: '#nada', container: 'div'})
+        }).to.throw(BaseError);
+        expect(() => {
+            GalleryExecutor.preconditions(_.deepExtend({animationClass: '1'}, spec))
+        }).to.throw(BaseError);
     });
     it('creation', () => {
         GalleryExecutor.execute(spec);

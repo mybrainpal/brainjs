@@ -2,6 +2,7 @@
  * Proudly created by ohad on 22/12/2016.
  */
 let _            = require('../../../common/util/wrapper'),
+    BaseError = require('../../../common/log/base.error'),
     sweetAlert2  = require('sweetalert2'),
     css    = require('sweetalert2/dist/sweetalert2.css'),
     Master = require('../master');
@@ -26,8 +27,9 @@ exports.execute = function (options) {
  * @returns {boolean} whether the executor has a valid input.
  */
 exports.preconditions = function (options) {
-    return _.isFunction(options.swalFn);
-
+    if (!_.isFunction(options.swalFn)) {
+        throw new BaseError('SweetalertExecutor: swalFn must be a function.');
+    }
 };
 
 /**

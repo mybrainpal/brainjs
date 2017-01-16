@@ -2,6 +2,7 @@
  * Proudly created by ohad on 25/12/2016.
  */
 const _            = require('../../../common/util/wrapper'),
+      BaseError = require('../../../common/log/base.error'),
       css    = require('./gallery.scss'),
       Master = require('../master');
 exports.name = 'gallery';
@@ -43,26 +44,27 @@ exports.execute = function (options) {
  * @returns {boolean} whether the executor has a valid input.
  */
 exports.preconditions = function (options) {
-    try {
-        if (!document.querySelector(options.container)) return false;
-    } catch (e) { return false; }
+    if (!document.querySelector(options.container)) {
+        throw new BaseError('GalleryExecutor : could not find container at ' + options.container);
+    }
     if (!options.sourceSelectors) return false;
     if (!Array.isArray(options.sourceSelectors) && !_.isString(options.sourceSelectors)) {
-        return false;
+        throw new BaseError('GalleryExecutor: sourceSelectors must be array or a string.');
     }
     const srcSelectors = Array.isArray(options.sourceSelectors) ? options.sourceSelectors :
                          [options.sourceSelectors];
     for (let i = 0; i < srcSelectors.length; i++) {
-        try { if (!document.querySelector(srcSelectors[i])) return false; }
-        catch (e) { return false; }
+        if (!document.querySelector(srcSelectors[i])) {
+            throw new BaseError('GalleryExecutor : could not find source at ' + srcSelectors[i]);
+        }
     }
     if (!_.isNil(options.animationClass) &&
         _animationClasses.indexOf(options.animationClass) === -1) {
-        return false;
+        throw new BaseError('GalleryExecutor : animationClass is unknown.');
     }
-    return _.isNil(options.id) || _.isString(options.id) || _.isNumber(options.id);
-
-
+    if (!_.isNil(options.id) && !_.isString(options.id) && !_.isNumber(options.id)) {
+        throw new BaseError('GalleryExecutor : id must be a string, number or nil.');
+    }
 };
 
 /**
@@ -172,7 +174,7 @@ function _onAnimationEnd() {
     this.parentNode.parentNode.setAttribute(_animationCountAttribute,
                                             (animationCount - 1).toString());
     if (animationCount < 0) {
-        throw new Error('GalleryExecutor: animationCount mustn\'t be negative.');
+        throw new BaseError('GalleryExecutor: animationCount mustn\'t be negative.');
     }
     _.off('animationend', _onAnimationEnd, this);
     if (this.classList.contains(styles.current)) {

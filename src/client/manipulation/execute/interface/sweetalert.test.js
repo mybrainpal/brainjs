@@ -2,6 +2,7 @@
  * Proudly created by ohad on 23/12/2016.
  */
 let _            = require('./../../../common/util/wrapper'),
+    BaseError    = require('../../../common/log/base.error'),
     expect       = require('chai').expect,
     SwalExecutor = require('./sweetalert');
 
@@ -12,9 +13,9 @@ describe('SwalExecutor', function () {
         swal.parentNode.removeChild(swal)
     });
     it('preconditions', () => {
-        expect(SwalExecutor.preconditions({swalFn: () => {}})).to.be.true;
-        expect(SwalExecutor.preconditions({})).to.be.false;
-        expect(SwalExecutor.preconditions({swalFn: 1})).to.be.false;
+        expect(() => {SwalExecutor.preconditions({swalFn: () => {}})}).to.not.throw(Error);
+        expect(() => {SwalExecutor.preconditions({})}).to.throw(BaseError);
+        expect(() => {SwalExecutor.preconditions({swalFn: 1})}).to.throw(BaseError);
     });
     it('modal fired', (done) => {
         const msg = `I can't make anything of this.`;

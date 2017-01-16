@@ -2,11 +2,12 @@
  * Proudly created by ohad on 23/12/2016.
  */
 let _            = require('../../../common/util/wrapper'),
+    BaseError = require('../../../common/log/base.error'),
     EventFactory = require('../../../common/events/factory'),
     Logger       = require('../../../common/log/logger'),
     Level        = require('../../../common/log/logger').Level,
     Master       = require('../master');
-exports.name = 'event';
+exports.name  = 'event';
 Master.register(exports);
 /**
  * Creates and triggers events and custom events.
@@ -14,16 +15,17 @@ Master.register(exports);
  *  @property {Object|Array.<Object>} [listen] - listens to a certain event in order to trigger
  *   another one.
  *      @property {string} event
- *      @property {Object} [detail] - as supplied to the CustomEvent constructor. If missing, any
+ *      @property {Object} [detailOrId] - as supplied to the CustomEvent constructor. If missing,
+ *     any
  *      `event` fired will be satisfactory.
  *      @property {string} [target] - event target, leave empty for document
  *  @property {boolean} [waitForAll = false] - whether to wait for all listen events to fire in
  *  order to execute trigger and create.
  *  @property {Object|Array.<Object>} [trigger] - dispatches a custom event
  *      @property {string} event
- *      @property {Object} [detail] - for the CustomEvent constructor.
+ *      @property {Object} [detailOrId] - for the CustomEvent constructor.
  *      @property {string} [target] - event target, leave empty for document
- *      @property {Object} [detail] - to be passed to CustomEvent constructor.
+ *      @property {Object} [detailOrId] - to be passed to CustomEvent constructor.
  *  @property {function} [callback] - executes callback, once all the listeners had been invoked.
  *  @property {Object|Array.<Object>} [create] - create a special event.
  *      @property {string} event
@@ -48,8 +50,8 @@ exports.execute = function (options) {
             }
             promises.push(new Promise(function (resolve) {
                 _.on(listener.event,
-                     () => {resolve({event: listener.event, target: target});},
-                     listener.detail, target);
+                     () => {resolve({event: listener.event, target: target})},
+                     listener.detailOrId, target);
             }));
         });
         if (options.waitForAll) {
@@ -67,34 +69,43 @@ exports.execute = function (options) {
 };
 /**
  * @param {Object} options
- * @returns {boolean} whether the executor has a valid input.
  */
 exports.preconditions = function (options) {
     let i, j, props = ['listen', 'create', 'trigger'];
-    if (options.waitForAll && !_.isBoolean(options.waitForAll)) {
-        return false;
+    if (!_.isNil(options.waitForAll) && !_.isBoolean(options.waitForAll)) {
+        throw new BaseError('EventExecutor: waitForAll must be nil or a boolean.')
     }
-    if (options.callback && !_.isFunction(options.callback)) return false;
+    if (options.callback && !_.isFunction(options.callback)) {
+        throw new BaseError('EventExecutor: callback must be nil or a function.')
+    }
     for (i = 0; i < props.length; i++) {
         if (options[props[i]]) {
             if (Array.isArray(options[props[i]])) {
                 for (j = 0; j < options[props[i]].length; j++) {
-                    if (!_isPropertyValid(options[props[i]][j])) return false;
+                    _validateProperty(options[props[i]][j])
                 }
-            } else if (!_isPropertyValid(options[props[i]])) return false;
+            } else { _validateProperty(options[props[i]]) }
         }
     }
-    return !_.isEmpty(options.create) || !_.isEmpty(options.trigger) || !_.isNil(options.callback);
+    if (_.isEmpty(options.create) && _.isEmpty(options.trigger) && _.isNil(options.callback)) {
+        throw new BaseError('EventExecutor: at least one of create, trigger or callback must not' +
+                            ' be nil.');
+    }
 
 };
 
 /**
+ * Validates a property.
  * @param {Object} prop, an item within options.listen, options.create or options.trigger.
- * @returns {boolean} whether prop is valid for execution.
  */
-function _isPropertyValid(prop) {
-    if (_.has(prop, 'id') && !_.isObject(prop.detail)) return false;
-    return (prop.event && _.isString(prop.event));
+function _validateProperty(prop) {
+    if (!_.isNil(prop.detailOrId) && !_.isObject(prop.detailOrId) && !_.isString(prop.detailOrId) &&
+        !_.isNumber(prop.detailOrId)) {
+        throw new BaseError('EventExecutor: property has illegal detailOrId.');
+    }
+    if (!_.isString(prop.event) || !prop.event) {
+        throw new BaseError('EventExecutor: event is empty or is not a string.');
+    }
 }
 /**
  * @property {Object} options - see {@link #execute}
@@ -111,13 +122,11 @@ function _doFn(options) {
         if (options.trigger[i].target) {
             target = document.querySelector(options.trigger[i].target);
             if (_.isNil(target)) {
-                Logger.log(Level.ERROR,
-                           'EventExecutor: count not find trigger target at ' +
-                           options.trigger[i].target);
-                return;
+                throw new BaseError('EventExecutor: count not find trigger target at ' +
+                                    options.trigger[i].target);
             }
         }
-        _.trigger(options.trigger[i].event, options.trigger[i].detail, target);
+        _.trigger(options.trigger[i].event, options.trigger[i].detailOrId, target);
     }
     options.create = options.create || [];
     if (!Array.isArray(options.create)) {

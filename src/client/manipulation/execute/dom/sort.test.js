@@ -2,6 +2,7 @@
  * Proudly created by ohad on 18/12/2016.
  */
 let expect       = require('chai').expect,
+    BaseError    = require('../../../common/log/base.error'),
     rewire       = require('rewire'),
     SortExecutor = rewire('./sort'),
     tinysort     = require('tinysort');
@@ -46,7 +47,7 @@ describe('SortExecutor', function () {
         expect(ul.parentNode).to.equal(document.querySelector('body'));
     });
     it('Preconditions', () => {
-        expect(SortExecutor.preconditions({})).to.be.false;
-        expect(SortExecutor.preconditions({targets: '#ul>a'})).to.be.false;
+        expect(() => {SortExecutor.preconditions({})}).to.throw(BaseError);
+        expect(() => {SortExecutor.preconditions({targets: '#ul>a'})}).to.throw(BaseError);
     });
 });

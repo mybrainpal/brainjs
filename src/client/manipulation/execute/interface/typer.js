@@ -2,6 +2,7 @@
  * Proudly created by ohad on 30/12/2016.
  */
 let _            = require('../../../common/util/wrapper'),
+    BaseError = require('../../../common/log/base.error'),
     typer        = require('./typer-js'),
     css    = require('typer-js/typer.css'),
     Master = require('../master');
@@ -26,8 +27,9 @@ exports.execute = function (options) {
  * @returns {boolean} whether the executor has a valid input.
  */
 exports.preconditions = function (options) {
-    return _.isFunction(options.typerFn);
-
+    if (!_.isFunction(options.typerFn)) {
+        throw new BaseError('TyperExecutor: typerFn must be a function.');
+    }
 };
 
 /**

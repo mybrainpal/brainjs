@@ -5,7 +5,7 @@ const webpack = require('webpack'),
 const isProduction = process.env.NODE_ENV === 'production';
 let plugins        = [
     new webpack.SourceMapDevToolPlugin({
-        filename: "[name].js.map",
+        filename: '[file].map',
         append  : ""
     }),
     new webpack.DefinePlugin({
@@ -30,14 +30,15 @@ if (isProduction) {
     });
 }
 module.exports = {
-    context: path.join(__dirname, "./src/client"),
+    context: path.join(__dirname, './src/client'),
     entry  : {
-        brain: "./index.js"
+        brain: './index.js'
     },
     output : {
-        path    : path.join(__dirname, "dist"),
-        filename: "[name].js",
-        pathinfo: true
+        path         : path.join(__dirname, 'dist'),
+        filename     : '[name].js',
+        chunkFilename: '[id].[chunkhash].js',
+        pathinfo     : true
     },
     resolve: {
         extensions: ['.js', '.jsx', '.scss', '.css', '']

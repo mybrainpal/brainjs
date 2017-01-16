@@ -1,10 +1,11 @@
 /**
  * Proudly created by nevo on 26/12/2016.
  */
-const _      = require('../../../../common/util/wrapper'),
-      Master = require('../../master'),
-      css    = require('./tooltip.scss');
-exports.name = 'tooltip';
+const _         = require('../../../../common/util/wrapper'),
+      BaseError = require('../../../../common/log/base.error'),
+      Master    = require('../../master'),
+      css       = require('./tooltip.scss');
+exports.name    = 'tooltip';
 Master.register(exports);
 const styles = css.locals;
 
@@ -32,32 +33,39 @@ exports.execute = function (options) {
 
 /**
  * @param {Object} options
- * @returns {boolean} whether the executor has a valid input.
  */
 exports.preconditions = function (options) {
     let target;
-    try {
-        target = document.querySelector(options.target);
-        if (!target) return false;
-    } catch (e) { return false; }
-    const illegalElements = [document, document.querySelector('body'),
-                             document.querySelector('head'), document.documentElement];
-    if (illegalElements.indexOf(target) >= 0)  return false;
-    if (options.id && !_.isString(options.id) && !_.isNumber(options.id)) return false;
-    if (!_.isNil(options.timer) && !_.isNumber(options.timer)) return false;
-    if (_.has(options, 'htmlContent') && !_.isString(options.htmlContent)) return false;
-    if (!options.type || !_.isString(options.type)) return false;
-    if (!_.has(_tooltipInfo, options.type)) return false;
+    target = document.querySelector(options.target);
+    if (!target) {
+        throw new BaseError('TooltipExecutor: could not find target at ' + options.target);
+    }
+    if (options.id && !_.isString(options.id) && !_.isNumber(options.id)) {
+        throw new BaseError('TooltipExecutor: id must be string or a number');
+    }
+    if (!_.isNil(options.timer) && (!Number.isInteger(options.timer) || options.timer <= 0)) {
+        throw new BaseError('TooltipExecutor: timer must be a positive integer.');
+    }
+    if (_.has(options, 'htmlContent') && !_.isString(options.htmlContent)) {
+        throw new BaseError('TooltipExecutor: htmlContent must be a string.');
+    }
+    if (!options.type || !_.isString(options.type)) {
+        throw new BaseError('TooltipExecutor: type must be a string.');
+    }
+    if (!_.has(_tooltipInfo, options.type)) {
+        throw new BaseError(`TooltipExecutor: ${options.type} is unknown.`);
+    }
     for (let prop in _tooltipInfo[options.type]) {
         if (!_.has(_tooltipInfo[options.type], prop)) continue;
         if (_.isFunction(_tooltipInfo[options.type][prop])) continue;
         if (!Array.isArray(_tooltipInfo[options.type][prop])) {
-            throw new Error('TooltipExecutor: _tooltipInfo nested properties must be' +
-                                ' arrays or functions.')
+            throw new BaseError('TooltipExecutor: _tooltipInfo nested properties must be' +
+                                ' arrays or functions.');
         }
-        if (_tooltipInfo[options.type][prop].indexOf(options[prop]) < 0) return false;
+        if (_tooltipInfo[options.type][prop].indexOf(options[prop]) < 0) {
+            throw new BaseError(`TooltipExecutor: ${options[prop]} is illegal value for ${prop}`);
+        }
     }
-    return true;
 };
 
 /**
@@ -168,8 +176,8 @@ function _attachEvents(tooltip, id) {
                     tooltip.classList.remove(styles.show);
                 }
             } else {
-                throw new Error('TooltipExecutor: ' + state.toString() + ' is an illegal' +
-                                ' tooltip state.');
+                throw new BaseError('TooltipExecutor: ' + state.toString() + ' is an illegal' +
+                                    ' tooltip state.');
             }
         } else {
             // If state is missing just inverse the current state.
@@ -181,7 +189,7 @@ function _attachEvents(tooltip, id) {
         }
         if (tooltip.hasAttribute(_timerAttribute) && tooltip.classList.contains(styles.show)) {
             const timeToHide = Number.parseInt(tooltip.getAttribute(_timerAttribute));
-            if (timeToHide <= 0) throw new Error('Tooltip: illegal timer');
+            if (timeToHide <= 0) throw new BaseError('Tooltip: illegal timer');
             setTimeout(() => {
                 tooltip.classList.remove(styles.show);
             }, timeToHide);

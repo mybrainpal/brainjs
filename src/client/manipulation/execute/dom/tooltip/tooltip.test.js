@@ -3,6 +3,7 @@
  */
 const expect          = require('chai').expect,
       _               = require('../../../../common/util/wrapper'),
+      BaseError       = require('../../../../common/log/base.error'),
       TooltipExecutor = require('./tooltip'),
       Master          = require('../../master'),
       styles          = require('./tooltip.scss').locals;
@@ -30,24 +31,31 @@ describe('TooltipExecutor', function () {
         div.parentNode.removeChild(div);
     });
     it('preconditions', () => {
-        expect(TooltipExecutor.preconditions({target: '#huwayej', type: 'bloated'})).to.be.true;
-        expect(TooltipExecutor.preconditions(
-            {target: '#huwayej', type: 'bloated', timer: {}})).to.be.false;
-        expect(
-            TooltipExecutor.preconditions(
-                {target: '#huwayej', type: 'bloated', htmlContent: ''})).to.be.true;
-        expect(
-            TooltipExecutor.preconditions(
-                {target: '#huwayej', type: 'sharp', direction: 'left'})).to.be.true;
-        expect(TooltipExecutor.preconditions({target: '#huwayej',})).to.be.false;
-        expect(TooltipExecutor.preconditions({target: 'body', type: 'bloated'})).to.be.false;
-        expect(TooltipExecutor.preconditions(
-            {target: '#huwayej', type: 'bloated', id: {}})).to.be.false;
-        expect(TooltipExecutor.preconditions(
-            {target: '#huwayej', type: 'bloated', htmlContent: {}})).to.be.false;
-        expect(TooltipExecutor.preconditions({target: '#huwayej', type: 'shubi-dubi'})).to.be.false;
-        expect(TooltipExecutor.preconditions(
-            {target: '#huwayej', type: 'sharp', effectNum: 1})).to.be.false;
+        expect(() => {
+            TooltipExecutor.preconditions({target: '#huwayej', type: 'bloated'})
+        }).to.not.throw(Error);
+        expect(() => {
+            TooltipExecutor.preconditions({target: '#huwayej', type: 'sharp', direction: 'left'})
+        }).to.not.throw(Error);
+        expect(() => {
+            TooltipExecutor.preconditions({target: '#huwayej', type: 'bloated', htmlContent: ''})
+        }).to.not.throw(Error);
+        expect(() => {
+            TooltipExecutor.preconditions({target: '#huwayej', type: 'bloated', timer: {}})
+        }).to.throw(BaseError);
+        expect(() => {TooltipExecutor.preconditions({target: '#huwayej',})}).to.throw(BaseError);
+        expect(() => {
+            TooltipExecutor.preconditions({target: '#huwayej', type: 'bloated', id: {}})
+        }).to.throw(BaseError);
+        expect(() => {
+            TooltipExecutor.preconditions({target: '#huwayej', type: 'bloated', htmlContent: {}})
+        }).to.throw(BaseError);
+        expect(() => {
+            TooltipExecutor.preconditions({target: '#huwayej', type: 'shubi-dubi'})
+        }).to.throw(BaseError);
+        expect(() => {
+            TooltipExecutor.preconditions({target: '#huwayej', type: 'sharp', effectNum: 1})
+        }).to.throw(BaseError);
     });
     it('creation', () => {
         TooltipExecutor.execute({target: '#huwayej', type: 'bloated', htmlContent: 'Huwayej'});

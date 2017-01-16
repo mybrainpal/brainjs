@@ -2,6 +2,7 @@
  * Proudly created by ohad on 30/12/2016.
  */
 let _        = require('./../../../common/util/wrapper'),
+    BaseError = require('../../../common/log/base.error'),
     alertify = require('alertifyjs'),
     css      = require('alertifyjs/build/css/alertify.css'),
     cssRtl   = require('alertifyjs/build/css/alertify.rtl.css'),
@@ -30,10 +31,11 @@ exports.execute = function (options) {
 
 /**
  * @param {Object} options
- * @returns {boolean} whether the executor has a valid input.
  */
 exports.preconditions = function (options) {
-    return _.isFunction(options.alertifyFn);
+    if (!_.isFunction(options.alertifyFn)) {
+        throw new BaseError('AlertifyExecutor: alertifyFn must be a function.');
+    }
 
 };
 

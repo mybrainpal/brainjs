@@ -1,9 +1,10 @@
 /**
  * Proudly created by ohad on 25/12/2016.
  */
-let _      = require('./../../../common/util/wrapper'),
-    Master = require('../master');
-exports.name = 'remove';
+let _         = require('./../../../common/util/wrapper'),
+    BaseError = require('../../../common/log/base.error'),
+    Master    = require('../master');
+exports.name  = 'remove';
 Master.register(exports);
 
 /**
@@ -13,7 +14,7 @@ Master.register(exports);
  */
 exports.execute = function (options) {
     document.querySelectorAll(options.targets)
-            .forEach((elem) => { elem.parentNode.removeChild(elem); });
+            .forEach((elem) => { if (elem.parentNode) elem.parentNode.removeChild(elem) });
 };
 
 /**
@@ -21,18 +22,13 @@ exports.execute = function (options) {
  * @returns {boolean} whether the executor has a valid input.
  */
 exports.preconditions = function (options) {
-    let targets;
-    try {
-        targets = document.querySelectorAll(options.targets);
-        if (_.isEmpty(targets)) return false;
-    } catch (e) { return false; }
+    let targets = document.querySelectorAll(options.targets);
+    if (_.isEmpty(targets)) {
+        throw new BaseError('RemoveExecutor: could not find targets at ' + options.targets);
+    }
     for (let i = 0; i < targets.length; i++) {
-        if (targets[i] === document || targets[i] === document.documentElement ||
-            targets[i] === window || _.isNil(targets[i].parentNode) ||
-            (targets[i] === document.querySelector('body')) ||
-            (targets[i] === document.querySelector('head'))) {
-            return false;
+        if (_.isNil(targets[i].parentNode)) {
+            throw new BaseError('RemoveExecutor: target must have a parent node.')
         }
     }
-    return true;
 };

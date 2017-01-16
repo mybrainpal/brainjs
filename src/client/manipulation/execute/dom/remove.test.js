@@ -2,6 +2,7 @@
  * Proudly created by ohad on 25/12/2016.
  */
 let expect            = require('chai').expect,
+    BaseError         = require('../../../common/log/base.error'),
     DomRemoveExecutor = require('./remove');
 
 describe('DomRemoveExecutor', function () {
@@ -28,10 +29,7 @@ describe('DomRemoveExecutor', function () {
         expect(a.parentNode).to.not.be.ok;
     });
     it('Preconditions', () => {
-        expect(DomRemoveExecutor.preconditions({})).to.be.false;
-        expect(DomRemoveExecutor.preconditions({targets: 'body'})).to.be.false;
-        expect(DomRemoveExecutor.preconditions({targets: 'head'})).to.be.false;
-        expect(DomRemoveExecutor.preconditions({targets: 'html'})).to.be.false;
-        expect(DomRemoveExecutor.preconditions({targets: '#div a'})).to.be.true;
+        expect(() => {DomRemoveExecutor.preconditions({})}).to.throw(BaseError);
+        expect(() => {DomRemoveExecutor.preconditions({targets: '#div a'})}).to.not.throw(Error);
     })
 });

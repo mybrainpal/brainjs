@@ -240,8 +240,8 @@ module.exports         = {
                                 name   : EventExecutor.name,
                                 options: {
                                     listen : {
-                                        event : Factory.eventName(IdleEvent.name()),
-                                        detail: {id: 1}
+                                        event     : Factory.eventName(IdleEvent.name()),
+                                        detailOrId: 1
                                     },
                                     trigger: {
                                         event: Executor.eventName(AlertifyExecutor.name)
@@ -267,12 +267,12 @@ module.exports         = {
                                 name   : EventExecutor.name,
                                 options: {
                                     listen : {
-                                        event : Factory.eventName(IdleEvent.name()),
-                                        detail: {id: 2}
+                                        event     : Factory.eventName(IdleEvent.name()),
+                                        detailOrId: 2
                                     },
                                     trigger: {
-                                        event : Executor.eventName(TooltipExecutor.name),
-                                        detail: {state: TooltipExecutor.State.SHOW}
+                                        event     : Executor.eventName(TooltipExecutor.name),
+                                        detailOrId: {state: TooltipExecutor.State.SHOW}
                                     }
                                 }
                             }

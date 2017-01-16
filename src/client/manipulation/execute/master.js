@@ -4,10 +4,9 @@
  * Modifies the DOM, but in a good way.
  */
     // TODO(ohad): add `prepare` method that initiates external resource loading.
-let _             = require('../../common/util/wrapper'),
+let _            = require('../../common/util/wrapper'),
     EventFactory = require('../../common/events/factory'),
-    Logger        = require('../../common/log/logger'),
-    Level         = require('../../common/log/logger').Level;
+    BaseError    = require('../../common/log/base.error');
 
 /**
  * Registers an executor, and adds it to the _executorByName map.
@@ -24,8 +23,6 @@ exports.register = function (module) {
  *  @property {string|number} [id]
  *  @property {string|boolean} [on] - event name to execute on. use `true` to execute on
  *  `_.on(eventName(name), .. , id)`
- *  @property {function} [callback] - to execute once the executor is complete.
- *  @property {function} [failureCallback] - to execute had the executor failed.
  * @returns {Object} this module.
  */
 exports.execute = function (name, options = {}) {
@@ -57,24 +54,14 @@ let _executorByName = {};
  */
 function _preconditions(name, options) {
     if (!_executorByName[name]) {
-        throw new Error('Executor: executor ' + name + ' is nonexistent.');
+        throw new BaseError('Executor: executor ' + name + ' is nonexistent.');
     }
     if (!_.isNil(options.id) && !_.isString(options.id) && !_.isNumber(options.id)) {
-        throw new Error('Executor: id must be a string or a number.');
+        throw new BaseError('Executor: id must be a string or a number.');
     }
     if (!_.isNil(options.on) && !_.isString(options.on) && !_.isBoolean(options.on)) {
-        throw new Error('Executor: on must be a string or a boolean.');
+        throw new BaseError('Executor: on must be a string or a boolean.');
     }
-    if (!_.isNil(options.callback) && !_.isFunction(options.callback)) {
-        throw new Error('Executor: callback must be a function.');
-    }
-    if (!_.isNil(options.failureCallback) && !_.isFunction(options.failureCallback)) {
-        throw new Error('Executor: callback must be a function.');
-    }
-    if (!_executorByName[name].preconditions(options)) {
-        Logger.log(Level.WARNING, 'Executor: executor ' + name + ' preconditions failed.');
-        if (options.failureCallback) options.failureCallback(options);
-        return false;
-    }
+    _executorByName[name].preconditions(options);
     return true;
 }

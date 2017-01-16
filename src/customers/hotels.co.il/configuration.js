@@ -252,8 +252,8 @@ module.exports         = {
                                 name   : EventExecutor.name,
                                 options: {
                                     listen : {
-                                        event : Factory.eventName(IdleEvent.name()),
-                                        detail: {id: 'reviews'}
+                                        event     : Factory.eventName(IdleEvent.name()),
+                                        detailOrId: 'reviews'
                                     },
                                     trigger: {
                                         event: Executor.eventName(AlertifyExecutor.name)
@@ -277,8 +277,8 @@ module.exports         = {
                                 name   : EventExecutor.name,
                                 options: {
                                     listen : {
-                                        event : Factory.eventName(IdleEvent.name()),
-                                        detail: {id: 'modal'}
+                                        event     : Factory.eventName(IdleEvent.name()),
+                                        detailOrId: 'modal'
                                     },
                                     trigger: {
                                         event: Executor.eventName(SwalExecutor.name)

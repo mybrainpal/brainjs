@@ -1,9 +1,10 @@
 /**
  * Proudly created by ohad on 21/12/2016.
  */
-let _        = require('../../common/util/wrapper'),
-    expect   = require('chai').expect,
-    Executor = require('./master');
+let _         = require('../../common/util/wrapper'),
+    BaseError = require('../../common/log/base.error'),
+    expect    = require('chai').expect,
+    Executor  = require('./master');
 
 describe('Executor', function () {
     this.timeout(100);
@@ -21,13 +22,9 @@ describe('Executor', function () {
         form.parentNode.removeChild(form);
     });
     it('preconditions', () => {
-        expect(() => {Executor.execute('form2', {target: '#input'})}).to.throw(Error);
-        expect(() => {Executor.execute('form', {target: '#input', id: {}})}).to.throw(Error);
-        expect(() => {Executor.execute('form', {target: '#input', on: {}})}).to.throw(Error);
-        expect(() => {Executor.execute('form', {target: '#input', callback: 1})}).to
-                                                                                 .throw(Error);
-        expect(() => {Executor.execute('form', {target: '#input', failureCallback: 1})}).to.throw(
-            Error);
+        expect(() => {Executor.execute('form', {target: '#input'})}).to.not.throw(Error);
+        expect(() => {Executor.execute('form', {target: '#input', id: {}})}).to.throw(BaseError);
+        expect(() => {Executor.execute('form', {target: '#input', on: {}})}).to.throw(BaseError);
     });
     it('execute', () => {
         Executor.execute('form', {target: '#input', focus: true});

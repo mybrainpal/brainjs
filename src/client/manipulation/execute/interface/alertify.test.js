@@ -2,15 +2,16 @@
  * Proudly created by ohad on 30/12/2016.
  */
 let expect           = require('chai').expect,
+    BaseError        = require('../../../common/log/base.error'),
     AlertifyExecutor = require('./alertify');
 
 describe('AlertifyExecutor', function () {
     this.timeout(100);
     const msg = 'no wayyy!';
     it('preconditions', () => {
-        expect(AlertifyExecutor.preconditions({alertifyFn: () => {}})).to.be.true;
-        expect(AlertifyExecutor.preconditions({})).to.be.false;
-        expect(AlertifyExecutor.preconditions({alertifyFn: 1})).to.be.false;
+        expect(() => {AlertifyExecutor.preconditions({alertifyFn: () => {}})}).to.not.throw(Error);
+        expect(() => {AlertifyExecutor.preconditions({})}).to.throw(BaseError);
+        expect(() => {AlertifyExecutor.preconditions({alertifyFn: 1})}).to.throw(BaseError);
     });
     it('alertify works', (done) => {
         AlertifyExecutor.execute({alertifyFn: (alertify) => {alertify.notify(msg);}});

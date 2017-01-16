@@ -1,11 +1,10 @@
 /**
  * Proudly created by ohad on 24/12/2016.
  */
-let _            = require('./../../../common/util/wrapper'),
-    Logger       = require('../../../common/log/logger'),
-    Level        = require('../../../common/log/logger').Level,
-    Master = require('../master');
-exports.name = 'inject';
+let _         = require('./../../../common/util/wrapper'),
+    BaseError = require('../../../common/log/base.error'),
+    Master    = require('../master');
+exports.name  = 'inject';
 Master.register(exports);
 /**
  * Injects HTML content into target elements.
@@ -17,15 +16,10 @@ Master.register(exports);
  *  @property {string} [sourceSelector] - selector to source element, from which to copy html.
  */
 exports.execute = function (options) {
-    const target = document.querySelector(options.target);
+    const target  = document.querySelector(options.target);
     let src, html = '';
     if (options.sourceSelector) {
         src = document.querySelector(options.sourceSelector);
-        if (_.isNil(src)) {
-            Logger.log(Level.ERROR,
-                       'InjectExecutor: could find source at ' + options.sourceSelector);
-            return;
-        }
         html = src.innerHTML;
     } else if (options.html) html = options.html;
 
@@ -38,20 +32,27 @@ exports.execute = function (options) {
 
 /**
  * @param {Object} options
- * @returns {boolean} whether the executor has a valid input.
  */
 exports.preconditions = function (options) {
-    try {
-        if (!document.querySelector(options.target)) return false;
-    } catch (e) { return false; }
-    if (_.has(options, 'position') && !_.isString(options.position)) return false;
-    if (_.has(options, 'html') && !_.isString(options.html)) return false;
-    if (_.has(options, 'sourceSelector')) {
-        if (!_.isString(options.sourceSelector)) return false;
-        try {
-            if (!document.querySelector(options.sourceSelector)) return false;
-        } catch (e) { return false; }
-        if (_.has(options, 'html')) return false;
+    if (!document.querySelector(options.target)) {
+        throw new BaseError('InjectExecutor : could not find target at ' + options.target);
     }
-    return true;
+    if (_.has(options, 'position') && !_.isString(options.position)) {
+        throw new BaseError('InjectExecutor : position must be nil or a string');
+    }
+    if (_.has(options, 'html') && !_.isString(options.html)) {
+        throw new BaseError('InjectExecutor : html must be nil or a string');
+    }
+    if (_.has(options, 'sourceSelector')) {
+        if (!_.isString(options.sourceSelector)) {
+            throw new BaseError('InjectExecutor : sourceSelector must be nil or a string');
+        }
+        if (!document.querySelector(options.sourceSelector)) {
+            throw new BaseError('InjectExecutor : could not find sourceSelector at ' +
+                                options.sourceSelector);
+        }
+        if (_.has(options, 'html')) {
+            throw new BaseError('InjectExecutor : cannot have both html and sourceSelector');
+        }
+    }
 };

@@ -2,6 +2,7 @@
  * Proudly created by ohad on 30/12/2016.
  */
 let _             = require('../../../common/util/wrapper'),
+    BaseError     = require('../../../common/log/base.error'),
     expect        = require('chai').expect,
     TyperExecutor = require('./typer');
 
@@ -17,9 +18,9 @@ describe('TyperExecutor', function () {
         div.parentNode.removeChild(div);
     });
     it('preconditions', () => {
-        expect(TyperExecutor.preconditions({typerFn: () => {}})).to.be.true;
-        expect(TyperExecutor.preconditions({})).to.be.false;
-        expect(TyperExecutor.preconditions({typerFn: 1})).to.be.false;
+        expect(() => {TyperExecutor.preconditions({typerFn: () => {}})}).to.not.throw(Error);
+        expect(() => {TyperExecutor.preconditions({})}).to.throw(BaseError);
+        expect(() => {TyperExecutor.preconditions({typerFn: 1})}).to.throw(BaseError);
     });
     it('new line', (done) => {
         TyperExecutor.execute({typerFn: (typer) => {typer('#div', 1).line('123').end()}});
