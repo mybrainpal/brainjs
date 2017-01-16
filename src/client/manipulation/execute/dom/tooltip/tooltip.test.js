@@ -1,12 +1,13 @@
 /**
  * Proudly created by ohad on 04/01/2017.
  */
-const expect          = require('chai').expect,
-      _               = require('../../../../common/util/wrapper'),
-      BaseError       = require('../../../../common/log/base.error'),
-      TooltipExecutor = require('./tooltip'),
-      Master          = require('../../master'),
-      styles          = require('./tooltip.scss').locals;
+const expect           = require('chai').expect,
+      _                = require('../../../../common/util/wrapper'),
+      BaseError        = require('../../../../common/log/base.error'),
+      TooltipExecutor  = require('./tooltip'),
+      TooltipInterface = require('./interface'),
+      Master           = require('../../master'),
+      styles           = require('./tooltip.scss').locals;
 
 describe('TooltipExecutor', function () {
     this.timeout(1000);
@@ -65,6 +66,17 @@ describe('TooltipExecutor', function () {
         expect(tooltip.classList.contains(styles.show)).to.be.false;
         expect(tooltip.querySelector(target.nodeName)).to.be.ok;
     });
+    it('interface', (done) => {
+        TooltipInterface.execute({target: '#huwayej', type: 'bloated', htmlContent: 'Huwayej'});
+        setTimeout(() => {
+            const tooltip = document.querySelector(`div>.${styles.bloated}`);
+            expect(tooltip).to.be.ok;
+            expect(tooltip.classList.contains(styles.bloated)).to.be.true;
+            expect(tooltip.classList.contains(styles.show)).to.be.false;
+            expect(tooltip.querySelector(target.nodeName)).to.be.ok;
+            done();
+        });
+    });
     it('creation with special property', () => {
         TooltipExecutor.execute({target: '#huwayej', type: 'sharp', direction: 'left'});
         const tooltip = document.querySelector(`div>.${styles.sharp}`);
@@ -75,10 +87,10 @@ describe('TooltipExecutor', function () {
     it('flow', (done) => {
         TooltipExecutor.execute({target: '#huwayej', type: 'bloated', htmlContent: 'Huwayej'});
         const tooltip = document.querySelector(`div>.${styles.bloated}`);
-        _.trigger(Master.eventName(TooltipExecutor.name), {state: TooltipExecutor.State.SHOW});
+        _.trigger(Master.eventName(TooltipInterface.name), {state: TooltipExecutor.State.SHOW});
         setTimeout(() => {
             expect(tooltip.classList.contains(styles.show)).to.be.true;
-            _.trigger(Master.eventName(TooltipExecutor.name), {state: TooltipExecutor.State.HIDE});
+            _.trigger(Master.eventName(TooltipInterface.name), {state: TooltipExecutor.State.HIDE});
             setTimeout(() => {
                 expect(tooltip.classList.contains(styles.show)).to.be.false;
                 done();
@@ -89,7 +101,7 @@ describe('TooltipExecutor', function () {
         TooltipExecutor.execute(
             {target: '#huwayej', type: 'bloated', htmlContent: 'Huwayej', timer: 20});
         const tooltip = document.querySelector(`div>.${styles.bloated}`);
-        _.trigger(Master.eventName(TooltipExecutor.name), {state: TooltipExecutor.State.SHOW});
+        _.trigger(Master.eventName(TooltipInterface.name), {state: TooltipExecutor.State.SHOW});
         setTimeout(() => {
             expect(tooltip.classList.contains(styles.show)).to.be.true;
             setTimeout(() => {
@@ -101,10 +113,10 @@ describe('TooltipExecutor', function () {
     it('flow without state', (done) => {
         TooltipExecutor.execute({target: '#huwayej', type: 'bloated', htmlContent: 'Huwayej'});
         const tooltip = document.querySelector(`div>.${styles.bloated}`);
-        _.trigger(Master.eventName(TooltipExecutor.name));
+        _.trigger(Master.eventName(TooltipInterface.name));
         setTimeout(() => {
             expect(tooltip.classList.contains(styles.show)).to.be.true;
-            _.trigger(Master.eventName(TooltipExecutor.name));
+            _.trigger(Master.eventName(TooltipInterface.name));
             setTimeout(() => {
                 expect(tooltip.classList.contains(styles.show)).to.be.false;
                 done();
@@ -121,22 +133,22 @@ describe('TooltipExecutor', function () {
             {target: '#huwayej2', id: 2, type: 'bloated', htmlContent: 'dodim'});
         const tooltip1 = document.querySelector(`#${TooltipExecutor.tooltipId(1)}`),
               tooltip2 = document.querySelector(`#${TooltipExecutor.tooltipId(2)}`);
-        _.trigger(Master.eventName(TooltipExecutor.name),
+        _.trigger(Master.eventName(TooltipInterface.name),
                   {id: 1, state: TooltipExecutor.State.SHOW});
         setTimeout(() => {
             expect(tooltip1.classList.contains(styles.show)).to.be.true;
             expect(tooltip2.classList.contains(styles.show)).to.be.false;
-            _.trigger(Master.eventName(TooltipExecutor.name),
+            _.trigger(Master.eventName(TooltipInterface.name),
                       {id: 2, state: TooltipExecutor.State.SHOW});
             setTimeout(() => {
                 expect(tooltip1.classList.contains(styles.show)).to.be.true;
                 expect(tooltip2.classList.contains(styles.show)).to.be.true;
-                _.trigger(Master.eventName(TooltipExecutor.name),
+                _.trigger(Master.eventName(TooltipInterface.name),
                           {id: 1, state: TooltipExecutor.State.HIDE});
                 setTimeout(() => {
                     expect(tooltip1.classList.contains(styles.show)).to.be.false;
                     expect(tooltip2.classList.contains(styles.show)).to.be.true;
-                    _.trigger(Master.eventName(TooltipExecutor.name),
+                    _.trigger(Master.eventName(TooltipInterface.name),
                               {id: 2, state: TooltipExecutor.State.HIDE});
                     setTimeout(() => {
                         expect(tooltip1.classList.contains(styles.show)).to.be.false;

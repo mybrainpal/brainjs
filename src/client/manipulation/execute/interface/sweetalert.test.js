@@ -28,6 +28,6 @@ describe('SwalExecutor', function () {
                 expect(document.querySelector('.swal2-hide')).to.be.ok;
                 done();
             }, 20);
-        });
+        }, 10);
     });
 });

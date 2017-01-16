@@ -4,9 +4,8 @@
 const _         = require('../../../../common/util/wrapper'),
       BaseError = require('../../../../common/log/base.error'),
       Master    = require('../../master'),
+      Interface = require('./interface'),
       css       = require('./tooltip.scss');
-exports.name    = 'tooltip';
-Master.register(exports);
 const styles = css.locals;
 
 /**
@@ -113,7 +112,7 @@ exports.State = {
  * Name prefix for attributes, events and ids.
  * @type {string}
  */
-exports.namePrefix = 'brainpal-' + exports.name;
+exports.namePrefix = 'brainpal-' + Interface.name;
 
 /**
  * @param {string|number} id
@@ -166,7 +165,7 @@ function _attachTooltip(options) {
  * @param {string|number} id
  */
 function _attachEvents(tooltip, id) {
-    _.on(Master.eventName(exports.name), (ev) => {
+    _.on(Master.eventName(Interface.name), (ev) => {
         if (_.get(ev, 'detail.state')) {
             const state = _.get(ev, 'detail.state');
             if (exports.State[state]) {

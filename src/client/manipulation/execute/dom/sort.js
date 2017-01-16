@@ -1,10 +1,10 @@
 /**
  * Proudly created by ohad on 18/12/2016.
  */
-let tinysort     = require('tinysort'),
-    BaseError = require('../../../common/log/base.error'),
-    Master = require('../master');
-exports.name = 'sort';
+const tinysort  = require('tinysort'),
+      BaseError = require('../../../common/log/base.error'),
+      Master    = require('../master');
+exports.name    = 'sort';
 Master.register(exports);
 
 /**

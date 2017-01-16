@@ -4,7 +4,7 @@
 const _                = require('../../client/common/util/wrapper'),
       Factory          = require('../../client/common/events/factory'),
       IdleEvent        = require('../../client/common/events/idle'),
-      GalleryExecutor  = require('../../client/manipulation/execute/media/gallery'),
+      GalleryInterface = require('../../client/manipulation/execute/media/gallery/interface'),
       Executor         = require('../../client/manipulation/execute/master'),
       StyleExecutor    = require('../../client/manipulation/execute/dom/style'),
       MoveExecutor     = require('../../client/manipulation/execute/dom/move'),
@@ -58,9 +58,9 @@ module.exports         = {
                                             margin-right: 15%; margin-left: 15%}
                                         #daydeal #content div.hotel_deal h2 {
                                             width:100%; height: 85px; font-size:28px; padding: 0}
-                                        #daydeal #content #${GalleryExecutor.idPrefix} ul {
+                                        #daydeal #content #${GalleryInterface.idPrefix} ul {
                                             padding: 0; width: 100%}
-                                        #daydeal #content div#${GalleryExecutor.idPrefix} {height: 320px}
+                                        #daydeal #content div#${GalleryInterface.idPrefix} {height: 320px}
                                         #daydeal #content .percent {z-index: 1001}
                                         #daydeal #content .comments_deal_text {z-index: 1001}
                                         #daydeal #content .group_sale_image {width: 65%}
@@ -88,7 +88,7 @@ module.exports         = {
                                             .alertify-notifier.ajs-left .ajs-message.ajs-visible {
                                                 right: 290px !important; }
                                         }
-                                        #daydeal #content #${GalleryExecutor.idPrefix} li {display: block}`
+                                        #daydeal #content #${GalleryInterface.idPrefix} li {display: block}`
                                 }
                             },
                             {
@@ -131,7 +131,7 @@ module.exports         = {
                                 }
                             },
                             {
-                                name   : GalleryExecutor.name,
+                                name   : GalleryInterface.name,
                                 options: {
                                     container      : '.group_sale_image',
                                     sourceSelectors: ['.group_sale_image>img', '#gallery img'],

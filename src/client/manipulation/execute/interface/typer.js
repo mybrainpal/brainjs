@@ -3,8 +3,6 @@
  */
 let _            = require('../../../common/util/wrapper'),
     BaseError = require('../../../common/log/base.error'),
-    typer        = require('./typer-js'),
-    css    = require('typer-js/typer.css'),
     Master = require('../master');
 exports.name = 'typer';
 Master.register(exports);
@@ -15,11 +13,11 @@ Master.register(exports);
  *  @property {function} typerFn - runs typer-js code
  */
 exports.execute = function (options) {
-    if (!_styleLoaded) {
-        _.css.load(css);
+    require.ensure(['./typer-js', 'typer-js/typer.css'], function (require) {
+        if (!_styleLoaded) _.css.load(require('typer-js/typer.css'));
         _styleLoaded = true;
-    }
-    options.typerFn(typer);
+        options.typerFn(require('./typer-js'));
+    });
 };
 
 /**

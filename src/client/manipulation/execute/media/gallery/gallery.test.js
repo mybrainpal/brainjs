@@ -1,15 +1,16 @@
 /**
  * Proudly created by ohad on 25/12/2016.
  */
-const expect          = require('chai').expect,
-      _               = require('../../../common/util/wrapper'),
-      BaseError       = require('../../../common/log/base.error'),
-      GalleryExecutor = require('./gallery'),
-      styles          = require('./gallery.scss').locals;
+const expect           = require('chai').expect,
+      _                = require('../../../../common/util/wrapper'),
+      BaseError        = require('../../../../common/log/base.error.js'),
+      GalleryExecutor  = require('./gallery'),
+      GalleryInterface = require('./interface'),
+      styles           = require('./gallery.scss').locals;
 
 describe('GalleryExecutor', function () {
     this.timeout(3000);
-    let div, imgNarrow, imgWide, container, smallContainer, spec, animationSpec;
+    let div, imgNarrow, imgWide, container, smallContainer, options, animationSpec;
     before(() => {
         div  = document.createElement('div');
         div.setAttribute('id', 'div');
@@ -17,8 +18,8 @@ describe('GalleryExecutor', function () {
         imgWide        = document.createElement('img');
         container      = document.createElement('div');
         smallContainer = document.createElement('div');
-        spec = {sourceSelectors: '#div img', container: '#container'};
-        animationSpec = _.deepExtend({interval: 100, animationClass: 'fxSnapIn'}, spec);
+        options       = {sourceSelectors: '#div img', container: '#container'};
+        animationSpec = _.deepExtend({interval: 100, animationClass: 'fxSnapIn'}, options);
         document.querySelector('body').appendChild(div);
         imgNarrow.src = ''; //'img/sad.jpg';
         imgNarrow.setAttribute('narrow', 'true');
@@ -49,7 +50,7 @@ describe('GalleryExecutor', function () {
         div.parentNode.removeChild(div);
     });
     it('preconditions', () => {
-        expect(() => {GalleryExecutor.preconditions(spec)}).to.not.throw(Error);
+        expect(() => {GalleryExecutor.preconditions(options)}).to.not.throw(Error);
         expect(() => {
             GalleryExecutor.preconditions({sourceSelectors: 'img', container: '#nada'})
         }).to.throw(BaseError);
@@ -58,12 +59,19 @@ describe('GalleryExecutor', function () {
             GalleryExecutor.preconditions({sourceSelectors: '#nada', container: 'div'})
         }).to.throw(BaseError);
         expect(() => {
-            GalleryExecutor.preconditions(_.deepExtend({animationClass: '1'}, spec))
+            GalleryExecutor.preconditions(_.deepExtend({animationClass: '1'}, options))
         }).to.throw(BaseError);
     });
     it('creation', () => {
-        GalleryExecutor.execute(spec);
+        GalleryExecutor.execute(options);
         expect(container.querySelectorAll(`div.${styles.component} img`)).to.have.length(2);
+    });
+    it('interface', (done) => {
+        GalleryInterface.execute(options);
+        setTimeout(() => {
+            expect(container.querySelectorAll(`div.${styles.component} img`)).to.have.length(2);
+            done();
+        });
     });
     it('assign animation class', () => {
         GalleryExecutor.execute(animationSpec);
@@ -94,14 +102,14 @@ describe('GalleryExecutor', function () {
         }, 400);
     });
     it('multiple galleries', () => {
-        GalleryExecutor.execute(_.deepExtend({id: 1}, spec));
-        GalleryExecutor.execute(_.deepExtend({}, spec, {id: 2, container: '#small'}));
+        GalleryExecutor.execute(_.deepExtend({id: 1}, options));
+        GalleryExecutor.execute(_.deepExtend({}, options, {id: 2, container: '#small'}));
         expect(document.querySelectorAll(`.${styles.component}`)).to.have.length(2);
     });
     // it('narrow and wide', () => {
     //     require("file-loader?name=img/[name].[ext]?!./testdata/sad.jpg");
     //     require("file-loader?name=img/[name].[ext]?!./testdata/diving.jpg");
-    //     GalleryExecutor.execute([smallContainer], spec);
+    //     GalleryExecutor.execute([smallContainer], options);
     //     expect(smallContainer.querySelector('img[narrow]').clientWidth).to.equal(100);
     //     expect(smallContainer.querySelector('img[narrow]').clientHeight).to.be.above(100);
     //     expect(smallContainer.querySelector('img[wide]').clientWidth).to.above(100);

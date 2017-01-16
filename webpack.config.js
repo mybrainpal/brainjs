@@ -21,6 +21,8 @@ if (isProduction) {
             warnings: false
         }
     }));
+    plugins.push(new webpack.optimize.MinChunkSizePlugin({minChunkSize: 50000}));
+    plugins.push(new webpack.optimize.DedupePlugin());
 } else {
     plugins.push(function () {
         this.plugin('watch-run', function (watching, callback) {
@@ -37,7 +39,7 @@ module.exports = {
     output : {
         path         : path.join(__dirname, 'dist'),
         filename     : '[name].js',
-        chunkFilename: '[id].[chunkhash].js',
+        chunkFilename: '[chunkhash].js',
         pathinfo     : true
     },
     resolve: {

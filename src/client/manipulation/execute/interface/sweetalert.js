@@ -3,8 +3,6 @@
  */
 let _            = require('../../../common/util/wrapper'),
     BaseError = require('../../../common/log/base.error'),
-    sweetAlert2  = require('sweetalert2'),
-    css    = require('sweetalert2/dist/sweetalert2.css'),
     Master = require('../master');
 exports.name = 'sweetalert';
 Master.register(exports);
@@ -15,11 +13,11 @@ Master.register(exports);
  *  @property {function} swalFn - runs sweetalert2 code
  */
 exports.execute = function (options) {
-    if (!_styleLoaded) {
-        _.css.load(css);
+    require.ensure(['sweetalert2', 'sweetalert2/dist/sweetalert2.css'], function (require) {
+        if (!_styleLoaded) _.css.load(require('sweetalert2/dist/sweetalert2.css'));
         _styleLoaded = true;
-    }
-    options.swalFn(sweetAlert2);
+        options.swalFn(require('sweetalert2'));
+    });
 };
 
 /**

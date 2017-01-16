@@ -3,9 +3,6 @@
  */
 let _        = require('./../../../common/util/wrapper'),
     BaseError = require('../../../common/log/base.error'),
-    alertify = require('alertifyjs'),
-    css      = require('alertifyjs/build/css/alertify.css'),
-    cssRtl   = require('alertifyjs/build/css/alertify.rtl.css'),
     Master   = require('../master');
 exports.name = 'alertify';
 Master.register(exports);
@@ -17,16 +14,20 @@ Master.register(exports);
  *  @property {boolean} [rtl = false] - whether to load rtl style.
  */
 exports.execute = function (options) {
-    if (!_styleLoaded) {
         // TODO(ohad): support multiple style loads.
         if (options.rtl) {
-            _.css.load(cssRtl);
+            require.ensure('alertifyjs/build/css/alertify.rtl.css', function (require) {
+                if (!_styleLoaded) _.css.load(require('alertifyjs/build/css/alertify.rtl.css'));
+                _styleLoaded = true;
+                _run(options.alertifyFn);
+            });
         } else {
-            _.css.load(css);
+            require.ensure('alertifyjs/build/css/alertify.css', function (require) {
+                if (!_styleLoaded) _.css.load(require('alertifyjs/build/css/alertify.css'));
+                _styleLoaded = true;
+                _run(options.alertifyFn);
+            });
         }
-        _styleLoaded = true;
-    }
-    options.alertifyFn(alertify);
 };
 
 /**
@@ -45,3 +46,14 @@ exports.preconditions = function (options) {
  * @private
  */
 let _styleLoaded = false;
+
+/**
+ * Loads alertifyjs on demand and runs alertifyFn.
+ * @param alertifyFn
+ * @private
+ */
+function _run(alertifyFn) {
+    require.ensure('alertifyjs', function (require) {
+        alertifyFn(require('alertifyjs'));
+    });
+}

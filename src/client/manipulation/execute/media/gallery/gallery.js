@@ -1,28 +1,14 @@
 /**
  * Proudly created by ohad on 25/12/2016.
  */
-const _            = require('../../../common/util/wrapper'),
-      BaseError = require('../../../common/log/base.error'),
-      css    = require('./gallery.scss'),
-      Master = require('../master');
-exports.name = 'gallery';
-Master.register(exports);
+const _         = require('../../../../common/util/wrapper'),
+      BaseError = require('../../../../common/log/base.error.js'),
+      Interface = require('./interface'),
+      css       = require('./gallery.scss');
 const styles = css.locals;
+
 /**
- * A prefix to all galleries.
- * @type {string}
- */
-exports.idPrefix = 'brainpal-gallery';
-/**
- * Describes where the gallery navigates to. next is right.
- * @type {{NEXT: string, PREVIOUS: string}}
- */
-const NavigationDirection = {
-    NEXT    : 'NEXT',
-    PREVIOUS: 'PREVIOUS'
-};
-/**
- * Creates a gallery and injects it into elements[0].
+ * Creates a gallery and injects it into options.container.
  * @param {Object} options
  *  @property {string} container - selector of container element.
  *  @property {string|Array.<string>} sourceSelectors - provided as css selectors
@@ -41,7 +27,6 @@ exports.execute = function (options) {
 
 /**
  * @param {Object} options
- * @returns {boolean} whether the executor has a valid input.
  */
 exports.preconditions = function (options) {
     if (!document.querySelector(options.container)) {
@@ -68,6 +53,15 @@ exports.preconditions = function (options) {
 };
 
 /**
+ * Describes where the gallery navigates to. next is right.
+ * @type {{NEXT: string, PREVIOUS: string}}
+ */
+const _NavigationDirection = Object.freeze({
+                                               NEXT    : 'NEXT',
+                                               PREVIOUS: 'PREVIOUS'
+                                           });
+
+/**
  * @param {Element} container
  * @param {Object} options
  * @returns {Element}
@@ -87,8 +81,7 @@ function _createGallery(container, options) {
     component = document.createElement('div');
     component.classList.add(styles.component, styles.fullwidth,
                             styles[options.animationClass || 'fxSoftScale']);
-    component.setAttribute('id',
-                           exports.idPrefix + (options.id ? `-${options.id}` : ''));
+    component.setAttribute('id', Interface.idPrefix + (options.id ? `-${options.id}` : ''));
     ul = document.createElement('ul');
     ul.classList.add(styles.itemwrap);
     for (i = 0; i < sources.length; i++) {
@@ -119,12 +112,12 @@ function _createGallery(container, options) {
 function _play(component, options) {
     const intervalMs = options.interval || 6000;
     let intervalId = setInterval(() => {
-        _navigate(NavigationDirection.NEXT, component);
+        _navigate(_NavigationDirection.NEXT, component);
     }, intervalMs);
     _.on('mouseover', () => { clearInterval(intervalId); }, {}, component, true);
     _.on('mouseout', () => {
         intervalId = setInterval(() => {
-            _navigate(NavigationDirection.NEXT, component);
+            _navigate(_NavigationDirection.NEXT, component);
         }, intervalMs);
     }, {}, component, true);
     component.querySelector(`ul.${styles.itemwrap}`).children[0].classList.add(styles.current);
@@ -145,10 +138,10 @@ function _navigate(direction, component) {
     let currentItem = items[current];
 
 
-    if (direction === NavigationDirection.NEXT) {
+    if (direction === _NavigationDirection.NEXT) {
         current = current < items.length - 1 ? current + 1 : 0;
     }
-    else if (direction === NavigationDirection.PREVIOUS) {
+    else if (direction === _NavigationDirection.PREVIOUS) {
         current = current > 0 ? current - 1 : items.length - 1;
     }
     component.setAttribute(_currentAttribute, current.toString());
@@ -158,8 +151,8 @@ function _navigate(direction, component) {
     _.on('animationend', _onAnimationEnd, {}, currentItem);
     _.on('animationend', _onAnimationEnd, {}, nextItem);
     currentItem.classList.add(
-        direction === NavigationDirection.NEXT ? styles.navOutNext : styles.navOutPrev);
-    nextItem.classList.add(direction === NavigationDirection.NEXT ? styles.navInNext :
+        direction === _NavigationDirection.NEXT ? styles.navOutNext : styles.navOutPrev);
+    nextItem.classList.add(direction === _NavigationDirection.NEXT ? styles.navInNext :
                            styles.navInPrev);
 }
 
