@@ -10,9 +10,7 @@ let webpackConfig = {
     },
     output : {
         path         : path.join(__dirname, 'dist'),
-        publicPath   : 'http://brainpal.dev/',
         filename     : '[name].js',
-        chunkFilename: '[chunkhash].js',
         pathinfo     : true
     },
     resolve: {
@@ -74,14 +72,17 @@ if (isProduction) {
     }));
     webpackConfig.plugins.push(new webpack.optimize.MinChunkSizePlugin({minChunkSize: 50000}));
     webpackConfig.plugins.push(new webpack.optimize.DedupePlugin());
+    webpackConfig.output.chunkFilename = '[chunkhash].js';
 } else {
     webpackConfig.plugins.push(function () {
         this.plugin('watch-run', function (watching, callback) {
-            console.log('Begin compile at ' + new Date());
+            console.log('Development compile at ' + new Date());
             callback();
         })
     });
     webpackConfig.headers = {'Access-Control-Allow-Origin': '*'};
+    webpackConfig.output.chunkFilename = '[id].js';
+    webpackConfig.output.publicPath    = 'http://brainpal.dev/';
 }
 
 module.exports = webpackConfig;
