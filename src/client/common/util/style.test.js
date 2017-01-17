@@ -31,24 +31,24 @@ describe('StyleUtil', function () {
     it('Load css from import', () => {
         a1.setAttribute('class', 'stark');
         StyleUtil.load(css);
-        expect(window.getComputedStyle(a1).paddingLeft).to.equal('100px');
-        expect(window.getComputedStyle(a1).paddingTop).to.equal('50px');
+        expect(getComputedStyle(a1).paddingLeft).to.equal('100px');
+        expect(getComputedStyle(a1).paddingTop).to.equal('50px');
     });
     it('Load local css from import', () => {
         a1.setAttribute('class', 'lannister');
         StyleUtil.load(localCss);
-        expect(window.getComputedStyle(a1).paddingBottom).to.equal('0px');
+        expect(getComputedStyle(a1).paddingBottom).to.equal('0px');
         a1.setAttribute('class', localCss.locals.lannister);
-        expect(window.getComputedStyle(a1).paddingBottom).to.equal('40px');
+        expect(getComputedStyle(a1).paddingBottom).to.equal('40px');
     });
     it('Load scss from import', () => {
         a1.setAttribute('class', scss.locals.test);
         StyleUtil.load(scss);
-        expect(window.getComputedStyle(a1).marginRight).to.equal('10px');
+        expect(getComputedStyle(a1).marginRight).to.equal('10px');
     });
     it('Load text', () => {
         StyleUtil.load('a {margin-left: 10px}');
-        expect(window.getComputedStyle(a1).marginLeft).to.equal('10px');
+        expect(getComputedStyle(a1).marginLeft).to.equal('10px');
     });
     afterEach(() => {
         document.querySelectorAll('style[' + StyleUtil.identifyingAttribute + ']')

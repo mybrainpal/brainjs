@@ -2,7 +2,7 @@
  * Proudly created by ohad on 02/12/2016.
  */
 let Client        = require('./common/client'),
-    configuration = require('../customers/hotels.co.il/configuration'),
+    configuration = {},
     Logger        = require('./common/log/logger'),
     Level         = require('./common/log/logger').Level,
     Storage       = require('./common/storage/storage'),
