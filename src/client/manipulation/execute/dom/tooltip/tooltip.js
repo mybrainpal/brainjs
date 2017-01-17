@@ -28,6 +28,9 @@ exports.execute = function (options) {
         _styleLoaded = true;
     }
     _attachTooltip(options);
+    if (document.querySelector(``)) {
+
+    }
 };
 
 /**
@@ -341,15 +344,15 @@ const _tooltipInfo = {
  * @private
  */
 function _buildTemplate(type, effectNum, direction) {
-    let template = document.createElement('span'),
-        content  = document.createElement('span');
-    template.classList.add(styles[type]);
-    template.setAttribute(exports.tooltipAttribute, 'true');
+    let tooltip = document.createElement('span'),
+        content = document.createElement('span');
+    tooltip.classList.add(styles[type]);
+    tooltip.setAttribute(exports.tooltipAttribute, 'true');
     content.classList.add(styles[type], styles.content);
-    template.appendChild(content);
-    if (effectNum) template.classList.add(styles[`effect-${effectNum}`]);
-    if (direction) template.classList.add(styles[direction]);
-    return template;
+    tooltip.appendChild(content);
+    if (effectNum) tooltip.classList.add(styles[`effect-${effectNum}`]);
+    if (direction) tooltip.classList.add(styles[direction]);
+    return tooltip;
 }
 
 /**
