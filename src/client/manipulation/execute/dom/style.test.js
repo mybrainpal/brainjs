@@ -34,10 +34,10 @@ describe('StyleExecutor', function () {
     beforeEach(() => {
         _.css.load(require('./testdata/style.scss'));
         document.querySelectorAll('li').forEach(function (li) {
-            expect(window.getComputedStyle(li).padding).to.equal('10px');
+            expect(getComputedStyle(li).padding).to.equal('10px');
         });
         document.querySelectorAll('.survivor').forEach(function (li) {
-            expect(window.getComputedStyle(li).margin).to.equal('10px');
+            expect(getComputedStyle(li).margin).to.equal('10px');
         });
     });
     afterEach(() => {
@@ -61,20 +61,20 @@ describe('StyleExecutor', function () {
         const cssText = require('./testdata/custom.scss')[0][1];
         StyleExecutor.execute({css: cssText});
         document.querySelectorAll('li').forEach(function (li) {
-            expect(window.getComputedStyle(li).paddingLeft).to.equal('20px');
+            expect(getComputedStyle(li).paddingLeft).to.equal('20px');
         });
         document.querySelectorAll(`.${custom.survivor}`).forEach(function (li) {
-            expect(window.getComputedStyle(li).marginLeft).to.equal('50px');
+            expect(getComputedStyle(li).marginLeft).to.equal('50px');
         });
     });
     it('text', () => {
         const css = require('./testdata/custom.scss');
         StyleExecutor.execute({css: css});
         document.querySelectorAll('li').forEach(function (li) {
-            expect(window.getComputedStyle(li).paddingLeft).to.equal('20px');
+            expect(getComputedStyle(li).paddingLeft).to.equal('20px');
         });
         document.querySelectorAll(`.${custom.survivor}`).forEach(function (li) {
-            expect(window.getComputedStyle(li).marginLeft).to.equal('50px');
+            expect(getComputedStyle(li).marginLeft).to.equal('50px');
         });
     });
 });
