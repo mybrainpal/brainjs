@@ -100,7 +100,7 @@ exports.isVisible = function (elem) {
     const style = getComputedStyle(elem);
     if (style.display === 'none') return false;
     if (style.visibility !== 'visible') return false;
-    if (style.opacity < 0.1) return false;
+    if (style.opacity < 0.01) return false;
     if (elem.offsetWidth + elem.offsetHeight + elem.getBoundingClientRect().height +
         elem.getBoundingClientRect().width === 0) {
         return false;
