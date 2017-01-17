@@ -97,17 +97,18 @@ exports.trigger = function (event, detailOrId, target = document) {
  */
 exports.isVisible = function (elem) {
     if (!(elem instanceof Element)) throw Error('DomUtil: elem is not an element.');
+    if (elem.offsetWidth + elem.offsetHeight === 0) return false;
+    const rect = elem.getBoundingClientRect();
+    if (rect.height + rect.width === 0) {
+        return false;
+    }
     const style = getComputedStyle(elem);
     if (style.display === 'none') return false;
     if (style.visibility !== 'visible') return false;
     if (style.opacity < 0.01) return false;
-    if (elem.offsetWidth + elem.offsetHeight + elem.getBoundingClientRect().height +
-        elem.getBoundingClientRect().width === 0) {
-        return false;
-    }
     const elemCenter = {
-        x: elem.getBoundingClientRect().left + elem.offsetWidth / 2,
-        y: elem.getBoundingClientRect().top + elem.offsetHeight / 2
+        x: rect.left + elem.offsetWidth / 2,
+        y: rect.top + elem.offsetHeight / 2
     };
     if (elemCenter.x < 0) return false;
     if (elemCenter.x > (document.documentElement.clientWidth || window.innerWidth)) return false;
