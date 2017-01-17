@@ -2,6 +2,7 @@
  * Proudly created by ohad on 29/12/2016.
  */
 const _         = require('../util/wrapper'),
+      BaseError = require('../log/base.error'),
       expect    = require('chai').expect,
       Factory   = require('./factory'),
       IdleEvent = require('./idle');
@@ -21,10 +22,10 @@ describe('IdleEvent', function () {
         expect(idle.waitTime).to.be.equal(60000);
     });
     it('construction should fail', () => {
-        expect(() => {new IdleEvent()}).to.throw(Error);
-        expect(() => {new IdleEvent({waitTime: '1s'})}).to.throw(Error);
-        expect(() => {new IdleEvent({waitTime: 1.5})}).to.throw(Error);
-        expect(() => {new IdleEvent({waitTime: 10, target: 1})}).to.throw(Error);
+        expect(() => {new IdleEvent()}).to.throw(BaseError);
+        expect(() => {new IdleEvent({waitTime: '1s'})}).to.throw(BaseError);
+        expect(() => {new IdleEvent({waitTime: 1.5})}).to.throw(BaseError);
+        expect(() => {new IdleEvent({waitTime: 10, target: 1})}).to.throw(BaseError);
     });
     it('event fires', (done) => {
         _.on(Factory.eventName(IdleEvent.name()), () => {done()}, id);

@@ -2,7 +2,9 @@
  * Proudly created by ohad on 10/01/2017.
  */
 const Storage = require('../storage/storage'),
-      _       = require('../util/wrapper');
+      _       = require('../util/wrapper'),
+      Logger  = require('./logger'),
+      Level   = require('./logger').Level;
 
 /**
  * @param {string} [message]
@@ -30,6 +32,7 @@ function _baseErrorHandler(event) {
         //noinspection JSUnresolvedVariable
         error = new BaseError(event.message);
     }
+    Logger.log(Level.ERROR, event.message);
     require.ensure('stacktrace-js', function (require) {
         require('stacktrace-js').fromError(error)
                                 .then((stackFrame) => {

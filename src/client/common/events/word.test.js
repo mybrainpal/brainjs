@@ -2,6 +2,7 @@
  * Proudly created by ohad on 08/01/2017.
  */
 const _         = require('../util/wrapper'),
+      BaseError = require('../log/base.error'),
       expect    = require('chai').expect,
       Factory   = require('./factory'),
       WordEvent = require('./word');
@@ -32,13 +33,13 @@ describe('WordEvent', function () {
         expect(wordEvent.waitTime).to.be.equal(2000);
     });
     it('construction should fail', () => {
-        expect(() => {new WordEvent()}).to.throw(Error);
-        expect(() => {new WordEvent({})}).to.throw(Error);
-        expect(() => {new WordEvent({target: '#input', waitTime: '1s'})}).to.throw(Error);
-        expect(() => {new WordEvent({target: '#input', regex: '/\s/'})}).to.throw(Error);
-        expect(() => {new WordEvent({target: '#input', waitTime: 1.5})}).to.throw(Error);
-        expect(() => {new WordEvent({target: 1})}).to.throw(Error);
-        expect(() => {new WordEvent({target: '#input2'})}).to.throw(Error);
+        expect(() => {new WordEvent()}).to.throw(BaseError);
+        expect(() => {new WordEvent({})}).to.throw(BaseError);
+        expect(() => {new WordEvent({target: '#input', waitTime: '1s'})}).to.throw(BaseError);
+        expect(() => {new WordEvent({target: '#input', regex: '/\s/'})}).to.throw(BaseError);
+        expect(() => {new WordEvent({target: '#input', waitTime: 1.5})}).to.throw(BaseError);
+        expect(() => {new WordEvent({target: 1})}).to.throw(BaseError);
+        expect(() => {new WordEvent({target: '#input2'})}).to.throw(BaseError);
     });
     it('fires on idle', (done) => {
         _.on(Factory.eventName(WordEvent.name()), () => {done()}, id, input);

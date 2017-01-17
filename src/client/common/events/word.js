@@ -7,6 +7,9 @@
  * 2) The input is idle for 2 seconds.
  */
 const _         = require('../util/wrapper'),
+      BaseError = require('../log/base.error'),
+      Logger    = require('../log/logger'),
+      Level     = require('../log/logger').Level,
       IdleEvent = require('./idle'),
       Factory   = require('./factory');
 
@@ -42,15 +45,15 @@ class WordEvent {
      *  @property {Object|string|number} [detailOrId] - for triggering.
      */
     constructor(options) {
-        if (!_.isObject(options)) throw new Error('WordEvent: options is invalid.');
+        if (!_.isObject(options)) throw new BaseError('WordEvent: options is invalid.');
         if (Number.isInteger(options.waitTime)) {
             if (options.waitTime > 0) {
                 this.waitTime = options.waitTime;
             } else {
-                throw new Error('WordEvent: waitTime must be positive.');
+                throw new BaseError('WordEvent: waitTime must be positive.');
             }
         } else if (!_.isNil(options.waitTime)) {
-            throw new Error('WordEvent: waitTime must be an integer.');
+            throw new BaseError('WordEvent: waitTime must be an integer.');
         } else {
             this.waitTime = 2000;
         }
@@ -64,25 +67,25 @@ class WordEvent {
         } else if (_.isNil(options.regex)) {
             this.regex = /^[^\s]+\s$/;
         } else {
-            throw new Error('WordEvent: regex must be a RegExp.');
+            throw new BaseError('WordEvent: regex must be a RegExp.');
         }
         if (this.enforceRegex && _.isNil(this.regex)) {
-            throw new Error('WordEvent: regex must exist when enforceRegex is true.');
+            throw new BaseError('WordEvent: regex must exist when enforceRegex is true.');
         }
         if (options.target) {
             this.target = _.isString(options.target) ? document.querySelector(options.target) :
                           options.target;
             if (!(this.target instanceof EventTarget)) {
-                throw new Error('WordEvent: could not find target at ' + options.target);
+                throw new BaseError('WordEvent: could not find target at ' + options.target);
             }
         } else {
-            throw new Error('WordEvent: target is missing.');
+            throw new BaseError('WordEvent: target is missing.');
         }
         if (_.isObject(options.detailOrId) || _.isNumber(options.detailOrId) ||
             _.isString(options.detailOrId)) {
             this.detailOrId = options.detailOrId;
         } else if (!_.isNil(options.detailOrId)) {
-            throw new Error('IdleEvent: detailOrId is not an object.');
+            throw new BaseError('WordEvent: detailOrId is not an object.');
         }
         this._init();
     }
@@ -173,6 +176,8 @@ class WordEvent {
         if (this.idleEvent) this.idleEvent.stop();
         this.fired = true;
         _.trigger(Factory.eventName(WordEvent.name()), this.detailOrId, this.target);
+        Logger.log(Level.INFO, `${Factory.eventName(WordEvent.name())} triggered${_.isNil(
+            this.detailOrId) ? '' : ' for ' + this.detailOrId}.`);
         return true;
     }
 }

@@ -3,8 +3,11 @@
  *
  * An event that's fired after the user had been idle.
  */
-const _       = require('../util/wrapper'),
-      Factory = require('./factory');
+const _         = require('../util/wrapper'),
+      Logger    = require('../log/logger'),
+      Level     = require('../log/logger').Level,
+      BaseError = require('../log/base.error'),
+      Factory   = require('./factory');
 
 class IdleEvent {
     /**
@@ -21,15 +24,15 @@ class IdleEvent {
      *  @property {Object|string|number} [detailOrId] - for triggering.
      */
     constructor(options) {
-        if (!_.isObject(options)) throw new Error('IdleEvent: options is invalid.');
+        if (!_.isObject(options)) throw new BaseError('IdleEvent: options is invalid.');
         if (Number.isInteger(options.waitTime)) {
             if (options.waitTime > 0) {
                 this.waitTime = options.waitTime;
             } else {
-                throw new Error('IdleEvent: waitTime must be positive.');
+                throw new BaseError('IdleEvent: waitTime must be positive.');
             }
         } else if (!_.isNil(options.waitTime)) {
-            throw new Error('IdleEvent: waitTime must be an integer.');
+            throw new BaseError('IdleEvent: waitTime must be an integer.');
         } else {
             this.waitTime = 60000;
         }
@@ -38,7 +41,7 @@ class IdleEvent {
             this.target = _.isString(options.target) ? document.querySelector(options.target) :
                           options.target;
             if (!(this.target instanceof EventTarget)) {
-                throw new Error('IdleEvent: could not find target at ' + options.target);
+                throw new BaseError('IdleEvent: could not find target at ' + options.target);
             }
         } else {
             this.target = document;
@@ -47,7 +50,7 @@ class IdleEvent {
             _.isString(options.detailOrId)) {
             this.detailOrId = options.detailOrId;
         } else if (!_.isNil(options.detailOrId)) {
-            throw new Error('IdleEvent: detailOrId is not an object.');
+            throw new BaseError('IdleEvent: detailOrId is not an object.');
         }
         this._init();
     }
@@ -81,6 +84,8 @@ class IdleEvent {
         const that = this; // To use `this` in the setTimeout handler.
         this.timer = setTimeout(function () {
             _.trigger(Factory.eventName(IdleEvent.name()), that.detailOrId, that.target);
+            Logger.log(Level.INFO, `${Factory.eventName(IdleEvent.name())} triggered${_.isNil(
+                that.detailOrId) ? '' : ' for ' + that.detailOrId}.`);
             if (_.has(that, 'fireOnce') && !that.fireOnce) that.reset();
         }, this.waitTime);
         return this;
