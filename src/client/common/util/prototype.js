@@ -94,7 +94,7 @@ exports.get = function (obj, props) {
     if (typeof obj !== 'object') {
         throw new Error('Prototype:set - obj is not an object.');
     }
-    if (_.isString(props) && obj.hasOwnProperty(props)) return obj[props];
+    if (_.isString(props) && !_.isNil(obj[props])) return obj[props];
     if (_.isString(props)) props = props.split('.');
     if (Array.isArray(props)) {
         if (props.length === 0) {
@@ -103,7 +103,7 @@ exports.get = function (obj, props) {
         val = obj;
         for (i = 0; i < props.length; i++) {
             if (_.isString(props[i])) {
-                if (val.hasOwnProperty(props[i])) {
+                if (!_.isNil(val[props[i]])) {
                     val = val[props[i]]
                 } else {
                     return;
@@ -142,7 +142,7 @@ exports.set = function (obj, props, val) {
         prop = obj;
         for (i = 0; i < props.length - 1; i++) {
             if (_.isString(props[i])) {
-                if (!prop.hasOwnProperty(props[i]) || typeof prop[props[i]] !== 'object') {
+                if (_.isNil(prop[props[i]]) || typeof prop[props[i]] !== 'object') {
                     prop[props[i]] = {};
                 }
                 prop = prop[props[i]];
@@ -161,13 +161,12 @@ exports.set = function (obj, props, val) {
 };
 
 /**
- * Interface for Object.Property.hasOwnProperty.
  * @param obj
  * @param prop
- * @returns {boolean|*}
+ * @returns {boolean} whether obj[prop] is not nil
  */
 exports.has = function (obj, prop) {
-    return obj.hasOwnProperty(prop);
+    return !_.isNil(obj[prop]);
 };
 
 /**

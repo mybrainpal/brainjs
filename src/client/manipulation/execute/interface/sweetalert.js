@@ -1,10 +1,12 @@
 /**
  * Proudly created by ohad on 22/12/2016.
  */
-let _            = require('../../../common/util/wrapper'),
+let _         = require('../../../common/util/wrapper'),
+    Logger    = require('../../../common/log/logger'),
+    Level     = require('../../../common/log/logger').Level,
     BaseError = require('../../../common/log/base.error'),
-    Master = require('../master');
-exports.name = 'sweetalert';
+    Master    = require('../master');
+exports.name  = 'sweetalert';
 Master.register(exports);
 /**
  * Creates a modal using sweet alerts 2, the modal is triggered by an external event.

@@ -2,10 +2,12 @@
  * Proudly created by ohad on 25/12/2016.
  */
 const _         = require('../../../../common/util/wrapper'),
+      Logger    = require('../../../../common/log/logger'),
+      Level     = require('../../../../common/log/logger').Level,
       BaseError = require('../../../../common/log/base.error.js'),
       Interface = require('./interface'),
       css       = require('./gallery.scss');
-const styles = css.locals;
+const styles    = css.locals;
 
 /**
  * Creates a gallery and injects it into options.container.

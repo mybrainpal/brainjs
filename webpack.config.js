@@ -59,7 +59,13 @@ let webpackConfig = {
             'process.env': {
                 NODE_ENV: JSON.stringify(process.env.NODE_ENV)
             }
-        })]
+        }),
+        function () {
+            this.plugin('watch-run', function (watching, callback) {
+                console.log(process.env.NODE_ENV + ' compile at ' + new Date());
+                callback();
+            })
+        }]
 };
 
 if (isProduction) {
@@ -74,12 +80,6 @@ if (isProduction) {
     webpackConfig.plugins.push(new webpack.optimize.DedupePlugin());
     webpackConfig.output.chunkFilename = '[chunkhash].js';
 } else {
-    webpackConfig.plugins.push(function () {
-        this.plugin('watch-run', function (watching, callback) {
-            console.log('Development compile at ' + new Date());
-            callback();
-        })
-    });
     webpackConfig.headers = {'Access-Control-Allow-Origin': '*'};
     webpackConfig.output.chunkFilename = '[id].js';
     webpackConfig.output.publicPath    = 'http://brainpal.dev/';

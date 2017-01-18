@@ -1,10 +1,12 @@
 /**
  * Proudly created by ohad on 19/12/2016.
  */
-let _      = require('./../../../common/util/wrapper'),
+let _         = require('./../../../common/util/wrapper'),
+    Logger    = require('../../../common/log/logger'),
+    Level     = require('../../../common/log/logger').Level,
     BaseError = require('../../../common/log/base.error'),
-    Master = require('../master');
-exports.name = 'style';
+    Master    = require('../master');
+exports.name  = 'style';
 Master.register(exports);
 /**
  * Changes elements style, because we all have a little beauty hiding inside!

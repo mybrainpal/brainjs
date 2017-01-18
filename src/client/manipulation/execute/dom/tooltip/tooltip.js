@@ -2,6 +2,8 @@
  * Proudly created by nevo on 26/12/2016.
  */
 const _         = require('../../../../common/util/wrapper'),
+      Logger = require('../../../../common/log/logger'),
+      Level  = require('../../../../common/log/logger').Level,
       BaseError = require('../../../../common/log/base.error'),
       Master    = require('../../master'),
       Interface = require('./interface'),
@@ -12,8 +14,7 @@ const styles = css.locals;
  * Creates a tooltip and injects it into element.
  * @param {Object} options
  *  @property {string} target - css selector of target.
- *  @property {number} [timer = 5000] - time in ms to hide the tooltip. use a negative number to
- *  disable.
+ *  @property {number} [timer] - time in ms to hide the tooltip.
  *  @property {string} [type = classic] - the type of the tooltip
  *  @property {string} [htmlContent] - the html content of the tooltip
  *  @property {string|number} [id]
@@ -27,9 +28,23 @@ exports.execute = function (options) {
         _.css.load(css);
         _styleLoaded = true;
     }
-    _attachTooltip(options);
-    if (document.querySelector(``)) {
-
+    const tooltip = _attachTooltip(options);
+    if (options.toLog) {
+        if (tooltip) {
+            if (exports.isVisible(tooltip)) {
+                Logger.log(
+                    Level.WARNING,
+                    `Tooltip (id = ${options.id}) for ${options.target} created and it is visible.`);
+            } else {
+                Logger.log(
+                    Level.INFO,
+                    `Tooltip (id = ${options.id}) for ${options.target} created and it is hidden.`);
+            }
+        } else {
+            Logger.log(
+                Level.WARNING,
+                `Tooltip (id = ${options.id}) for ${options.target} was not created.`);
+        }
     }
 };
 
@@ -46,7 +61,7 @@ exports.preconditions = function (options) {
         throw new BaseError('TooltipExecutor: id must be string or a number');
     }
     if (!_.isNil(options.timer) && (!Number.isInteger(options.timer) || options.timer <= 0)) {
-        throw new BaseError('TooltipExecutor: timer must be a positive integer.');
+        throw new BaseError('TooltipExecutor: timer must be nil or a positive integer.');
     }
     if (_.has(options, 'htmlContent') && !_.isString(options.htmlContent)) {
         throw new BaseError('TooltipExecutor: htmlContent must be a string.');
@@ -103,13 +118,27 @@ exports.detachTooltip = function (target) {
 };
 
 /**
+ * @param {Element} tooltip
+ * @returns {boolean} whether the tooltip is visible.
+ */
+exports.isVisible = function (tooltip) {
+    let visibilityTarget = tooltip.querySelector(`[${_targetNextSiblingAttribute}]`);
+    if (!visibilityTarget) {
+        let targetParent = tooltip.querySelector(`[${_targetParentAttribute}]`);
+        visibilityTarget =
+            targetParent.nextElementSibling || targetParent.previousElementSibling;
+    }
+    return _.isVisible(visibilityTarget);
+};
+
+/**
  * Describes the tooltip states
  * @type {{string: string}}
  */
-exports.State = {
-    SHOW: 'SHOW',
-    HIDE: 'HIDE'
-};
+exports.State = Object.freeze({
+                                  SHOW: 'SHOW',
+                                  HIDE: 'HIDE'
+                              });
 
 /**
  * Name prefix for attributes, events and ids.
@@ -146,6 +175,7 @@ exports.targetAttribute = exports.tooltipAttribute + '-target';
 /**
  * Attaches a tooltip to an element
  * @param {Object} options
+ * @returns {Element} the created tooltip.
  * @private
  */
 function _attachTooltip(options) {
@@ -154,49 +184,93 @@ function _attachTooltip(options) {
     let parent  = target.parentNode;
     let tooltip = _tooltipInfo[options.type].buildTypeTemplate(options);
     tooltip.setAttribute('id', exports.tooltipId(options.id));
-    if (_.isNil(options.timer) || options.timer > 0) {
-        tooltip.setAttribute(_timerAttribute, (options.timer || 5000).toString());
+    if (options.timer > 0) {
+        tooltip.setAttribute(_timerAttribute, (options.timer).toString());
     }
     parent.insertBefore(tooltip, target);
     exports.curateTooltip(tooltip, target, options.htmlContent);
-    _attachEvents(tooltip, options.id);
+    _attachEvents(tooltip, options.id, options.toLog);
+    return tooltip;
 }
 
 /**
  * Attaches 'show' and 'hide' events for a tooltip.
  * @param {Element} tooltip
  * @param {string|number} id
+ * @param {boolean} toLog - whether to log state changes.
  */
-function _attachEvents(tooltip, id) {
+function _attachEvents(tooltip, id, toLog) {
     _.on(Master.eventName(Interface.name), (ev) => {
-        if (_.get(ev, 'detail.state')) {
-            const state = _.get(ev, 'detail.state');
+        let state;
+        if (state = _.get(ev, 'detail.state')) {
             if (exports.State[state]) {
-                if (state === exports.State.SHOW) {
-                    tooltip.classList.add(styles.show);
-                } else {
-                    tooltip.classList.remove(styles.show);
-                }
+                _changeState(tooltip, state, id, toLog);
             } else {
                 throw new BaseError('TooltipExecutor: ' + state.toString() + ' is an illegal' +
                                     ' tooltip state.');
             }
         } else {
-            // If state is missing just inverse the current state.
-            if (tooltip.classList.contains(styles.show)) {
-                tooltip.classList.remove(styles.show);
-            } else {
-                tooltip.classList.add(styles.show);
-            }
+            state = tooltip.classList.contains(styles.show) ? exports.State.HIDE :
+                    exports.State.SHOW;
+            _changeState(tooltip, state, id, toLog);
         }
         if (tooltip.hasAttribute(_timerAttribute) && tooltip.classList.contains(styles.show)) {
             const timeToHide = Number.parseInt(tooltip.getAttribute(_timerAttribute));
             if (timeToHide <= 0) throw new BaseError('Tooltip: illegal timer');
             setTimeout(() => {
-                tooltip.classList.remove(styles.show);
+                _changeState(tooltip, exports.State.HIDE, id, toLog);
             }, timeToHide);
         }
     }, id);
+}
+
+/**
+ * Changes that state of tooltip.
+ * @param {Element} tooltip
+ * @param {string} state
+ * @param {string|number} id
+ * @param {boolean} toLog - whether to log state changes.
+ * @private
+ */
+function _changeState(tooltip, state, id, toLog) {
+    if (state === exports.State.SHOW) {
+        tooltip.classList.add(styles.show);
+        if (toLog) _logStateChange(tooltip, state, id);
+    } else {
+        tooltip.classList.remove(styles.show);
+        if (toLog) _logStateChange(tooltip, state, id);
+    }
+}
+
+/**
+ * Logs change in tooltip state
+ * @param {Element} tooltip
+ * @param {string} state
+ * @param {string|number} id
+ * @private
+ */
+function _logStateChange(tooltip, state, id) {
+    if (tooltip.getAttribute(_logTimerIdAttribute)) {
+        clearTimeout(Number.parseInt(tooltip.getAttribute(_logTimerIdAttribute)));
+    }
+    tooltip.setAttribute(_logTimerIdAttribute, setTimeout(() => {
+        const isVisible = exports.isVisible(tooltip);
+        if (state === exports.State.SHOW) {
+            if (isVisible) {
+                Logger.log(Level.INFO, `Tooltip (id = ${id}) exposed.`);
+            } else {
+                Logger.log(Level.WARNING, `Failed to expose tooltip (id = ${id}).`);
+            }
+        } else if (state === exports.State.HIDE) {
+            if (!isVisible) {
+                Logger.log(Level.INFO, `Tooltip (id = ${id}) is hidden.`);
+            } else {
+                Logger.log(Level.WARNING, `Failed to hide tooltip (id = ${id}).`);
+            }
+        }
+        tooltip.removeAttribute(_logTimerIdAttribute);
+        // 50 is used to let animation play.
+    }, 50).toString());
 }
 
 //noinspection HtmlUnknownAttribute
@@ -368,6 +442,13 @@ let _styleLoaded = false;
  * @private
  */
 const _timerAttribute = exports.tooltipAttribute + '-timer';
+
+/**
+ * ID of logging timer.
+ * @type {string}
+ * @private
+ */
+const _logTimerIdAttribute = exports.tooltipAttribute + '-log-timer-id';
 
 /**
  * Marks the element to which one should append the tooltip's target.

@@ -5,11 +5,11 @@ let _        = require('./../../common/util/wrapper'),
     Storage  = require('../storage/storage');
 
 exports.Level = Object.freeze({
-                                  FINE   : {value: 0, name: 'Fine'},
-                                  INFO   : {value: 1, name: 'Info'},
-                                  WARNING: {value: 2, name: 'Warning'},
-                                  ERROR  : {value: 3, name: 'Error'},
-                                  FATAL  : {value: 4, name: 'Fatal'}
+                                  FINE   : {value: 0, name: 'FINE'},
+                                  INFO   : {value: 1, name: 'INFO'},
+                                  WARNING: {value: 2, name: 'WARNING'},
+                                  ERROR  : {value: 3, name: 'ERROR'},
+                                  FATAL  : {value: 4, name: 'FATAL'}
                               });
 
 /**
@@ -19,7 +19,7 @@ exports.Level = Object.freeze({
  */
 exports.log = function (level, message) {
     let subject = {
-        level: level.name.toUpperCase(),
+        level: level.name,
         type : 'log'
     };
     if (_.isString(message)) {

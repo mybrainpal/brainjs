@@ -1,10 +1,12 @@
 /**
  * Proudly created by ohad on 30/12/2016.
  */
-let _            = require('../../../common/util/wrapper'),
+let _         = require('../../../common/util/wrapper'),
+    Logger    = require('../../../common/log/logger'),
+    Level     = require('../../../common/log/logger').Level,
     BaseError = require('../../../common/log/base.error'),
-    Master = require('../master');
-exports.name = 'typer';
+    Master    = require('../master');
+exports.name  = 'typer';
 Master.register(exports);
 /**
  * Creates a typing effect using the magical typer-js library.

@@ -2,6 +2,8 @@
  * Proudly created by ohad on 19/12/2016.
  */
 const _         = require('../../../common/util/wrapper'),
+      Logger = require('../../../common/log/logger'),
+      Level  = require('../../../common/log/logger').Level,
       BaseError = require('../../../common/log/base.error'),
       Master    = require('../master');
 exports.name    = 'form';
@@ -16,6 +18,15 @@ exports.execute = function (options) {
     let target = document.querySelector(options.target);
     if (options.focus) {
         target.focus();
+        if (process.env.NODE_ENV !== 'test') {
+            setTimeout(() => {
+                if (document.activeElement === target) {
+                    Logger.log(Level.INFO, `Focused on ${options.target}`);
+                } else {
+                    Logger.log(Level.WARNING, `Failed to focused on ${options.target}`);
+                }
+            }, 10);
+        }
     }
 };
 

@@ -2,6 +2,8 @@
  * Proudly created by ohad on 18/12/2016.
  */
 const tinysort  = require('tinysort'),
+      Logger    = require('../../../common/log/logger'),
+      Level     = require('../../../common/log/logger').Level,
       BaseError = require('../../../common/log/base.error'),
       Master    = require('../master');
 exports.name    = 'sort';

@@ -25,6 +25,10 @@ describe('Executor', function () {
         expect(() => {Executor.execute('form', {target: '#input'})}).to.not.throw(Error);
         expect(() => {Executor.execute('form', {target: '#input', id: {}})}).to.throw(BaseError);
         expect(() => {Executor.execute('form', {target: '#input', on: {}})}).to.throw(BaseError);
+        expect(() => {Executor.execute('form', {target: '#input', toLog: {}})}).to.throw(BaseError);
+    });
+    it('register fails', () => {
+        expect(() => {Executor.register({})}).to.throw(BaseError);
     });
     it('execute', () => {
         Executor.execute('form', {target: '#input', focus: true});

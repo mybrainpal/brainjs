@@ -2,6 +2,8 @@
  * Proudly created by ohad on 24/12/2016.
  */
 let _         = require('./../../../common/util/wrapper'),
+    Logger    = require('../../../common/log/logger'),
+    Level     = require('../../../common/log/logger').Level,
     BaseError = require('../../../common/log/base.error'),
     Master    = require('../master');
 exports.name  = 'inject';
