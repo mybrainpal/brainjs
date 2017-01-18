@@ -100,7 +100,7 @@ function _createGallery(container, options) {
         if (sources[i].nodeName === 'IMG') {
             const containerRatio = container.clientWidth / container.clientHeight;
             const imgRatio = sources[i].naturalWidth / sources[i].naturalHeight;
-            sources[i].classList.add(containerRatio > imgRatio ? styles.narrow : styles.wide);
+            sources[i].classList.add(containerRatio < imgRatio ? styles.narrow : styles.wide);
             sources[i].removeAttribute('width');
             sources[i].removeAttribute('height');
             sources[i].removeAttribute('border');

@@ -2,16 +2,15 @@
 const webpack = require('webpack'),
       path    = require('path');
 
-const isProduction = process.env.NODE_ENV === 'production';
 let webpackConfig = {
     context: path.join(__dirname, './src/client'),
     entry  : {
         brain: './index.js'
     },
     output : {
-        path         : path.join(__dirname, 'dist'),
-        filename     : '[name].js',
-        pathinfo     : true
+        path    : path.join(__dirname, 'dist'),
+        filename: '[name].js',
+        pathinfo: true
     },
     resolve: {
         extensions: ['.js', '.jsx', '.scss', '.css', '']
@@ -43,10 +42,6 @@ let webpackConfig = {
                     'sass?sourceMap&localIdentName=[local]--[hash:base64:5]'
                 ],
                 exclude: /node_modules/
-            },
-            {
-                test  : /\.(png|svg|woff|jpg)$/,
-                loader: 'url-loader?limit=10000&name=[path][name].[ext]'
             }
         ]
     },
@@ -68,7 +63,7 @@ let webpackConfig = {
         }]
 };
 
-if (isProduction) {
+if (process.env.NODE_ENV === 'production') {
     webpackConfig.plugins.push(new webpack.optimize.UglifyJsPlugin({
         // Preserves the source map comment in minified code.
         sourceMap: true,
@@ -79,10 +74,18 @@ if (isProduction) {
     webpackConfig.plugins.push(new webpack.optimize.MinChunkSizePlugin({minChunkSize: 50000}));
     webpackConfig.plugins.push(new webpack.optimize.DedupePlugin());
     webpackConfig.output.chunkFilename = '[chunkhash].js';
-} else {
-    webpackConfig.headers = {'Access-Control-Allow-Origin': '*'};
+    webpackConfig.module.loaders.push({
+                                          test  : /\.(png|svg|woff|jpg|jpeg|gif)$/,
+                                          loader: 'url-loader?limit=10000&name=[path][name].[ext]'
+                                      });
+} else if (process.env.NODE_ENV === 'test') {
+    webpackConfig.headers              = {'Access-Control-Allow-Origin': '*'};
     webpackConfig.output.chunkFilename = '[id].js';
     webpackConfig.output.publicPath    = 'http://brainpal.dev/';
+    webpackConfig.module.loaders.push({
+                                          test  : /\.(png|svg|woff|jpg|jpeg|gif)$/,
+                                          loader: 'url-loader?limit=10000000&name=[path][name].[ext]'
+                                      });
 }
 
 module.exports = webpackConfig;

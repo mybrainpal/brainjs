@@ -65,7 +65,6 @@
 .component.fullwidth li img.wide {
     min-height : 100%;
     max-height : none;
-    max-width  : none;
 }
 
 .component li img.narrow {
@@ -75,7 +74,6 @@
 .component.fullwidth li img.narrow {
     min-width  : 100%;
     max-width  : none;
-    max-height : none;
 }
 
 /* 4 classes: navInLeft, navInRight, navOutLeft, navOutRight */

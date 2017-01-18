@@ -12,7 +12,7 @@ describe('GalleryExecutor', function () {
     this.timeout(3000);
     let div, imgNarrow, imgWide, container, smallContainer, options, animationSpec;
     before(() => {
-        div  = document.createElement('div');
+        div           = document.createElement('div');
         div.setAttribute('id', 'div');
         imgNarrow      = document.createElement('img');
         imgWide        = document.createElement('img');
@@ -34,17 +34,9 @@ describe('GalleryExecutor', function () {
         div.appendChild(imgWide);
     });
     afterEach(() => {
-        let i;
-        for (i = 0; i < container.children.length; i++) {
-            container.children[i].parentNode.removeChild(container.children[i]);
-        }
-        for (i = 0; i < smallContainer.children.length; i++) {
-            smallContainer.children[i].parentNode.removeChild(smallContainer.children[i]);
-        }
-        document.querySelectorAll('style[' + _.css.identifyingAttribute + ']')
-                .forEach(function (styleElement) {
-                    styleElement.parentNode.removeChild(styleElement);
-                });
+        document.querySelectorAll(`.${styles.component}`).forEach((component) => {
+            component.parentNode.removeChild(component);
+        })
     });
     after(() => {
         div.parentNode.removeChild(div);
@@ -106,14 +98,17 @@ describe('GalleryExecutor', function () {
         GalleryExecutor.execute(_.deepExtend({}, options, {id: 2, container: '#small'}));
         expect(document.querySelectorAll(`.${styles.component}`)).to.have.length(2);
     });
-    it.skip('narrow and wide', () => {
-        // Failed to load images, and so skipped the test.
-        require("file-loader?name=img/[name].[ext]?!./testdata/sad.jpg");
-        require("file-loader?name=img/[name].[ext]?!./testdata/diving.jpg");
+    it('narrow and wide', () => {
+        imgNarrow.src = require("./testdata/sad.jpg");
+        imgWide.src   = require("./testdata/diving.jpg");
         GalleryExecutor.execute(_.deepExtend({}, options, {container: '#small'}));
-        expect(smallContainer.querySelector(`img[${styles.narrow}]`).clientWidth).to.equal(100);
-        expect(smallContainer.querySelector(`img[${styles.narrow}]`).clientHeight).to.be.above(100);
-        expect(smallContainer.querySelector(`img[${styles.wide}]`).clientWidth).to.above(100);
-        expect(smallContainer.querySelector(`img[${styles.wide}]`).clientHeight).to.be.equal(100);
+        expect(smallContainer.querySelector(`img.${styles.narrow}`).clientWidth).to.be.at.least(
+            smallContainer.clientWidth);
+        expect(smallContainer.querySelector(`img.${styles.narrow}`).clientHeight).to.equal(
+            smallContainer.clientHeight);
+        expect(smallContainer.querySelector(`img.${styles.wide}`).clientWidth).to.equal(
+            smallContainer.clientWidth);
+        expect(smallContainer.querySelector(`img.${styles.wide}`).clientHeight).to.be.at.least(
+            smallContainer.clientHeight);
     });
 });

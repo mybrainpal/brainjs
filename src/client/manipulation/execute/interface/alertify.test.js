@@ -27,6 +27,6 @@ describe('AlertifyExecutor', function () {
                                .contains('ajs-visible')).to.be.false;
                 done();
             }, 20);
-        }, 20);
+        }, 40);
     });
 });
