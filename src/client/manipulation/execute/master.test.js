@@ -10,7 +10,7 @@ describe('Executor', function () {
     this.timeout(100);
     let form, input;
     before(() => {
-        Executor.register('form', require('./dom/form'));
+        Executor.register(require('./dom/form'));
         form = document.createElement('form');
         form.setAttribute('id', 'form');
         document.querySelector('body').appendChild(form);

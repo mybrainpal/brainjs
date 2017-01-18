@@ -30,6 +30,9 @@ exports.execute = function (options) {
     } else {
         target.innerHTML = html;
     }
+    if (options.toLog) {
+        Logger.log(Level.INFO, 'Injected html to ' + options.target);
+    }
 };
 
 /**

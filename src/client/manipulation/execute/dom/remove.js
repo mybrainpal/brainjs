@@ -17,6 +17,9 @@ Master.register(exports);
 exports.execute = function (options) {
     document.querySelectorAll(options.targets)
             .forEach((elem) => { if (elem.parentNode) elem.parentNode.removeChild(elem) });
+    if (options.toLog) {
+        Logger.log(Level.INFO, 'Removes all ' + options.targets);
+    }
 };
 
 /**

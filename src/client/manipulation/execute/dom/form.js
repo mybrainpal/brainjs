@@ -18,7 +18,7 @@ exports.execute = function (options) {
     let target = document.querySelector(options.target);
     if (options.focus) {
         target.focus();
-        if (process.env.NODE_ENV !== 'test') {
+        if (options.toLog) {
             setTimeout(() => {
                 if (document.activeElement === target) {
                     Logger.log(Level.INFO, `Focused on ${options.target}`);

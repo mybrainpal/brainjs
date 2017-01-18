@@ -16,6 +16,9 @@ Master.register(exports);
  */
 exports.execute = function (options) {
     tinysort(options.targets, options);
+    if (options.toLog) {
+        Logger.log(Level.INFO, 'Sorted ' + options.targets);
+    }
 };
 
 /**

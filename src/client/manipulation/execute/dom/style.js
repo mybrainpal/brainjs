@@ -15,7 +15,16 @@ Master.register(exports);
  *  content of a style module.
  */
 exports.execute = function (options) {
-    _.css.load(options.css);
+    const newStylesheet = _.css.load(options.css);
+    if (options.toLog) {
+        if (newStylesheet) {
+            Logger.log(Level.INFO,
+                       `Added stylesheet (${newStylesheet.textContent.substring(0, 10)})`);
+        } else {
+            Logger.log(Level.WARNING,
+                       `Failed to add stylesheet (${options.css.toString().substring(0, 10)})`);
+        }
+    }
 };
 
 /**

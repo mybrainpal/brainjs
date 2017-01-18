@@ -19,6 +19,16 @@ exports.execute = function (options) {
         if (!_styleLoaded) _.css.load(require('sweetalert2/dist/sweetalert2.css'));
         _styleLoaded = true;
         options.swalFn(require('sweetalert2'));
+        if (options.toLog) {
+            setTimeout(() => {
+                const suffix = _.isNil(options.id) ? '' : ` (id = ${options.id}`;
+                if (_.isVisible(document.querySelector('div.swal2-modal.swal2-show'))) {
+                    Logger.log(Level.INFO, 'Fired sweetalert2' + suffix);
+                } else {
+                    Logger.log(Level.WARNING, 'Sweetalert2 was not fired' + suffix);
+                }
+            }, 20)
+        }
     });
 };
 

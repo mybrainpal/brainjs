@@ -106,13 +106,14 @@ describe('GalleryExecutor', function () {
         GalleryExecutor.execute(_.deepExtend({}, options, {id: 2, container: '#small'}));
         expect(document.querySelectorAll(`.${styles.component}`)).to.have.length(2);
     });
-    // it('narrow and wide', () => {
-    //     require("file-loader?name=img/[name].[ext]?!./testdata/sad.jpg");
-    //     require("file-loader?name=img/[name].[ext]?!./testdata/diving.jpg");
-    //     GalleryExecutor.execute([smallContainer], options);
-    //     expect(smallContainer.querySelector('img[narrow]').clientWidth).to.equal(100);
-    //     expect(smallContainer.querySelector('img[narrow]').clientHeight).to.be.above(100);
-    //     expect(smallContainer.querySelector('img[wide]').clientWidth).to.above(100);
-    //     expect(smallContainer.querySelector('img[wide]').clientHeight).to.be.equal(100);
-    // });
+    it.skip('narrow and wide', () => {
+        // Failed to load images, and so skipped the test.
+        require("file-loader?name=img/[name].[ext]?!./testdata/sad.jpg");
+        require("file-loader?name=img/[name].[ext]?!./testdata/diving.jpg");
+        GalleryExecutor.execute(_.deepExtend({}, options, {container: '#small'}));
+        expect(smallContainer.querySelector(`img[${styles.narrow}]`).clientWidth).to.equal(100);
+        expect(smallContainer.querySelector(`img[${styles.narrow}]`).clientHeight).to.be.above(100);
+        expect(smallContainer.querySelector(`img[${styles.wide}]`).clientWidth).to.above(100);
+        expect(smallContainer.querySelector(`img[${styles.wide}]`).clientHeight).to.be.equal(100);
+    });
 });

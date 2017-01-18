@@ -16,7 +16,7 @@ exports.register = function (module) {
     if (module.name) {
         _executorByName[module.name] = module;
     } else {
-        throw new BaseError('Executor: module is missing a name, bad parenthood?');
+        throw new BaseError('Executor: module is missing a name, can we call it brainpal? :-)');
     }
 };
 

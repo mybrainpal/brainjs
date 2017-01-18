@@ -1,14 +1,19 @@
 /**
  * Proudly created by ohad on 25/12/2016.
  */
-let _            = require('./../../../common/util/wrapper'),
-    BaseError    = require('../../../common/log/base.error'),
-    expect       = require('chai').expect,
-    MoveExecutor = require('./move');
+let _               = require('./../../../common/util/wrapper'),
+    Storage         = require('../../../common/storage/storage'),
+    InMemoryStorage = require('../../../common/storage/in-memory.storage'),
+    Level           = require('../../../common/log/logger').Level,
+    BaseError       = require('../../../common/log/base.error'),
+    expect          = require('chai').expect,
+    MoveExecutor    = require('./move'),
+    Master          = require('../master');
 
 describe('MoveExecutor', function () {
     let div, p1, p2, a, span, ul, li;
     before(() => {
+        Storage.set(Storage.names.IN_MEMORY);
         div = document.createElement('div');
         div.setAttribute('id', 'div');
         document.querySelector('body').appendChild(div);
@@ -32,9 +37,11 @@ describe('MoveExecutor', function () {
         a             = document.createElement('a');
         a.textContent = 'a';
         p2.appendChild(a);
+        InMemoryStorage.flush();
     });
     afterEach(() => {
         document.querySelectorAll('a').forEach((elem) => {elem.parentNode.removeChild(elem)});
+        InMemoryStorage.flush();
     });
     after(() => {
         div.parentNode.removeChild(div);
@@ -43,6 +50,11 @@ describe('MoveExecutor', function () {
         MoveExecutor.execute({target: '#div a', parentSelector: '#div>.first'});
         expect(a.parentNode).to.be.equal(p1);
         expect(a.previousSibling).to.be.equal(span);
+    });
+    it('move logged', () => {
+        Master.execute(MoveExecutor.name,
+                       {target: '#div a', parentSelector: '#div>.first', toLog: true});
+        expect(InMemoryStorage.storage[0].level).to.equal(Level.INFO.name);
     });
     it('copy to another parent', () => {
         MoveExecutor.execute({target: '#div a', parentSelector: '#div>.first', copy: true});

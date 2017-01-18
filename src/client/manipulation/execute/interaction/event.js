@@ -42,9 +42,11 @@ exports.execute = function (options) {
             if (listener.target) {
                 target = document.querySelector(listener.target);
                 if (_.isNil(target)) {
-                    Logger.log(Level.ERROR,
-                               'EventExecutor: count not find listener target at ' +
-                               listener.target);
+                    if (options.toLog) {
+                        Logger.log(Level.WARNING,
+                                   'EventExecutor: count not find listener target at ' +
+                                   listener.target);
+                    }
                     return;
                 }
             }
@@ -122,8 +124,11 @@ function _doFn(options) {
         if (options.trigger[i].target) {
             target = document.querySelector(options.trigger[i].target);
             if (_.isNil(target)) {
-                throw new BaseError('EventExecutor: count not find trigger target at ' +
-                                    options.trigger[i].target);
+                if (options.toLog) {
+                    Logger.log(Level.WARNING, 'EventExecutor: count not find trigger target at ' +
+                                              options.trigger[i].target);
+                }
+                continue;
             }
         }
         _.trigger(options.trigger[i].event, options.trigger[i].detailOrId, target);
@@ -134,5 +139,12 @@ function _doFn(options) {
     }
     for (let i = 0; i < options.create; i++) {
         EventFactory.create(options.create[i].event, options.create[i].options || {});
+    }
+    if (options.toLog) {
+        let did = [];
+        if (options.callback) did.push('callback');
+        if (options.trigger.length) did.push(`triggered (${JSON.stringify(options.trigger)})`);
+        if (options.create.length) did.push(`created (${JSON.stringify(options.create)})`);
+        Logger.log(Level.INFO, `Finished _doFn for ${did.join(', ')}`);
     }
 }

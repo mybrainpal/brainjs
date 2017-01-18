@@ -19,6 +19,26 @@ exports.execute = function (options) {
         if (!_styleLoaded) _.css.load(require('typer-js/typer.css'));
         _styleLoaded = true;
         options.typerFn(require('./typer-js'));
+        if (options.toLog) {
+            const suffix = _.isNil(options.id) ? '' : ` (id = ${options.id}`;
+            Logger.log(Level.INFO, 'Typer started' + suffix);
+            setTimeout(() => {
+                let allVisible     = true;
+                let notVisibleText = '';
+                document.querySelectorAll('[data-typer-child]').forEach((elem) => {
+                    if (!_.isVisible(elem)) {
+                        allVisible     = false;
+                        notVisibleText = elem.textContent;
+                    }
+                });
+                if (allVisible) {
+                    Logger.log(Level.INFO, 'All typer child elements are visible.');
+                } else {
+                    Logger.log(Level.WARNING, 'Some typer child elements are not visible. For' +
+                                              ' example: ' + notVisibleText.substring(0, 10));
+                }
+            }, 200);
+        }
     });
 };
 

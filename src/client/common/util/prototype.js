@@ -74,7 +74,7 @@ exports.isEmpty = function (obj) {
     // Note that this doesn't handle
     // toString and valueOf enumeration bugs in IE < 9
     for (let prop in obj) {
-        if (_.has(obj, prop)) return false;
+        if (obj.hasOwnProperty(prop)) return false;
     }
 
     return true;
