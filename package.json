@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "./node_modules/.bin/karma start",
-    "start": "webpack --progress --colors"
+    "start": "webpack --progress --colors",
+    "heroku-postbuild": "webpack --config ./webpack.config.js --progress"
   },
   "repository": {
     "type": "git",
@@ -50,6 +51,5 @@
     "sass-loader": "^4.1.1",
     "url-loader": "^0.5.7",
     "webpack": "^1.14.0"
-  },
-  "heroku-postbuild": "webpack --config ./webpack.config.js --progress"
+  }
 }
