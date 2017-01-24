@@ -51,5 +51,5 @@
     "url-loader": "^0.5.7",
     "webpack": "^1.14.0"
   },
-  "heroku-postbuild": "webpack --config ./webpack.config.js"
+  "heroku-postbuild": "webpack --config ./webpack.config.js --progress"
 }
