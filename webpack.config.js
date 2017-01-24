@@ -2,6 +2,8 @@
 const webpack = require('webpack'),
       path    = require('path');
 
+if (!process.env.NODE_ENV) process.env.NODE_ENV = 'development';
+
 let webpackConfig = {
     context: path.join(__dirname, './src/client'),
     entry  : {
@@ -78,6 +80,7 @@ if (process.env.NODE_ENV === 'production') {
                                           test  : /\.(png|svg|woff|jpg|jpeg|gif)$/,
                                           loader: 'url-loader?limit=10000&name=[path][name].[ext]'
                                       });
+  webpackConfig.output.publicPath = 'http://cdn.brainpal.io.herokudns.com';
 } else if (process.env.NODE_ENV === 'test') {
     webpackConfig.headers              = {'Access-Control-Allow-Origin': '*'};
     webpackConfig.output.chunkFilename = '[id].js';

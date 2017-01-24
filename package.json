@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "./node_modules/.bin/karma start",
-    "start": "NODE_ENV=development && webpack --progress --colors"
+    "start": "webpack --progress --colors"
   },
   "repository": {
     "type": "git",
