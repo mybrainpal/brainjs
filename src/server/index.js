@@ -11,6 +11,10 @@ app.get('/', function (request, response) {
   response.send(`console.log('See you at BrainPal.io ;)')`);
 });
 
+app.get('/a', function (request, response) {
+  response.send(`a neshama`);
+});
+
 app.listen(app.get('port'), function () {
   console.log('BrainPal is running on port', app.get('port'));
 });
