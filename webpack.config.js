@@ -12,7 +12,7 @@ let webpackConfig = {
   output : {
     path         : path.join(__dirname, 'dist'),
     publicPath   : 'http://brainpal.dev/',
-    filename     : '[name].brain.js',
+    filename     : '[name].js',
     chunkFilename: '[id].[chunkhash].js',
     pathinfo     : true
   },
