@@ -13,7 +13,7 @@ const _                = require('../common/util/wrapper'),
       StyleExecutor    = require('../manipulation/execute/dom/style'),
       EventExecutor    = require('../manipulation/execute/interaction/event'),
       InjectExecutor   = require('../manipulation/execute/dom/inject'),
-      TooltipExecutor  = require('../manipulation/execute/dom/tooltip/tooltip'),
+      TooltipInterface = require('../manipulation/execute/dom/tooltip/interface'),
       AlertifyExecutor = require('../manipulation/execute/interface/alertify'),
       TyperExecutor    = require('../manipulation/execute/interface/typer'),
       SwalExecutor     = require('../manipulation/execute/interface/sweetalert');
@@ -155,7 +155,7 @@ const configuration    = {
                 }
               },
               {
-                name   : TooltipExecutor.name,
+                name   : TooltipInterface.name,
                 options: {
                   type       : 'line',
                   target     : 'input.brainpal',
@@ -272,8 +272,8 @@ const configuration    = {
                     detailOrId: 2
                   },
                   trigger: {
-                    event     : Executor.eventName(TooltipExecutor.name),
-                    detailOrId: {state: TooltipExecutor.State.SHOW}
+                    event     : Executor.eventName(TooltipInterface.name),
+                    detailOrId: {state: TooltipInterface.State.SHOW}
                   }
                 }
               }
