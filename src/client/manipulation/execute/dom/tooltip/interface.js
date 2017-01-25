@@ -9,11 +9,11 @@ Master.register(exports);
  * @param {Object} options
  */
 exports.execute = function (options) {
-    require.ensure('./tooltip', function (require) {
-        const impl = require('./tooltip');
-        impl.preconditions(options);
-        impl.execute(options);
-    });
+  require.ensure('./tooltip', function (require) {
+    const impl = require('./tooltip');
+    impl.preconditions(options);
+    impl.execute(options);
+  });
 };
 
 /**

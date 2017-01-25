@@ -13,27 +13,27 @@ exports.identifyingAttribute = 'data-brainpal-style';
  * @returns {Element} the created style element.
  */
 exports.load = function (css) {
-    let styleElement  = document.createElement('style'),
-        entry         = document.getElementsByTagName('script')[0];
-    styleElement.type = 'text/css';
-    if (!exports.loadable(css)) throw Error('StyleUtil: css is of invalid type.');
-    if (_.isString(css)) {
-        styleElement.textContent = css;
-    } else {
-        styleElement.textContent = css[css.length - 1][1];
-    }
-    styleElement.setAttribute(exports.identifyingAttribute, 'true');
-    entry.parentNode.insertBefore(styleElement, entry);
-    return styleElement;
+  let styleElement  = document.createElement('style'),
+      entry         = document.getElementsByTagName('script')[0];
+  styleElement.type = 'text/css';
+  if (!exports.loadable(css)) throw Error('StyleUtil: css is of invalid type.');
+  if (_.isString(css)) {
+    styleElement.textContent = css;
+  } else {
+    styleElement.textContent = css[css.length - 1][1];
+  }
+  styleElement.setAttribute(exports.identifyingAttribute, 'true');
+  entry.parentNode.insertBefore(styleElement, entry);
+  return styleElement;
 };
 
 /**
  * @param {Object|string} css - css text or the object provided by using require on css files.
  */
 exports.loadable = function (css) {
-    if (_.isString(css)) return true;
-    return Array.isArray(css) && css.length && Array.isArray(css[css.length - 1]) &&
-           css[css.length - 1].length === 4 &&
-           _.isString(css[css.length - 1][1]);
+  if (_.isString(css)) return true;
+  return Array.isArray(css) && css.length && Array.isArray(css[css.length - 1]) &&
+         css[css.length - 1].length === 4 &&
+         _.isString(css[css.length - 1][1]);
 
 };

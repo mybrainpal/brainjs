@@ -15,34 +15,34 @@ let _         = require('./../common/util/wrapper'),
  *  @property {Object|Object[]} [subjectOptions] - options for {@link Collector#collect}
  */
 exports.experiment = function (experiment, options) {
-    let subjectOptions, i;
-    options = options || {};
-    if (options.subjectOptions && Array.isArray(options.subjectOptions)) {
-        for (i = 0; i < options.subjectOptions.length; i++) {
-            exports.experiment(experiment, {subjectOptions: options.subjectOptions[i]});
-        }
-        return;
+  let subjectOptions, i;
+  options = options || {};
+  if (options.subjectOptions && Array.isArray(options.subjectOptions)) {
+    for (i = 0; i < options.subjectOptions.length; i++) {
+      exports.experiment(experiment, {subjectOptions: options.subjectOptions[i]});
     }
-    subjectOptions = options.subjectOptions || {};
-    subjectOptions = _.deepExtend({experiment: experiment}, subjectOptions);
-    if (subjectOptions.anchor) {
-        Collector.collect(subjectOptions);
+    return;
+  }
+  subjectOptions = options.subjectOptions || {};
+  subjectOptions = _.deepExtend({experiment: experiment}, subjectOptions);
+  if (subjectOptions.anchor) {
+    Collector.collect(subjectOptions);
+  }
+  let noAnchor = _.deepExtend({}, subjectOptions);
+  delete noAnchor.anchor;
+  Collector.collect(noAnchor);
+  for (i = 0; i < experiment.clientGroups.length; i++) {
+    let groupSubjectOptions = _.deepExtend({experimentGroup: experiment.clientGroups[i]},
+                                           subjectOptions);
+    if (groupSubjectOptions.anchor) {
+      Collector.collect(groupSubjectOptions);
     }
-    let noAnchor = _.deepExtend({}, subjectOptions);
+    noAnchor = _.deepExtend({}, groupSubjectOptions);
     delete noAnchor.anchor;
     Collector.collect(noAnchor);
-    for (i = 0; i < experiment.clientGroups.length; i++) {
-        let groupSubjectOptions = _.deepExtend({experimentGroup: experiment.clientGroups[i]},
-                                               subjectOptions);
-        if (groupSubjectOptions.anchor) {
-            Collector.collect(groupSubjectOptions);
-        }
-        noAnchor = _.deepExtend({}, groupSubjectOptions);
-        delete noAnchor.anchor;
-        Collector.collect(noAnchor);
-        for (let j = 0; j < experiment.clientGroups[i].executors.length; j++) {
-            Executor.execute(experiment.clientGroups[i].executors[j].name,
-                             experiment.clientGroups[i].executors[j].options);
-        }
+    for (let j = 0; j < experiment.clientGroups[i].executors.length; j++) {
+      Executor.execute(experiment.clientGroups[i].executors[j].name,
+                       experiment.clientGroups[i].executors[j].options);
     }
+  }
 };

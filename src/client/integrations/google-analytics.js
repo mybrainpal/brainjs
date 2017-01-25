@@ -17,36 +17,36 @@
  *  @property {string} [trackingId=UA-88758826-1]
  */
 exports.init = function (options) {
-    (function (window, document, scriptTagName, src, name, gaScript, firstScript) {
-        window['GoogleAnalyticsObject'] = name;
-        window[name]                    = window[name] || function () {
-                (window[name].q = window[name].q || []).push(arguments)
-            };
-        window[name].l                  = 1 * new Date();
-        gaScript                        = document.createElement(scriptTagName);
-        firstScript                     = document.getElementsByTagName(scriptTagName)[0];
-        gaScript.async                  = 1;
-        gaScript.src                    = src;
-        firstScript.addEventListener('onload', _onload);
-        firstScript.parentNode.insertBefore(gaScript, firstScript);
-    })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+  (function (window, document, scriptTagName, src, name, gaScript, firstScript) {
+    window['GoogleAnalyticsObject'] = name;
+    window[name]                    = window[name] || function () {
+        (window[name].q = window[name].q || []).push(arguments)
+      };
+    window[name].l                  = 1 * new Date();
+    gaScript                        = document.createElement(scriptTagName);
+    firstScript                     = document.getElementsByTagName(scriptTagName)[0];
+    gaScript.async                  = 1;
+    gaScript.src                    = src;
+    firstScript.addEventListener('onload', _onload);
+    firstScript.parentNode.insertBefore(gaScript, firstScript);
+  })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
 
-    if (options.trackerName) {
-        _updateTrackerName(options.trackerName);
-    }
-    if (options.trackerId) {
-        _updateTrackingId(options.trackerId);
-    }
-    if (options.cookieDomain) {
-        _updateCookieDomain(options.cookieDomain);
-    }
+  if (options.trackerName) {
+    _updateTrackerName(options.trackerName);
+  }
+  if (options.trackerId) {
+    _updateTrackingId(options.trackerId);
+  }
+  if (options.cookieDomain) {
+    _updateCookieDomain(options.cookieDomain);
+  }
 
-    ga('create', {
-        trackingId  : _trackingId,
-        cookieDomain: _cookieDomain,
-        name        : _trackerName
-    });
-    ga(_trackerName + '.send', 'pageview');
+  ga('create', {
+    trackingId  : _trackingId,
+    cookieDomain: _cookieDomain,
+    name        : _trackerName
+  });
+  ga(_trackerName + '.send', 'pageview');
 };
 
 /**
@@ -65,10 +65,10 @@ exports.trackerName = _trackerName;
  * @private
  */
 function _updateTrackerName(trackerName) {
-    if (typeof trackerName === 'string') {
-        _trackerName        = trackerName;
-        exports.trackerName = _trackerName;
-    }
+  if (typeof trackerName === 'string') {
+    _trackerName        = trackerName;
+    exports.trackerName = _trackerName;
+  }
 }
 
 /**
@@ -87,10 +87,10 @@ exports.trackingId = _trackingId;
  * @private
  */
 function _updateTrackingId(trackingId) {
-    if (typeof trackingId === 'string') {
-        _trackingId        = trackingId;
-        exports.trackingId = _trackingId;
-    }
+  if (typeof trackingId === 'string') {
+    _trackingId        = trackingId;
+    exports.trackingId = _trackingId;
+  }
 }
 
 /**
@@ -106,10 +106,10 @@ exports.cookieDomain = _cookieDomain;
  * @private
  */
 function _updateCookieDomain(cookieDomain) {
-    if (typeof cookieDomain === 'string') {
-        _cookieDomain        = cookieDomain;
-        exports.cookieDomain = cookieDomain;
-    }
+  if (typeof cookieDomain === 'string') {
+    _cookieDomain        = cookieDomain;
+    exports.cookieDomain = cookieDomain;
+  }
 }
 
 /**
@@ -125,24 +125,24 @@ exports.loadEventName = _loadEventName;
  * @private
  */
 function _onload() {
-    let event = new window.CustomEvent(
-        _loadEventName,
-        {
-            detail    : {
-                time: new Date()
-            },
-            bubbles   : false,
-            cancelable: true
-        }
-    );
-    window.dispatchEvent(event);
+  let event = new window.CustomEvent(
+    _loadEventName,
+    {
+      detail    : {
+        time: new Date()
+      },
+      bubbles   : false,
+      cancelable: true
+    }
+  );
+  window.dispatchEvent(event);
 }
 
 /**
  * @returns {boolean} whether Google Analytics is loaded
  */
 function isReady() {
-    return typeof ga === 'function';
+  return typeof ga === 'function';
 }
 exports.isReady = isReady;
 
@@ -151,10 +151,10 @@ exports.isReady = isReady;
  * @param handler
  */
 exports.onReady = function (handler) {
-    if (isReady()) {
-        ga(handler);
-    }
-    window.addEventListener(_loadEventName, () => {
-        ga(handler);
-    });
+  if (isReady()) {
+    ga(handler);
+  }
+  window.addEventListener(_loadEventName, () => {
+    ga(handler);
+  });
 };

@@ -5,7 +5,7 @@ let Client        = require('./common/client'),
     configuration = {},
     Logger        = require('./common/log/logger'),
     Level         = require('./common/log/logger').Level,
-    Play = require('./play'),
+    Play          = require('./play'),
     BPReadyEvent  = require('./common/events/brainpal-ready');
 
 //noinspection JSUnusedLocalSymbols

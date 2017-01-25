@@ -11,36 +11,36 @@ let Logger = require('./../log/logger'),
  * @param {Object} subject
  */
 exports.save = function save(subject) {
-    let category = 'BrainPal:';
-    let action   = JSON.stringify(subject);
-    let label    = '';
-    let value    = 0;
-    try {
-        if (subject.experiment) {
-            category += 'experiment:' + JSON.stringify(subject.experiment);
-        }
-        if (subject.exerimentGroup) {
-            category += 'experimentGroup:' + JSON.stringify(subject.group);
-        }
-        if (subject.client) {
-            category += 'client:' + JSON.stringify(subject.client);
-        }
-        if (subject.anchor) {
-            action = 'anchor:' + JSON.stringify(subject.anchor);
-        }
-        if (subject.subject) {
-            label = JSON.stringify(subject.subject);
-            value = subject.subject.price || subject.subject.count || value;
-        }
-        ga(GoogleAnalytics.trackerName + '.send', 'event', {
-            eventCategory: category,
-            eventAction  : action,
-            eventLabel   : label,
-            eventValue   : value
-        });
-    } catch (e) {
-        Logger.log(Level.ERROR, 'GoogleAnalyticsStorage: ' + JSON.stringify(e));
+  let category = 'BrainPal:';
+  let action   = JSON.stringify(subject);
+  let label    = '';
+  let value    = 0;
+  try {
+    if (subject.experiment) {
+      category += 'experiment:' + JSON.stringify(subject.experiment);
     }
+    if (subject.exerimentGroup) {
+      category += 'experimentGroup:' + JSON.stringify(subject.group);
+    }
+    if (subject.client) {
+      category += 'client:' + JSON.stringify(subject.client);
+    }
+    if (subject.anchor) {
+      action = 'anchor:' + JSON.stringify(subject.anchor);
+    }
+    if (subject.subject) {
+      label = JSON.stringify(subject.subject);
+      value = subject.subject.price || subject.subject.count || value;
+    }
+    ga(GoogleAnalytics.trackerName + '.send', 'event', {
+      eventCategory: category,
+      eventAction  : action,
+      eventLabel   : label,
+      eventValue   : value
+    });
+  } catch (e) {
+    Logger.log(Level.ERROR, 'GoogleAnalyticsStorage: ' + JSON.stringify(e));
+  }
 };
 
 /**
@@ -49,7 +49,7 @@ exports.save = function save(subject) {
  * @param {function} onReady
  */
 exports.init = function (options, onReady) {
-    GoogleAnalytics.init(options);
-    GoogleAnalytics.onReady(onReady);
+  GoogleAnalytics.init(options);
+  GoogleAnalytics.onReady(onReady);
 };
 

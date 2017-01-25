@@ -3,7 +3,7 @@
  *
  * Modifies the DOM, but in a good way.
  */
-    // TODO(ohad): add `prepare` method that initiates external resource loading.
+  // TODO(ohad): add `prepare` method that initiates external resource loading.
 let _            = require('../../common/util/wrapper'),
     EventFactory = require('../../common/events/factory'),
     BaseError    = require('../../common/log/base.error');
@@ -13,11 +13,11 @@ let _            = require('../../common/util/wrapper'),
  * @param {Object} module - the module.exports object of the executor.
  */
 exports.register = function (module) {
-    if (module.name) {
-        _executorByName[module.name] = module;
-    } else {
-        throw new BaseError('Executor: module is missing a name, can we call it brainpal? :-)');
-    }
+  if (module.name) {
+    _executorByName[module.name] = module;
+  } else {
+    throw new BaseError('Executor: module is missing a name, can we call it brainpal? :-)');
+  }
 };
 
 /**
@@ -32,14 +32,14 @@ exports.register = function (module) {
  * @returns {Object} this module.
  */
 exports.execute = function (name, options = {}) {
-    if (!_preconditions(name, options)) return exports;
-    if (options.on === true) options.on = exports.eventName(name);
-    if (options.on) {
-        _.on(options.on, () => {_executorByName[name].execute(options)}, options.id);
-    } else {
-        _executorByName[name].execute(options);
-    }
-    return exports;
+  if (!_preconditions(name, options)) return exports;
+  if (options.on === true) options.on = exports.eventName(name);
+  if (options.on) {
+    _.on(options.on, () => {_executorByName[name].execute(options)}, options.id);
+  } else {
+    _executorByName[name].execute(options);
+  }
+  return exports;
 };
 
 exports.eventName = EventFactory.eventName;
@@ -59,20 +59,20 @@ let _executorByName = {};
  * @private
  */
 function _preconditions(name, options) {
-    if (!_executorByName[name]) {
-        throw new BaseError('Executor: executor ' + name + ' is nonexistent.');
-    }
-    if (!_.isNil(options.id) && !_.isString(options.id) && !_.isNumber(options.id)) {
-        throw new BaseError('Executor: id must be a string or a number.');
-    }
-    if (!_.isNil(options.on) && !_.isString(options.on) && !_.isBoolean(options.on)) {
-        throw new BaseError('Executor: on must be a string or a boolean.');
-    }
-    if (!_.has(options, 'toLog')) {
-        options.toLog = process.env.NODE_ENV !== 'test';
-    } else if (_.has(options, 'toLog') && !_.isBoolean(options.toLog)) {
-        throw new BaseError('Executor: toLog must be nil or a boolean.');
-    }
-    _executorByName[name].preconditions(options);
-    return true;
+  if (!_executorByName[name]) {
+    throw new BaseError('Executor: executor ' + name + ' is nonexistent.');
+  }
+  if (!_.isNil(options.id) && !_.isString(options.id) && !_.isNumber(options.id)) {
+    throw new BaseError('Executor: id must be a string or a number.');
+  }
+  if (!_.isNil(options.on) && !_.isString(options.on) && !_.isBoolean(options.on)) {
+    throw new BaseError('Executor: on must be a string or a boolean.');
+  }
+  if (!_.has(options, 'toLog')) {
+    options.toLog = process.env.NODE_ENV !== 'test';
+  } else if (_.has(options, 'toLog') && !_.isBoolean(options.toLog)) {
+    throw new BaseError('Executor: toLog must be nil or a boolean.');
+  }
+  _executorByName[name].preconditions(options);
+  return true;
 }

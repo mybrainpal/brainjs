@@ -12,11 +12,11 @@ let _ = require('./../../common/util/wrapper'),
  * @constructor
  */
 function Experiment(options) {
-    if (options) {
-        this.options(options);
-    } else {
-        Logger.log(Level.WARNING, 'Experiment: missing options.');
-    }
+  if (options) {
+    this.options(options);
+  } else {
+    Logger.log(Level.WARNING, 'Experiment: missing options.');
+  }
 }
 
 /**
@@ -46,34 +46,34 @@ Experiment.prototype.groups = [];
  *  @property
  */
 Experiment.prototype.options = function (options) {
-    let i;
-    if (options.id) {
-        this.id = options.id;
-    } else {
-        Logger.log(Level.WARNING, 'Experiment: missing id.');
+  let i;
+  if (options.id) {
+    this.id = options.id;
+  } else {
+    Logger.log(Level.WARNING, 'Experiment: missing id.');
+  }
+  if (options.label) {
+    this.label = options.label;
+  }
+  if (options.groups) {
+    /**
+     * All the groups in the experiment.
+     * @type {Array.<ExperimentGroup>}
+     */
+    this.groups = options.groups.map(
+      function (g) {
+        return new ExperimentGroup(_.deepExtend({experimentId: options.id}, g));
+      });
+    this.clientGroups = []; // makes sure `this` maintains its own clientGroups.
+    for (i = 0; i < this.groups.length; i++) {
+      if (this.groups[i].isClientIncluded) {
+        this.isClientIncluded = true;
+        this.clientGroups.push(this.groups[i]);
+      }
     }
-    if (options.label) {
-        this.label = options.label;
-    }
-    if (options.groups) {
-        /**
-         * All the groups in the experiment.
-         * @type {Array.<ExperimentGroup>}
-         */
-        this.groups = options.groups.map(
-            function (g) {
-                return new ExperimentGroup(_.deepExtend({experimentId: options.id}, g));
-            });
-        this.clientGroups = []; // makes sure `this` maintains its own clientGroups.
-        for (i = 0; i < this.groups.length; i++) {
-            if (this.groups[i].isClientIncluded) {
-                this.isClientIncluded = true;
-                this.clientGroups.push(this.groups[i]);
-            }
-        }
-    } else {
-        Logger.log(Level.WARNING, 'Experiment: missing groups.');
-    }
+  } else {
+    Logger.log(Level.WARNING, 'Experiment: missing groups.');
+  }
 };
 
 /**

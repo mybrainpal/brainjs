@@ -10,7 +10,7 @@ const InMemoryStorage = require('./in-memory.storage');
  * @param message
  */
 exports.save = function (message) {
-    _storage.save(message);
+  _storage.save(message);
 };
 let _storage = InMemoryStorage;
 
@@ -20,27 +20,27 @@ let _storage = InMemoryStorage;
  * @param {Object} [options] - for the new storage initialization.
  */
 exports.set = function (name, options) {
-    switch (name) {
-        case exports.names.IN_MEMORY:
-            _storage = InMemoryStorage;
-            return;
-        case exports.names.CONSOLE:
-            require.ensure('./console.storage', function (require) {
-                _storageSwitch(require('./console.storage'));
-            });
-            break;
-        case exports.names.GOOGLE_ANALYTICS:
-            require.ensure('./google-analytics.storage', function (require) {
-                _storageSwitch(require('./google-analytics.storage'), options);
-            });
-            break;
-    }
+  switch (name) {
+    case exports.names.IN_MEMORY:
+      _storage = InMemoryStorage;
+      return;
+    case exports.names.CONSOLE:
+      require.ensure('./console.storage', function (require) {
+        _storageSwitch(require('./console.storage'));
+      });
+      break;
+    case exports.names.GOOGLE_ANALYTICS:
+      require.ensure('./google-analytics.storage', function (require) {
+        _storageSwitch(require('./google-analytics.storage'), options);
+      });
+      break;
+  }
 };
 
 exports.names = Object.freeze({
-                                  IN_MEMORY       : 'in-memory',
-                                  CONSOLE         : 'console',
-                                  GOOGLE_ANALYTICS: 'google-analytics'
+                                IN_MEMORY       : 'in-memory',
+                                CONSOLE         : 'console',
+                                GOOGLE_ANALYTICS: 'google-analytics'
                               });
 
 /**
@@ -50,13 +50,13 @@ exports.names = Object.freeze({
  * @private
  */
 function _storageSwitch(newStorage, options) {
-    const onReady = () => {
-        _storage = newStorage;
-        for (let i = 0; i < InMemoryStorage.storage.length; i++) {
-            _storage.save(InMemoryStorage.storage[i])
-        }
-        InMemoryStorage.flush();
-    };
-    if (newStorage.init) { newStorage.init(options, onReady()); }
-    else { onReady(); }
+  const onReady = () => {
+    _storage = newStorage;
+    for (let i = 0; i < InMemoryStorage.storage.length; i++) {
+      _storage.save(InMemoryStorage.storage[i])
+    }
+    InMemoryStorage.flush();
+  };
+  if (newStorage.init) { newStorage.init(options, onReady()); }
+  else { onReady(); }
 }

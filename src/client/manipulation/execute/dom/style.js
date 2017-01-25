@@ -15,23 +15,23 @@ Master.register(exports);
  *  content of a style module.
  */
 exports.execute = function (options) {
-    const newStylesheet = _.css.load(options.css);
-    if (options.toLog) {
-        if (newStylesheet) {
-            Logger.log(Level.INFO,
-                       `Added stylesheet (${newStylesheet.textContent.substring(0, 10)})`);
-        } else {
-            Logger.log(Level.WARNING,
-                       `Failed to add stylesheet (${options.css.toString().substring(0, 10)})`);
-        }
+  const newStylesheet = _.css.load(options.css);
+  if (options.toLog) {
+    if (newStylesheet) {
+      Logger.log(Level.INFO,
+                 `Added stylesheet (${newStylesheet.textContent.substring(0, 10)})`);
+    } else {
+      Logger.log(Level.WARNING,
+                 `Failed to add stylesheet (${options.css.toString().substring(0, 10)})`);
     }
+  }
 };
 
 /**
  * @param {Object} options
  */
 exports.preconditions = function (options) {
-    if (!_.css.loadable(options.css)) {
-        throw new BaseError('StyleExecutor: css is not loadable.');
-    }
+  if (!_.css.loadable(options.css)) {
+    throw new BaseError('StyleExecutor: css is not loadable.');
+  }
 };

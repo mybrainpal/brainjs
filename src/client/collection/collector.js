@@ -3,11 +3,11 @@
  *
  * Collects data on events, use with curiosity!
  */
-let Client   = require('../common/client'),
-    Storage  = require('../common/storage/storage'),
-    Logger   = require('../common/log/logger'),
-    Level    = require('../common/log/logger').Level,
-    _        = require('../common/util/wrapper');
+let Client  = require('../common/client'),
+    Storage = require('../common/storage/storage'),
+    Logger  = require('../common/log/logger'),
+    Level   = require('../common/log/logger').Level,
+    _       = require('../common/util/wrapper');
 
 /**
  * Collects data (subject) based on an event (i.e. anchor).
@@ -30,54 +30,54 @@ let Client   = require('../common/client'),
  *  @property {Node} [rootNode = document] - the node from which to execute all selectors.
  */
 exports.collect = function (options) {
-    let targets, immediateEmit, iterRoots, i;
-    if (Array.isArray(options)) {
-        for (i = 0; i < options.length; i++) exports.collect(options[i]);
-        return;
+  let targets, immediateEmit, iterRoots, i;
+  if (Array.isArray(options)) {
+    for (i = 0; i < options.length; i++) exports.collect(options[i]);
+    return;
+  }
+  if (!options.rootNode) {
+    options.rootNode = document;
+  }
+  if (options.iterSelector) {
+    iterRoots = document.querySelectorAll(options.iterSelector);
+    delete options.iterSelector;
+    if (_.isEmpty(iterRoots)) {
+      Logger.log(Level.WARNING,
+                 'Collector: failed to select iterSelector at ' + options.anchor.selector);
+      return;
     }
-    if (!options.rootNode) {
-        options.rootNode = document;
+    for (i = 0; i < iterRoots.length; i++) {
+      let newOptions = _.deepExtend({}, options, {rootNode: iterRoots[i]});
+      delete newOptions.iterSelector;
+      exports.collect(newOptions);
     }
-    if (options.iterSelector) {
-        iterRoots = document.querySelectorAll(options.iterSelector);
-        delete options.iterSelector;
-        if (_.isEmpty(iterRoots)) {
-            Logger.log(Level.WARNING,
-                       'Collector: failed to select iterSelector at ' + options.anchor.selector);
-            return;
-        }
-        for (i = 0; i < iterRoots.length; i++) {
-            let newOptions = _.deepExtend({}, options, {rootNode: iterRoots[i]});
-            delete newOptions.iterSelector;
-            exports.collect(newOptions);
-        }
-        return;
+    return;
+  }
+  if (options.anchor && options.anchor.selector &&
+      options.anchor.event) {
+    targets = options.rootNode.querySelectorAll(options.anchor.selector);
+    if (_.isEmpty(targets)) {
+      Logger.log(Level.WARNING,
+                 'Collector: failed to select anchor at ' + options.anchor.selector);
+      return;
     }
-    if (options.anchor && options.anchor.selector &&
-        options.anchor.event) {
-        targets = options.rootNode.querySelectorAll(options.anchor.selector);
-        if (_.isEmpty(targets)) {
-            Logger.log(Level.WARNING,
-                       'Collector: failed to select anchor at ' + options.anchor.selector);
-            return;
-        }
-        targets.forEach((target) => {
-            if (target instanceof EventTarget) {
-                target.addEventListener(options.anchor.event, () => {
-                    let emitted;
-                    emitted = _createSubject(_.deepExtend({anchor: {target: target}}, options));
-                    if (!_.isEmpty(emitted)) {
-                        Storage.save(emitted);
-                    }
-                });
-            }
+    targets.forEach((target) => {
+      if (target instanceof EventTarget) {
+        target.addEventListener(options.anchor.event, () => {
+          let emitted;
+          emitted = _createSubject(_.deepExtend({anchor: {target: target}}, options));
+          if (!_.isEmpty(emitted)) {
+            Storage.save(emitted);
+          }
         });
-    } else {
-        immediateEmit = _createSubject(options);
-        if (!_.isEmpty(immediateEmit)) {
-            Storage.save(immediateEmit);
-        }
+      }
+    });
+  } else {
+    immediateEmit = _createSubject(options);
+    if (!_.isEmpty(immediateEmit)) {
+      Storage.save(immediateEmit);
     }
+  }
 };
 
 /**
@@ -86,92 +86,92 @@ exports.collect = function (options) {
  * @private
  */
 function _createSubject(options) {
-    let emittedSubject = {}, i, target, val;
+  let emittedSubject = {}, i, target, val;
 
-    if (_.isEmpty(options)) {
-        Logger.log(Level.WARNING, 'Collector: created an empty subject.');
-        return {};
+  if (_.isEmpty(options)) {
+    Logger.log(Level.WARNING, 'Collector: created an empty subject.');
+    return {};
+  }
+  if (!_.isEmpty(options.dataProps)) {
+    emittedSubject.subject = {};
+    for (i = 0; i < options.dataProps.length; i++) {
+      target = options.rootNode.querySelector(options.dataProps[i].selector);
+      if (target) {
+        emittedSubject.subject[options.dataProps[i].name] = target.textContent;
+      } else {
+        Logger.log(Level.WARNING,
+                   'Collector: failed to select ' + options.dataProps[i].selector);
+      }
     }
-    if (!_.isEmpty(options.dataProps)) {
-        emittedSubject.subject = {};
-        for (i = 0; i < options.dataProps.length; i++) {
-            target = options.rootNode.querySelector(options.dataProps[i].selector);
-            if (target) {
-                emittedSubject.subject[options.dataProps[i].name] = target.textContent;
-            } else {
-                Logger.log(Level.WARNING,
-                           'Collector: failed to select ' + options.dataProps[i].selector);
-            }
-        }
-        if (_.isEmpty(emittedSubject.subject)) {
-            delete emittedSubject.subject;
-            Logger.log(Level.WARNING, 'Collector: subject is empty.');
-        }
+    if (_.isEmpty(emittedSubject.subject)) {
+      delete emittedSubject.subject;
+      Logger.log(Level.WARNING, 'Collector: subject is empty.');
     }
-    if (options.client) {
-        emittedSubject.client = {};
-        if (options.client.properties) {
-            for (i = 0; i < options.client.properties.length; i++) {
-                val = _.get(Client, options.client.properties[i]);
-                if (val) {
-                    _.set(emittedSubject.client, options.client.properties[i], val);
-                }
-            }
+  }
+  if (options.client) {
+    emittedSubject.client = {};
+    if (options.client.properties) {
+      for (i = 0; i < options.client.properties.length; i++) {
+        val = _.get(Client, options.client.properties[i]);
+        if (val) {
+          _.set(emittedSubject.client, options.client.properties[i], val);
         }
-        if (_.isEmpty(emittedSubject.client)) {
-            Logger.log(Level.WARNING, 'Collector: client is empty.');
-            delete emittedSubject.client;
-        }
+      }
     }
-    if (options.experiment) {
-        emittedSubject.experiment = {};
-        if (options.experiment.id) {
-            emittedSubject.experiment.id = options.experiment.id;
-        }
-        if (options.experiment.isClientIncluded) {
-            emittedSubject.experiment.isClientIncluded = options.experiment.isClientIncluded;
-        }
-        if (_.isEmpty(emittedSubject.experiment)) {
-            Logger.log(Level.WARNING, 'Collector: experiment is empty.');
-            delete emittedSubject.client;
-        }
+    if (_.isEmpty(emittedSubject.client)) {
+      Logger.log(Level.WARNING, 'Collector: client is empty.');
+      delete emittedSubject.client;
     }
-    if (options.experimentGroup) {
-        emittedSubject.experimentGroup = {};
-        if (options.experimentGroup.experimentId) {
-            emittedSubject.experimentGroup.experimentId = options.experimentGroup.experimentId;
-        }
-        if (options.experimentGroup.isClientIncluded) {
-            emittedSubject.experimentGroup.isClientIncluded =
-                options.experimentGroup.isClientIncluded;
-        }
-        if (options.experimentGroup.label) {
-            emittedSubject.experimentGroup.label = options.experimentGroup.label;
-        }
-        if (_.isEmpty(emittedSubject.experiment)) {
-            Logger.log(Level.WARNING, 'Collector: experiment is empty.');
-            delete emittedSubject.client;
-        }
+  }
+  if (options.experiment) {
+    emittedSubject.experiment = {};
+    if (options.experiment.id) {
+      emittedSubject.experiment.id = options.experiment.id;
     }
-    if (!_.isEmpty(options.anchor)) {
-        emittedSubject.anchor = {};
-        if (options.anchor.selector) {
-            emittedSubject.anchor.selector = options.anchor.selector;
-        } else {
-            Logger.log(Level.WARNING, 'Collector: anchor is missing a selector.');
-        }
-        if (options.anchor.event) {
-            emittedSubject.anchor.event = options.anchor.event;
-        } else {
-            Logger.log(Level.WARNING, 'Collector: anchor is missing a selector.');
-        }
-        if (options.anchor.target) {
-            emittedSubject.anchor.targetText = options.anchor.target.textContent;
-        }
-        if (_.isEmpty(emittedSubject.anchor)) {
-            Logger.log(Level.WARNING, 'Collector: subject\'s anchor is empty.');
-            delete emittedSubject.anchor;
-        }
+    if (options.experiment.isClientIncluded) {
+      emittedSubject.experiment.isClientIncluded = options.experiment.isClientIncluded;
     }
-    return emittedSubject;
+    if (_.isEmpty(emittedSubject.experiment)) {
+      Logger.log(Level.WARNING, 'Collector: experiment is empty.');
+      delete emittedSubject.client;
+    }
+  }
+  if (options.experimentGroup) {
+    emittedSubject.experimentGroup = {};
+    if (options.experimentGroup.experimentId) {
+      emittedSubject.experimentGroup.experimentId = options.experimentGroup.experimentId;
+    }
+    if (options.experimentGroup.isClientIncluded) {
+      emittedSubject.experimentGroup.isClientIncluded =
+        options.experimentGroup.isClientIncluded;
+    }
+    if (options.experimentGroup.label) {
+      emittedSubject.experimentGroup.label = options.experimentGroup.label;
+    }
+    if (_.isEmpty(emittedSubject.experiment)) {
+      Logger.log(Level.WARNING, 'Collector: experiment is empty.');
+      delete emittedSubject.client;
+    }
+  }
+  if (!_.isEmpty(options.anchor)) {
+    emittedSubject.anchor = {};
+    if (options.anchor.selector) {
+      emittedSubject.anchor.selector = options.anchor.selector;
+    } else {
+      Logger.log(Level.WARNING, 'Collector: anchor is missing a selector.');
+    }
+    if (options.anchor.event) {
+      emittedSubject.anchor.event = options.anchor.event;
+    } else {
+      Logger.log(Level.WARNING, 'Collector: anchor is missing a selector.');
+    }
+    if (options.anchor.target) {
+      emittedSubject.anchor.targetText = options.anchor.target.textContent;
+    }
+    if (_.isEmpty(emittedSubject.anchor)) {
+      Logger.log(Level.WARNING, 'Collector: subject\'s anchor is empty.');
+      delete emittedSubject.anchor;
+    }
+  }
+  return emittedSubject;
 }

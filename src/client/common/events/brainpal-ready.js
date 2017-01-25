@@ -8,12 +8,12 @@ let _singletonInstance;
  * @constructor
  */
 function BPReadyEvent(options) {
-    if (_singletonInstance) {
-        return _singletonInstance;
-    }
-    _singletonInstance = this;
-    this.options(options || {});
-    this.init();
+  if (_singletonInstance) {
+    return _singletonInstance;
+  }
+  _singletonInstance = this;
+  this.options(options || {});
+  this.init();
 }
 
 /**
@@ -50,21 +50,21 @@ BPReadyEvent.prototype.options = function (options) {};
  * Initializes a CustomEvent
  */
 BPReadyEvent.prototype.init = function () {
-    let intervalHandler;
-    this.event      = new window.CustomEvent(
-        BPReadyEvent.prototype.eventName,
-        {
-            detail    : {
-                time: new Date()
-            },
-            bubbles   : false,
-            cancelable: true
-        }
-    );
-    intervalHandler = setInterval(_fireIfReady, _checkFrequencyMs);
-    window.addEventListener(BPReadyEvent.prototype.eventName, () => {
-        clearInterval(intervalHandler);
-    });
+  let intervalHandler;
+  this.event      = new window.CustomEvent(
+    BPReadyEvent.prototype.eventName,
+    {
+      detail    : {
+        time: new Date()
+      },
+      bubbles   : false,
+      cancelable: true
+    }
+  );
+  intervalHandler = setInterval(_fireIfReady, _checkFrequencyMs);
+  window.addEventListener(BPReadyEvent.prototype.eventName, () => {
+    clearInterval(intervalHandler);
+  });
 };
 
 /**
@@ -72,15 +72,15 @@ BPReadyEvent.prototype.init = function () {
  * @private
  */
 function _fireIfReady() {
-    if (!_singletonInstance) {
-        return;
-    }
-    if (!document || !document.readyState || document.readyState === 'loading') {
-        return;
-    }
-    _ready = true;
-    //noinspection JSUnresolvedFunction
-    window.dispatchEvent(_singletonInstance.event);
+  if (!_singletonInstance) {
+    return;
+  }
+  if (!document || !document.readyState || document.readyState === 'loading') {
+    return;
+  }
+  _ready = true;
+  //noinspection JSUnresolvedFunction
+  window.dispatchEvent(_singletonInstance.event);
 }
 
 /**

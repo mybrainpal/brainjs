@@ -14,11 +14,11 @@ exports.idPrefix = 'brainpal-gallery';
  * @param {Object} options
  */
 exports.execute = function (options) {
-    require.ensure('./gallery', function (require) {
-        const impl = require('./gallery');
-        impl.preconditions(options);
-        impl.execute(options);
-    });
+  require.ensure('./gallery', function (require) {
+    const impl = require('./gallery');
+    impl.preconditions(options);
+    impl.execute(options);
+  });
 };
 
 /**

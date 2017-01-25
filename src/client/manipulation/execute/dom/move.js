@@ -25,74 +25,74 @@ exports.copiedClass = 'brainpal-copy';
  *  @property {boolean} [copy = false] - whether to copy target.
  */
 exports.execute = function (options) {
-    let nextSibling, parent, toInsert,
-        target = document.querySelector(options.target);
-    if (options.nextSiblingSelector) {
-        nextSibling = document.querySelector(options.nextSiblingSelector);
-        if (_.isNil(nextSibling)) {
-            Logger.log(Level.ERROR, 'MoveExecutor: count not find next sibling at ' +
-                                    options.nextSiblingSelector);
-        }
+  let nextSibling, parent, toInsert,
+      target = document.querySelector(options.target);
+  if (options.nextSiblingSelector) {
+    nextSibling = document.querySelector(options.nextSiblingSelector);
+    if (_.isNil(nextSibling)) {
+      Logger.log(Level.ERROR, 'MoveExecutor: count not find next sibling at ' +
+                              options.nextSiblingSelector);
     }
-    if (options.parentSelector) {
-        parent = document.querySelector(options.parentSelector);
-        if (_.isNil(parent)) {
-            Logger.log(Level.ERROR, 'MoveExecutor: count not find parent at ' +
-                                    options.parentSelector);
-        }
+  }
+  if (options.parentSelector) {
+    parent = document.querySelector(options.parentSelector);
+    if (_.isNil(parent)) {
+      Logger.log(Level.ERROR, 'MoveExecutor: count not find parent at ' +
+                              options.parentSelector);
     }
-    toInsert = _prepare(target, parent, options.copy);
-    _insert(toInsert, parent, nextSibling);
-    if (options.toLog) {
-        if (toInsert.parentNode &&
-            ((parent && toInsert.parentNode === parent) ||
-             nextSibling && toInsert.nextElementSibling === nextSibling)) {
-            Logger.log(Level.INFO, `${options.target} moved.`);
-        } else {
-            Logger.log(Level.WARNING, `Failed to move ${options.target}.`);
-        }
+  }
+  toInsert = _prepare(target, parent, options.copy);
+  _insert(toInsert, parent, nextSibling);
+  if (options.toLog) {
+    if (toInsert.parentNode &&
+        ((parent && toInsert.parentNode === parent) ||
+         nextSibling && toInsert.nextElementSibling === nextSibling)) {
+      Logger.log(Level.INFO, `${options.target} moved.`);
+    } else {
+      Logger.log(Level.WARNING, `Failed to move ${options.target}.`);
     }
+  }
 };
 
 /**
  * @param {Object} options
  */
 exports.preconditions = function (options) {
-    let nextSibling, parent, target;
-    target = document.querySelector(options.target);
-    if (!target) {
-        throw new BaseError('MoveExecutor : could not find target at ' + options.target);
+  let nextSibling, parent, target;
+  target = document.querySelector(options.target);
+  if (!target) {
+    throw new BaseError('MoveExecutor : could not find target at ' + options.target);
+  }
+  if (_.isNil(target.parentNode)) {
+    throw new BaseError('MoveExecutor : target must have a parent node.');
+  }
+  if (_.has(options, 'copy') && !_.isBoolean(options.copy)) {
+    throw new BaseError('MoveExecutor : copy must be nil or a boolean.');
+  }
+  if (options.parentSelector && !_.isString(options.parentSelector)) {
+    throw new BaseError('MoveExecutor : parentSelector must be nil or a string.');
+  } else if (options.parentSelector) {
+    parent = document.querySelector(options.parentSelector);
+    if (!parent) {
+      throw new BaseError('MoveExecutor : could not find parent at ' +
+                          options.parentSelector);
     }
-    if (_.isNil(target.parentNode)) {
-        throw new BaseError('MoveExecutor : target must have a parent node.');
+  }
+  if (options.nextSiblingSelector && !_.isString(options.nextSiblingSelector)) {
+    throw new BaseError('MoveExecutor : nextSiblingSelector must be nil or a string.');
+  } else if (options.nextSiblingSelector) {
+    nextSibling = document.querySelector(options.nextSiblingSelector);
+    if (!nextSibling) {
+      throw new BaseError('MoveExecutor : could not find next sibling at ' +
+                          options.nextSiblingSelector);
     }
-    if (_.has(options, 'copy') && !_.isBoolean(options.copy)) {
-        throw new BaseError('MoveExecutor : copy must be nil or a boolean.');
-    }
-    if (options.parentSelector && !_.isString(options.parentSelector)) {
-        throw new BaseError('MoveExecutor : parentSelector must be nil or a string.');
-    } else if (options.parentSelector) {
-        parent = document.querySelector(options.parentSelector);
-        if (!parent) {
-            throw new BaseError('MoveExecutor : could not find parent at ' +
-                                options.parentSelector);
-        }
-    }
-    if (options.nextSiblingSelector && !_.isString(options.nextSiblingSelector)) {
-        throw new BaseError('MoveExecutor : nextSiblingSelector must be nil or a string.');
-    } else if (options.nextSiblingSelector) {
-        nextSibling = document.querySelector(options.nextSiblingSelector);
-        if (!nextSibling) {
-            throw new BaseError('MoveExecutor : could not find next sibling at ' +
-                                options.nextSiblingSelector);
-        }
-    }
-    if (_.isNil(parent) && _.isNil(nextSibling)) {
-        throw new BaseError('MoveExecutor : must have parent or next sibling.');
-    }
-    if (!_.isNil(parent) && !_.isNil(nextSibling) && nextSibling.parentNode !== parent) {
-        throw new BaseError('MoveExecutor : oh boy! next sibling parent should the new parent.');
-    }
+  }
+  if (_.isNil(parent) && _.isNil(nextSibling)) {
+    throw new BaseError('MoveExecutor : must have parent or next sibling.');
+  }
+  if (!_.isNil(parent) && !_.isNil(nextSibling) && nextSibling.parentNode !== parent) {
+    throw new BaseError('MoveExecutor : oh boy! next sibling parent should the new parent.');
+  }
 };
 
 /**
@@ -104,16 +104,16 @@ exports.preconditions = function (options) {
  * @private
  */
 function _prepare(elem, parent, copy) {
-    let prepared;
-    elem = copy ? elem.cloneNode(true) : elem;
-    if (parent && parent.nodeName === 'UL' && elem.nodeName !== 'LI') {
-        prepared = document.createElement('li');
-        prepared.appendChild(elem);
-    } else {
-        prepared = elem;
-    }
-    if (copy) prepared.classList.add(exports.copiedClass);
-    return prepared;
+  let prepared;
+  elem = copy ? elem.cloneNode(true) : elem;
+  if (parent && parent.nodeName === 'UL' && elem.nodeName !== 'LI') {
+    prepared = document.createElement('li');
+    prepared.appendChild(elem);
+  } else {
+    prepared = elem;
+  }
+  if (copy) prepared.classList.add(exports.copiedClass);
+  return prepared;
 }
 
 /**
@@ -124,9 +124,9 @@ function _prepare(elem, parent, copy) {
  * @private
  */
 function _insert(elem, parent, nextSibling) {
-    if (nextSibling) {
-        nextSibling.parentNode.insertBefore(elem, nextSibling);
-        return;
-    }
-    parent.appendChild(elem);
+  if (nextSibling) {
+    nextSibling.parentNode.insertBefore(elem, nextSibling);
+    return;
+  }
+  parent.appendChild(elem);
 }

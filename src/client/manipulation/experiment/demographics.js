@@ -15,15 +15,15 @@ let _ = require('./../../common/util/wrapper'),
  * @returns {boolean} Whether the client belongs to this demographics.
  */
 exports.included = function (options) {
-    options = options || {};
-    if (options.properties) {
-        for (let i = 0; i < options.properties.length; i++) {
-            if (!_satisfyProperty(options.properties[i])) {
-                return false;
-            }
-        }
+  options = options || {};
+  if (options.properties) {
+    for (let i = 0; i < options.properties.length; i++) {
+      if (!_satisfyProperty(options.properties[i])) {
+        return false;
+      }
     }
-    return true;
+  }
+  return true;
 };
 
 /**
@@ -36,31 +36,31 @@ exports.included = function (options) {
  * @private
  */
 function _satisfyProperty(property) {
-    if (!property.name) {
-        Logger.log(Level.WARNING, 'Demographics property is missing a name. ' +
-                                  JSON.stringify(property));
-        return false;
-    }
-    switch (property.name) {
-        case 'modulo':
-            if (property.moduloIds && property.moduloOf) {
-                return _moduloInclude(property.moduloIds, property.moduloOf);
-            }
-            Logger.log(Level.WARNING, 'Demographics modulo property is missing required ' +
-                                      'properties.');
-            break;
-        case 'os':
-            if (property.os) {
-                return _osInclude(property.os);
-            }
-            Logger.log(Level.WARNING, 'Demographics os property is missing required ' +
-                                      'properties.');
-            break;
-        default:
-            Logger.log(Level.WARNING, 'Demographics property ' + property.name + ' is unknown.');
-            return false;
-    }
+  if (!property.name) {
+    Logger.log(Level.WARNING, 'Demographics property is missing a name. ' +
+                              JSON.stringify(property));
     return false;
+  }
+  switch (property.name) {
+    case 'modulo':
+      if (property.moduloIds && property.moduloOf) {
+        return _moduloInclude(property.moduloIds, property.moduloOf);
+      }
+      Logger.log(Level.WARNING, 'Demographics modulo property is missing required ' +
+                                'properties.');
+      break;
+    case 'os':
+      if (property.os) {
+        return _osInclude(property.os);
+      }
+      Logger.log(Level.WARNING, 'Demographics os property is missing required ' +
+                                'properties.');
+      break;
+    default:
+      Logger.log(Level.WARNING, 'Demographics property ' + property.name + ' is unknown.');
+      return false;
+  }
+  return false;
 }
 
 /**
@@ -70,10 +70,10 @@ function _satisfyProperty(property) {
  * @private
  */
 function _moduloInclude(moduloIds, moduloOf) {
-    if (Client.id && _.isNumber(Client.id)) {
-        return moduloIds.indexOf(Client.id % moduloOf) != -1;
-    }
-    return false;
+  if (Client.id && _.isNumber(Client.id)) {
+    return moduloIds.indexOf(Client.id % moduloOf) != -1;
+  }
+  return false;
 
 }
 
@@ -84,8 +84,8 @@ function _moduloInclude(moduloIds, moduloOf) {
  * @private
  */
 function _osInclude(os) {
-    if (Client.agent && Client.agent.os) {
-        return Client.agent.os.toLowerCase().indexOf(os.toLowerCase()) != -1
-    }
-    return false;
+  if (Client.agent && Client.agent.os) {
+    return Client.agent.os.toLowerCase().indexOf(os.toLowerCase()) != -1
+  }
+  return false;
 }

@@ -15,31 +15,31 @@ Master.register(exports);
  *  @property {function} typerFn - runs typer-js code
  */
 exports.execute = function (options) {
-    require.ensure(['./typer-js', 'typer-js/typer.css'], function (require) {
-        if (!_styleLoaded) _.css.load(require('typer-js/typer.css'));
-        _styleLoaded = true;
-        options.typerFn(require('./typer-js'));
-        if (options.toLog) {
-            const suffix = _.isNil(options.id) ? '' : ` (id = ${options.id}`;
-            Logger.log(Level.INFO, 'Typer started' + suffix);
-            setTimeout(() => {
-                let allVisible     = true;
-                let notVisibleText = '';
-                document.querySelectorAll('[data-typer-child]').forEach((elem) => {
-                    if (!_.isVisible(elem)) {
-                        allVisible     = false;
-                        notVisibleText = elem.textContent;
-                    }
-                });
-                if (allVisible) {
-                    Logger.log(Level.INFO, 'All typer child elements are visible.');
-                } else {
-                    Logger.log(Level.WARNING, 'Some typer child elements are not visible. For' +
-                                              ' example: ' + notVisibleText.substring(0, 10));
-                }
-            }, 200);
+  require.ensure(['./typer-js', 'typer-js/typer.css'], function (require) {
+    if (!_styleLoaded) _.css.load(require('typer-js/typer.css'));
+    _styleLoaded = true;
+    options.typerFn(require('./typer-js'));
+    if (options.toLog) {
+      const suffix = _.isNil(options.id) ? '' : ` (id = ${options.id}`;
+      Logger.log(Level.INFO, 'Typer started' + suffix);
+      setTimeout(() => {
+        let allVisible     = true;
+        let notVisibleText = '';
+        document.querySelectorAll('[data-typer-child]').forEach((elem) => {
+          if (!_.isVisible(elem)) {
+            allVisible     = false;
+            notVisibleText = elem.textContent;
+          }
+        });
+        if (allVisible) {
+          Logger.log(Level.INFO, 'All typer child elements are visible.');
+        } else {
+          Logger.log(Level.WARNING, 'Some typer child elements are not visible. For' +
+                                    ' example: ' + notVisibleText.substring(0, 10));
         }
-    });
+      }, 200);
+    }
+  });
 };
 
 /**
@@ -47,9 +47,9 @@ exports.execute = function (options) {
  * @returns {boolean} whether the executor has a valid input.
  */
 exports.preconditions = function (options) {
-    if (!_.isFunction(options.typerFn)) {
-        throw new BaseError('TyperExecutor: typerFn must be a function.');
-    }
+  if (!_.isFunction(options.typerFn)) {
+    throw new BaseError('TyperExecutor: typerFn must be a function.');
+  }
 };
 
 /**

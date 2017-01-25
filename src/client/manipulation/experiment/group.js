@@ -11,11 +11,11 @@ let Logger = require('../../common/log/logger'),
  * @constructor
  */
 function ExperimentGroup(options) {
-    if (options) {
-        this.options(options);
-    } else {
-        Logger.log(Level.WARNING, 'ExperimentGroup: missing options.');
-    }
+  if (options) {
+    this.options(options);
+  } else {
+    Logger.log(Level.WARNING, 'ExperimentGroup: missing options.');
+  }
 }
 
 /**
@@ -39,22 +39,22 @@ ExperimentGroup.prototype.isClientIncluded = true;
  *      @property {Object} options - extra options, such as ascending or descending sort.
  */
 ExperimentGroup.prototype.options = function (options) {
-    if (options.experimentId) {
-        this.experimentId = options.experimentId;
-    } else {
-        Logger.log(Level.INFO, 'ExperimentGroup: missing experimentId.');
-    }
-    this.label = '';
-    if (options.label) {
-        this.label = options.label;
-    }
-    this.isClientIncluded = true;
-    if (options.demographics) {
-        this.isClientIncluded = Demographics.included(options.demographics);
-    }
-    if (options.executors) {
-        this.executors = options.executors;
-    }
+  if (options.experimentId) {
+    this.experimentId = options.experimentId;
+  } else {
+    Logger.log(Level.INFO, 'ExperimentGroup: missing experimentId.');
+  }
+  this.label = '';
+  if (options.label) {
+    this.label = options.label;
+  }
+  this.isClientIncluded = true;
+  if (options.demographics) {
+    this.isClientIncluded = Demographics.included(options.demographics);
+  }
+  if (options.executors) {
+    this.executors = options.executors;
+  }
 };
 
 /**

@@ -4,7 +4,7 @@
  * Factory for special events, we do double shifts here.
  */
 let Logger = require('../../common/log/logger'),
-    Level     = require('../../common/log/logger').Level;
+    Level = require('../../common/log/logger').Level;
 
 /**
  * @param {string} event
@@ -12,10 +12,10 @@ let Logger = require('../../common/log/logger'),
  * @returns {CustomEvent}
  */
 exports.create = function (event, options) {
-    if (_eventsByName[event]) {
-        return new _eventsByName[event](options || {});
-    }
-    Logger.log(Level.ERROR, 'EventFactory: could not find event ' + event);
+  if (_eventsByName[event]) {
+    return new _eventsByName[event](options || {});
+  }
+  Logger.log(Level.ERROR, 'EventFactory: could not find event ' + event);
 };
 
 /**
@@ -23,7 +23,7 @@ exports.create = function (event, options) {
  * @param {Object} module - the class prototype of the event.
  */
 exports.register = function (module) {
-    _eventsByName[module.name()] = module;
+  _eventsByName[module.name()] = module;
 };
 
 /**
@@ -37,7 +37,7 @@ exports.prefix = 'brainpal-';
  * @returns {string} prefixed name.
  */
 exports.eventName = function (name) {
-    return exports.prefix + name;
+  return exports.prefix + name;
 };
 
 /**

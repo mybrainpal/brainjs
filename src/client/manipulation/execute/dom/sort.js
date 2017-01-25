@@ -15,17 +15,17 @@ Master.register(exports);
  *  @property {string} targets - css selector of the elements to sort.
  */
 exports.execute = function (options) {
-    tinysort(options.targets, options);
-    if (options.toLog) {
-        Logger.log(Level.INFO, 'Sorted ' + options.targets);
-    }
+  tinysort(options.targets, options);
+  if (options.toLog) {
+    Logger.log(Level.INFO, 'Sorted ' + options.targets);
+  }
 };
 
 /**
  * @param {Object} options - to be used with tinysort.
  */
 exports.preconditions = function (options) {
-    if (!document.querySelector(options.targets)) {
-        throw new BaseError('SortExecutor: could not find targets at ' + options.targets);
-    }
+  if (!document.querySelector(options.targets)) {
+    throw new BaseError('SortExecutor: could not find targets at ' + options.targets);
+  }
 };

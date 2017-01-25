@@ -15,11 +15,11 @@ Master.register(exports);
  *  @property {string} targets - css selectors of targets to remove.
  */
 exports.execute = function (options) {
-    document.querySelectorAll(options.targets)
-            .forEach((elem) => { if (elem.parentNode) elem.parentNode.removeChild(elem) });
-    if (options.toLog) {
-        Logger.log(Level.INFO, 'Removes all ' + options.targets);
-    }
+  document.querySelectorAll(options.targets)
+          .forEach((elem) => { if (elem.parentNode) elem.parentNode.removeChild(elem) });
+  if (options.toLog) {
+    Logger.log(Level.INFO, 'Removes all ' + options.targets);
+  }
 };
 
 /**
@@ -27,13 +27,13 @@ exports.execute = function (options) {
  * @returns {boolean} whether the executor has a valid input.
  */
 exports.preconditions = function (options) {
-    let targets = document.querySelectorAll(options.targets);
-    if (_.isEmpty(targets)) {
-        throw new BaseError('RemoveExecutor: could not find targets at ' + options.targets);
+  let targets = document.querySelectorAll(options.targets);
+  if (_.isEmpty(targets)) {
+    throw new BaseError('RemoveExecutor: could not find targets at ' + options.targets);
+  }
+  for (let i = 0; i < targets.length; i++) {
+    if (_.isNil(targets[i].parentNode)) {
+      throw new BaseError('RemoveExecutor: target must have a parent node.')
     }
-    for (let i = 0; i < targets.length; i++) {
-        if (_.isNil(targets[i].parentNode)) {
-            throw new BaseError('RemoveExecutor: target must have a parent node.')
-        }
-    }
+  }
 };
