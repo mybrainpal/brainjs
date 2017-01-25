@@ -1,7 +1,6 @@
 // Karma configuration
 // Generated on Mon Dec 12 2016 10:48:59 GMT+0200 (IST)
 const RewirePlugin = require("rewire-webpack");
-process.env.NODE_ENV = 'test';
 let webpackConfig    = require('./webpack.config.js');
 webpackConfig.plugins.push(new RewirePlugin());
 
@@ -10,7 +9,7 @@ module.exports = function (config) {
     {
 
       // base path that will be used to resolve all patterns (eg. files, exclude)
-      basePath: './src/',
+      basePath: './src/client/',
 
 
       // frameworks to use
