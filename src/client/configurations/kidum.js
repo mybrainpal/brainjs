@@ -272,8 +272,7 @@ const configuration    = {
                     detailOrId: 2
                   },
                   trigger: {
-                    event     : Executor.eventName(TooltipInterface.name),
-                    detailOrId: {state: TooltipInterface.State.SHOW}
+                    event: Executor.eventName(TooltipInterface.name)
                   }
                 }
               }
