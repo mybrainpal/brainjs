@@ -1,19 +1,20 @@
 /**
  * Proudly created by ohad on 01/01/2017.
  */
-const _                = require('../../client/common/util/wrapper'),
-      Factory          = require('../../client/common/events/factory'),
-      IdleEvent        = require('../../client/common/events/idle'),
-      GalleryInterface = require('../../client/manipulation/execute/media/gallery/interface'),
-      Executor         = require('../../client/manipulation/execute/master'),
-      StyleExecutor    = require('../../client/manipulation/execute/dom/style'),
-      MoveExecutor     = require('../../client/manipulation/execute/dom/move'),
-      RemoveExecutor   = require('../../client/manipulation/execute/dom/remove'),
-      EventExecutor    = require('../../client/manipulation/execute/interaction/event'),
-      AlertifyExecutor = require('../../client/manipulation/execute/interface/alertify'),
-      TyperExecutor    = require('../../client/manipulation/execute/interface/typer'),
-      SwalExecutor     = require('../../client/manipulation/execute/interface/sweetalert');
-module.exports         = {
+const _                = require('../common/util/wrapper'),
+      Play             = require('../play'),
+      Factory          = require('../common/events/factory'),
+      IdleEvent        = require('../common/events/idle'),
+      GalleryInterface = require('../manipulation/execute/media/gallery/interface'),
+      Executor         = require('../manipulation/execute/master'),
+      StyleExecutor    = require('../manipulation/execute/dom/style'),
+      MoveExecutor     = require('../manipulation/execute/dom/move'),
+      RemoveExecutor   = require('../manipulation/execute/dom/remove'),
+      EventExecutor    = require('../manipulation/execute/interaction/event'),
+      AlertifyExecutor = require('../manipulation/execute/interface/alertify'),
+      TyperExecutor    = require('../manipulation/execute/interface/typer'),
+      SwalExecutor     = require('../manipulation/execute/interface/sweetalert');
+const configuration    = {
   storage    : {
     name: 'local'
   },
@@ -317,3 +318,5 @@ function _reviewToAlertify(index) {
   content.appendChild(wrapper);
   return content;
 }
+
+Play(configuration);

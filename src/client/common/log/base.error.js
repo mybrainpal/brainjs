@@ -34,7 +34,7 @@ function _baseErrorHandler(event) {
   }
   Logger.log(Level.ERROR, event.message);
   require.ensure('stacktrace-js', function (require) {
-    require('stacktrace-js').fromError(error)
+    require('stacktrace-js').fromError(error, {offline: true})
                             .then((stackFrame) => {
                               error.stack = stackFrame;
                               Storage.save(error);

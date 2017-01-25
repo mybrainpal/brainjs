@@ -1,18 +1,20 @@
 'use strict';
 const webpack = require('webpack'),
+      glob = require('glob'),
       path    = require('path');
 
 if (!process.env.NODE_ENV) process.env.NODE_ENV = 'development';
+const relativeContext = './src/client';
 
 let webpackConfig = {
-  context: path.join(__dirname, './src/client'),
-  entry  : {
-    brain: './index.js'
-  },
+  context: path.join(__dirname, relativeContext),
+  entry  : entries(),
   output : {
-    path    : path.join(__dirname, 'dist'),
-    filename: '[name].js',
-    pathinfo: true
+    path         : path.join(__dirname, 'dist'),
+    publicPath   : 'http://brainpal.dev/',
+    filename     : '[name].brain.js',
+    chunkFilename: '[id].[chunkhash].js',
+    pathinfo     : true
   },
   resolve: {
     extensions: ['.js', '.jsx', '.scss', '.css', '']
@@ -50,7 +52,7 @@ let webpackConfig = {
   plugins: [
     new webpack.SourceMapDevToolPlugin({
       filename: '[file].map',
-      append  : ""
+      append  : ''
     }),
     new webpack.DefinePlugin({
       'process.env': {
@@ -67,7 +69,6 @@ let webpackConfig = {
 
 if (process.env.NODE_ENV === 'production') {
   webpackConfig.plugins.push(new webpack.optimize.UglifyJsPlugin({
-    // Preserves the source map comment in minified code.
     sourceMap: true,
     compress : {
       warnings: false
@@ -75,20 +76,31 @@ if (process.env.NODE_ENV === 'production') {
   }));
   webpackConfig.plugins.push(new webpack.optimize.MinChunkSizePlugin({minChunkSize: 50000}));
   webpackConfig.plugins.push(new webpack.optimize.DedupePlugin());
-  webpackConfig.output.chunkFilename = '[chunkhash].js';
   webpackConfig.module.loaders.push({
                                       test  : /\.(png|svg|woff|jpg|jpeg|gif)$/,
                                       loader: 'url-loader?limit=10000&name=[path][name].[ext]'
                                     });
   webpackConfig.output.publicPath = 'https://mybrainpal.herokuapp.com/';
-} else if (process.env.NODE_ENV === 'test') {
-  webpackConfig.headers              = {'Access-Control-Allow-Origin': '*'};
-  webpackConfig.output.chunkFilename = '[id].js';
-  webpackConfig.output.publicPath    = 'http://brainpal.dev/';
+} else {
   webpackConfig.module.loaders.push({
                                       test  : /\.(png|svg|woff|jpg|jpeg|gif)$/,
                                       loader: 'url-loader?limit=10000000&name=[path][name].[ext]'
                                     });
+}
+
+/**
+ * @returns {Object} entry per customer for the webpack config.
+ */
+function entries() {
+  const configurationsSubpath = 'configurations';
+  const configurationFiles    = glob.sync(
+    path.join(relativeContext, configurationsSubpath) + '/*.js');
+  let entries                 = {};
+  for (let i = 0; i < configurationFiles.length; i++) {
+    entries[path.basename(configurationFiles[i], '.js')] =
+      './' + path.join(configurationsSubpath, path.basename(configurationFiles[i]));
+  }
+  return entries;
 }
 
 module.exports = webpackConfig;

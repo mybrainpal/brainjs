@@ -19,6 +19,11 @@ let Client      = require('./common/client'),
  *  @property {string} storage
  */
 module.exports = function (configuration) {
+  if (!Client.canRunBrainPal()) {
+    Logger.log(Level.ERROR, 'Seems like this browser and BrainPal ain\'t gonna be friends :-(');
+    exports.shutDown(configuration);
+    return;
+  }
   let i;
   Logger.log(Level.INFO, 'BrainPal: game on!');
   if (configuration.storage && configuration.storage.name) {
@@ -39,4 +44,12 @@ module.exports = function (configuration) {
         configuration.experiments[i].options);
     }
   }
+};
+
+/**
+ * Shuts the entire BrainPal presence.
+ * @param {Object} configuration
+ */
+exports.shutDown = function (configuration) {
+
 };

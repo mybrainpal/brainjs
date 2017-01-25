@@ -4,19 +4,20 @@
 /**
  * Proudly created by ohad on 01/01/2017.
  */
-const _                = require('../../client/common/util/wrapper'),
-      Factory          = require('../../client/common/events/factory'),
-      IdleEvent        = require('../../client/common/events/idle'),
-      WordEvent        = require('../../client/common/events/word'),
-      Executor         = require('../../client/manipulation/execute/master'),
-      StyleExecutor    = require('../../client/manipulation/execute/dom/style'),
-      EventExecutor    = require('../../client/manipulation/execute/interaction/event'),
-      InjectExecutor   = require('../../client/manipulation/execute/dom/inject'),
-      TooltipExecutor  = require('../../client/manipulation/execute/dom/tooltip/tooltip'),
-      AlertifyExecutor = require('../../client/manipulation/execute/interface/alertify'),
-      TyperExecutor    = require('../../client/manipulation/execute/interface/typer'),
-      SwalExecutor     = require('../../client/manipulation/execute/interface/sweetalert');
-module.exports         = {
+const _                = require('../common/util/wrapper'),
+      Play             = require('../play'),
+      Factory          = require('../common/events/factory'),
+      IdleEvent        = require('../common/events/idle'),
+      WordEvent        = require('../common/events/word'),
+      Executor         = require('../manipulation/execute/master'),
+      StyleExecutor    = require('../manipulation/execute/dom/style'),
+      EventExecutor    = require('../manipulation/execute/interaction/event'),
+      InjectExecutor   = require('../manipulation/execute/dom/inject'),
+      TooltipExecutor  = require('../manipulation/execute/dom/tooltip/tooltip'),
+      AlertifyExecutor = require('../manipulation/execute/interface/alertify'),
+      TyperExecutor    = require('../manipulation/execute/interface/typer'),
+      SwalExecutor     = require('../manipulation/execute/interface/sweetalert');
+const configuration    = {
   storage    : {
     name: 'local'
   },
@@ -310,3 +311,5 @@ function focusInput() {
     document.querySelector('div.brainpal span.typer').style.display = 'none';
   }, 500);
 }
+
+Play(configuration);
