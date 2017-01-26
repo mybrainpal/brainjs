@@ -2,6 +2,7 @@
  * Proudly created by ohad on 25/01/2017.
  */
 const Customer = require('./customer');
+
 /**
  * @param {Customer} customer
  * @returns {Promise} that is resolved if the provided credentials should be approved, or
