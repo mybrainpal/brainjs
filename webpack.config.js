@@ -80,7 +80,7 @@ if (process.env.NODE_ENV === 'production') {
                                       test  : /\.(png|svg|woff|jpg|jpeg|gif)$/,
                                       loader: 'url-loader?limit=10000&name=[path][name].[ext]'
                                     });
-  webpackConfig.output.publicPath = 'https://mybrainpal.herokuapp.com/';
+  webpackConfig.output.publicPath = 'https://cdn.brainpal.io/';
 } else {
   webpackConfig.module.loaders.push({
                                       test  : /\.(png|svg|woff|jpg|jpeg|gif)$/,
