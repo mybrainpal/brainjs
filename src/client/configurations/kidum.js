@@ -303,8 +303,7 @@ function _sendForm(tel) {
 const names = ['נועם', 'תמר', 'אורי', 'נועה', 'איתי', 'יעל', 'דניאל'];
 
 function focusInput() {
-  document.querySelector('div.brainpal .white-space').classList
-          .add('brainpal-hide');
+  document.querySelector('div.brainpal .white-space').classList.add('brainpal-hide');
   document.querySelector('input.brainpal').focus();
   setTimeout(() => {
     document.querySelector('div.brainpal span.typer').style.display = 'none';
