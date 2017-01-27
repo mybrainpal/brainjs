@@ -10,7 +10,7 @@ const chai     = require('chai'),
 
 chai.use(require('chai-http'));
 
-describe.only('Main', function () {
+describe('Main', function () {
   this.timeout(1000);
   const name = 'Amazon'; // let the test fail once they become our customer ;)
   // TODO(ohad): make Amazon our customer.
@@ -58,6 +58,20 @@ describe.only('Main', function () {
           fs.unlinkSync(filename);
           done();
         });
+  });
+  it('apiKey not found', (done) => {
+    const nonExistingKey = 'broken_key';
+    Customer.findOne({apiKey: nonExistingKey}, (error, customer) => {
+      expect(customer).to.not.be.ok;
+      chai.request(Main)
+          .get(`/serve/${name}/${nonExistingKey}/brain.js`)
+          .end((error, response) => {
+            expect(error).to.be.ok;
+            expect(response.statusCode).to.equal(403);
+            expect(response.type).to.equal('text/plain');
+            done();
+          });
+    });
   });
   it('file not found', (done) => {
     chai.request(Main)

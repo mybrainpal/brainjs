@@ -38,14 +38,13 @@ app.get('/serve/?:name/?:apiKey/brain.js', (request, response) => {
         response.type('txt').send('');
       }
     })
-  }).catch((error, correctApiKey) => {
+  }).catch((error) => {
     if (error) {
       console.error(`Failed to authenticate ${requestCustomer.name} (${requestCustomer.apiKey}) ` +
                     `because ${error.toString()}`);
     } else {
       console.warn(`Seems like ${requestCustomer.name} (${requestCustomer.apiKey}) ` +
-                   `is not our customer.. yet! Wrong apiKey?` +
-                   `${correctApiKey ? ' Try ' + correctApiKey : ''}`);
+                   `is not our customer.. yet! Wrong apiKey?`);
       response.status(403);
       response.type('txt').send('');
     }

@@ -19,18 +19,7 @@ exports.auth = function (customer) {
         }
         resolve(actualCustomer);
       }
-      if (customer.name) {
-        Customer.findOne({name: customer.name}, (error, otherCustomer) => {
-          if (error) reject(error);
-          if (otherCustomer.apiKey) {
-            reject(null, otherCustomer.apiKey);
-          } else {
-            reject();
-          }
-        })
-      } else {
-        reject();
-      }
+      reject();
     });
   });
 };
