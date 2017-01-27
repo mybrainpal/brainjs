@@ -16,6 +16,7 @@ mongoose.Promise = global.Promise;
 
 const distPath = path.resolve(__dirname, '../../dist');
 app.use(express.static(distPath));
+console.log('Using static resources at ' + distPath);
 
 app.get('/serve/?:name/?:apiKey/brain.js', (request, response) => {
   //noinspection JSUnresolvedVariable
