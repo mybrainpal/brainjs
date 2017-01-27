@@ -18,3 +18,9 @@ exports.configurationDir = 'configurations';
  * @type {string}
  */
 exports.testContext = './tmp_test';
+
+/**
+ * Name of public dir.
+ * @type {string}
+ */
+exports.publicDir = 'dist';

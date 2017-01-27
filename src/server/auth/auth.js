@@ -25,3 +25,14 @@ exports.auth = function (customer) {
     });
   });
 };
+
+/**
+ * @param {http.IncomingMessage} request
+ * @returns {boolean} whether the request should be responded with development resources (which
+ * be unstable).
+ */
+exports.isDev = function (request) {
+  if (request.query && request.query.prod === 'true') return false;
+  if (request.hostname && request.hostname === 'localhost') return true;
+  return request.connection.remoteAddress === '77.139.207.58';
+};

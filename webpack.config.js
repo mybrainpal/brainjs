@@ -11,7 +11,6 @@ let webpackConfig = {
   context: path.join(__dirname, Constants.clientContext),
   entry  : Util.webpackEntries(),
   output : {
-    path         : path.join(__dirname, 'dist'),
     filename     : '[name].js',
     chunkFilename: '[id].[chunkhash].js',
     pathinfo     : true
@@ -67,6 +66,7 @@ let webpackConfig = {
     }]
 };
 
+webpackConfig.output.path = path.join(__dirname, Constants.publicDir, 'dev');
 webpackConfig.output.publicPath = 'http://brainpal.dev/';
 webpackConfig.module.loaders.push({
                                     test  : /\.(png|svg|woff|jpg|jpeg|gif)$/,

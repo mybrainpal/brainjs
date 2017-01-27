@@ -25,7 +25,8 @@ app.get('/serve/?:name/?:apiKey/brain.js', (request, response) => {
     url   : (request.headers ? request.headers.referer || '' : '').toLowerCase()
   });
   Auth.auth(requestCustomer).then((actualCustomer) => {
-    const brainJsPath = path.join(distPath, `${actualCustomer.name}.js`);
+    const brainJsPath =
+            path.join(distPath, `${Auth.isDev(request) ? 'dev/' : ''}${actualCustomer.name}.js`);
     fs.exists(brainJsPath, (exists) => {
       if (exists) {
         response.sendFile(brainJsPath);
