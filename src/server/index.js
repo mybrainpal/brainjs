@@ -2,6 +2,7 @@
  * Proudly created by ohad on 25/01/2017.
  */
 const express  = require('express'),
+      rollbar  = require('rollbar'),
       fs       = require('fs'),
       path     = require('path'),
       mongoose = require('mongoose'),
@@ -17,6 +18,9 @@ mongoose.Promise = global.Promise;
 const distPath = path.resolve(__dirname, '../../dist');
 app.use(express.static(distPath));
 console.log('Using static resources at ' + distPath);
+
+console.log('Initializing Rollbar.');
+app.use(rollbar.errorHandler('8df4cb488f724dfd9fe78b636b5db9a3'));
 
 app.get('/serve/?:name/?:apiKey/brain.js', (request, response) => {
   //noinspection JSUnresolvedVariable
