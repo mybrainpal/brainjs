@@ -1,5 +1,6 @@
 'use strict';
-const webpack                   = require('webpack'),
+const webpack   = require('webpack'),
+      validator = require('webpack-validator'),
       path      = require('path'),
       Util      = require('./src/common/util'),
       Constants = require('./src/common/const');
@@ -72,4 +73,4 @@ webpackConfig.module.loaders.push({
                                     loader: 'url-loader?limit=10000000&name=[path][name].[ext]'
                                   });
 
-module.exports = webpackConfig;
+module.exports  = validator(webpackConfig);

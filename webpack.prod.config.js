@@ -1,5 +1,6 @@
 'use strict';
-const webpack = require('webpack');
+const webpack   = require('webpack'),
+      validator = require('webpack-validator');
 
 if (process.env.NODE_ENV !== 'production') {
   throw Error('NODE_ENV must be "production" when using webpack.prod.config.js.');
@@ -21,4 +22,4 @@ webpackProdConfig.module.loaders.push({
                                       });
 webpackProdConfig.output.publicPath = 'http://cdn.brainpal.io/';
 
-module.exports = webpackProdConfig;
+module.exports = validator(webpackProdConfig);
