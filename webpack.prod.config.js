@@ -1,8 +1,9 @@
 'use strict';
-const webpack   = require('webpack'),
-      validator = require('webpack-validator'),
-      path      = require('path'),
-      Constants = require('./src/common/const');
+const webpack           = require('webpack'),
+      validator         = require('webpack-validator'),
+      path              = require('path'),
+      Util = require('./src/common/util'),
+      Constants         = require('./src/common/const');
 
 if (process.env.NODE_ENV !== 'production') {
   throw Error('NODE_ENV must be "production" when using webpack.prod.config.js.');
@@ -23,6 +24,7 @@ webpackProdConfig.module.loaders.push({
                                         loader: 'url-loader?limit=10000&name=[path][name].[ext]'
                                       });
 
+webpackProdConfig.entry = Util.webpackEntries();
 webpackProdConfig.output.path       = Constants.publicDir;
 webpackProdConfig.output.publicPath = Constants.productionPublicPath;
 

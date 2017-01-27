@@ -9,7 +9,6 @@ if (!process.env.NODE_ENV) process.env.NODE_ENV = 'development';
 
 let webpackConfig = {
   context: path.join(__dirname, Constants.clientContext),
-  entry  : Util.webpackEntries(),
   output : {
     filename     : '[name].js',
     chunkFilename: '[id].[chunkhash].js',
@@ -67,9 +66,10 @@ let webpackConfig = {
     }]
 };
 
-webpackConfig.output.path = path.join(__dirname, Constants.publicDir, Constants.devDistDir);
-webpackConfig.output.publicPath =
-  process.env.NODE_ENV === 'production' ? Constants.productionPublicPath : 'http://brainpal.dev/';
+webpackConfig.entry             = Util.webpackEntries(Constants.devDistDir);
+webpackConfig.output.path       = path.join(__dirname, Constants.publicDir, Constants.devDistDir);
+webpackConfig.output.publicPath = process.env.NODE_ENV === 'production' ?
+                                  Constants.productionPublicPath : Constants.localPublicPath;
 webpackConfig.module.loaders.push({
                                     test  : /\.(png|svg|woff|jpg|jpeg|gif)$/,
                                     loader: 'url-loader?limit=10000000&name=[path][name].[ext]'

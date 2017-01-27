@@ -29,5 +29,20 @@ describe('CommonUtil', function () {
         a: './' + path.join(Constants.configurationDir, 'a.js'),
         b: './' + path.join(Constants.configurationDir, 'b.js'),
       });
-  })
+    fse.removeSync(configDir);
+  });
+  it('webpack entries - sub path', () => {
+    const configDir    = path.join(testDirPath, Constants.configurationDir);
+    const configDevDir = path.join(configDir, Constants.devDistDir);
+    fse.mkdirSync(configDir);
+    fse.mkdirSync(configDevDir);
+    fse.writeFileSync(path.join(configDevDir, 'a.js'), '');
+    fse.writeFileSync(path.join(configDevDir, 'b.js'), '');
+    expect(Util.webpackEntries(Constants.devDistDir)).to.deep.equal(
+      {
+        a: './' + path.join(Constants.configurationDir, Constants.devDistDir, 'a.js'),
+        b: './' + path.join(Constants.configurationDir, Constants.devDistDir, 'b.js'),
+      });
+    fse.removeSync(configDir);
+  });
 });

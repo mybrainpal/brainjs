@@ -32,6 +32,11 @@ exports.publicDir = 'dist';
 exports.productionPublicPath = 'http://cdn.brainpal.io/';
 
 /**
+ * Alias for local BrainPal Node app.
+ * @type {string}
+ */
+exports.localPublicPath = 'http://brainpal.dev/';
+/**
  * Name of sub directory for dev dist (webpack output) files.
  * @type {string}
  */
