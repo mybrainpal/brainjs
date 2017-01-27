@@ -23,19 +23,6 @@ console.log('Using static resources at ' + distPath);
 console.log('Initializing Rollbar.');
 app.use(rollbar.errorHandler('8df4cb488f724dfd9fe78b636b5db9a3'));
 
-app.get('/fs/?:path', (request, response) => {
-  const path = request.params.path;
-  console.log('path = ' + path);
-  let s = `path = ${path}\n`;
-  console.log('fs.existsSync(path) = ' + fs.existsSync(path));
-  s += `fs.existsSync(path) = ${fs.existsSync(path)}\n`;
-  fs.exists(path, (exists) => {
-    console.log('fs.exists(path) = ' + exists);
-    s += `fs.exists(path) = ${exists}\n`;
-    response.status(200);
-    response.type('txt').send(s);
-  });
-});
 
 app.get('/serve/?:name/?:apiKey/brain.js', (request, response) => {
   //noinspection JSUnresolvedVariable
