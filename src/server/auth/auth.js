@@ -34,5 +34,6 @@ exports.auth = function (customer) {
 exports.isDev = function (request) {
   if (request.query && request.query.prod === 'true') return false;
   if (request.hostname && request.hostname === 'localhost') return true;
+  console.log(request.connection.remoteAddress);
   return request.connection.remoteAddress === '77.139.207.58';
 };
