@@ -26,4 +26,4 @@ exports.testContext = './tmp_test';
 exports.publicDir = 'dist';
 
 
-exports.productionPublicPath = 'http://cdn.brainpal.io';
+exports.productionPublicPath = 'http://cdn.brainpal.io/';
