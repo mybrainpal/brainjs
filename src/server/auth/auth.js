@@ -31,7 +31,7 @@ exports.auth = function (customer) {
  */
 exports.isDev = function (request) {
   if (request.query && request.query.prod === 'true') return false;
-  if (request.hostname && request.hostname === 'localhost') return true;
+  if (request.hostname === 'localhost') return true;
   return typeof request.headers === 'object' &&
          request.headers['x-forwarded-for'] === '77.139.207.58';
 };
