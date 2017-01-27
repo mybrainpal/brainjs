@@ -1,17 +1,16 @@
 'use strict';
-const webpack = require('webpack'),
-      glob = require('glob'),
-      path    = require('path');
+const webpack                   = require('webpack'),
+      path      = require('path'),
+      Util      = require('./src/common/util'),
+      Constants = require('./src/common/const');
 
 if (!process.env.NODE_ENV) process.env.NODE_ENV = 'development';
-const relativeContext = './src/client';
 
 let webpackConfig = {
-  context: path.join(__dirname, relativeContext),
-  entry  : entries(),
+  context: path.join(__dirname, Constants.clientContext),
+  entry  : Util.webpackEntries(),
   output : {
     path         : path.join(__dirname, 'dist'),
-    publicPath   : 'http://brainpal.dev/',
     filename     : '[name].js',
     chunkFilename: '[id].[chunkhash].js',
     pathinfo     : true
@@ -67,40 +66,10 @@ let webpackConfig = {
     }]
 };
 
-if (process.env.NODE_ENV === 'production') {
-  webpackConfig.plugins.push(new webpack.optimize.UglifyJsPlugin({
-    sourceMap: true,
-    compress : {
-      warnings: false
-    }
-  }));
-  webpackConfig.plugins.push(new webpack.optimize.MinChunkSizePlugin({minChunkSize: 50000}));
-  webpackConfig.plugins.push(new webpack.optimize.DedupePlugin());
-  webpackConfig.module.loaders.push({
-                                      test  : /\.(png|svg|woff|jpg|jpeg|gif)$/,
-                                      loader: 'url-loader?limit=10000&name=[path][name].[ext]'
-                                    });
-  webpackConfig.output.publicPath = 'http://cdn.brainpal.io/';
-} else {
-  webpackConfig.module.loaders.push({
-                                      test  : /\.(png|svg|woff|jpg|jpeg|gif)$/,
-                                      loader: 'url-loader?limit=10000000&name=[path][name].[ext]'
-                                    });
-}
-
-/**
- * @returns {Object} entry per customer for the webpack config.
- */
-function entries() {
-  const configurationsSubpath = 'configurations';
-  const configurationFiles    = glob.sync(
-    path.join(relativeContext, configurationsSubpath) + '/*.js');
-  let entries                 = {};
-  for (let i = 0; i < configurationFiles.length; i++) {
-    entries[path.basename(configurationFiles[i], '.js')] =
-      './' + path.join(configurationsSubpath, path.basename(configurationFiles[i]));
-  }
-  return entries;
-}
+webpackConfig.output.publicPath = 'http://brainpal.dev/';
+webpackConfig.module.loaders.push({
+                                    test  : /\.(png|svg|woff|jpg|jpeg|gif)$/,
+                                    loader: 'url-loader?limit=10000000&name=[path][name].[ext]'
+                                  });
 
 module.exports = webpackConfig;
