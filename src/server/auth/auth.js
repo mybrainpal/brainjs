@@ -8,20 +8,29 @@ const Customer = require('./customer');
  * rejected otherwise.
  */
 exports.auth = function (customer) {
-  return new Promise(function (resolve, reject) {
-    Customer.findOne({apiKey: customer.apiKey}, function (error, _customer) {
-      if (error) {
-        reject(error);
-      }
-      if (_customer) {
-        if (customer.url && _customer.url && _customer.url.indexOf(customer.url) === -1 &&
-            customer.url.indexOf(_customer.url) === -1) {
+  return new Promise((resolve, reject) => {
+    Customer.findOne({apiKey: customer.apiKey}, (error, actualCustomer) => {
+      if (error) reject(error);
+      if (actualCustomer) {
+        if (customer.url && actualCustomer.url && actualCustomer.url.indexOf(customer.url) === -1 &&
+            customer.url.indexOf(actualCustomer.url) === -1) {
           console.warn(
-            `Invalid referer: ${customer.url} FOR ${_customer.name} (${_customer.apiKey})`);
+            `Invalid referer: ${customer.url} FOR ${actualCustomer.name} (${actualCustomer.apiKey})`);
         }
-        resolve(_customer);
+        resolve(actualCustomer);
       }
-      reject();
+      if (customer.name) {
+        Customer.findOne({name: customer.name}, (error, otherCustomer) => {
+          if (error) reject(error);
+          if (otherCustomer.apiKey) {
+            reject(null, otherCustomer.apiKey);
+          } else {
+            reject();
+          }
+        })
+      } else {
+        reject();
+      }
     });
   });
 };

@@ -30,6 +30,7 @@ app.get('/serve/?:name/?:apiKey/brain.js', (request, response) => {
             path.join(distPath, `${Auth.isDev(request) ? 'dev/' : ''}${actualCustomer.name}.js`);
     fs.exists(brainJsPath, (exists) => {
       if (exists) {
+        console.log(`Serving ${brainJsPath} for ${actualCustomer.name}`);
         response.sendFile(brainJsPath);
       } else {
         console.error('Bad news.. could not find brain.js at ' + brainJsPath);
@@ -37,11 +38,14 @@ app.get('/serve/?:name/?:apiKey/brain.js', (request, response) => {
         response.type('txt').send('');
       }
     })
-  }).catch((error) => {
+  }).catch((error, correctApiKey) => {
     if (error) {
       console.error(`Failed to authenticate ${requestCustomer.name} (${requestCustomer.apiKey}) ` +
                     `because ${error.toString()}`);
     } else {
+      console.warn(`Seems like ${requestCustomer.name} (${requestCustomer.apiKey}) ` +
+                   `is not our customer.. yet! Wrong apiKey?` +
+                   `${correctApiKey ? ' Try ' + correctApiKey : ''}`);
       response.status(403);
       response.type('txt').send('');
     }
