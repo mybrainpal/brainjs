@@ -31,6 +31,7 @@ app.get('/serve/?:name/?:apiKey/brain.js', (request, response) => {
       if (exists) {
         response.sendFile(brainJsPath);
       } else {
+        console.error('Bad news.. could not find brain.js at ' + brainJsPath);
         response.status(500);
         response.type('txt').send('');
       }
