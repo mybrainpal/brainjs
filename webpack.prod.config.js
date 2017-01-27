@@ -24,6 +24,6 @@ webpackProdConfig.module.loaders.push({
                                       });
 
 webpackProdConfig.output.path = path.join(__dirname, Constants.publicDir);
-webpackProdConfig.output.publicPath = 'http://cdn.brainpal.io/';
+webpackProdConfig.output.publicPath = Constants.productionPublicPath;
 
 module.exports = validator(webpackProdConfig);

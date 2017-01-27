@@ -60,17 +60,19 @@ let webpackConfig = {
     }),
     function () {
       this.plugin('watch-run', function (watching, callback) {
-        console.log(process.env.NODE_ENV + ' compile at ' + new Date());
+        console.log(process.env.NODE_ENV + ' compile at ' + new Date() + ' under ' +
+                    webpackConfig.output.publicPath);
         callback();
       })
     }]
 };
 
-webpackConfig.output.path = path.join(__dirname, Constants.publicDir, 'dev');
-webpackConfig.output.publicPath = 'http://brainpal.dev/';
+webpackConfig.output.path       = path.join(__dirname, Constants.publicDir, 'dev');
+webpackConfig.output.publicPath =
+  process.env.NODE_ENV === 'production' ? Constants.productionPublicPath : 'http://brainpal.dev/';
 webpackConfig.module.loaders.push({
                                     test  : /\.(png|svg|woff|jpg|jpeg|gif)$/,
                                     loader: 'url-loader?limit=10000000&name=[path][name].[ext]'
                                   });
 
-module.exports  = validator(webpackConfig);
+module.exports = validator(webpackConfig);
