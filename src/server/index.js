@@ -34,7 +34,8 @@ app.get('/serve/?:name/?:apiKey/brain.js', (request, response) => {
             path.join(distPath, `${Auth.isDev(request) ? 'dev/' : ''}${actualCustomer.name}.js`);
     fs.exists(brainJsPath, (exists) => {
       if (exists) {
-        console.log(`Serving ${brainJsPath} for ${actualCustomer.name}`);
+        console.log(`Serving ${Auth.isDev(request) ? 'DEV ' : ''}` +
+                    `${brainJsPath} for ${actualCustomer.name}`);
         response.sendFile(brainJsPath);
       } else {
         console.error('Bad news.. could not find brain.js at ' + brainJsPath);
