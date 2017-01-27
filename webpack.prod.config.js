@@ -23,7 +23,7 @@ webpackProdConfig.module.loaders.push({
                                         loader: 'url-loader?limit=10000&name=[path][name].[ext]'
                                       });
 
-webpackProdConfig.output.path = path.join(__dirname, Constants.publicDir);
+webpackProdConfig.output.path       = Constants.publicDir;
 webpackProdConfig.output.publicPath = Constants.productionPublicPath;
 
 module.exports = validator(webpackProdConfig);
