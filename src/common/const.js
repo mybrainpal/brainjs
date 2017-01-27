@@ -25,5 +25,14 @@ exports.testContext = './tmp_test';
  */
 exports.publicDir = 'dist';
 
-
+/**
+ * Alias for BrainPal Node app.
+ * @type {string}
+ */
 exports.productionPublicPath = 'http://cdn.brainpal.io/';
+
+/**
+ * Name of sub directory for dev dist (webpack output) files.
+ * @type {string}
+ */
+exports.devDistDir = 'dev';

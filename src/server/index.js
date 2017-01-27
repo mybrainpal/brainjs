@@ -1,14 +1,15 @@
 /**
  * Proudly created by ohad on 25/01/2017.
  */
-const express  = require('express'),
-      rollbar  = require('rollbar'),
-      fs       = require('fs'),
-      path     = require('path'),
-      mongoose = require('mongoose'),
-      Customer = require('./auth/customer'),
-      Auth     = require('./auth/auth');
-let app        = express();
+const express   = require('express'),
+      rollbar   = require('rollbar'),
+      fs        = require('fs'),
+      path      = require('path'),
+      mongoose  = require('mongoose'),
+      Customer  = require('./auth/customer'),
+      Auth      = require('./auth/auth'),
+      Constants = require('../common/const');
+let app         = express();
 
 process.env.PORT = process.env.PORT || 5000;
 app.set('port', process.env.PORT);
@@ -30,8 +31,9 @@ app.get('/serve/?:name/?:apiKey/brain.js', (request, response) => {
     url   : (request.headers ? request.headers.referer || '' : '').toLowerCase()
   });
   Auth.auth(requestCustomer).then((actualCustomer) => {
-    const brainJsPath =
-            path.join(distPath, `${Auth.isDev(request) ? 'dev/' : ''}${actualCustomer.name}.js`);
+    const brainJsPath = Auth.isDev(request) ?
+                        path.join(distPath, Constants.devDistDir, `${actualCustomer.name}.js`) :
+                        path.join(distPath, `${actualCustomer.name}.js`);
     fs.exists(brainJsPath, (exists) => {
       if (exists) {
         response.sendFile(brainJsPath);

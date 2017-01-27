@@ -67,7 +67,7 @@ let webpackConfig = {
     }]
 };
 
-webpackConfig.output.path       = path.join(__dirname, Constants.publicDir, 'dev');
+webpackConfig.output.path = path.join(__dirname, Constants.publicDir, Constants.devDistDir);
 webpackConfig.output.publicPath =
   process.env.NODE_ENV === 'production' ? Constants.productionPublicPath : 'http://brainpal.dev/';
 webpackConfig.module.loaders.push({
