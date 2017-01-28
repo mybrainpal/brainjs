@@ -19,6 +19,7 @@ let Client  = require('../common/client'),
  *  @property {Object} [anchor] - a container for event and collection of elements
  *      @property {string} [selector] - of collection of elements to listen for event.
  *      @property {string} [event] - to listen.
+ *      @property {boolean} [once = true] - whether to collect data on this anchor more than once.
  *  @property {Object} [client] - container for Client properties to collect.
  *      @property {Array.<string>} [properties] - 'agent.os' for `Client.agent.os`
  *  @property {Experiment} [experiment] - that encompasses this data collection.
@@ -63,13 +64,16 @@ exports.collect = function (options) {
     }
     targets.forEach((target) => {
       if (target instanceof EventTarget) {
-        target.addEventListener(options.anchor.event, () => {
+        const handler = _.on(options.anchor.event, () => {
           let emitted;
           emitted = _createSubject(_.deepExtend({anchor: {target: target}}, options));
           if (!_.isEmpty(emitted)) {
             Storage.save(emitted);
           }
-        });
+          if (!_.has(options.anchor, 'once') || options.anchor.once) {
+            _.off(options.anchor.event, handler, target, true);
+          }
+        }, {}, target, true);
       }
     });
   } else {

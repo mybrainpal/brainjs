@@ -11,10 +11,9 @@ let chai            = require('chai'),
 
 chai.use(require('chai-spies'));
 
-
 describe('Collector', function () {
   this.timeout(100);
-  let div, a1, a2, span1, span2, p, a3, span3;
+  let div, a1, a2, span1, span2, p, a3, span3, id = 0;
   before(() => {
     div = document.createElement('div');
     div.setAttribute('id', 'fight-club');
@@ -56,6 +55,7 @@ describe('Collector', function () {
     div.parentNode.removeChild(div);
   });
   beforeEach(() => {
+    ++id;
     InMemoryStorage.flush();
   });
   afterEach(() => {
@@ -86,9 +86,9 @@ describe('Collector', function () {
   it('save a subject with anchor', (done) => {
     Collector.collect({
                         dataProps: [{name: 'rule', selector: '#fight-club>span'}],
-                        anchor   : {selector: '#fight-club>a.fight', event: 'click'}
+                        anchor   : {selector: '#fight-club>a.fight', event: id.toString()}
                       });
-    _.trigger('click', {}, a1);
+    _.trigger(id.toString(), {}, a1);
     setTimeout(() => {
       expect(_countSubjects()).to.equal(1);
       expect(InMemoryStorage.storage[0]).to.include.keys('subject', 'anchor');
@@ -96,20 +96,52 @@ describe('Collector', function () {
       expect(InMemoryStorage.storage[0].subject.rule).to.equal(span1.textContent);
       expect(InMemoryStorage.storage[0].anchor).to.include
                                                .keys('event', 'selector', 'targetText');
-      expect(InMemoryStorage.storage[0].anchor.event).to.equal('click');
+      expect(InMemoryStorage.storage[0].anchor.event).to.equal(id.toString());
       expect(InMemoryStorage.storage[0].anchor.selector).to.equal('#fight-club>a.fight');
       expect(InMemoryStorage.storage[0].anchor.targetText).to.equal(a1.textContent);
       done();
     });
   });
+  it('save once = true', (done) => {
+    Collector.collect({
+                        dataProps: [{name: 'rule', selector: '#fight-club>span'}],
+                        anchor   : {
+                          selector: '#fight-club>a.fight', event: id.toString(), once: true
+                        }
+                      });
+    _.trigger(id.toString(), {}, a1);
+    setTimeout(() => {
+      _.trigger(id.toString(), {}, a1);
+      setTimeout(() => {
+        expect(_countSubjects()).to.equal(1);
+        done();
+      });
+    });
+  });
+  it('save once = false', (done) => {
+    Collector.collect({
+                        dataProps: [{name: 'rule', selector: '#fight-club>span'}],
+                        anchor   : {
+                          selector: '#fight-club>a.fight', event: id.toString(), once: false
+                        }
+                      });
+    _.trigger(id.toString(), {}, a1);
+    setTimeout(() => {
+      _.trigger(id.toString(), {}, a1);
+      setTimeout(() => {
+        expect(_countSubjects()).to.equal(2);
+        done();
+      });
+    }, 10);
+  });
   it('iterative selector', (done) => {
     Collector.collect({
                         dataProps   : [{name: 'look', selector: 'span'}],
-                        anchor      : {selector: 'a', event: 'click'},
+                        anchor      : {selector: 'a', event: id.toString()},
                         iterSelector: '#fight-club>p'
                       });
     document.querySelectorAll('#fight-club>p>a').forEach(function (a) {
-      _.trigger('click', {}, a);
+      _.trigger(id.toString(), {}, a);
     });
     expect(_countSubjects()).to.equal(2);
     for (let i = 0; i < InMemoryStorage.storage.length; i++) {
@@ -118,7 +150,7 @@ describe('Collector', function () {
       expect(InMemoryStorage.storage[i].subject.look).to.equal(span3.textContent);
       expect(InMemoryStorage.storage[i].anchor).to.include
                                                .keys('event', 'selector', 'targetText');
-      expect(InMemoryStorage.storage[i].anchor.event).to.equal('click');
+      expect(InMemoryStorage.storage[i].anchor.event).to.equal(id.toString());
       expect(InMemoryStorage.storage[i].anchor.selector).to.equal('a');
       expect(InMemoryStorage.storage[i].anchor.targetText).to.equal(a3.textContent);
     }
@@ -127,10 +159,10 @@ describe('Collector', function () {
   it('save a subject with anchor with multiple targets', (done) => {
     Collector.collect({
                         dataProps: [{name: 'rule', selector: '#fight-club>span'}],
-                        anchor   : {selector: '#fight-club>span', event: 'click'}
+                        anchor   : {selector: '#fight-club>span', event: id.toString()}
                       });
-    _.trigger('click', {}, span1);
-    _.trigger('click', {}, span2);
+    _.trigger(id.toString(), {}, span1);
+    _.trigger(id.toString(), {}, span2);
     setTimeout(() => {
       expect(_countSubjects()).to.equal(2);
       done();
@@ -142,7 +174,7 @@ describe('Collector', function () {
     expect(_countSubjects()).to.equal(0);
   });
   it('failed to select anchor', () => {
-    Collector.collect({anchor: {selector: '#effi', event: 'click'}});
+    Collector.collect({anchor: {selector: '#effi', event: id.toString()}});
     expect(_countSubjects()).to.equal(0);
   });
   it('missing event name', () => {
@@ -155,10 +187,10 @@ describe('Collector', function () {
   it('client is empty', (done) => {
     Collector.collect({
                         dataProps: [{name: 'rule', selector: '#fight-club>span'}],
-                        anchor   : {selector: '#fight-club>p', event: 'click'},
+                        anchor   : {selector: '#fight-club>p', event: id.toString()},
                         client   : []
                       });
-    _.trigger('click', {}, p);
+    _.trigger(id.toString(), {}, p);
     setTimeout(() => {
       expect(_countSubjects()).to.equal(1);
       expect(InMemoryStorage.storage[0]).to.not.include.keys('client');
@@ -169,11 +201,11 @@ describe('Collector', function () {
     Collector.collect({
                         dataProps: [{name: 'rule', selector: '#fight-club>span'}],
                         anchor   : {
-                          selector: '#fight-club>a:last-of-type', event: 'click'
+                          selector: '#fight-club>a:last-of-type', event: id.toString()
                         },
                         client   : {properties: ['some-prop', 'agent.garbage']}
                       });
-    _.trigger('click', {}, a2);
+    _.trigger(id.toString(), {}, a2);
     setTimeout(() => {
       expect(_countSubjects()).to.equal(1);
       expect(InMemoryStorage.storage[0]).to.not.include.keys('client');
