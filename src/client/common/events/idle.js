@@ -50,7 +50,7 @@ class IdleEvent {
         _.isString(options.detailOrId)) {
       this.detailOrId = options.detailOrId;
     } else if (!_.isNil(options.detailOrId)) {
-      throw new BaseError('IdleEvent: detailOrId is not an object.');
+      throw new BaseError('IdleEvent: detailOrId is not an object, number or string.');
     }
     this._init();
   }

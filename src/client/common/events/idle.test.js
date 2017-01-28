@@ -32,7 +32,7 @@ describe('IdleEvent', function () {
     idle = new IdleEvent(options);
   });
   it('event does fires if instance is destroyed', (done) => {
-    _.on(Factory.eventName(IdleEvent.name()), () => {done()});
+    _.on(Factory.eventName(IdleEvent.name()), () => {done()}, id);
     //noinspection JSUnusedAssignment
     idle = new IdleEvent(options);
     idle = null;
