@@ -14,7 +14,7 @@
  * Initializes Google Analytics script.
  * @param options
  *  @property {string} [trackerName=BrainPal]
- *  @property {string} [trackingId=UA-88758826-1]
+ *  @property {string} [trackingId=UA-91064115-1]
  */
 exports.init = function (options) {
   (function (window, document, scriptTagName, src, name, gaScript, firstScript) {
@@ -78,7 +78,7 @@ function _updateTrackerName(trackerName) {
  * @type {string}
  * @private
  */
-let _trackingId    = 'UA-88758826-1';
+let _trackingId = 'UA-91064115-1';
 exports.trackingId = _trackingId;
 
 /**
