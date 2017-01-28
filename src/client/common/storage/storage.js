@@ -57,6 +57,7 @@ function _storageSwitch(newStorage, options) {
     }
     InMemoryStorage.flush();
   };
-  if (newStorage.init) { newStorage.init(options, onReady()); }
-  else { onReady(); }
+  if (newStorage.init) {
+    newStorage.init(options, onReady);
+  } else { onReady(); }
 }
