@@ -172,10 +172,8 @@ const configuration    = {
                         .end();
                     });
                     setTimeout(() => {
-                      document.querySelector('#PriceView').textContent =
-                        '';
-                      document.querySelector('#PriceView').style.color =
-                        'red';
+                      document.querySelector('#PriceView').textContent = '';
+                      document.querySelector('#PriceView').style.color = 'red';
                       typer('#PriceView').listen('brainpal-title-1')
                                          .cursor({blink: 'soft'})
                                          .line('₪2499')
