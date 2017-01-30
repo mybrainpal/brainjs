@@ -16,7 +16,7 @@ const _                = require('../../common/util/wrapper'),
       SwalExecutor     = require('../../manipulation/execute/interface/sweetalert');
 const configuration    = {
   storage    : {
-    name: 'local'
+    name: 'console'
   },
   experiments: [
     {
@@ -81,9 +81,11 @@ const configuration    = {
                 }
               },
               {
-                on     : GalleryInterface.readyEvent(),
                 name   : RemoveExecutor.name,
-                options: {targets: ['.group_sale_image>img']}
+                options: {
+                  targets: ['.group_sale_image>img'],
+                  on     : GalleryInterface.readyEvent()
+                }
               },
               {
                 name   : TyperExecutor.name,
