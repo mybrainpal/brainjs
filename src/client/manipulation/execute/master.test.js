@@ -6,7 +6,7 @@ let _         = require('../../common/util/wrapper'),
     expect    = require('chai').expect,
     Executor  = require('./master');
 
-describe.only('Executor', function () {
+describe('Executor', function () {
   this.timeout(100);
   let form, input, id = 0;
   before(() => {
@@ -32,8 +32,12 @@ describe.only('Executor', function () {
     form.appendChild(input2);
     expect(() => {Executor.execute('form', {target: '#input2'})}).to.not.throw(Error);
     expect(() => {Executor.execute('form', {target: '#input2', on: true})}).to.not.throw(Error);
-    expect(() => {Executor.execute('form', {target: '#input2', on: 'bla-bla'})}).to.not
-                                                                                .throw(Error);
+    expect(() => {
+      Executor.execute('form', {target: '#input2', on: true, once: true})
+    }).to.not.throw(Error);
+    expect(() => {
+      Executor.execute('form', {target: '#input2', on: 'bla-bla'})
+    }).to.not.throw(Error);
     expect(() => {
       Executor.execute('form', {target: '#input2', on: true, off: 'bal-bla'})
     }).to.not.throw(Error);
@@ -44,9 +48,12 @@ describe.only('Executor', function () {
         off   : {event: 'bro', target: 'body', id: 'the-next-app'}
       })
     }).to.not.throw(Error);
-
+    // Should throw.
     expect(() => {Executor.execute('form', {target: '#input2', id: {}})}).to.throw(BaseError);
     expect(() => {Executor.execute('form', {target: '#input2', on: () => {}})}).to.throw(BaseError);
+    expect(() => {
+      Executor.execute('form', {target: '#input2', on: true, once: () => {}})
+    }).to.throw(BaseError);
     expect(() => {
       Executor.execute('form', {target: '#input2', on: true, off: () => {}})
     }).to.throw(BaseError);
@@ -121,6 +128,19 @@ describe.only('Executor', function () {
       _.trigger('messiah-came', id, 'body');
       setTimeout(() => {
         expect(document.activeElement).to.be.equal(input);
+        done();
+      });
+    });
+  });
+  it('once', (done) => {
+    Executor.execute('form', {target: '#input', id: id, focus: true, on: true, once: true});
+    _.trigger(Executor.eventName('form'), id);
+    setTimeout(() => {
+      expect(document.activeElement).to.be.equal(input);
+      input.blur();
+      _.trigger(Executor.eventName('form'), id);
+      setTimeout(() => {
+        expect(document.activeElement).to.not.equal(input);
         done();
       });
     });

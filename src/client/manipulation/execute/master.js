@@ -29,8 +29,10 @@ exports.register = function (module) {
  *  @property {string|number} [id]
  *  @property {boolean} [toLog = (process.env.NODE_ENV !== 'test')] - whether to log the executor
  *  flow.
- *  @property {string|boolean} [on] - event name to execute on. use `true` to execute on
+ *  @property {string|boolean|object} [on] - event name to execute on. use `true` to execute on
  *  `_.on(eventName(name), .. , id)`
+ *  @property {string|object} [off] - event name to prevent execution.
+ *  @property {boolean} [once] - whether to execute only once per each on.event triggered.
  * @returns {Object} this module.
  */
 exports.execute = function (name, options = {}) {
@@ -38,7 +40,12 @@ exports.execute = function (name, options = {}) {
   let executeHandler;
   if (options.on) {
     executeHandler = _.on(options.on.event,
-                          () => {_executorByName[name].execute(options)},
+                          () => {
+                            _executorByName[name].execute(options);
+                            if (options.once) {
+                              _.off(options.on.event, executeHandler, options.on.target);
+                            }
+                          },
                           options.id,
                           options.on.target);
     if (options.off) {
@@ -81,6 +88,12 @@ function _preconditions(name, options) {
   }
   if (options.on === true) options.on = exports.eventName(name);
   if (_.isString(options.on)) options.on = {event: options.on};
+  if (!_.isNil(options.once) && !_.isBoolean(options.once)) {
+    throw new BaseError('Executor: once must be nil or a boolean.');
+  } else if (!_.isNil(options.once) && _.isNil(options.on)) {
+    Logger.log(Level.WARNING,
+               'Executor: options.once should only exist when options.on do.');
+  }
   if (!_.isNil(options.off) && !_.isString(options.off) && !_.isBoolean(options.off) &&
       !_.isObject(options.off)) {
     throw new BaseError('Executor: off must be a string, a boolean, or an object');
