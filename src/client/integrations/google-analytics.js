@@ -34,8 +34,8 @@ exports.init = function (options) {
   if (options.trackerName) {
     _updateTrackerName(options.trackerName);
   }
-  if (options.trackerId) {
-    _updateTrackingId(options.trackerId);
+  if (options.trackingId) {
+    _updateTrackingId(options.trackingId);
   }
   if (options.cookieDomain) {
     _updateCookieDomain(options.cookieDomain);
