@@ -26,7 +26,7 @@ ExperimentGroup.prototype.isClientIncluded = true;
 
 /**
  * @param options
- *  @property {string} experimentId - should not be supplied by customerConfiguration.
+ *  @property {string} experimentId - should not be supplied by a customer configuration.
  *  @property {string} [label]
  *  @property {Object} [demographics] - which part of the population should this group include.
  *                                      By default all users are included. In sharp contrast to
@@ -34,9 +34,7 @@ ExperimentGroup.prototype.isClientIncluded = true;
  *  @property {Array.<Object>} [executors] - DOM manipulations that should be executed for this
  *                                           group participants.
  *      @property {string} name - of executor, such as 'style'.
- *      @property {string|Array.<string>} selectors - of the elements that should be manipulated by
- *     the executor.
- *      @property {Object} options - extra options, such as ascending or descending sort.
+ *      @property {Object} options - extra options for the executors.
  */
 ExperimentGroup.prototype.options = function (options) {
   if (options.experimentId) {
