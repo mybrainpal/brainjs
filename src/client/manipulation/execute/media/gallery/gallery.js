@@ -25,9 +25,9 @@ exports.execute = function (options) {
   }
   let container = document.querySelector(options.container);
   container.appendChild(_createGallery(container, options));
+  _.trigger(Interface.readyEvent(), options.id);
   if (_.isVisible(container.querySelector(`.${styles.component}`))) {
     if (options.toLog) Logger.log(Level.INFO, 'Gallery create at ' + options.container);
-    _.trigger(Interface.readyEvent(), options.id);
   } else if (options.toLog) {
     Logger.log(Level.WARNING, 'Failed to create gallery at ' + options.container);
   }

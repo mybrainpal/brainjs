@@ -114,7 +114,7 @@ const configuration    = {
                         .emit('brainpal-title-done')
                         .pause(200)
                         .end();
-                    });
+                    }, 500);
                     setTimeout(() => {
                       document.querySelector('#PriceView').textContent =
                         '';
