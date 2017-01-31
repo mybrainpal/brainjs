@@ -31,7 +31,6 @@ module.exports = function (configuration) {
   } else {
     Logger.log(Level.WARNING, 'configuration: missing storage.');
   }
-  Client.init();
   if (configuration.hasOwnProperty('collect')) {
     for (let i = 0; i < configuration.collect.length; i++) {
       Collector.collect(configuration.collect[i]);
