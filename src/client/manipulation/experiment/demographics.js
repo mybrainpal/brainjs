@@ -71,7 +71,7 @@ function _satisfyProperty(property) {
  */
 function _moduloInclude(moduloIds, moduloOf) {
   if (Client.id && _.isNumber(Client.id)) {
-    return moduloIds.indexOf(Client.id % moduloOf) != -1;
+    return moduloIds.indexOf(Client.id % moduloOf) !== -1;
   }
   return false;
 

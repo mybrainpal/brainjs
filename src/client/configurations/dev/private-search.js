@@ -4,13 +4,25 @@
 const Play = require('../../play');
 
 const configuration = {
-  storage: {
+  storage    : {
     name   : 'google-analytics',
     options: {
       trackingId: 'UA-91064115-2'
     }
   },
-  experiments: [],
+  experiments: [
+    {
+      experiment: {},
+      options   : {
+        subjectOptions: {
+          anchor: {
+            selector: 'a.button',
+            event   : 'click'
+          }
+        }
+      }
+    }
+  ],
 
 };
 

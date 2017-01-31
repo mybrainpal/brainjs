@@ -10,6 +10,9 @@
  *     <li> OnLoad event for GA script.</li>
  * </ul>
  */
+const Client = require('../common/client'),
+      Logger = require('../common/log/logger'),
+      Level  = require('../common/log/logger').Level;
 /**
  * Initializes Google Analytics script.
  * @param options
@@ -41,12 +44,20 @@ exports.init = function (options) {
     _updateCookieDomain(options.cookieDomain);
   }
 
-  ga('create', {
+  window.ga('create', {
     trackingId  : _trackingId,
     cookieDomain: _cookieDomain,
     name        : _trackerName
   });
-  ga(_trackerName + '.send', 'pageview');
+  window.ga(_trackerName + '.send', 'pageview');
+  window.ga((tracker) => {
+    try {
+      Client.id = tracker.get('clientId');
+      if (!Client.id) delete Client.id;
+    } catch (e) {
+      Logger.log(Level.WARNING, 'No client ID from Google Analytics.');
+    }
+  });
 };
 
 /**

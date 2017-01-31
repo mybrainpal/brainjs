@@ -3,17 +3,6 @@
  *
  * Properties of the lucky client running BrainPal.
  */
-//noinspection JSUnusedLocalSymbols
-/**
- * Initializes with the client properties.
- * @param {Object} [options]
- */
-exports.init = function init(options) {
-  // TODO(ohad): populate with real values.
-  exports.id = 1234;
-};
-
-
 /**
  * Browser, OS and their major version.
  * @type {{
