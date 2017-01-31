@@ -11,7 +11,7 @@ const _                 = require('../../common/util/wrapper'),
 
 const configuration = {
   storage    : {
-    name   : Storage.names.CONSOLE,
+    name   : Storage.names.GOOGLE_ANALYTICS,
     options: {
       trackingId: 'UA-91064115-2'
     }
