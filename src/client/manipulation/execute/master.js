@@ -5,6 +5,8 @@
  */
   // TODO(ohad): add `prepare` method that initiates external resource loading.
 let _            = require('../../common/util/wrapper'),
+    Logger = require('../../common/log/logger'),
+    Level  = require('../../common/log/logger').Level,
     EventFactory = require('../../common/events/factory'),
     BaseError    = require('../../common/log/base.error');
 
@@ -33,9 +35,17 @@ exports.register = function (module) {
  */
 exports.execute = function (name, options = {}) {
   if (!_preconditions(name, options)) return exports;
-  if (options.on === true) options.on = exports.eventName(name);
+  let executeHandler;
   if (options.on) {
-    _.on(options.on, () => {_executorByName[name].execute(options)}, options.id);
+    executeHandler = _.on(options.on.event,
+                          () => {_executorByName[name].execute(options)},
+                          options.id,
+                          options.on.target);
+    if (options.off) {
+      _.on(options.off.event,
+           () => {_.off(options.on.event, executeHandler, options.on.target)},
+           options.off.id, options.off.target);
+    }
   } else {
     _executorByName[name].execute(options);
   }
@@ -65,9 +75,20 @@ function _preconditions(name, options) {
   if (!_.isNil(options.id) && !_.isString(options.id) && !_.isNumber(options.id)) {
     throw new BaseError('Executor: id must be a string or a number.');
   }
-  if (!_.isNil(options.on) && !_.isString(options.on) && !_.isBoolean(options.on)) {
-    throw new BaseError('Executor: on must be a string or a boolean.');
+  if (!_.isNil(options.on) && !_.isString(options.on) && !_.isBoolean(options.on) &&
+      !_.isObject(options.on)) {
+    throw new BaseError('Executor: on must be a string, a boolean, or an object');
   }
+  if (options.on === true) options.on = exports.eventName(name);
+  if (_.isString(options.on)) options.on = {event: options.on};
+  if (!_.isNil(options.off) && !_.isString(options.off) && !_.isBoolean(options.off) &&
+      !_.isObject(options.off)) {
+    throw new BaseError('Executor: off must be a string, a boolean, or an object');
+  } else if (!_.isNil(options.off) && _.isNil(options.on)) {
+    Logger.log(Level.WARNING,
+               'Executor: options.off should only exist when options.on do.');
+  }
+  if (_.isString(options.off)) options.off = {event: options.off};
   if (!_.has(options, 'toLog')) {
     options.toLog = process.env.NODE_ENV !== 'test';
   } else if (_.has(options, 'toLog') && !_.isBoolean(options.toLog)) {
