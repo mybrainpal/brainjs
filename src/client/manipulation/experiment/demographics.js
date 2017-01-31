@@ -70,7 +70,7 @@ function _satisfyProperty(property) {
  * @private
  */
 function _moduloInclude(moduloIds, moduloOf) {
-  if (Client.id && _.isNumber(Client.id)) {
+  if (!_.isNil(Client.id) && Number.isInteger(Client.id)) {
     return moduloIds.indexOf(Client.id % moduloOf) !== -1;
   }
   return false;
