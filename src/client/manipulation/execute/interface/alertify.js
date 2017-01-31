@@ -21,13 +21,13 @@ exports.execute = function (options) {
     require.ensure('alertifyjs/build/css/alertify.rtl.css', function (require) {
       if (!_styleLoaded) _.css.load(require('alertifyjs/build/css/alertify.rtl.css'));
       _styleLoaded = true;
-      _run(options.alertifyFn, options.toLog);
+      _run(options);
     });
   } else {
     require.ensure('alertifyjs/build/css/alertify.css', function (require) {
       if (!_styleLoaded) _.css.load(require('alertifyjs/build/css/alertify.css'));
       _styleLoaded = true;
-      _run(options.alertifyFn, options.toLog);
+      _run(options);
     });
   }
 };
@@ -51,14 +51,13 @@ let _styleLoaded = false;
 
 /**
  * Loads alertifyjs on demand and runs alertifyFn.
- * @param {function} alertifyFn
- * @param {boolean} toLog
+ * @param {Object} options
  * @private
  */
-function _run(alertifyFn, toLog) {
+function _run(options) {
   require.ensure('alertifyjs', function (require) {
-    alertifyFn(require('alertifyjs'));
-    if (toLog) {
+    options.alertifyFn(require('alertifyjs'));
+    if (options.toLog) {
       const suffix = _.isNil(options.id) ? '' : ` (id = ${options.id}`;
       if (document.querySelector(`[class^='ajs']`) ||
           document.querySelector(`[class^='alertify']`)) {
