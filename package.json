@@ -6,7 +6,7 @@
   "scripts": {
     "test": "./node_modules/.bin/karma start",
     "start": "webpack --progress --colors",
-    "heroku-postbuild": "webpack --config ./webpack.config.js --progress && webpack --config ./webpack.prod.config.js --progress"
+    "heroku-postbuild": "webpack --config ./webpack.config.js --progress"
   },
   "repository": {
     "type": "git",
