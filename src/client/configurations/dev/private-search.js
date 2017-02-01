@@ -51,7 +51,7 @@ const configuration = {
               {name: StyleExecutor.name, options: {css: require('./private-search.css')}},
               {
                 name   : AlertifyInterface.name,
-                options: {alertifyFn: _createFn('Search free.')}
+                options: {alertifyFn: _createFn('Search stress free.')}
               }
             ]
           },

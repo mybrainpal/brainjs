@@ -24,26 +24,37 @@ module.exports = function (configuration) {
     exports.shutDown(configuration);
     return;
   }
-  let i;
   Logger.log(Level.INFO, 'BrainPal: game on!');
   if (configuration.storage && configuration.storage.name) {
-    Storage.set(configuration.storage.name, configuration.storage.options || {});
+    Storage.set(configuration.storage.name, configuration.storage.options || {},
+                () => {_run(configuration)});
   } else {
     Logger.log(Level.WARNING, 'configuration: missing storage.');
-  }
-  if (configuration.hasOwnProperty('collect')) {
-    for (let i = 0; i < configuration.collect.length; i++) {
-      Collector.collect(configuration.collect[i]);
-    }
-  }
-  if (configuration.hasOwnProperty('experiments')) {
-    for (i = 0; i < configuration.experiments.length; i++) {
-      Manipulator.experiment(
-        new Experiment(configuration.experiments[i].experiment),
-        configuration.experiments[i].options);
-    }
+    _run(configuration)
   }
 };
+
+/**
+ * Runs the entire thing.
+ * @param {Object} configuration
+ * @private
+ */
+function _run(configuration) {
+  Client.init(() => {
+    if (configuration.hasOwnProperty('collect')) {
+      for (let i = 0; i < configuration.collect.length; i++) {
+        Collector.collect(configuration.collect[i]);
+      }
+    }
+    if (configuration.hasOwnProperty('experiments')) {
+      for (let i = 0; i < configuration.experiments.length; i++) {
+        Manipulator.experiment(
+          new Experiment(configuration.experiments[i].experiment),
+          configuration.experiments[i].options);
+      }
+    }
+  });
+}
 
 /**
  * Shuts the entire BrainPal presence.

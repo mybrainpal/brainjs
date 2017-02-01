@@ -19,6 +19,10 @@ describe('Storage', function () {
     expect(InMemoryStorage.storage[0]).to.equal('msg');
     expect(InMemoryStorage.storage).to.have.length(1);
   });
+  it('callback', (done) => {
+    const doneFn = () => {done()};
+    Storage.set(Storage.names.CONSOLE, {}, doneFn);
+  });
   it('in-memory are then saved to actual', (done) => {
     const tmp           = ConsoleStorage.save;
     ConsoleStorage.save = (msg) => {_storage.push(msg)};

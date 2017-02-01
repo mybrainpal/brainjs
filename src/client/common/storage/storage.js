@@ -18,21 +18,19 @@ let _storage = InMemoryStorage;
  * Sets _storage to `require('./name')`
  * @param {string} name
  * @param {Object} [options] - for the new storage initialization.
+ * @param {function} [callback] - to run after the storage switch had been completed.
  */
-exports.set = function (name, options) {
+exports.set = function (name, options, callback) {
   switch (name) {
     case exports.names.IN_MEMORY:
       _storage = InMemoryStorage;
+      if (callback) callback();
       return;
     case exports.names.CONSOLE:
-      require.ensure('./console.storage', function (require) {
-        _storageSwitch(require('./console.storage'));
-      });
+      _storageSwitch(require('./console.storage'), {}, callback);
       break;
     case exports.names.GOOGLE_ANALYTICS:
-      require.ensure('./google-analytics.storage', function (require) {
-        _storageSwitch(require('./google-analytics.storage'), options);
-      });
+      _storageSwitch(require('./google-analytics.storage'), options, callback);
       break;
   }
 };
@@ -47,15 +45,17 @@ exports.names = Object.freeze({
  * Switches _storage to newStorage.
  * @param {Object} newStorage - the new storage module.
  * @param {Object} [options] - for the new storage initialization.
+ * @param {function} [callback] - to run after the storage switch had been completed.
  * @private
  */
-function _storageSwitch(newStorage, options) {
+function _storageSwitch(newStorage, options, callback) {
   const onReady = () => {
     _storage = newStorage;
     for (let i = 0; i < InMemoryStorage.storage.length; i++) {
       _storage.save(InMemoryStorage.storage[i])
     }
     InMemoryStorage.flush();
+    if (callback) callback();
   };
   if (newStorage.init) {
     newStorage.init(options, onReady);

@@ -3,6 +3,30 @@
  *
  * Properties of the lucky client running BrainPal.
  */
+const GoogleAnalytics = require('../integrations/google-analytics'),
+      _               = require('../common/util/wrapper'),
+      Logger          = require('../common/log/logger'),
+      Level           = require('../common/log/logger').Level;
+
+
+/**
+ * Initializes client properties.
+ * @param {function} [callback]
+ */
+exports.init = function (callback) {
+  // Using Google Analytics as storage should be defined prior to this code.
+  GoogleAnalytics.init();
+  GoogleAnalytics.onReady(() => {
+    try {
+      exports.id = Number.parseInt(window.ga.getAll()[0].get('clientId').split('.')[0]);
+      if (_.isNil(exports.id)) delete exports.id;
+      if (callback) callback();
+    } catch (e) {
+      Logger.log(Level.WARNING, 'No client ID from Google Analytics.');
+    }
+  });
+};
+
 /**
  * Browser, OS and their major version.
  * @type {{
