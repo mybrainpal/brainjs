@@ -34,18 +34,18 @@ const configuration = {
             ]
           },
           {
-            label       : 'question',
+            label       : 'keep',
             demographics: {properties: [{name: 'modulo', moduloIds: [2, 3], moduloOf: 10}]},
             executors   : [
               {name: StyleExecutor.name, options: {css: require('./private-search.css')}},
               {
                 name   : AlertifyInterface.name,
-                options: {alertifyFn: _createFn('Snowden was right!')}
+                options: {alertifyFn: _createFn('Keep your searches to yourself.')}
               }
             ]
           },
           {
-            label       : 'question',
+            label       : 'free',
             demographics: {properties: [{name: 'modulo', moduloIds: [4, 5], moduloOf: 10}]},
             executors   : [
               {name: StyleExecutor.name, options: {css: require('./private-search.css')}},
@@ -56,7 +56,7 @@ const configuration = {
             ]
           },
           {
-            label       : 'question',
+            label       : 'downloaded',
             demographics: {properties: [{name: 'modulo', moduloIds: [6, 7], moduloOf: 10}]},
             executors   : [
               {name: StyleExecutor.name, options: {css: require('./private-search.css')}},
