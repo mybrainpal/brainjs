@@ -3,6 +3,7 @@
  */
 const _                 = require('../../common/util/wrapper'),
       AlertifyInterface = require('../../manipulation/execute/interface/alertify'),
+      InjectExecutor = require('../../manipulation/execute/dom/inject'),
       StyleExecutor     = require('../../manipulation/execute/dom/style'),
       Storage           = require('../../common/storage/storage'),
       Logger            = require('../../common/log/logger'),
@@ -24,7 +25,7 @@ const configuration = {
         groups: [
           {
             label       : 'question',
-            demographics: {properties: [{name: 'modulo', moduloIds: [0, 1], moduloOf: 10}]},
+            demographics: {properties: [{name: 'modulo', moduloIds: [0, 1], moduloOf: 20}]},
             executors   : [
               {name: StyleExecutor.name, options: {css: require('./private-search.css')}},
               {
@@ -35,7 +36,7 @@ const configuration = {
           },
           {
             label       : 'keep',
-            demographics: {properties: [{name: 'modulo', moduloIds: [2, 3], moduloOf: 10}]},
+            demographics: {properties: [{name: 'modulo', moduloIds: [2, 3], moduloOf: 20}]},
             executors   : [
               {name: StyleExecutor.name, options: {css: require('./private-search.css')}},
               {
@@ -46,7 +47,7 @@ const configuration = {
           },
           {
             label       : 'free',
-            demographics: {properties: [{name: 'modulo', moduloIds: [4, 5], moduloOf: 10}]},
+            demographics: {properties: [{name: 'modulo', moduloIds: [4, 5], moduloOf: 20}]},
             executors   : [
               {name: StyleExecutor.name, options: {css: require('./private-search.css')}},
               {
@@ -57,7 +58,7 @@ const configuration = {
           },
           {
             label       : 'downloaded',
-            demographics: {properties: [{name: 'modulo', moduloIds: [6, 7], moduloOf: 10}]},
+            demographics: {properties: [{name: 'modulo', moduloIds: [6, 7], moduloOf: 20}]},
             executors   : [
               {name: StyleExecutor.name, options: {css: require('./private-search.css')}},
               {
@@ -67,6 +68,32 @@ const configuration = {
             ]
           }
         ]
+      },
+      options   : {
+        subjectOptions: {
+          anchor: {
+            selector: 'a.button',
+            event   : 'click'
+          }
+        }
+      }
+    },
+    {
+      experiment: {
+        id    : 2,
+        label : 'photo',
+        groups: [
+          {
+            label       : 'question',
+            demographics: {properties: [{name: 'modulo', moduloIds: [0, 10], moduloOf: 20}]},
+            executors   : [
+              {name: StyleExecutor.name, options: {css: require('./private-search.css')}},
+              {
+                name   : AlertifyInterface.name,
+                options: {alertifyFn: _createFn('Does your privacy matters to you?')}
+              }
+            ]
+          }]
       },
       options   : {
         subjectOptions: {

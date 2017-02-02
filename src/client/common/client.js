@@ -19,11 +19,11 @@ exports.init = function (callback) {
   GoogleAnalytics.onReady(() => {
     try {
       exports.id = Number.parseInt(window.ga.getAll()[0].get('clientId').split('.')[0]);
-      if (_.isNil(exports.id)) delete exports.id;
-      if (callback) callback();
     } catch (e) {
       Logger.log(Level.WARNING, 'No client ID from Google Analytics.');
     }
+    if (_.isNil(exports.id)) exports.id = Math.round(Math.random() * 1000000);
+    if (callback) callback();
   });
 };
 

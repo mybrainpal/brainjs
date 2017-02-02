@@ -3,11 +3,20 @@
  */
 const expect = require('chai').expect,
       Client = require('./client');
-describe.only('Client', function () {
+describe('Client', function () {
   this.timeout(1000);
   it('init', (done) => {
     Client.init(() => {
       expect(Number.isInteger(Client.id)).to.be.true;
+      done();
+    });
+  });
+  it('init without ga', (done) => {
+    Client.init(() => {
+      const tmp = window.ga;
+      window.ga = {};
+      expect(Number.isInteger(Client.id)).to.be.true;
+      window.ga = tmp;
       done();
     });
   });
