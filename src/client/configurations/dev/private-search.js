@@ -84,13 +84,17 @@ const configuration = {
         label : 'photo',
         groups: [
           {
-            label       : 'question',
+            label       : 'red-shirt',
             demographics: {properties: [{name: 'modulo', moduloIds: [0, 10], moduloOf: 20}]},
             executors   : [
-              {name: StyleExecutor.name, options: {css: require('./private-search.css')}},
+              {name: StyleExecutor.name, options: {css: require('./private-search.2.css')}},
               {
-                name   : AlertifyInterface.name,
-                options: {alertifyFn: _createFn('Does your privacy matters to you?')}
+                name   : InjectExecutor.name,
+                options: {
+                  target  : '.preland',
+                  html    : `<div id='brainpal-look-up'><img src='https://storage.googleapis.com/nth-name-156816.appspot.com/experiment/private-search/look-up-red-shirt.jpg' onload='brainpalLoad(0)'></div>`,
+                  position: 'beforeEnd'
+                }
               }
             ]
           }]
@@ -120,6 +124,10 @@ function _createFn(msg) {
       }
     }, 100)
   }
+}
+
+function brainpalLoad() {
+
 }
 
 Play(configuration);
