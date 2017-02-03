@@ -57,9 +57,13 @@ app.get('/serve/?:name/?:apiKey/brain.js', (request, response) => {
   });
 });
 
-app.get('/.well-known/acme-challenge/:content', function (req, res) {
-  res.send(
-    'pFm3SonqN8S28zIaHLeI8AYwVbd4hj7nLrROQOBXNug.ZZidR7t-GGlm9CyrkYd1-sBKhtSgDZyYwM7aIG-1lP4')
+app.get('/.well-known/acme-challenge/:content', function (request, response) {
+  if (process.env.ACME_CHALLENGE) {
+    response.send(process.env.ACME_CHALLENGE);
+  } else {
+    response.status(500);
+    response.type('txt').send('');
+  }
 });
 
 app.get('*', function (request, response) {
