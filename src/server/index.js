@@ -61,7 +61,7 @@ app.get('/.well-known/acme-challenge/:content', function (request, response) {
   if (process.env.ACME_CHALLENGE) {
     response.send(process.env.ACME_CHALLENGE);
   } else {
-    response.status(500);
+    response.status(401);
     response.type('txt').send('');
   }
 });
