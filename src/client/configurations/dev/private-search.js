@@ -85,14 +85,31 @@ const configuration = {
         groups: [
           {
             label       : 'red-shirt',
-            demographics: {properties: [{name: 'modulo', moduloIds: [0, 10], moduloOf: 20}]},
+            demographics: {properties: [{name: 'modulo', moduloIds: [1, 10], moduloOf: 20}]},
             executors   : [
               {name: StyleExecutor.name, options: {css: require('./private-search.2.css')}},
               {
                 name   : InjectExecutor.name,
                 options: {
                   target  : '.preland',
-                  html    : `<div id='brainpal-look-up'><img src='https://storage.googleapis.com/nth-name-156816.appspot.com/experiment/private-search/look-up-red-shirt.jpg' onload='brainpalLoad(0)'></div>`,
+                  html    : `<div id='brainpal-look-up'><img
+src='https://storage.googleapis.com/nth-name-156816.appspot.com/experiment/private-search/look-up-red-shirt.jpg' onload='brainpalLoad("#f6f6f6", true)'></div>`,
+                  position: 'beforeEnd'
+                }
+              }
+            ]
+          },
+          {
+            label       : 'blond-suit',
+            demographics: {properties: [{name: 'modulo', moduloIds: [0, 11], moduloOf: 20}]},
+            executors   : [
+              {name: StyleExecutor.name, options: {css: require('./private-search.2.css')}},
+              {
+                name   : InjectExecutor.name,
+                options: {
+                  target  : '.preland',
+                  html    : `<div id='brainpal-look-up'><img
+src='https://storage.googleapis.com/nth-name-156816.appspot.com/experiment/private-search/look-up-blond-suit.jpg' onload='brainpalLoad("white", true)'></div>`,
                   position: 'beforeEnd'
                 }
               }
@@ -126,8 +143,27 @@ function _createFn(msg) {
   }
 }
 
-function brainpalLoad() {
-
-}
+window.brainpalLoad = function (backgroundColor, center = false) {
+  try {
+    const div        = document.querySelector('#brainpal-look-up');
+    const preland    = document.querySelector('.preland');
+    const img        = div.querySelector('img');
+    const rect       = document.querySelector('.pre-content').getBoundingClientRect();
+    img.style.height = window.innerHeight - 40 - rect.top - rect.height;
+    if (center) {
+      div.style.display        = 'flex';
+      div.style.justifyContent = 'center';
+      img.style.left           = div.querySelector('img').style.right = 'auto';
+    }
+    preland.style.backgroundColor = document.body.style.backgroundColor = backgroundColor;
+    document.body.appendChild(div.cloneNode(true));
+    document.querySelector('a.button').addEventListener('click', function () {
+      div.style.display = 'none';
+    });
+    div.style.opacity = '1';
+  } catch (e) {
+    Logger.log(Level.WARNING, 'Failed to expose look up image - ' + e.message);
+  }
+};
 
 Play(configuration);

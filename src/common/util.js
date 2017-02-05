@@ -11,7 +11,7 @@ const path      = require('path'),
  */
 exports.webpackEntries = function (subPath) {
   const configurationFiles = glob.sync(
-    path.join(Constants.clientContext, Constants.configurationDir, subPath || '') + '/**/*.js');
+    path.join(Constants.clientContext, Constants.configurationDir, subPath || '') + '/*.js');
   let entries              = {};
   for (let i = 0; i < configurationFiles.length; i++) {
     entries[path.basename(configurationFiles[i], '.js')] = './' + path.join(

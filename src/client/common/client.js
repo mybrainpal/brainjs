@@ -23,6 +23,7 @@ exports.init = function (callback) {
       Logger.log(Level.WARNING, 'No client ID from Google Analytics.');
     }
     if (_.isNil(exports.id)) exports.id = Math.round(Math.random() * 1000000);
+    if (process.env.NODE_ENV !== 'production') exports.id = 0;
     if (callback) callback();
   });
 };
