@@ -4,6 +4,7 @@
 const _                 = require('../../common/util/wrapper'),
       AlertifyInterface = require('../../manipulation/execute/interface/alertify'),
       StyleExecutor     = require('../../manipulation/execute/dom/style'),
+      Demographics = require('../../manipulation/experiment/demographics'),
       Storage           = require('../../common/storage/storage'),
       Logger            = require('../../common/log/logger'),
       Level             = require('../../common/log/logger').Level,
@@ -24,7 +25,11 @@ const configuration = {
         groups: [
           {
             label       : 'question',
-            demographics: {properties: [{name: 'modulo', moduloIds: [0], moduloOf: 20}]},
+            demographics: {
+              properties: [{
+                name: Demographics.PROPERTIES.MODULO.name, moduloIds: [0], moduloOf: 20
+              }]
+            },
             executors   : [
               {name: StyleExecutor.name, options: {css: require('./private-search.css')}},
               {

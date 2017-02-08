@@ -41,7 +41,7 @@
     "tinysort": "^2.3.6",
     "typer-js": "^2.4.1",
     "url-loader": "^0.5.7",
-    "webpack": "^1.14.0",
+    "webpack": "^2.2.1",
     "webpack-validator": "^2.3.0"
   },
   "devDependencies": {

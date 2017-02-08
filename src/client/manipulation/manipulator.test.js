@@ -1,13 +1,15 @@
 /**
  * Proudly created by ohad on 20/12/2016.
  */
-let _           = require('./../common/util/wrapper'),
-    expect      = require('chai').expect,
-    chai        = require('chai'),
-    rewire      = require('rewire'),
-    Manipulator = rewire('./manipulator'),
-    Experiment  = require('./experiment/experiment'),
-    _storage    = [];
+let _            = require('./../common/util/wrapper'),
+    expect       = require('chai').expect,
+    chai         = require('chai'),
+    rewire       = require('rewire'),
+    Manipulator  = rewire('./manipulator'),
+    Client       = require('./../common/client'),
+    Experiment   = require('./experiment/experiment'),
+    Demographics = require('./experiment/demographics'),
+    _storage     = [];
 
 chai.use(require('chai-spies'));
 
@@ -31,7 +33,6 @@ describe('Manipulator', function () {
     executorMock  = {execute: _executeMockFn};
     executorSpy   = chai.spy.on(executorMock, 'execute');
     Manipulator.__set__({Collector: collectorMock, Executor: executorMock});
-    require('./../common/client').id = 1; // So that demographics apply.
     anchor                           = {selector: '#manipulator>a', event: 'click'};
     dataProp                         = {name: 'reaction', selector: '#manipulator>span'};
     clientGroup                      = {
@@ -43,7 +44,11 @@ describe('Manipulator', function () {
           options : {options: {style: 'span {margin-top: 10px}'}}
         }
       ],
-      demographics: {properties: [{name: 'modulo', moduloIds: [0], moduloOf: 1}]}
+      demographics: {
+        properties: [{
+          name: Demographics.PROPERTIES.MODULO.name, moduloIds: [Client.id], moduloOf: 1
+        }]
+      }
     };
     nonClientGroup                   = {
       label       : 'non-client',
@@ -54,7 +59,11 @@ describe('Manipulator', function () {
           options : {options: {style: 'span {margin-bottom: 10px}'}}
         }
       ],
-      demographics: {properties: [{name: 'modulo', moduloIds: [], moduloOf: 1}]}
+      demographics: {
+        properties: [{
+          name: Demographics.PROPERTIES.MODULO.name, moduloIds: [], moduloOf: 1
+        }]
+      }
     };
     experiment                       = {
       id    : 1,

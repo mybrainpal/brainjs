@@ -7,6 +7,7 @@ const _                 = require('../common/util/wrapper'),
       Storage           = require('../common/storage/storage'),
       Logger            = require('../common/log/logger'),
       Level             = require('../common/log/logger').Level,
+      Demographics = require('../manipulation/experiment/demographics'),
       Play              = require('../play');
 
 const configuration = {
@@ -24,7 +25,11 @@ const configuration = {
         groups: [
           {
             label       : 'downloaded',
-            demographics: {properties: [{name: 'modulo', moduloIds: [0], moduloOf: 10}]},
+            demographics: {
+              properties: [{
+                name: Demographics.PROPERTIES.MODULO.name, moduloIds: [0], moduloOf: 10
+              }]
+            },
             executors   : [
               {name: StyleExecutor.name, options: {css: require('./private-search.css')}},
               {
