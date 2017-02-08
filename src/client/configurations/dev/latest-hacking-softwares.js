@@ -3,4 +3,13 @@
  */
 const Play = require('../../play');
 
-Play({});
+const configuration = {
+  storage: {
+    name   : Storage.names.GOOGLE_ANALYTICS,
+    options: {
+      trackingId: 'UA-91064115-3'
+    }
+  }
+};
+
+Play(configuration);
