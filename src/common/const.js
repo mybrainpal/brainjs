@@ -29,7 +29,7 @@ exports.publicDir = 'dist';
  * Alias for BrainPal Node app.
  * @type {string}
  */
-exports.productionPublicPath = 'http://cdn.brainpal.io/';
+exports.productionPublicPath = 'https://cdn.brainpal.io/';
 
 /**
  * Alias for local BrainPal Node app.

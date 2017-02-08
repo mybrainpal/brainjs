@@ -1,11 +1,13 @@
 {
   "name": "brainjs",
-  "version": "1.0.0",
   "description": "increase conversions with a single line of code",
   "main": "index.js",
   "scripts": {
     "test": "./node_modules/.bin/karma start",
-    "heroku-postbuild": "webpack --config ./webpack.config.js && webpack --config ./webpack.prod.config.js"
+    "bundle": "webpack --config webpack.config.js",
+    "prestart": "npm run bundle",
+    "start": "node src/server/index.js",
+    "deploy": "gcloud app deploy --project=nth-name-156816"
   },
   "repository": {
     "type": "git",
@@ -15,6 +17,10 @@
     "cro",
     "optimization"
   ],
+  "engines": {
+    "node": ">=7.5.0",
+    "npm": ">=4.1.2"
+  },
   "author": "BrainPal",
   "license": "ISC",
   "bugs": {
@@ -42,6 +48,7 @@
     "typer-js": "^2.4.1",
     "url-loader": "^0.5.7",
     "webpack": "^1.14.0",
+    "webpack-google-cloud-storage-plugin": "^0.6.0",
     "webpack-validator": "^2.3.0"
   },
   "devDependencies": {
