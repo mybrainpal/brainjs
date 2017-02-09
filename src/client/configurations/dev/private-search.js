@@ -25,11 +25,9 @@ const configuration = {
         groups: [
           {
             label       : 'question',
-            demographics: {
-              properties: [{
+            demographics: [{
                 name: Demographics.PROPERTIES.MODULO.name, moduloIds: [0], moduloOf: 20
-              }]
-            },
+            }],
             executors   : [
               {name: StyleExecutor.name, options: {css: require('./private-search.css')}},
               {

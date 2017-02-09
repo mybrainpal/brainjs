@@ -13,11 +13,11 @@ let _         = require('../../common/util/wrapper'),
  * @returns {boolean} Whether the client belongs to this demographics.
  */
 exports.included = function (properties) {
-  if (!Array.isArray(properties)) properties = [properties];
+  if (!Array.isArray(properties)) properties = [properties || {}];
   if (properties) {
     for (let i = 0; i < properties.length; i++) {
       if (!exports.PROPERTIES[properties[i].name]) {
-        throw new BaseError('Demographics: property ' + properties[i].name + 'does not' +
+        throw new BaseError('Demographics: property ' + properties[i].name + ' does not' +
                             ' exist. ' + JSON.stringify(properties[i]));
       }
       if (!exports.PROPERTIES[properties[i].name].includeFn) {
@@ -87,7 +87,7 @@ function _osInclude(property) {
  * @private
  */
 function _urlInclude(property) {
-  if (process.env.NODE_ENV !== 'production' && window.location.host &&
+  if (process.env.NODE_ENV !== 'test' && window.location.host &&
       window.location.host.startsWith('localhost:')) {
     return true;
   }

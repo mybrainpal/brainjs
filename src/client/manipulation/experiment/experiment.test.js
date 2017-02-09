@@ -3,7 +3,6 @@
  */
 let expect       = require('chai').expect,
     chai         = require('chai'),
-    Client       = require('../../common/client'),
     Experiment   = require('./experiment'),
     Demographics = require('./demographics');
 
@@ -12,19 +11,15 @@ describe('Experiment', function () {
   before(() => {
     clientGroup    =
       {
-        demographics: {
-          properties: [{
-            name: Demographics.PROPERTIES.MODULO.name, moduloIds: [Client.id], moduloOf: 1
+        demographics: [{
+          name: Demographics.PROPERTIES.MODULO.name, moduloIds: [0], moduloOf: 1
           }]
-        }
       };
     nonClientGroup =
       {
-        demographics: {
-          properties: [{
+        demographics: [{
             name: Demographics.PROPERTIES.MODULO.name, moduloIds: [], moduloOf: 1
           }]
-        }
       };
   });
   it('experiment ID propagated to groups constructor', () => {

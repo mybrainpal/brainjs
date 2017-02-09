@@ -3,25 +3,23 @@
  */
 let expect       = require('chai').expect,
     chai         = require('chai'),
+    BaseError    = require('../../common/log/base.error'),
     Client       = require('../../common/client'),
     Demographics = require('./demographics');
 
-describe.only('Demographics', function () {
-  let tmpOs, tmpUrl;
+describe('Demographics', function () {
+  let tmpOs;
   before(() => {
     tmpOs                = Client.agent.os;
     Client.agent.os      = 'BrainOs'; // we are going to make it. period.
-    tmpUrl               = window.location.href;
-    window.location.href = 'brainpal.io'; // strongly recommended.
   });
   after(() => {
     Client.agent.os      = tmpOs;
-    window.location.href = tmpUrl;
   });
   it('modulo', () => {
     let property = {
       name     : Demographics.PROPERTIES.MODULO.name,
-      moduloIds: [Client.id],
+      moduloIds: [0],
       moduloOf : 1
     };
     expect(Demographics.included(property)).to.be.true;
@@ -30,14 +28,14 @@ describe.only('Demographics', function () {
     property.moduloIds = [Client.id + 1];
     expect(Demographics.included(property)).to.be.false;
     delete property.moduloIds;
-    expect(Demographics.included(property)).to.throw(Error);
+    expect(() => {Demographics.included(property)}).to.throw(BaseError);
     property.moduloIds = 1;
-    expect(Demographics.included(property)).to.throw(Error);
+    expect(() => {Demographics.included(property)}).to.throw(BaseError);
     property.moduloIds = [Client.id + 1];
     delete property.moduloOf;
-    expect(Demographics.included(property)).to.throw(Error);
+    expect(() => {Demographics.included(property)}).to.throw(BaseError);
     property.moduloOf = '1';
-    expect(Demographics.included(property)).to.throw(Error);
+    expect(() => {Demographics.included(property)}).to.throw(BaseError);
   });
   it('os', () => {
     let property = {
@@ -48,9 +46,9 @@ describe.only('Demographics', function () {
     property.os = 'Android';
     expect(Demographics.included(property)).to.be.false;
     delete property.os;
-    expect(Demographics.included(property)).to.throw(Error);
+    expect(() => {Demographics.included(property)}).to.throw(BaseError);
     property.os = 1;
-    expect(Demographics.included(property)).to.throw(Error);
+    expect(() => {Demographics.included(property)}).to.throw(BaseError);
   });
   it('url', () => {
     let property = {
@@ -61,15 +59,15 @@ describe.only('Demographics', function () {
     property.url = 'Facebook';
     expect(Demographics.included(property)).to.be.false;
     delete property.url;
-    expect(Demographics.included(property)).to.throw(Error);
+    expect(() => {Demographics.included(property)}).to.throw(BaseError);
     property.url = 1;
-    expect(Demographics.included(property)).to.throw(Error);
+    expect(() => {Demographics.included(property)}).to.throw(BaseError);
   });
   it('multiple properties', () => {
     expect(Demographics.included([
                                    {
                                      name     : Demographics.PROPERTIES.MODULO.name,
-                                     moduloIds: [Client.id + 1],
+                                     moduloIds: [0],
                                      moduloOf : 1
 
                                    },
@@ -79,7 +77,7 @@ describe.only('Demographics', function () {
     expect(Demographics.included([
                                    {
                                      name     : Demographics.PROPERTIES.MODULO.name,
-                                     moduloIds: [Client.id],
+                                     moduloIds: [0],
                                      moduloOf : 1
 
                                    },
@@ -88,6 +86,6 @@ describe.only('Demographics', function () {
                                    }])).to.be.false;
   });
   it('no properties', () => {
-    expect(Demographics.included()).to.be.true;
+    expect(() => {Demographics.included()}).to.throw(Error);
   });
 });

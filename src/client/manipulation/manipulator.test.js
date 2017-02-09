@@ -6,7 +6,6 @@ let _            = require('./../common/util/wrapper'),
     chai         = require('chai'),
     rewire       = require('rewire'),
     Manipulator  = rewire('./manipulator'),
-    Client       = require('./../common/client'),
     Experiment   = require('./experiment/experiment'),
     Demographics = require('./experiment/demographics'),
     _storage     = [];
@@ -44,11 +43,9 @@ describe('Manipulator', function () {
           options : {options: {style: 'span {margin-top: 10px}'}}
         }
       ],
-      demographics: {
-        properties: [{
-          name: Demographics.PROPERTIES.MODULO.name, moduloIds: [Client.id], moduloOf: 1
+      demographics: [{
+        name: Demographics.PROPERTIES.MODULO.name, moduloIds: [0], moduloOf: 1
         }]
-      }
     };
     nonClientGroup                   = {
       label       : 'non-client',
@@ -59,11 +56,9 @@ describe('Manipulator', function () {
           options : {options: {style: 'span {margin-bottom: 10px}'}}
         }
       ],
-      demographics: {
-        properties: [{
+      demographics: [{
           name: Demographics.PROPERTIES.MODULO.name, moduloIds: [], moduloOf: 1
         }]
-      }
     };
     experiment                       = {
       id    : 1,

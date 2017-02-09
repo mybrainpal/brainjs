@@ -3,7 +3,6 @@
  */
 let expect          = require('chai').expect,
     chai            = require('chai'),
-    Client          = require('./../../common/client'),
     Demographics    = require('./demographics'),
     ExperimentGroup = require('./group');
 
@@ -11,21 +10,17 @@ describe('ExperimentGroup', function () {
   let group;
   it('client included', () => {
     group = new ExperimentGroup({
-      demographics: {
-        properties: [{
-          name: Demographics.PROPERTIES.MODULO, moduloIds: [Client.id], moduloOf: 1
+      demographics: [{
+        name: Demographics.PROPERTIES.MODULO.name, moduloIds: [0], moduloOf: 1
         }]
-      }
     });
     expect(group.isClientIncluded).to.be.true;
   });
   it('client not included', () => {
     group = new ExperimentGroup({
-      demographics: {
-        properties: [{
-          name: Demographics.PROPERTIES.MODULO, moduloIds: [], moduloOf: 1
+      demographics: [{
+        name: Demographics.PROPERTIES.MODULO.name, moduloIds: [], moduloOf: 1
         }]
-      }
     });
     expect(group.isClientIncluded).to.be.false;
   });
