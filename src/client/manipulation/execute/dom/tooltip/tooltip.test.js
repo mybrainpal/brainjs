@@ -12,7 +12,7 @@ const expect           = require('chai').expect,
       Master           = require('../../master'),
       styles           = require('./tooltip.scss').locals;
 
-describe('TooltipExecutor', function () {
+describe.only('TooltipExecutor', function () {
   this.timeout(2000);
   let div, target, options, id = 0;
   before(() => {

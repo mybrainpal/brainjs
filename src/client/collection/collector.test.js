@@ -3,8 +3,8 @@
  */
 let chai            = require('chai'),
     expect          = require('chai').expect,
-    rewire          = require('rewire'),
-    Collector       = rewire('./collector'),
+    Client          = require('../common/client'),
+    Collector       = require('./collector'),
     _               = require('../common/util/wrapper'),
     Storage         = require('../common/storage/storage'),
     InMemoryStorage = require('../common/storage/in-memory.storage');
@@ -13,7 +13,7 @@ chai.use(require('chai-spies'));
 
 describe('Collector', function () {
   this.timeout(100);
-  let div, a1, a2, span1, span2, p, a3, span3, id = 0;
+  let div, a1, a2, span1, span2, p, a3, span3, id = 0, agentTmp;
   before(() => {
     div = document.createElement('div');
     div.setAttribute('id', 'fight-club');
@@ -41,17 +41,13 @@ describe('Collector', function () {
     p.appendChild(span3);
     div.appendChild(p);
     div.appendChild(p.cloneNode(true));
-    Collector.__set__({
-                        'Client': {
-                          agent: {
-                            os     : 'Mac',
-                            browser: 'Safari'
-                          }
-                        }
-                      });
+    agentTmp             = JSON.parse(JSON.stringify(Client.agent));
+    Client.agent.os      = 'Mac';
+    Client.agent.browser = 'Safari';
     Storage.set(Storage.names.IN_MEMORY);
   });
   after(() => {
+    Client.agent = agentTmp;
     div.parentNode.removeChild(div);
   });
   beforeEach(() => {

@@ -3,8 +3,8 @@
  *
  * Manipulates the DOM to fill our customers pockets with 'em dollars.
  */
-let _         = require('./../common/util/wrapper'),
-    Collector = require('./../collection/collector'),
+let _         = require('../common/util/wrapper'),
+    Collector = require('../collection/collector'),
     Executor  = require('./execute/master');
 
 /**

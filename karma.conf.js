@@ -1,8 +1,6 @@
 // Karma configuration
 // Generated on Mon Dec 12 2016 10:48:59 GMT+0200 (IST)
-const RewirePlugin = require("rewire-webpack");
 let webpackConfig    = require('./webpack.config.js');
-webpackConfig.plugins.push(new RewirePlugin());
 
 module.exports = function (config) {
   config.set(
@@ -33,11 +31,7 @@ module.exports = function (config) {
         '**/*.js': ['webpack']
       },
 
-      webpack: {
-        plugins: webpackConfig.plugins,
-        module : webpackConfig.module,
-        resolve: webpackConfig.resolve
-      },
+      webpack: webpackConfig,
 
 
       // test results reporter to use
