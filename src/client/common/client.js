@@ -8,7 +8,6 @@ const GoogleAnalytics = require('../integrations/google-analytics'),
       Logger          = require('../common/log/logger'),
       Level           = require('../common/log/logger').Level;
 
-
 /**
  * Initializes client properties.
  * @param {function} [callback]
@@ -17,16 +16,23 @@ exports.init = function (callback) {
   // Using Google Analytics as storage should be defined prior to this code.
   GoogleAnalytics.init();
   GoogleAnalytics.onReady(() => {
-    try {
-      exports.id = Number.parseInt(window.ga.getAll()[0].get('clientId').split('.')[0]);
-    } catch (e) {
-      Logger.log(Level.WARNING, 'No client ID from Google Analytics.');
+    if (process.env.NODE_ENV === 'production') {
+      try {
+        exports.id = Number.parseInt(window.ga.getAll()[0].get('clientId').split('.')[0]);
+      } catch (e) {
+        Logger.log(Level.WARNING, 'No client ID from Google Analytics.');
+      }
+      if (_.isNil(exports.id)) exports.id = Math.round(Math.random() * 1000000);
     }
-    if (_.isNil(exports.id)) exports.id = Math.round(Math.random() * 1000000);
-    if (process.env.NODE_ENV !== 'production') exports.id = 0;
     if (callback) callback();
   });
 };
+
+/**
+ * Primary identifier.
+ * @type {number}
+ */
+exports.id = 0;
 
 /**
  * Browser, OS and their major version.

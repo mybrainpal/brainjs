@@ -42,7 +42,9 @@ describe.skip('Manipulator', function () {
           options : {options: {style: 'span {margin-top: 10px}'}}
         }
       ],
-      demographics: {properties: [{name: 'modulo', moduloIds: [0], moduloOf: 1}]}
+      demographics: [{
+        name: Demographics.PROPERTIES.MODULO.name, moduloIds: [0], moduloOf: 1
+        }]
     };
     nonClientGroup = {
       label       : 'non-client',
@@ -53,7 +55,9 @@ describe.skip('Manipulator', function () {
           options : {options: {style: 'span {margin-bottom: 10px}'}}
         }
       ],
-      demographics: {properties: [{name: 'modulo', moduloIds: [], moduloOf: 1}]}
+      demographics: [{
+          name: Demographics.PROPERTIES.MODULO.name, moduloIds: [], moduloOf: 1
+        }]
     };
     experiment     = {
       id    : 1,
@@ -77,7 +81,6 @@ describe.skip('Manipulator', function () {
   it('experiment runs', () => {
     Manipulator.experiment(new Experiment(experiment),
                            {subjectOptions: {dataProps: [dataProp], anchor: anchor}});
-    console.log(JSON.stringify(_storage));
     expect(collectorSpy).to.have.been.called(4);
     // collect data based on anchors.
     expect(_storage[0][0]).to.contain.all.keys('experiment', 'anchor');

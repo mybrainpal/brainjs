@@ -1,18 +1,26 @@
 /**
  * Proudly created by ohad on 21/12/2016.
  */
-let expect     = require('chai').expect,
-    chai       = require('chai'),
-    Experiment = require('./experiment');
+let expect       = require('chai').expect,
+    chai         = require('chai'),
+    Experiment   = require('./experiment'),
+    Demographics = require('./demographics');
 
 describe('Experiment', function () {
   let clientGroup, nonClientGroup, experiment;
   before(() => {
-    require('./../../common/client').id = 1; // So that demographics apply.
-    clientGroup                         =
-      {demographics: {properties: [{name: 'modulo', moduloIds: [0], moduloOf: 1}]}};
-    nonClientGroup                      =
-      {demographics: {properties: [{name: 'modulo', moduloIds: [], moduloOf: 1}]}};
+    clientGroup    =
+      {
+        demographics: [{
+          name: Demographics.PROPERTIES.MODULO.name, moduloIds: [0], moduloOf: 1
+          }]
+      };
+    nonClientGroup =
+      {
+        demographics: [{
+            name: Demographics.PROPERTIES.MODULO.name, moduloIds: [], moduloOf: 1
+          }]
+      };
   });
   it('experiment ID propagated to groups constructor', () => {
     experiment = new Experiment({id: 1, groups: [clientGroup, nonClientGroup]});
