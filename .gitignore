@@ -30,5 +30,8 @@ node_modules/
 experimental/
 tests_output/
 
-# Local Mongo
+# source maps
+*.js.map
+
+# Local Database
 database/
