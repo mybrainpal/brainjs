@@ -10,11 +10,11 @@ let expect       = require('chai').expect,
 describe('Demographics', function () {
   let tmpOs;
   before(() => {
-    tmpOs                = Client.agent.os;
-    Client.agent.os      = 'BrainOs'; // we are going to make it. period.
+    tmpOs           = Client.agent.os;
+    Client.agent.os = 'BrainOs'; // we are going to make it. period.
   });
   after(() => {
-    Client.agent.os      = tmpOs;
+    Client.agent.os = tmpOs;
   });
   it('modulo', () => {
     let property = {

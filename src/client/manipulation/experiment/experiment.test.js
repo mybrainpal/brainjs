@@ -13,13 +13,13 @@ describe('Experiment', function () {
       {
         demographics: [{
           name: Demographics.PROPERTIES.MODULO.name, moduloIds: [0], moduloOf: 1
-          }]
+        }]
       };
     nonClientGroup =
       {
         demographics: [{
-            name: Demographics.PROPERTIES.MODULO.name, moduloIds: [], moduloOf: 1
-          }]
+          name: Demographics.PROPERTIES.MODULO.name, moduloIds: [], moduloOf: 1
+        }]
       };
   });
   it('experiment ID propagated to groups constructor', () => {

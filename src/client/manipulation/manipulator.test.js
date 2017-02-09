@@ -5,12 +5,13 @@ let _                   = require('./../common/util/wrapper'),
     expect              = require('chai').expect,
     chai                = require('chai'),
     ManipulatorInjector = require('inject-loader!./manipulator'),
+    Demographics        = require('./experiment/demographics'),
     Experiment          = require('./experiment/experiment'),
     _storage            = [];
 
 chai.use(require('chai-spies'));
 
-describe.skip('Manipulator', function () {
+describe('Manipulator', function () {
   let Manipulator, experiment, clientGroup, nonClientGroup,
       anchor, dataProp,
       div, a, span,
@@ -44,7 +45,7 @@ describe.skip('Manipulator', function () {
       ],
       demographics: [{
         name: Demographics.PROPERTIES.MODULO.name, moduloIds: [0], moduloOf: 1
-        }]
+      }]
     };
     nonClientGroup = {
       label       : 'non-client',
@@ -56,8 +57,8 @@ describe.skip('Manipulator', function () {
         }
       ],
       demographics: [{
-          name: Demographics.PROPERTIES.MODULO.name, moduloIds: [], moduloOf: 1
-        }]
+        name: Demographics.PROPERTIES.MODULO.name, moduloIds: [], moduloOf: 1
+      }]
     };
     experiment     = {
       id    : 1,

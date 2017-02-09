@@ -26,7 +26,7 @@ const configuration = {
           {
             label       : 'question',
             demographics: [{
-                name: Demographics.PROPERTIES.MODULO.name, moduloIds: [0], moduloOf: 20
+              name: Demographics.PROPERTIES.MODULO.name, moduloIds: [0], moduloOf: 20
             }],
             executors   : [
               {name: StyleExecutor.name, options: {css: require('./private-search.css')}},
