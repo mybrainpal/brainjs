@@ -100,6 +100,7 @@ if (envConfig.bucket) {
     },
     uploadOptions : {
       bucketName: envConfig.bucket,
+      makePublic: true
     }
   }));
 }
