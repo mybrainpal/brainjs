@@ -91,7 +91,7 @@ describe('TooltipExecutor', function () {
     expect(tooltip.querySelector(target.nodeName)).to.be.ok;
   });
   it('flow', (done) => {
-    Master.execute(TooltipInterface.name, options);
+    TooltipExecutor.execute(options);
     const tooltip            = document.querySelector(`div>.${styles.bloated}`),
           content            = tooltip.querySelector(`.${styles.content}`);
     content.style.transition = 'all 1ms';
@@ -108,7 +108,7 @@ describe('TooltipExecutor', function () {
     }, 10);
   });
   it('flow with timer', (done) => {
-    Master.execute(TooltipInterface.name, _.deepExtend({timer: 20}, options));
+    TooltipExecutor.execute(_.deepExtend({timer: 20}, options));
     const tooltip            = document.querySelector(`div>.${styles.bloated}`),
           content            = tooltip.querySelector(`.${styles.content}`);
     content.style.transition = 'all 1ms';
@@ -122,7 +122,7 @@ describe('TooltipExecutor', function () {
     }, 10);
   });
   it('flow without state', (done) => {
-    Master.execute(TooltipInterface.name, options);
+    TooltipExecutor.execute(options);
     const tooltip            = document.querySelector(`div>.${styles.bloated}`),
           content            = tooltip.querySelector(`.${styles.content}`);
     content.style.transition = 'all 1ms';
@@ -156,7 +156,7 @@ describe('TooltipExecutor', function () {
   });
   describe.skip('logging flow', function () {
     it('logging', (done) => {
-      Master.execute(TooltipInterface.name, _.deepExtend({}, options, {toLog: true}));
+      TooltipExecutor.execute(_.deepExtend({}, options, {toLog: true}));
       const tooltip            = document.querySelector(`div>.${styles.bloated}`),
             content            = tooltip.querySelector(`.${styles.content}`);
       content.style.transition = 'all 1ms';
@@ -175,7 +175,7 @@ describe('TooltipExecutor', function () {
       }, 100);
     });
     it('logging interrupted', (done) => {
-      Master.execute(TooltipInterface.name, _.deepExtend({}, options, {toLog: true}));
+      TooltipExecutor.execute(_.deepExtend({}, options, {toLog: true}));
       const tooltip            = document.querySelector(`div>.${styles.bloated}`),
             content            = tooltip.querySelector(`.${styles.content}`);
       content.style.transition = 'all 1ms';
@@ -196,7 +196,7 @@ describe('TooltipExecutor', function () {
       evilDiv.style = 'position:absolute; top:-100px; left:-100px; width: 10000px; height:' +
                       ' 10000px; background-color:red; z-index:1000000';
       document.querySelector('body').appendChild(evilDiv);
-      Master.execute(TooltipInterface.name, _.deepExtend({}, options, {toLog: true}));
+      TooltipExecutor.execute(_.deepExtend({}, options, {toLog: true}));
       const tooltip            = document.querySelector(`div>.${styles.bloated}`),
             content            = tooltip.querySelector(`.${styles.content}`);
       content.style.transition = 'all 1ms';

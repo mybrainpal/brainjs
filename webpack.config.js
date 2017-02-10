@@ -1,6 +1,5 @@
 'use strict';
 const webpack   = require('webpack'),
-      validator = require('webpack-validator'),
       path      = require('path'),
       Util      = require('./src/common/util'),
       Constants = require('./src/common/const');
@@ -15,35 +14,39 @@ let webpackConfig = {
     pathinfo     : true
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.scss', '.css', '']
+    extensions: ['.js', '.jsx', '.scss', '.css']
   },
   module : {
-    loaders: [
+    rules: [
       {
         test   : /\.js$/,
-        exclude: /(node_modules|bower_components)/,
-        loader : 'babel-loader',
-        query  : {
-          presets: ['es2015']
-        }
+        exclude: [/node_modules/],
+        use    : [{
+          loader : 'babel-loader',
+          options: {presets: ['es2015']},
+        }],
       },
       {
         test   : /\.css$/,
-        loaders: [
-          'css?sourceMap&modules&importLoaders=1&localIdentName=[local]',
-          'sass?sourceMap&localIdentName=[local]'
-        ],
-        // Used to allow loading css without name localization, such as when loading css
-        // from npm packages.
-        exclude: /\.local\.css$/
+        exclude: [/\.local\.css$/],
+        use    : [{
+          loader: 'css-loader',
+          query : 'sourceMap&modules&importLoaders=1&localIdentName=[local]'
+        }, {
+          loader: 'sass-loader',
+          query : 'sourceMap&localIdentName=[local]'
+        }],
       },
       {
         test   : /\.(scss|local\.css)$/,
-        loaders: [
-          'css?sourceMap&modules&importLoaders=1&localIdentName=[local]--[hash:base64:5]',
-          'sass?sourceMap&localIdentName=[local]--[hash:base64:5]'
-        ],
-        exclude: /node_modules/
+        exclude: [/node_modules/],
+        use    : [{
+          loader: 'css-loader',
+          query : 'sourceMap&modules&importLoaders=1&localIdentName=[local]--[hash:base64:5]',
+        }, {
+          loader: 'sass-loader',
+          query : 'sourceMap&localIdentName=[local]--[hash:base64:5]',
+        }],
       }
     ]
   },
@@ -71,9 +74,13 @@ webpackConfig.output.path       = path.join(__dirname, Constants.publicDir, Cons
 webpackConfig.output.publicPath = (process.env.NODE_ENV === 'production' ?
                                    Constants.productionPublicPath :
                                    Constants.localPublicPath) + Constants.devDistDir + '/';
-webpackConfig.module.loaders.push({
-                                    test  : /\.(png|svg|woff|jpg|jpeg|gif)$/,
-                                    loader: 'url-loader?limit=10000000&name=[path][name].[ext]'
+if (process.env.NODE_ENV !== 'production') {
+  webpackConfig.module.rules.push({
+                                    test: /\.(png|svg|woff|jpg|jpeg|gif)$/,
+                                    use : [{
+                                      loader: 'url-loader',
+                                      query : 'limit=10000000&name=[path][name].[ext]'
+                                    }]
                                   });
-
-module.exports = validator(webpackConfig);
+}
+module.exports = webpackConfig;

@@ -3,8 +3,7 @@
  */
 let expect       = require('chai').expect,
     BaseError    = require('../../../common/log/base.error'),
-    rewire       = require('rewire'),
-    SortExecutor = rewire('./sort'),
+    SortExecutor = require('./sort'),
     tinysort     = require('tinysort');
 
 describe('SortExecutor', function () {
