@@ -1,13 +1,15 @@
 'use strict';
-const webpack   = require('webpack'),
-      path      = require('path'),
-      Util      = require('./src/common/util'),
-      Constants = require('./src/common/const');
+const webpack             = require('webpack'),
+      path                = require('path'),
+      Util                = require('./src/common/util'),
+      envConfig           = require('./src/common/environment.config'),
+      GoogleStoragePlugin = require('./src/common/google.storage.plugin'),
+      Const               = require('./src/common/const');
 
-if (!process.env.NODE_ENV) process.env.NODE_ENV = 'development';
+if (!process.env.NODE_ENV) process.env.NODE_ENV = Const.ENV.DEV;
 
 let webpackConfig = {
-  context: path.join(__dirname, Constants.clientContext),
+  context: path.join(__dirname, Const.CLIENT_CONTEXT),
   output : {
     filename     : '[name].js',
     chunkFilename: '[id].[chunkhash].js',
@@ -69,18 +71,36 @@ let webpackConfig = {
     }]
 };
 
-webpackConfig.entry             = Util.webpackEntries(Constants.devDistDir);
-webpackConfig.output.path       = path.join(__dirname, Constants.publicDir, Constants.devDistDir);
-webpackConfig.output.publicPath = (process.env.NODE_ENV === 'production' ?
-                                   Constants.productionPublicPath :
-                                   Constants.localPublicPath) + Constants.devDistDir + '/';
-if (process.env.NODE_ENV !== 'production') {
-  webpackConfig.module.rules.push({
-                                    test: /\.(png|svg|woff|jpg|jpeg|gif)$/,
-                                    use : [{
-                                      loader: 'url-loader',
-                                      query : 'limit=10000000&name=[path][name].[ext]'
-                                    }]
-                                  });
+webpackConfig.entry             = Util.webpackEntries();
+webpackConfig.output.path       = path.join(__dirname, Const.DIST_DIR);
+webpackConfig.output.publicPath = envConfig.publicPath;
+webpackConfig.module.rules.push({
+                                  test: /\.(png|svg|woff|jpg|jpeg|gif)$/,
+                                  use : [{
+                                    loader: 'url-loader',
+                                    query : 'limit=2000000&name=[path][name].[ext]'
+                                  }]
+                                });
+if (envConfig.uglify) {
+  webpackConfig.plugins.push(new webpack.optimize.UglifyJsPlugin({
+    sourceMap: true,
+    compress : {
+      warnings: false
+    }
+  }));
+  webpackConfig.plugins.push(new webpack.optimize.MinChunkSizePlugin({minChunkSize: 50000}));
+}
+if (envConfig.bucket) {
+  webpackConfig.plugins.push(new GoogleStoragePlugin({
+    directory     : Const.DIST_DIR,
+    include       : ['.js', '.js.map'],
+    storageOptions: {
+      projectId  : Const.PROJECT_ID,
+      credentials: require('./google.credentials.json'),
+    },
+    uploadOptions : {
+      bucketName: envConfig.bucket,
+    }
+  }));
 }
 module.exports = webpackConfig;

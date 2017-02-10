@@ -6,7 +6,8 @@
 const GoogleAnalytics = require('../integrations/google-analytics'),
       _               = require('../common/util/wrapper'),
       Logger          = require('../common/log/logger'),
-      Level           = require('../common/log/logger').Level;
+      Level = require('../common/log/logger').Level,
+      Const = require('../../common/const');
 
 /**
  * Initializes client properties.
@@ -16,7 +17,7 @@ exports.init = function (callback) {
   // Using Google Analytics as storage should be defined prior to this code.
   GoogleAnalytics.init();
   GoogleAnalytics.onReady(() => {
-    if (process.env.NODE_ENV === 'production') {
+    if (process.env.NODE_ENV === Const.ENV.PROD) {
       try {
         exports.id = Number.parseInt(window.ga.getAll()[0].get('clientId').split('.')[0]);
       } catch (e) {

@@ -110,6 +110,7 @@ module.exports = class WebpackGoogleCloudStoragePlugin {
                .then(filteredFiles => this.uploadFiles(filteredFiles));
   }
 
+  //noinspection JSUnusedGlobalSymbols
   apply(compiler) {
     this.connect();
 

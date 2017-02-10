@@ -1,7 +1,8 @@
 /**
  * Proudly created by ohad on 25/01/2017.
  */
-const Customer = require('./customer');
+const Customer = require('./customer'),
+      Const    = require('../../common/const');
 /**
  * @param {Customer} customer
  * @returns {Promise} that is resolved if the provided credentials should be approved, or
@@ -31,7 +32,7 @@ exports.auth = function (customer) {
  */
 exports.isDev = function (request) {
   if (request.query && request.query.prod === 'true') return false;
-  if (process.env.NODE_ENV === 'development') return true;
+  if (process.env.NODE_ENV === Const.ENV.DEV) return true;
   return typeof request.headers === 'object' &&
          request.headers['x-forwarded-for'] === '77.139.207.58';
 };

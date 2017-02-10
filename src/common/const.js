@@ -5,35 +5,59 @@
  * Relative path from project root to client code.
  * @type {string}
  */
-exports.clientContext = './src/client';
+exports.CLIENT_CONTEXT = './src/client';
 /**
  * Name of customer's configurations directory.
  * @type {string}
  */
-exports.configurationDir = 'configurations';
+exports.CUSTOMER_CONFIGS_DIR = 'configurations';
 /**
  * Name of directory that shouldn't exist, and can be used in tests.
  * @type {string}
  */
-exports.testContext = './tmp_test';
+exports.TEST_CONTEXT = './tmp_test';
 /**
  * Name of public dir.
  * @type {string}
  */
-exports.publicDir = 'dist';
+exports.DIST_DIR = 'dist';
 /**
- * Alias for BrainPal Node app.
+ * Alias for BrainPal production assets.
  * @type {string}
  */
-exports.productionPublicPath = 'https://cdn.brainpal.io/';
-
+exports.PRODUCTION_ALIAS = 'https://cdn.brainpal.io/dist/';
 /**
- * Alias for local BrainPal Node app.
+ * Alias for BrainPal staging assets.
  * @type {string}
  */
-exports.localPublicPath = 'http://brainjs.dev/';
+exports.STAGING_ALIAS = 'https://staging.brainpal.io/dist/';
 /**
- * Name of sub directory for dev dist (webpack output) files.
+ * Alias for local BrainPal assets.
  * @type {string}
  */
-exports.devDistDir = 'dev';
+exports.LOCAL_ALIAS = 'http://brainjs.dev/';
+/**
+ * for process.env.NODE_ENV
+ * @type {Object}
+ */
+exports.ENV = Object.freeze({
+                              PROD   : 'production',
+                              DEV    : 'development',
+                              STAGING: 'staging',
+                              TEST   : 'test'
+                            });
+/**
+ * Google Cloud project ID.
+ * @type {string}
+ */
+exports.PROJECT_ID = 'nth-name-156816';
+/**
+ * Name of staging storage bucket.
+ * @type {string}
+ */
+exports.STAGING_BUCKET = 'staging.brainpal.io';
+/**
+ * Name of production storage bucket.
+ * @type {string}
+ */
+exports.PRODUCTION_BUCKET = 'cdn.brainpal.io';

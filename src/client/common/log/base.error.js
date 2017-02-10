@@ -4,8 +4,8 @@
 const Storage = require('../storage/storage'),
       _       = require('../util/wrapper'),
       Logger  = require('./logger'),
-      Level   = require('./logger').Level;
-
+      Level   = require('./logger').Level,
+      Const   = require('../../../common/const');
 /**
  * @param {string} [message]
  */
@@ -53,7 +53,7 @@ function _shouldHandle(event) {
   if (_.isNil(event)) return false;
   //noinspection JSUnresolvedVariable
   if (event.error instanceof BaseError) return true;
-  if (process.env.NODE_ENV !== 'production') return true;
+  if (process.env.NODE_ENV !== Const.ENV.PROD) return true;
   //noinspection JSUnresolvedVariable
   return /brainpal/.test(event.filename);
 }

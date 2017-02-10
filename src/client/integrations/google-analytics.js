@@ -58,7 +58,7 @@ exports.init = function (options = {}) {
       cookieDomain: exports.cookieDomain,
       name        : exports.trackerName
     });
-    if (process.env.NODE_ENV === 'production') {
+    if (process.env.NODE_ENV === Const.ENV.PROD) {
       window.ga(exports.trackerName + '.send', 'pageview');
     }
   }
@@ -84,7 +84,7 @@ exports.trackingId = 'UA-91064115-1';
  * Cookies domain. 'none' is for localhost, and 'auto' for the publisher's.
  * @type {string}
  */
-exports.cookieDomain = 'auto';//process.env.NODE_ENV === 'production' ? 'auto' : 'none';
+exports.cookieDomain = 'auto';//process.env.NODE_ENV === Const.ENV.PROD ? 'auto' : 'none';
 
 /**
  * @returns {boolean} whether Google Analytics is loaded

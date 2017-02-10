@@ -11,11 +11,11 @@ const path      = require('path'),
  */
 exports.webpackEntries = function (subPath) {
   const configurationFiles = glob.sync(
-    path.join(Constants.clientContext, Constants.configurationDir, subPath || '') + '/*.js');
+    path.join(Constants.CLIENT_CONTEXT, Constants.CUSTOMER_CONFIGS_DIR, subPath || '') + '/*.js');
   let entries              = {};
   for (let i = 0; i < configurationFiles.length; i++) {
     entries[path.basename(configurationFiles[i], '.js')] = './' + path.join(
-        Constants.configurationDir, subPath || '', path.basename(configurationFiles[i]));
+        Constants.CUSTOMER_CONFIGS_DIR, subPath || '', path.basename(configurationFiles[i]));
   }
   return entries;
 };

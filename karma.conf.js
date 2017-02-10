@@ -33,6 +33,10 @@ module.exports = function (config) {
 
       webpack: webpackConfig,
 
+      webpackMiddleware: {
+        noInfo: true,
+        stats : 'errors-only'
+      },
 
       // test results reporter to use
       // possible values: 'dots', 'progress'
