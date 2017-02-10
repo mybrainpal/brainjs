@@ -11,7 +11,8 @@
  * </ul>
  */
 const _         = require('../common/util/wrapper'),
-      BaseError = require('../common/log/base.error');
+      BaseError = require('../common/log/base.error'),
+      Const     = require('../../common/const');
 /**
  * Initializes Google Analytics script.
  * @param options
