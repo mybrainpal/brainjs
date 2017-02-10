@@ -25,17 +25,17 @@ exports.DIST_DIR = 'dist';
  * Alias for BrainPal production assets.
  * @type {string}
  */
-exports.PRODUCTION_ALIAS = 'https://cdn.brainpal.io/dist/';
+exports.PRODUCTION_ALIAS = '//cdn.brainpal.io/dist/';
 /**
  * Alias for BrainPal staging assets.
  * @type {string}
  */
-exports.STAGING_ALIAS = 'https://staging.brainpal.io/dist/';
+exports.STAGING_ALIAS = '//staging.brainpal.io/dist/';
 /**
  * Alias for local BrainPal assets.
  * @type {string}
  */
-exports.LOCAL_ALIAS = 'http://brainjs.dev/';
+exports.LOCAL_ALIAS = '//brainjs.dev/';
 /**
  * for process.env.NODE_ENV
  * @type {Object}
