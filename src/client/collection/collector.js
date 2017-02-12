@@ -23,7 +23,7 @@ let Client  = require('../common/client'),
  *  @property {Object} [client] - container for Client properties to collect.
  *      @property {Array.<string>} [properties] - 'agent.os' for `Client.agent.os`
  *  @property {Experiment} [experiment] - that encompasses this data collection.
- *  @property {ExperimentGroup} [experimentGroup] - that the client belongs to.
+ *  @property {Group} [experimentGroup] - that the client belongs to.
  *  @property {string} iterSelector - used to iterate over repetitive things in the page.
  *      Whenever used, all other selectors are used with relation to it.
  *      Consider a page with multiple products, that each has an identical layout, and we want

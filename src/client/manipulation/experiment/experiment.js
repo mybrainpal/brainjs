@@ -1,10 +1,10 @@
 /**
  * Proudly created by ohad on 04/12/2016.
  */
-const _               = require('./../../common/util/wrapper'),
-      BaseError       = require('../../common/log/base.error'),
-      ExperimentGroup = require('./group'),
-      Demographics    = require('./demographics');
+const _            = require('./../../common/util/wrapper'),
+      BaseError    = require('../../common/log/base.error'),
+      Group        = require('./group'),
+      Demographics = require('./demographics');
 
 class Experiment {
   /**
@@ -35,11 +35,11 @@ class Experiment {
     }
     /**
      * All the groups in the experiment.
-     * @type {Array.<ExperimentGroup>}
+     * @type {Array.<Group>}
      */
     this.groups = options.groups.map(
       function (g) {
-        return new ExperimentGroup(_.deepExtend({experimentId: options.id}, g));
+        return new Group(_.deepExtend({experimentId: options.id}, g));
       });
     this.clientGroups = this.groups.filter(function (g) {return g.included});
     this.included     = true;
