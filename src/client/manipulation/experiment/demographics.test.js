@@ -8,7 +8,7 @@ let expect       = require('chai').expect,
     Client       = require('../../common/client'),
     Demographics = require('./demographics');
 
-describe.only('Demographics', function () {
+describe('Demographics', function () {
   let tmpAgent;
   before(() => {
     tmpAgent             = _.deepExtend({}, Client.agent);
@@ -70,6 +70,8 @@ describe.only('Demographics', function () {
       name: Demographics.PROPERTIES.URL.name,
       url : window.location.href
     };
+    expect(Demographics.included(property)).to.be.true;
+    property.url = `^${window.location.href}$`;
     expect(Demographics.included(property)).to.be.true;
     property.url = 'Facebook';
     expect(Demographics.included(property)).to.be.false;

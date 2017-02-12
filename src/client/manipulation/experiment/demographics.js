@@ -113,7 +113,7 @@ function _urlInclude(property) {
   if (!_.isString(property.url)) {
     throw new BaseError('Demographics: url must be a string.');
   }
-  return property.url === window.location.href;
+  return new RegExp(property.url).test(window.location.href);
 }
 
 /**
