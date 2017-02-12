@@ -3,18 +3,20 @@
  */
 let expect       = require('chai').expect,
     chai         = require('chai'),
+    _            = require('../../common/util/wrapper'),
     BaseError    = require('../../common/log/base.error'),
     Client       = require('../../common/client'),
     Demographics = require('./demographics');
 
 describe('Demographics', function () {
-  let tmpOs;
+  let tmpAgent;
   before(() => {
-    tmpOs           = Client.agent.os;
-    Client.agent.os = 'BrainOs'; // we are going to make it. period.
+    tmpAgent             = _.deepExtend({}, Client.agent);
+    Client.agent.os      = 'BrainOs'; // we are going to make it. period.
+    Client.agent.browser = 'BrainMoz';
   });
   after(() => {
-    Client.agent.os = tmpOs;
+    Client.agent = tmpAgent;
   });
   it('modulo', () => {
     let property = {
@@ -48,6 +50,19 @@ describe('Demographics', function () {
     delete property.os;
     expect(() => {Demographics.included(property)}).to.throw(BaseError);
     property.os = 1;
+    expect(() => {Demographics.included(property)}).to.throw(BaseError);
+  });
+  it('browser', () => {
+    let property = {
+      name   : Demographics.PROPERTIES.BROWSER.name,
+      browser: Client.agent.browser
+    };
+    expect(Demographics.included(property)).to.be.true;
+    property.browser = 'Netscape';
+    expect(Demographics.included(property)).to.be.false;
+    delete property.browser;
+    expect(() => {Demographics.included(property)}).to.throw(BaseError);
+    property.browser = 1;
     expect(() => {Demographics.included(property)}).to.throw(BaseError);
   });
   it('url', () => {

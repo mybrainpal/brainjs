@@ -38,9 +38,10 @@ exports.included = function (properties) {
  */
 exports.PROPERTIES = Object.freeze(
   {
-    MODULO: {name: 'MODULO', includeFn: _moduloInclude},
-    OS    : {name: 'OS', includeFn: _osInclude},
-    URL   : {name: 'URL', includeFn: _urlInclude}
+    BROWSER: {name: 'BROWSER', includeFn: _browserInclude},
+    MODULO : {name: 'MODULO', includeFn: _moduloInclude},
+    OS     : {name: 'OS', includeFn: _osInclude},
+    URL    : {name: 'URL', includeFn: _urlInclude}
   });
 
 /**
@@ -76,6 +77,23 @@ function _osInclude(property) {
   }
   if (Client.agent && Client.agent.os) {
     return Client.agent.os.toLowerCase().indexOf(property.os.toLowerCase()) != -1
+  }
+  return false;
+}
+
+/**
+ * @param {Object} property
+ *  @property {string} browser
+ * @returns {boolean} whether this given browser equals the client's browser, if the client's
+ * browser is missing false is returned.
+ * @private
+ */
+function _browserInclude(property) {
+  if (!_.isString(property.browser)) {
+    throw new BaseError('Demographics: browser must be a string.');
+  }
+  if (Client.agent && Client.agent.browser) {
+    return Client.agent.browser.toLowerCase().indexOf(property.browser.toLowerCase()) != -1
   }
   return false;
 }
