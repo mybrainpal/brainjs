@@ -37,6 +37,11 @@ exports.STAGING_ALIAS = '//staging.brainpal.io/dist/';
  */
 exports.LOCAL_ALIAS = '//brainjs.dev/';
 /**
+ * Alias for local publisher.
+ * @type {string}
+ */
+exports.LOCAL_PUBLISHER = 'publisher.dev';
+/**
  * for process.env.NODE_ENV
  * @type {Object}
  */

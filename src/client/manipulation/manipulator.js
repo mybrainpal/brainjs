@@ -25,9 +25,6 @@ exports.experiment = function (experiment, options) {
   }
   subjectOptions = options.subjectOptions || {};
   subjectOptions = _.deepExtend({experiment: experiment}, subjectOptions);
-  if (subjectOptions.anchor) {
-    Collector.collect(subjectOptions);
-  }
   let noAnchor = _.deepExtend({}, subjectOptions);
   delete noAnchor.anchor;
   Collector.collect(noAnchor);
@@ -44,5 +41,8 @@ exports.experiment = function (experiment, options) {
       Executor.execute(experiment.clientGroups[i].executors[j].name,
                        experiment.clientGroups[i].executors[j].options);
     }
+  }
+  if (subjectOptions.anchor) {
+    Collector.collect(subjectOptions);
   }
 };

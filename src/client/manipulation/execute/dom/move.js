@@ -45,8 +45,9 @@ exports.execute = function (options) {
   _insert(toInsert, parent, nextSibling);
   if (options.toLog) {
     if (toInsert.parentNode &&
-        ((parent && toInsert.parentNode === parent) ||
-         nextSibling && toInsert.nextElementSibling === nextSibling)) {
+        (parent && toInsert.parentNode === parent ||
+         nextSibling && toInsert.nextElementSibling === nextSibling) &&
+        _.isVisible(toInsert)) {
       Logger.log(Level.INFO, `${options.target} moved.`);
     } else {
       Logger.log(Level.WARNING, `Failed to move ${options.target}.`);

@@ -6,7 +6,8 @@
  */
 let _         = require('../../common/util/wrapper'),
     Client    = require('../../common/client'),
-    BaseError = require('../../common/log/base.error');
+    BaseError = require('../../common/log/base.error'),
+    Const     = require('../../../common/const');
 /**
  * @param {Array.<Object>|Object} properties - describing which users are part of the demographics
  *                                      population.
@@ -107,7 +108,8 @@ function _browserInclude(property) {
  */
 function _urlInclude(property) {
   if (process.env.NODE_ENV !== 'test' && window.location.host &&
-      window.location.host.startsWith('localhost:')) {
+      (window.location.host.startsWith('localhost:') ||
+       window.location.host === Const.LOCAL_PUBLISHER)) {
     return true;
   }
   if (!(property.url instanceof RegExp)) {
