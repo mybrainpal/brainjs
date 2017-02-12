@@ -83,18 +83,18 @@ describe('Manipulator', function () {
     Manipulator.experiment(new Experiment(experiment),
                            {subjectOptions: {dataProps: [dataProp], anchor: anchor}});
     expect(collectorSpy).to.have.been.called(4);
-    // collect data based on anchors.
-    expect(_storage[0][0]).to.contain.all.keys('experiment', 'anchor');
     // log participation in experiment or lack there of.
-    expect(_storage[1][0]).to.contain.all.keys('experiment');
+    expect(_storage[0][0]).to.contain.all.keys('experiment');
     // experiment participation collection should not have anchor.
-    expect(_storage[1][0]).to.not.contain.any.keys('anchor');
+    expect(_storage[0][0]).to.not.contain.any.keys('anchor');
     // collect data on experiment group based on anchors
-    expect(_storage[2][0]).to.contain.all.keys('experiment', 'anchor', 'experimentGroup');
+    expect(_storage[1][0]).to.contain.all.keys('experiment', 'anchor', 'experimentGroup');
     // log participation in experiment group or lack there of.
-    expect(_storage[3][0]).to.contain.all.keys('experiment', 'experimentGroup');
+    expect(_storage[2][0]).to.contain.all.keys('experiment', 'experimentGroup');
     // experiment group participation collection should not have anchor.
-    expect(_storage[3][0]).to.not.contain.any.keys('anchor');
+    expect(_storage[2][0]).to.not.contain.any.keys('anchor');
+    // collect data based on anchors.
+    expect(_storage[3][0]).to.contain.all.keys('experiment', 'anchor');
     // Executor should be called for each executor in clientGroup.
     expect(executorSpy).to.have.been.called(clientGroup.executors.length);
   });
@@ -106,13 +106,6 @@ describe('Manipulator', function () {
                            });
     // Executor should be called for twice for each executor in clientGroup.
     expect(executorSpy).to.have.been.called(2 * clientGroup.executors.length);
-  });
-  it('experiment with zero groups', () => {
-    let noGroupsExperiment    = _.deepExtend({}, experiment);
-    noGroupsExperiment.groups = [];
-    Manipulator.experiment(new Experiment(noGroupsExperiment));
-    expect(collectorSpy).to.have.been.called.once;
-    expect(executorSpy).to.not.have.been.called();
   });
   it('experiment without client groups', () => {
     let noClientGroups    = _.deepExtend({}, experiment);
