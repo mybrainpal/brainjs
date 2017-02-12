@@ -132,8 +132,8 @@ function _createSubject(options) {
     if (options.experiment.id) {
       emittedSubject.experiment.id = options.experiment.id;
     }
-    if (options.experiment.isClientIncluded) {
-      emittedSubject.experiment.isClientIncluded = options.experiment.isClientIncluded;
+    if (options.experiment.included) {
+      emittedSubject.experiment.included = options.experiment.included;
     }
     if (_.isEmpty(emittedSubject.experiment)) {
       Logger.log(Level.WARNING, 'Collector: experiment is empty.');
@@ -145,9 +145,9 @@ function _createSubject(options) {
     if (options.experimentGroup.experimentId) {
       emittedSubject.experimentGroup.experimentId = options.experimentGroup.experimentId;
     }
-    if (options.experimentGroup.isClientIncluded) {
-      emittedSubject.experimentGroup.isClientIncluded =
-        options.experimentGroup.isClientIncluded;
+    if (options.experimentGroup.included) {
+      emittedSubject.experimentGroup.included =
+        options.experimentGroup.included;
     }
     if (options.experimentGroup.label) {
       emittedSubject.experimentGroup.label = options.experimentGroup.label;

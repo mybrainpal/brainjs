@@ -48,9 +48,10 @@ function _run(configuration) {
     }
     if (configuration.hasOwnProperty('experiments')) {
       for (let i = 0; i < configuration.experiments.length; i++) {
-        Manipulator.experiment(
-          new Experiment(configuration.experiments[i].experiment),
-          configuration.experiments[i].options);
+        let experiment = new Experiment(configuration.experiments[i].experiment);
+        if (experiment.included) {
+          Manipulator.experiment(experiment, configuration.experiments[i].options);
+        }
       }
     }
   });

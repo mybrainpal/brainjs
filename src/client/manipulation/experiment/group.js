@@ -22,7 +22,7 @@ function ExperimentGroup(options) {
  * Whether the Client is included in this group.
  * @type {boolean}
  */
-ExperimentGroup.prototype.isClientIncluded = true;
+ExperimentGroup.prototype.included = true;
 
 /**
  * @param options
@@ -46,9 +46,9 @@ ExperimentGroup.prototype.options = function (options) {
   if (options.label) {
     this.label = options.label;
   }
-  this.isClientIncluded = true;
+  this.included = true;
   if (options.demographics) {
-    this.isClientIncluded = Demographics.included(options.demographics);
+    this.included = Demographics.included(options.demographics);
   }
   if (options.executors) {
     this.executors = options.executors;

@@ -1,61 +1,38 @@
 /**
  * Proudly created by ohad on 04/12/2016.
  */
-let _ = require('./../../common/util/wrapper'),
-    Logger          = require('../../common/log/logger'),
-    Level           = require('../../common/log/logger').Level,
-    ExperimentGroup = require('./group');
-/**
- * An experiment, such as A/B testing, that exists to test a hypothesis.
- * @param options
- * @class Experiment
- * @constructor
- */
-function Experiment(options) {
-  if (options) {
-    this.options(options);
-  } else {
-    Logger.log(Level.WARNING, 'Experiment: missing options.');
-  }
-}
+const _               = require('./../../common/util/wrapper'),
+      BaseError       = require('../../common/log/base.error'),
+      ExperimentGroup = require('./group'),
+      Demographics    = require('./demographics');
 
-/**
- * Whether the Client is included in any of the experiment groups.
- * @type {boolean}
- */
-Experiment.prototype.isClientIncluded = false;
-/**
- * All the experiment groups that include the client.
- * @type {Array.<ExperimentGroup>}
- */
-Experiment.prototype.clientGroups = [];
-/**
- * All the groups in the experiment.
- * @type {Array.<ExperimentGroup>}
- */
-Experiment.prototype.groups = [];
-
-/**
- * @param options
- *  @property {string} id
- *  @property {string} [label] - used for logging.
- *  @property {Array.<Object>} groups - the various experiment groups, each one consists of
- *  demographics portraits (i.e. which part of the entire population of users using our
- *  customers website), and executors (i.e. what kind of DOM manipulations should the group
- *  participants experience).
- *  @property
- */
-Experiment.prototype.options = function (options) {
-  let i;
-  if (options.id) {
+class Experiment {
+  /**
+   * An experiment, such as A/B testing, that exists to test a hypothesis.
+   * @param options
+   *  @property {string|number} id
+   *  @property {string} [label] - used for logging.
+   *  @property {Array.<Object>} groups - the various experiment groups, each one consists of
+   *  demographics portraits (i.e. which part of the entire population of users using our
+   *  customers website), and executors (i.e. what kind of DOM manipulations should the group
+   *  participants experience).
+   *  @property {Array.<Object>|Object} [demographics] - the experiment demographics. By default the
+   *  user is included.
+   */
+  constructor(options = {}) {
+    if (!_.isString(options.id) && !_.isNumber(options.id)) {
+      throw new BaseError('Experiment: id must be number or a string');
+    }
     this.id = options.id;
-  } else {
-    Logger.log(Level.WARNING, 'Experiment: missing id.');
-  }
-  if (options.label) {
-    this.label = options.label;
-  }
-  if (options.groups) {
+    if (!_.isNil(options.label)) {
+      if (!_.isString(options.label)) {
+        throw new BaseError('Experiment: label must nil or a string');
+      }
+      this.label = options.label;
+    }
+    if (!Array.isArray(options.groups) || !options.groups.length) {
+      throw new BaseError('Experiment: groups must be a non-empty array.');
+    }
     /**
      * All the groups in the experiment.
      * @type {Array.<ExperimentGroup>}
@@ -64,17 +41,13 @@ Experiment.prototype.options = function (options) {
       function (g) {
         return new ExperimentGroup(_.deepExtend({experimentId: options.id}, g));
       });
-    this.clientGroups = []; // makes sure `this` maintains its own clientGroups.
-    for (i = 0; i < this.groups.length; i++) {
-      if (this.groups[i].isClientIncluded) {
-        this.isClientIncluded = true;
-        this.clientGroups.push(this.groups[i]);
-      }
+    this.clientGroups = this.groups.filter(function (g) {return g.included});
+    this.included     = true;
+    if (!_.isNil(options.demographics)) {
+      this.included = Demographics.included(options.demographics);
     }
-  } else {
-    Logger.log(Level.WARNING, 'Experiment: missing groups.');
   }
-};
+}
 
 /**
  * Expose the `Experiment` constructor.

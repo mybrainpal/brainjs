@@ -23,12 +23,6 @@ const configuration = {
           {
             label       : 'experiment',
             demographics: [
-              {name: Demographics.PROPERTIES.RESOLUTION.name, minWidth: 770},
-              {
-                name: Demographics.PROPERTIES.URL.name,
-                url : /^https?:\/\/(?:www\.)?latesthackingsoftwares\.com\/[^\/]+\/?(?:\?lang=[a-z]+)?$/
-              },
-              {name: Demographics.PROPERTIES.BROWSER.name, browser: 'chrome'},
               {name: Demographics.PROPERTIES.MODULO.name, moduloIds: [0], moduloOf: 100}
             ],
             executors   : [
@@ -48,6 +42,14 @@ const configuration = {
               }
             ]
           }
+        ],
+        demographics: [
+          {name: Demographics.PROPERTIES.RESOLUTION.name, minWidth: 770},
+          {
+            name: Demographics.PROPERTIES.URL.name,
+            url : /^https?:\/\/(?:www\.)?latesthackingsoftwares\.com\/[^\/]+\/?(?:\?lang=[a-z]+)?$/
+          },
+          {name: Demographics.PROPERTIES.BROWSER.name, browser: 'chrome'}
         ]
       },
       options   : {

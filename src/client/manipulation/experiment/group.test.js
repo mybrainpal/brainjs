@@ -14,7 +14,7 @@ describe('ExperimentGroup', function () {
         name: Demographics.PROPERTIES.MODULO.name, moduloIds: [0], moduloOf: 1
         }]
     });
-    expect(group.isClientIncluded).to.be.true;
+    expect(group.included).to.be.true;
   });
   it('client not included', () => {
     group = new ExperimentGroup({
@@ -22,10 +22,10 @@ describe('ExperimentGroup', function () {
         name: Demographics.PROPERTIES.MODULO.name, moduloIds: [], moduloOf: 1
         }]
     });
-    expect(group.isClientIncluded).to.be.false;
+    expect(group.included).to.be.false;
   });
   it('default constructor', () => {
     group = new ExperimentGroup();
-    expect(group.isClientIncluded).to.be.true;
+    expect(group.included).to.be.true;
   });
 });
