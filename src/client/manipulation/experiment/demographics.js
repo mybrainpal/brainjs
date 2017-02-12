@@ -38,10 +38,11 @@ exports.included = function (properties) {
  */
 exports.PROPERTIES = Object.freeze(
   {
-    BROWSER: {name: 'BROWSER', includeFn: _browserInclude},
-    MODULO : {name: 'MODULO', includeFn: _moduloInclude},
-    OS     : {name: 'OS', includeFn: _osInclude},
-    URL    : {name: 'URL', includeFn: _urlInclude}
+    BROWSER   : {name: 'BROWSER', includeFn: _browserInclude},
+    MODULO    : {name: 'MODULO', includeFn: _moduloInclude},
+    OS        : {name: 'OS', includeFn: _osInclude},
+    RESOLUTION: {name: 'RESOLUTION', includeFn: _resolutionInclude},
+    URL       : {name: 'URL', includeFn: _urlInclude}
   });
 
 /**
@@ -113,4 +114,35 @@ function _urlInclude(property) {
     throw new BaseError('Demographics: url must be a string.');
   }
   return property.url === window.location.href;
+}
+
+/**
+ * @param {Object} property
+ *  @property {number} minWidth - in pixels.
+ *  @property {number} maxWidth
+ *  @property {number} minHeight
+ *  @property {number} maxHeight
+ * @returns {boolean} whether the visible (actual) window dimensions satisfy the given restrictions.
+ * @private
+ */
+function _resolutionInclude(property) {
+  let satisfyAll   = true;
+  const dimensions = ['Width', 'Height'];
+  const limits     = ['min', 'max'];
+  for (let i = 0; i < dimensions.length; i++) {
+    for (let j = 0; j < limits.length; j++) {
+      const propName   = limits[j] + dimensions[i];
+      const windowProp = 'inner' + dimensions[i];
+      if (!_.isNil(property[propName])) {
+        if (!Number.isInteger(property[propName])) {
+          throw new BaseError(`Demographics: ${propName} must be nil or an integer.`);
+        }
+        if ((limits[j] === 'min' && window[windowProp] < property[propName]) ||
+            (limits[j] === 'max' && window[windowProp] > property[propName])) {
+          satisfyAll = false;
+        }
+      }
+    }
+  }
+  return satisfyAll;
 }

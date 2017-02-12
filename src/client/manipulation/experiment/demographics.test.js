@@ -8,7 +8,7 @@ let expect       = require('chai').expect,
     Client       = require('../../common/client'),
     Demographics = require('./demographics');
 
-describe('Demographics', function () {
+describe.only('Demographics', function () {
   let tmpAgent;
   before(() => {
     tmpAgent             = _.deepExtend({}, Client.agent);
@@ -77,6 +77,25 @@ describe('Demographics', function () {
     expect(() => {Demographics.included(property)}).to.throw(BaseError);
     property.url = 1;
     expect(() => {Demographics.included(property)}).to.throw(BaseError);
+  });
+  it('resolution', () => {
+    const dimensions = ['Width', 'Height'];
+    const limits     = ['min', 'max'];
+    for (let i = 0; i < dimensions.length; i++) {
+      for (let j = 0; j < limits.length; j++) {
+        let property       = {name: Demographics.PROPERTIES.RESOLUTION.name};
+        const shift        = limits[j] === 'min' ? -1 : 1;
+        const propName     = limits[j] + dimensions[i];
+        property[propName] = window['inner' + dimensions[i]] + shift;
+        expect(Demographics.included(property)).to.be.true;
+        property[propName] = window['inner' + dimensions[i]] - shift;
+        expect(Demographics.included(property)).to.be.false;
+        property[propName] = '1';
+        expect(() => {Demographics.included(property)}).to.throw(BaseError);
+        delete property[propName];
+        expect(Demographics.included(property)).to.be.true;
+      }
+    }
   });
   it('multiple properties', () => {
     expect(Demographics.included([
