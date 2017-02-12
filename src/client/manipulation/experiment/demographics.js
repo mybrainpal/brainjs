@@ -101,7 +101,7 @@ function _browserInclude(property) {
 
 /**
  * @param {Object} property
- *  @property {string} url
+ *  @property {RegExp} url
  * @returns {boolean} Whether the given url equals current location.
  * @private
  */
@@ -110,10 +110,10 @@ function _urlInclude(property) {
       window.location.host.startsWith('localhost:')) {
     return true;
   }
-  if (!_.isString(property.url)) {
-    throw new BaseError('Demographics: url must be a string.');
+  if (!(property.url instanceof RegExp)) {
+    throw new BaseError('Demographics: url must be a regex.');
   }
-  return new RegExp(property.url).test(window.location.href);
+  return property.url.test(window.location.href);
 }
 
 /**

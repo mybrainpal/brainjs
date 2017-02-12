@@ -68,16 +68,14 @@ describe('Demographics', function () {
   it('url', () => {
     let property = {
       name: Demographics.PROPERTIES.URL.name,
-      url : window.location.href
+      url : new RegExp(`^${window.location.href}$`)
     };
     expect(Demographics.included(property)).to.be.true;
-    property.url = `^${window.location.href}$`;
-    expect(Demographics.included(property)).to.be.true;
-    property.url = 'Facebook';
+    property.url = /Facebook/;
     expect(Demographics.included(property)).to.be.false;
     delete property.url;
     expect(() => {Demographics.included(property)}).to.throw(BaseError);
-    property.url = 1;
+    property.url = '1';
     expect(() => {Demographics.included(property)}).to.throw(BaseError);
   });
   it('resolution', () => {
