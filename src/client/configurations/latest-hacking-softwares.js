@@ -23,7 +23,7 @@ const configuration = {
           {
             label       : 'experiment',
             demographics: [
-              {name: Demographics.PROPERTIES.MODULO.name, moduloIds: [0], moduloOf: 100}
+              {name: Demographics.PROPERTIES.MODULO.name, moduloIds: [0], moduloOf: 10}
             ],
             executors   : [
               {
