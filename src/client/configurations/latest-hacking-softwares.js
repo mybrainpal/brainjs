@@ -1,11 +1,12 @@
 /**
  * Proudly created by ohad on 08/02/2017.
  */
-const Play          = require('../play'),
-      MoveExecutor  = require('../manipulation/execute/dom/move'),
-      StyleExecutor = require('../manipulation/execute/dom/style'),
-      Demographics  = require('../manipulation/experiment/demographics'),
-      Storage       = require('../common/storage/storage');
+const Play              = require('../play'),
+      AlertifyInterface = require('../manipulation/execute/interface/alertify'),
+      MoveExecutor      = require('../manipulation/execute/dom/move'),
+      StyleExecutor     = require('../manipulation/execute/dom/style'),
+      Demographics      = require('../manipulation/experiment/demographics'),
+      Storage           = require('../common/storage/storage');
 
 const configuration = {
   storage    : {
@@ -17,13 +18,13 @@ const configuration = {
   experiments: [
     {
       experiment: {
-        id    : 1,
-        label : 'second CTA',
-        groups: [
+        id          : 2,
+        label       : 'second CTA',
+        groups      : [
           {
             label       : 'experiment',
             demographics: [
-              {name: Demographics.PROPERTIES.MODULO.name, moduloIds: [0], moduloOf: 10}
+              {name: Demographics.PROPERTIES.MODULO.name, moduloIds: [0, 2], moduloOf: 5}
             ],
             executors   : [
               {
@@ -61,7 +62,53 @@ const configuration = {
           dataProps: [{name: 'install', selector: 'h1.name span[itemprop=name]'}]
         }
       }
+    },
+    {
+      experiment: {
+        id          : 1,
+        label       : 'alertify',
+        groups      : [
+          {
+            label       : 'downloads',
+            demographics: [
+              {name: Demographics.PROPERTIES.MODULO.name, moduloIds: [0, 1], moduloOf: 5}
+            ],
+            executors   : [
+              {name: StyleExecutor.name, options: {css: require('./latest0hacking-softwares.css')}},
+              {
+                name   : AlertifyInterface.name,
+                options: {
+                  alertifyFn: (alertify) => {
+                    alertify.set('notifier', 'position', 'bottom-left');
+                    alertify.notify(
+                      Math.round(50 + Math.random() * 120) + ' downloads in the last hour.',
+                      'message', 10);
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        demographics: [
+          {name: Demographics.PROPERTIES.RESOLUTION.name, minWidth: 770},
+          {
+            name: Demographics.PROPERTIES.URL.name,
+            url : /^https?:\/\/(?:www\.)?latesthackingsoftwares\.com\/[^\/]+\/?(?:\?lang=[a-z]+)?$/
+          },
+          {name: Demographics.PROPERTIES.BROWSER.name, browser: 'chrome'}
+        ]
+      },
+      options   : {
+        subjectOptions: {
+          anchor   : {
+            selector: 'a[href*=alinks]',
+            event   : 'click'
+          },
+          dataProps: [{name: 'install', selector: 'h1.name span[itemprop=name]'}]
+        }
+      }
     }
   ]
 };
+
 Play(configuration);
