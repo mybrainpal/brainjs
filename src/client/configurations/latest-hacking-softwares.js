@@ -71,7 +71,7 @@ const configuration = {
           {
             label       : 'downloads',
             demographics: [
-              {name: Demographics.PROPERTIES.MODULO.name, moduloIds: [0, 1], moduloOf: 5}
+              {name: Demographics.PROPERTIES.MODULO.name, moduloIds: [1, 3], moduloOf: 5}
             ],
             executors   : [
               {name: StyleExecutor.name, options: {css: require('./latest0hacking-softwares.css')}},
