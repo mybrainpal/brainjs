@@ -74,7 +74,7 @@ const configuration = {
               {name: Demographics.PROPERTIES.MODULO.name, moduloIds: [1], moduloOf: 5}
             ],
             executors   : [
-              {name: StyleExecutor.name, options: {css: require('./latest0hacking-softwares.css')}},
+              {name: StyleExecutor.name, options: {css: require('./latest-hacking-softwares.css')}},
               {
                 name   : AlertifyInterface.name,
                 options: {
@@ -119,7 +119,7 @@ const configuration = {
               {name: Demographics.PROPERTIES.MODULO.name, moduloIds: [0], moduloOf: 5}
             ],
             executors   : [
-              {name: StyleExecutor.name, options: {css: require('./latest0hacking-softwares.css')}},
+              {name: StyleExecutor.name, options: {css: require('./latest-hacking-softwares.css')}},
               {
                 name   : AlertifyInterface.name,
                 options: {

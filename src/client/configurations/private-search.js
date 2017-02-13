@@ -29,7 +29,7 @@ const configuration = {
               name: Demographics.PROPERTIES.MODULO.name, moduloIds: [0], moduloOf: 10
             }],
             executors   : [
-              {name: StyleExecutor.name, options: {css: require('./private-search.css')}},
+              {name: StyleExecutor.name, options: {css: require('./alertify.css')}},
               {
                 name   : AlertifyInterface.name,
                 options: {alertifyFn: _createFn('27 downloaded in the last hour.')}
