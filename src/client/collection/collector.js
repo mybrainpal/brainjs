@@ -132,6 +132,9 @@ function _createSubject(options) {
     if (options.experiment.id) {
       emittedSubject.experiment.id = options.experiment.id;
     }
+    if (options.experiment.label) {
+      emittedSubject.experiment.label = options.experiment.label;
+    }
     if (options.experiment.included) {
       emittedSubject.experiment.included = options.experiment.included;
     }
