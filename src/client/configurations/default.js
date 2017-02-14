@@ -3,7 +3,9 @@
  */
 const Play = require('../play');
 
-(function () {
-  // Let the games begin.
-  Play({});
-})();
+// Let the games begin.
+Play({
+       storage: {
+         name: require('../common/storage/storage').names.POST
+       }
+     });

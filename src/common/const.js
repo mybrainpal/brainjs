@@ -66,3 +66,8 @@ exports.STAGING_BUCKET = 'staging.brainpal.io';
  * @type {string}
  */
 exports.PRODUCTION_BUCKET = 'cdn.brainpal.io';
+/**
+ * URL of server that handles storage http requests.
+ * @type {string}
+ */
+exports.STORAGE_URL = 'https://app.brainpal.io/save';

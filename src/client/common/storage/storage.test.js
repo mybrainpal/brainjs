@@ -2,6 +2,7 @@
  * Proudly created by ohad on 15/01/2017.
  */
 const expect          = require('chai').expect,
+      BaseError       = require('../log/base.error'),
       Storage         = require('./storage'),
       InMemoryStorage = require('./in-memory.storage'),
       ConsoleStorage  = require('./console.storage');
@@ -22,6 +23,12 @@ describe('Storage', function () {
   it('callback', (done) => {
     const doneFn = () => {done()};
     Storage.set(Storage.names.CONSOLE, {}, doneFn);
+  });
+  it('set errors', () => {
+    expect(() => {Storage.set(Storage.names.CONSOLE + 'oh no...')}).to.throw(BaseError);
+    expect(() => {//noinspection JSCheckFunctionSignatures
+      Storage.set(1)
+    }).to.throw(BaseError);
   });
   it('in-memory are then saved to actual', (done) => {
     const tmp           = ConsoleStorage.save;

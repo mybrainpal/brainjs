@@ -3,34 +3,34 @@
  *
  * Saves data as google analytics events by stringify json objects.
  */
-let Logger = require('./../log/logger'),
-    Level           = require('./../log/logger').Level,
-    GoogleAnalytics = require('./../../integrations/google-analytics');
+const Logger          = require('./../log/logger'),
+      Level           = require('./../log/logger').Level,
+      GoogleAnalytics = require('./../../integrations/google-analytics');
 /**
- * Logs an entry on subject.
- * @param {Object} subject
+ * Logs an entry on message.
+ * @param {Object} message
  */
-exports.save = function save(subject) {
+exports.save = function save(message) {
   let category = 'BrainPal:';
-  let action   = JSON.stringify(subject);
+  let action = JSON.stringify(message);
   let label    = '';
   let value    = 0;
   try {
-    if (subject.experiment) {
-      category += 'experiment:' + JSON.stringify(subject.experiment);
+    if (message.experiment) {
+      category += 'experiment:' + JSON.stringify(message.experiment);
     }
-    if (subject.exerimentGroup) {
-      category += 'experimentGroup:' + JSON.stringify(subject.group);
+    if (message.exerimentGroup) {
+      category += 'experimentGroup:' + JSON.stringify(message.group);
     }
-    if (subject.client) {
-      category += 'client:' + JSON.stringify(subject.client);
+    if (message.client) {
+      category += 'client:' + JSON.stringify(message.client);
     }
-    if (subject.anchor) {
-      action = 'anchor:' + JSON.stringify(subject.anchor);
+    if (message.anchor) {
+      action = 'anchor:' + JSON.stringify(message.anchor);
     }
-    if (subject.subject) {
-      label = JSON.stringify(subject.subject);
-      value = subject.subject.price || subject.subject.count || value;
+    if (message.subject) {
+      label = JSON.stringify(message.subject);
+      value = message.subject.price || message.subject.count || value;
     }
     ga(GoogleAnalytics.trackerName + '.send', 'event', {
       eventCategory: category,

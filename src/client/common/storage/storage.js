@@ -4,7 +4,9 @@
  * A communication interface to store data in a data warehouse. The interface is often
  * implemented by integrations.
  */
-const InMemoryStorage = require('./in-memory.storage');
+const _               = require('../util/wrapper'),
+      BaseError       = require('../log/base.error'),
+      InMemoryStorage = require('./in-memory.storage');
 /**
  * Saves message using _storage.
  * @param message
@@ -21,6 +23,9 @@ let _storage = InMemoryStorage;
  * @param {function} [callback] - to run after the storage switch had been completed.
  */
 exports.set = function (name, options, callback) {
+  if (!_.isString(name)) {
+    throw new BaseError('Storage: ' + name + ' must be a string.');
+  }
   switch (name) {
     case exports.names.IN_MEMORY:
       _storage = InMemoryStorage;
@@ -32,13 +37,19 @@ exports.set = function (name, options, callback) {
     case exports.names.GOOGLE_ANALYTICS:
       _storageSwitch(require('./google-analytics.storage'), options, callback);
       break;
+    case exports.names.POST:
+      _storageSwitch(require('./post.storage'), options, callback);
+      break;
+    default:
+      throw new BaseError('Storage: ' + name + ' is illegal storage name.');
   }
 };
 
 exports.names = Object.freeze({
-                                IN_MEMORY       : 'in-memory',
                                 CONSOLE         : 'console',
-                                GOOGLE_ANALYTICS: 'google-analytics'
+                                GOOGLE_ANALYTICS: 'google-analytics',
+                                IN_MEMORY       : 'in-memory',
+                                POST            : 'post'
                               });
 
 /**
