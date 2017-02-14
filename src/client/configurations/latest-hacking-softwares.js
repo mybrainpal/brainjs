@@ -18,9 +18,9 @@ const configuration = {
   experiments: [
     {
       experiment: {
-        id          : 2,
-        label       : 'second CTA',
-        groups      : [
+        id    : 1,
+        label : 'second CTA',
+        groups: [
           {
             label       : 'experiment',
             demographics: [
