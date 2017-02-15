@@ -2,24 +2,25 @@
  * Proudly created by ohad on 25/01/2017.
  */
 const express    = require('express'),
-      rollbar    = require('rollbar'),
-      fs         = require('fs'),
-      path       = require('path'),
       saveRouter = require('./save'),
       Const      = require('../common/const');
-let app          = express();
 
-process.env.PORT = process.env.PORT || 5000;
+// [START APP]
+let app          = express();
+process.env.PORT = process.env.PORT || Const.LOCAL_PORT;
 app.set('port', process.env.PORT);
 
-console.log('Initializing Rollbar.');
-app.use(rollbar.errorHandler('8df4cb488f724dfd9fe78b636b5db9a3'));
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 
-app.post('/save', saveRouter);
+app.use('/save', saveRouter);
 
-app.get('*', function (request, response) {
-  response.status(404);
-  response.type('txt').send('');
+app.get('*', function (req, res) {
+  res.status(404);
+  res.type('txt').send('');
 });
 
 app.listen(app.get('port'), function () {
@@ -27,3 +28,4 @@ app.listen(app.get('port'), function () {
 });
 
 module.exports = app;
+// [END APP]

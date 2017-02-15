@@ -6,7 +6,7 @@ const webpack             = require('webpack'),
       GoogleStoragePlugin = require('./src/common/google.storage.plugin'),
       Const               = require('./src/common/const');
 
-if (!process.env.NODE_ENV) process.env.NODE_ENV = Const.ENV.DEV;
+process.env.NODE_ENV = process.env.NODE_ENV || Const.ENV.DEV;
 
 let webpackConfig = {
   context: path.join(__dirname, Const.CLIENT_CONTEXT),
@@ -58,9 +58,8 @@ let webpackConfig = {
       append  : ''
     }),
     new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: JSON.stringify(process.env.NODE_ENV)
-      }
+      'process.env.NODE_ENV'     : JSON.stringify(process.env.NODE_ENV),
+      'process.env.STORAGE_ROUTE': JSON.stringify(envConfig.storageRoute)
     }),
     function () {
       this.plugin('watch-run', function (watching, callback) {

@@ -8,16 +8,21 @@ const Const = require('./const');
 module.exports = (function () {
   if (process.env.NODE_ENV === Const.ENV.STAGING) {
     return {
-      publicPath: Const.STAGING_ALIAS,
-      bucket    : Const.STAGING_BUCKET
+      publicPath  : Const.STAGING_ALIAS,
+      bucket      : Const.STAGING_BUCKET,
+      storageRoute: Const.STAGING_STORAGE
     };
   }
   if (process.env.NODE_ENV === Const.ENV.PROD) {
     return {
-      publicPath: Const.PRODUCTION_ALIAS,
-      bucket    : Const.PRODUCTION_BUCKET,
-      uglify    : true
+      publicPath  : Const.PRODUCTION_ALIAS,
+      bucket      : Const.PRODUCTION_BUCKET,
+      uglify      : true,
+      storageRoute: Const.PRODUCTION_STORAGE
     };
   }
-  return {publicPath: Const.LOCAL_ALIAS};
+  return {
+    publicPath  : Const.LOCAL_ALIAS,
+    storageRoute: Const.LOCAL_STORAGE
+  };
 })();

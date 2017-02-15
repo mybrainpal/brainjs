@@ -42,6 +42,11 @@ exports.LOCAL_ALIAS = '//brainjs.dev/';
  */
 exports.LOCAL_PUBLISHER = 'publisher.dev';
 /**
+ * Localhost port of Node apps.
+ * @type {number}
+ */
+exports.LOCAL_PORT = 3000;
+/**
  * for process.env.NODE_ENV
  * @type {Object}
  */
@@ -67,7 +72,17 @@ exports.STAGING_BUCKET = 'staging.brainpal.io';
  */
 exports.PRODUCTION_BUCKET = 'cdn.brainpal.io';
 /**
- * URL of server that handles storage http requests.
+ * Node app's storage route.
  * @type {string}
  */
-exports.STORAGE_URL = 'https://app.brainpal.io/save';
+exports.PRODUCTION_STORAGE = 'https://app.brainpal.io/save';
+/**
+ * Staging Node app's storage route.
+ * @type {string}
+ */
+exports.STAGING_STORAGE = 'https://app.staging.brainpal.io/save';
+/**
+ * Local Node app's storage route.
+ * @type {string}
+ */
+exports.LOCAL_STORAGE = `http://localhost:${exports.LOCAL_PORT}/save`;

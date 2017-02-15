@@ -6,6 +6,7 @@ const router = require('express').Router();
 router.param('message', function (req, res, next, name) {
   console.log('validating ' + name);
   console.log('value: ' + req.param(name));
+  next();
 });
 
 router.post('/:message', function (req, res) {
@@ -13,3 +14,5 @@ router.post('/:message', function (req, res) {
   res.status(200);
   res.send('');
 });
+
+module.exports = router;
