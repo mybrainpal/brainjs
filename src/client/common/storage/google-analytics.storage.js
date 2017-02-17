@@ -3,28 +3,21 @@
  *
  * Saves data as google analytics events by stringify json objects.
  */
-let Logger = require('./../log/logger'),
-    Level           = require('./../log/logger').Level,
-    GoogleAnalytics = require('./../../integrations/google-analytics');
+let Logger          = require('../log/logger'),
+    Level           = require('../log/logger').Level,
+    GoogleAnalytics = require('../../integrations/google-analytics'),
+    Const           = require('../../../common/const');
 /**
  * Logs an entry on subject.
  * @param {Object} subject
  */
 exports.save = function save(subject) {
-  let category = 'BrainPal:';
-  let action   = JSON.stringify(subject);
+  let category = process.env.NODE_ENV === Const.ENV.PROD ? '' : (process.env.NODE_ENV + ': ');
+  category += JSON.stringify(subject);
+  let action   = '';
   let label    = '';
   let value    = 0;
   try {
-    if (subject.experiment) {
-      category += 'experiment:' + JSON.stringify(subject.experiment);
-    }
-    if (subject.exerimentGroup) {
-      category += 'experimentGroup:' + JSON.stringify(subject.group);
-    }
-    if (subject.client) {
-      category += 'client:' + JSON.stringify(subject.client);
-    }
     if (subject.anchor) {
       action = 'anchor:' + JSON.stringify(subject.anchor);
     }

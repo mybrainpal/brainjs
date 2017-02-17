@@ -18,9 +18,9 @@ const configuration = {
   experiments: [
     {
       experiment: {
-        id    : 1,
-        label : 'second CTA',
-        groups: [
+        id          : 1,
+        label       : 'second CTA',
+        groups      : [
           {
             label       : 'experiment',
             demographics: [
@@ -54,13 +54,11 @@ const configuration = {
         ]
       },
       options   : {
-        subjectOptions: {
-          anchor   : {
-            selector: 'a[href*=alinks]',
-            event   : 'click'
-          },
-          dataProps: [{name: 'install', selector: 'h1.name span[itemprop=name]'}]
-        }
+        anchor   : {
+          selector: 'a[href*=alinks]',
+          event   : 'click'
+        },
+        dataProps: [{name: 'install', selector: 'h1.name span[itemprop=name]'}]
       }
     },
     {
@@ -99,13 +97,11 @@ const configuration = {
         ]
       },
       options   : {
-        subjectOptions: {
-          anchor   : {
-            selector: 'a[href*=alinks]',
-            event   : 'click'
-          },
-          dataProps: [{name: 'install', selector: 'h1.name span[itemprop=name]'}]
-        }
+        anchor   : {
+          selector: 'a[href*=alinks]',
+          event   : 'click'
+        },
+        dataProps: [{name: 'install', selector: 'h1.name span[itemprop=name]'}]
       }
     },
     {
@@ -158,13 +154,11 @@ const configuration = {
         ]
       },
       options   : {
-        subjectOptions: {
-          anchor   : {
-            selector: 'a[href*=alinks]',
-            event   : 'click'
-          },
-          dataProps: [{name: 'install', selector: 'h1.name span[itemprop=name]'}]
-        }
+        anchor   : {
+          selector: 'a[href*=alinks]',
+          event   : 'click'
+        },
+        dataProps: [{name: 'install', selector: 'h1.name span[itemprop=name]'}]
       }
     }
   ]

@@ -1,22 +1,24 @@
 /**
  * Proudly created by ohad on 20/12/2016.
  */
-let _                   = require('./../common/util/wrapper'),
-    expect              = require('chai').expect,
-    chai                = require('chai'),
-    ManipulatorInjector = require('inject-loader!./manipulator'),
-    Demographics        = require('./experiment/demographics'),
-    Experiment          = require('./experiment/experiment'),
-    _storage            = [];
+let _             = require('./../common/util/wrapper'),
+    expect        = require('chai').expect,
+    chai          = require('chai'),
+    Manipulator   = require('./manipulator'),
+    StyleExecutor = require('./execute/dom/style'),
+    Demographics  = require('./experiment/demographics'),
+    Experiment    = require('./experiment/experiment'),
+    Storage       = require('../common/storage/storage'),
+    InMoemory     = require('../common/storage/in-memory.storage');
 
 chai.use(require('chai-spies'));
 
-describe('Manipulator', function () {
-  let Manipulator, experiment, clientGroup, nonClientGroup,
-      anchor, dataProp,
-      div, a, span,
-      collectorSpy, collectorMock, executorSpy, executorMock;
+describe.only('Manipulator', function () {
+  let clientGroup, clientGroup2, nonClientGroup, subject, div, a, span, id, name;
   before(() => {
+    id = 0;
+    Storage.set(Storage.names.IN_MEMORY);
+    InMoemory.flush();
     div = document.createElement('div');
     div.setAttribute('id', 'manipulator');
     document.querySelector('body').appendChild(div);
@@ -26,21 +28,29 @@ describe('Manipulator', function () {
     a             = document.createElement('a');
     a.textContent = 'Let\'s do it!';
     div.appendChild(a);
-    collectorMock  = {collect: _collectMockFn};
-    collectorSpy   = chai.spy.on(collectorMock, 'collect');
-    executorMock   = {execute: _executeMockFn};
-    executorSpy    = chai.spy.on(executorMock, 'execute');
-    Manipulator    = ManipulatorInjector(
-      {'../collection/collector': collectorMock, './execute/master': executorMock});
-    anchor         = {selector: '#manipulator>a', event: 'click'};
-    dataProp       = {name: 'reaction', selector: '#manipulator>span'};
+    name           = 'reaction';
+    subject        = {
+      dataProps: {name: name, selector: '#manipulator>span'},
+      anchor   : {selector: '#manipulator>a', event: 'click'}
+    };
     clientGroup    = {
       label       : 'client',
       executors   : [
         {
-          name    : 'style',
-          selector: '#manipulator>span',
-          options : {options: {style: 'span {margin-top: 10px}'}}
+          name   : StyleExecutor.name,
+          options: {css: '#manipulator>span {margin-top: 10px}'}
+        }
+      ],
+      demographics: [{
+        name: Demographics.PROPERTIES.MODULO.name, moduloIds: [0], moduloOf: 1
+      }]
+    };
+    clientGroup2   = {
+      label       : 'client2',
+      executors   : [
+        {
+          name   : StyleExecutor.name,
+          options: {css: '#manipulator>span {margin-left: 10px}'}
         }
       ],
       demographics: [{
@@ -51,73 +61,82 @@ describe('Manipulator', function () {
       label       : 'non-client',
       executors   : [
         {
-          name    : 'style',
-          selector: '#manipulator>span',
-          options : {options: {style: 'span {margin-bottom: 10px}'}}
+          name   : StyleExecutor.name,
+          options: {css: '#manipulator>span {margin-bottom: 10px}'}
         }
       ],
       demographics: [{
         name: Demographics.PROPERTIES.MODULO.name, moduloIds: [], moduloOf: 1
       }]
     };
-    experiment     = {
-      id    : 1,
-      label : 'the virgin way',
-      groups: [clientGroup, nonClientGroup]
-    };
   });
   afterEach(() => {
-    _storage = [];
-    collectorSpy.reset();
-    executorSpy.reset();
+    InMoemory.flush();
     // Clean all injected styles.
     document.querySelectorAll('style[' + _.css.identifyingAttribute + ']')
             .forEach(function (styleElement) {
               styleElement.parentNode.removeChild(styleElement);
             });
+    id++;
   });
   after(() => {
     div.parentNode.removeChild(div);
   });
   it('experiment runs', () => {
-    Manipulator.experiment(new Experiment(experiment),
-                           {subjectOptions: {dataProps: [dataProp], anchor: anchor}});
-    expect(collectorSpy).to.have.been.called(4);
-    // log participation in experiment or lack there of.
-    expect(_storage[0][0]).to.contain.all.keys('experiment');
-    // experiment participation collection should not have anchor.
-    expect(_storage[0][0]).to.not.contain.any.keys('anchor');
-    // collect data on experiment group based on anchors
-    expect(_storage[1][0]).to.contain.all.keys('experiment', 'anchor', 'experimentGroup');
-    // log participation in experiment group or lack there of.
-    expect(_storage[2][0]).to.contain.all.keys('experiment', 'experimentGroup');
-    // experiment group participation collection should not have anchor.
-    expect(_storage[2][0]).to.not.contain.any.keys('anchor');
-    // collect data based on anchors.
-    expect(_storage[3][0]).to.contain.all.keys('experiment', 'anchor');
-    // Executor should be called for each executor in clientGroup.
-    expect(executorSpy).to.have.been.called(clientGroup.executors.length);
+    Manipulator.experiment(new Experiment({id: id, groups: [clientGroup, nonClientGroup]}));
+    // Participation in experiment.
+    expect(InMoemory.storage[0].experiment.id).to.equal(id);
+    expect(InMoemory.storage[0].experiment.included).to.be.true;
+    // Participation in group.
+    expect(InMoemory.storage[1].experimentGroup.experimentId).to.equal(id);
+    expect(InMoemory.storage[1].experimentGroup.included).to.be.true;
+    // Manipulations run.
+    expect(getComputedStyle(span).marginTop).to.equal('10px');
+    // Manipulations doesn't run for non client groups.
+    expect(getComputedStyle(span).marginBottom).to.equal('0px');
   });
-  it('array of subject options', () => {
-    Manipulator.experiment(new Experiment(experiment),
-                           {
-                             subjectOptions: [{dataProps: [dataProp], anchor: anchor},
-                                              {dataProps: [dataProp], anchor: anchor}]
-                           });
-    // Executor should be called for twice for each executor in clientGroup.
-    expect(executorSpy).to.have.been.called(2 * clientGroup.executors.length);
+  it('experiment with subject', (done) => {
+    Manipulator.experiment(new Experiment({id: id, groups: [clientGroup]}), subject);
+    _.trigger('click', id, a);
+    setTimeout(() => {
+      const msg = InMoemory.storage[InMoemory.storage.length - 1];
+      expect(msg).to.include.all.keys('experiment', 'experimentGroup', 'anchor', 'subject');
+      expect(msg.subject[name]).to.equal(span.textContent);
+      done();
+    });
   });
-  it('experiment without client groups', () => {
-    let noClientGroups    = _.deepExtend({}, experiment);
-    noClientGroups.groups = [nonClientGroup];
-    Manipulator.experiment(new Experiment(noClientGroups));
-    expect(collectorSpy).to.have.been.called.once;
-    expect(executorSpy).to.not.have.been.called();
+  it('experiment without participation', () => {
+    Manipulator.experiment(new Experiment({id: id, groups: [nonClientGroup]}));
+    expect(InMoemory.storage[0].experiment.included).to.be.true;
+    expect(InMoemory.storage[0]).to.not.include.keys('experimentGroup');
+    // Manipulations doesn't run.
+    expect(getComputedStyle(span).marginTop).to.equal('0px');
+  });
+  it('experiment without participation, but with subject', (done) => {
+    Manipulator.experiment(new Experiment({id: id, groups: [nonClientGroup]}), subject);
+    _.trigger('click', id, a);
+    setTimeout(() => {
+      const msg = InMoemory.storage[InMoemory.storage.length - 1];
+      expect(msg).to.include.all.keys('experiment', 'anchor', 'subject');
+      expect(msg).to.not.include.keys('experimentGroup');
+      expect(msg.subject[name]).to.equal(span.textContent);
+      done();
+    });
+  });
+  it('experiment with multiple groups', (done) => {
+    Manipulator.experiment(new Experiment({id: id, groups: [clientGroup, clientGroup2]}), subject);
+    // Participation in group.
+    expect(InMoemory.storage[1].experimentGroup.experimentId).to.equal(id);
+    expect(InMoemory.storage[1].experimentGroup.label).to.equal(clientGroup.label);
+    expect(InMoemory.storage[2].experimentGroup.experimentId).to.equal(id);
+    expect(InMoemory.storage[2].experimentGroup.label).to.equal(clientGroup2.label);
+    _.trigger('click', id, a);
+    setTimeout(() => {
+      const msg  = InMoemory.storage[InMoemory.storage.length - 1];
+      const msg2 = InMoemory.storage[InMoemory.storage.length - 2];
+      expect(msg).to.include.all.keys('experiment', 'experimentGroup', 'anchor', 'subject');
+      expect(msg2).to.include.all.keys('experiment', 'experimentGroup', 'anchor', 'subject');
+      done();
+    });
   });
 });
-
-function _collectMockFn() {
-  _storage.push(arguments);
-}
-
-function _executeMockFn() {}

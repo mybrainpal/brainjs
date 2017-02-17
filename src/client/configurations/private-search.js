@@ -39,11 +39,9 @@ const configuration = {
         ]
       },
       options   : {
-        subjectOptions: {
-          anchor: {
-            selector: 'a.button',
-            event   : 'click'
-          }
+        anchor: {
+          selector: 'a.button',
+          event   : 'click'
         }
       }
     }

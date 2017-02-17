@@ -4,6 +4,7 @@
  * Manipulates the DOM to fill our customers pockets with 'em dollars.
  */
 let _         = require('../common/util/wrapper'),
+    BaseError = require('../common/log/base.error'),
     Collector = require('../collection/collector'),
     Executor  = require('./execute/master');
 
@@ -11,38 +12,29 @@ let _         = require('../common/util/wrapper'),
  * Runs an experiment, or A/B test, in order to find out an improved versions of the customer's
  * web page.
  * @param {Experiment} experiment - describes way to manipulate the dom per various group of users.
- * @param {Object} [options]
- *  @property {Object|Object[]} [subjectOptions] - options for {@link Collector#collect}
+ * @param {Object} [subject] - options for {@link Collector#collect}, should NOT contain
+ * experiment or experiment group.
  */
-exports.experiment = function (experiment, options) {
-  let subjectOptions, i;
-  options = options || {};
-  if (options.subjectOptions && Array.isArray(options.subjectOptions)) {
-    for (i = 0; i < options.subjectOptions.length; i++) {
-      exports.experiment(experiment, {subjectOptions: options.subjectOptions[i]});
-    }
-    return;
+exports.experiment = function (experiment, subject) {
+  // Logs participation or lack thereof in the experiment.
+  Collector.collect({experiment: experiment});
+  if (!experiment.included) return;
+  if (subject && (subject.experiment || subject.experimentGroup)) {
+    new BaseError('Manipulator: subject cannot contain experiment or experiment group.');
   }
-  subjectOptions = options.subjectOptions || {};
-  subjectOptions = _.deepExtend({experiment: experiment}, subjectOptions);
-  let noAnchor = _.deepExtend({}, subjectOptions);
-  delete noAnchor.anchor;
-  Collector.collect(noAnchor);
-  for (i = 0; i < experiment.clientGroups.length; i++) {
-    let groupSubjectOptions = _.deepExtend({experimentGroup: experiment.clientGroups[i]},
-                                           subjectOptions);
-    if (groupSubjectOptions.anchor) {
-      Collector.collect(groupSubjectOptions);
+  if (!experiment.clientGroups.length && subject) {
+    Collector.collect(_.deepExtend({experiment: experiment}, subject));
+  }
+  for (let i = 0; i < experiment.clientGroups.length; i++) {
+    // Logs participation in the group.
+    Collector.collect({experimentGroup: experiment.clientGroups[i], experiment: experiment});
+    if (subject) {
+      Collector.collect(_.deepExtend(
+        {experiment: experiment, experimentGroup: experiment.clientGroups[i]}, subject));
     }
-    noAnchor = _.deepExtend({}, groupSubjectOptions);
-    delete noAnchor.anchor;
-    Collector.collect(noAnchor);
     for (let j = 0; j < experiment.clientGroups[i].executors.length; j++) {
       Executor.execute(experiment.clientGroups[i].executors[j].name,
                        experiment.clientGroups[i].executors[j].options);
     }
-  }
-  if (subjectOptions.anchor) {
-    Collector.collect(subjectOptions);
   }
 };

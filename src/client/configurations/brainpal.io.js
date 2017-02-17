@@ -5,7 +5,10 @@ const Play = require('../play');
 
 const configuration = {
   storage: {
-    name: 'google-analytics'
+    name   : 'google-analytics',
+    options: {
+      trackingId: 'UA-91064115-1'
+    }
   }
 };
 

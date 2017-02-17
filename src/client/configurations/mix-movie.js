@@ -23,7 +23,7 @@ const configuration = {
           {
             label       : 'watching',
             demographics: [{
-              name: Demographics.PROPERTIES.MODULO.name, moduloIds: [0], moduloOf: 5
+              name: Demographics.PROPERTIES.MODULO.name, moduloIds: [1], moduloOf: 5
             }],
             executors   : [
               {name: StyleExecutor.name, options: {css: require('./alertify.css')}},
@@ -39,7 +39,7 @@ const configuration = {
           {
             label       : 'no-menu',
             demographics: [{
-              name: Demographics.PROPERTIES.MODULO.name, moduloIds: [1], moduloOf: 10
+              name: Demographics.PROPERTIES.MODULO.name, moduloIds: [2], moduloOf: 10
             }],
             executors   : [
               {name: StyleExecutor.name, options: {css: 'nav{display:none}'}},
@@ -48,7 +48,7 @@ const configuration = {
           {
             label       : 'no-footer',
             demographics: [{
-              name: Demographics.PROPERTIES.MODULO.name, moduloIds: [2], moduloOf: 10
+              name: Demographics.PROPERTIES.MODULO.name, moduloIds: [3], moduloOf: 10
             }],
             executors   : [
               {name: StyleExecutor.name, options: {css: '.categories{display:none}'}},
@@ -57,7 +57,7 @@ const configuration = {
           {
             label       : 'combined',
             demographics: [{
-              name: Demographics.PROPERTIES.MODULO.name, moduloIds: [3], moduloOf: 10
+              name: Demographics.PROPERTIES.MODULO.name, moduloIds: [0], moduloOf: 10
             }],
             executors   : [
               {name: StyleExecutor.name, options: {css: 'nav,.categories{display:none}'}},
@@ -74,11 +74,9 @@ const configuration = {
         ]
       },
       options   : {
-        subjectOptions: {
-          anchor: {
-            selector: 'a.modal-button.install-button',
-            event   : 'click'
-          }
+        anchor: {
+          selector: 'a.modal-button.install-button',
+          event   : 'click'
         }
       }
     }

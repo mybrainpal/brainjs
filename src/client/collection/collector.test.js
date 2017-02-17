@@ -58,11 +58,20 @@ describe('Collector', function () {
     InMemoryStorage.flush();
   });
   it('save a subject', () => {
-    Collector.collect({dataProps: [{name: 'rule', selector: '#fight-club>span'}]});
+    const name = 'rule';
+    Collector.collect({dataProps: {name: name, selector: '#fight-club>span'}});
     expect(_countSubjects()).to.equal(1);
     expect(InMemoryStorage.storage[0]).to.include.keys('subject');
     expect(InMemoryStorage.storage[0].subject).to.include.keys('rule');
-    expect(InMemoryStorage.storage[0].subject.rule).to.equal(span1.textContent);
+    expect(InMemoryStorage.storage[0].subject[name]).to.equal(span1.textContent);
+  });
+  it('multiple data props', () => {
+    const name = 'rule', name2 = 'break it';
+    Collector.collect({
+                        dataProps: [{name: name, selector: '#fight-club>span'},
+                                    {name: name2, selector: '#fight-club>span'}]
+                      });
+    expect(InMemoryStorage.storage[0].subject).to.include.keys(name, name2);
   });
   it('save a subject with client', () => {
     Collector.collect({
