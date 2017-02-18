@@ -23,7 +23,7 @@ describe('SwalExecutor', function () {
     setTimeout(() => {
       expect(document.querySelector('.swal2-container')).to.be.ok;
       expect(document.querySelector('.swal2-content').textContent).to.equal(msg);
-      _.trigger('click', {}, document.querySelector('.swal2-container'));
+      _.trigger('click', {}, '.swal2-container');
       setTimeout(() => {
         expect(document.querySelector('.swal2-hide')).to.be.ok;
         done();

@@ -20,7 +20,7 @@ exports.experiment = function (experiment, subject) {
   Collector.collect({experiment: experiment});
   if (!experiment.included) return;
   if (subject && (subject.experiment || subject.experimentGroup)) {
-    new BaseError('Manipulator: subject cannot contain experiment or experiment group.');
+    throw new BaseError('Manipulator: subject cannot contain experiment or experiment group.');
   }
   if (!experiment.clientGroups.length && subject) {
     Collector.collect(_.deepExtend({experiment: experiment}, subject));

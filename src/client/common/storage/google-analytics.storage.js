@@ -8,23 +8,16 @@ let Logger          = require('../log/logger'),
     GoogleAnalytics = require('../../integrations/google-analytics'),
     Const           = require('../../../common/const');
 /**
- * Logs an entry on subject.
- * @param {Object} subject
+ * Saves an entry as an event to Google Analytics.
+ * @param {Object} message
  */
-exports.save = function save(subject) {
+exports.save = function save(message) {
   let category = process.env.NODE_ENV === Const.ENV.PROD ? '' : (process.env.NODE_ENV + ': ');
-  category += JSON.stringify(subject);
+  category += JSON.stringify(message);
   let action   = '';
   let label    = '';
   let value    = 0;
   try {
-    if (subject.anchor) {
-      action = 'anchor:' + JSON.stringify(subject.anchor);
-    }
-    if (subject.subject) {
-      label = JSON.stringify(subject.subject);
-      value = subject.subject.price || subject.subject.count || value;
-    }
     ga(GoogleAnalytics.trackerName + '.send', 'event', {
       eventCategory: category,
       eventAction  : action,

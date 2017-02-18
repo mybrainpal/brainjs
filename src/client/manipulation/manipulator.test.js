@@ -13,7 +13,7 @@ let _             = require('./../common/util/wrapper'),
 
 chai.use(require('chai-spies'));
 
-describe.only('Manipulator', function () {
+describe('Manipulator', function () {
   let clientGroup, clientGroup2, nonClientGroup, subject, div, a, span, id, name;
   before(() => {
     id = 0;
