@@ -7,7 +7,7 @@ let _            = require('./../../../common/util/wrapper'),
     SwalExecutor = require('./sweetalert');
 
 describe('SwalExecutor', function () {
-  this.timeout(100);
+  this.timeout(1000);
   after(() => {
     const swal = document.querySelector('.swal2-container');
     swal.parentNode.removeChild(swal)
@@ -28,6 +28,6 @@ describe('SwalExecutor', function () {
         expect(document.querySelector('.swal2-hide')).to.be.ok;
         done();
       }, 20);
-    }, 10);
+    }, 100);
   });
 });

@@ -6,7 +6,7 @@ let expect           = require('chai').expect,
     AlertifyExecutor = require('./alertify');
 
 describe('AlertifyExecutor', function () {
-  this.timeout(100);
+  this.timeout(1000);
   const msg = 'no wayyy!';
   it('preconditions', () => {
     expect(() => {AlertifyExecutor.preconditions({alertifyFn: () => {}})}).to.not.throw(Error);
@@ -27,6 +27,6 @@ describe('AlertifyExecutor', function () {
                        .contains('ajs-visible')).to.be.false;
         done();
       }, 20);
-    }, 40);
+    }, 100);
   });
 });
