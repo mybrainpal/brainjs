@@ -5,7 +5,7 @@ const expect          = require('chai').expect,
       StorageInjector = require('inject-loader!./storage'),
       InMemoryStorage = require('./in-memory.storage');
 
-describe.only('Storage', function () {
+describe('Storage', function () {
   this.timeout(100);
   let _consoleLogMock = [];
   const Storage       = StorageInjector({
@@ -15,9 +15,13 @@ describe.only('Storage', function () {
                                         });
   beforeEach(() => {
     InMemoryStorage.flush();
+    Storage.set(Storage.names.IN_MEMORY);
     _consoleLogMock = []
   });
-  afterEach(() => { InMemoryStorage.flush(); });
+  afterEach(() => {
+    InMemoryStorage.flush();
+    Storage.set(Storage.names.IN_MEMORY);
+  });
   it('save', () => {
     Storage.save('msg');
     expect(InMemoryStorage.storage[0]).to.equal('msg');

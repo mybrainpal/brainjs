@@ -53,7 +53,7 @@ exports.execute = function (options) {
       } else {
         Logger.log(Level.WARNING, `Failed to move ${options.target}.`);
       }
-    }, 10);
+    });
   }
 };
 

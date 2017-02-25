@@ -51,10 +51,13 @@ describe('MoveExecutor', function () {
     expect(a.parentNode).to.be.equal(p1);
     expect(a.previousSibling).to.be.equal(span);
   });
-  it('move logged', () => {
+  it('move logged', (done) => {
     Master.execute(MoveExecutor.name,
                    {target: '#div a', parentSelector: '#div>.first', toLog: true});
-    expect(InMemoryStorage.storage[0].level).to.equal(Level.INFO.name);
+    setTimeout(() => {
+      expect(InMemoryStorage.storage[0].level).to.equal(Level.INFO.name);
+      done();
+    });
   });
   it('copy to another parent', () => {
     MoveExecutor.execute({target: '#div a', parentSelector: '#div>.first', copy: true});
