@@ -38,4 +38,3 @@ exports.init = function (options, onReady) {
   GoogleAnalytics.init(options);
   GoogleAnalytics.onReady(onReady);
 };
-
