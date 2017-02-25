@@ -9,6 +9,12 @@ router.param('message', function (req, res, next, name) {
   next();
 });
 
+router.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 router.post('/:message', function (req, res) {
   console.log('processing: ' + req.param.message);
   res.status(200);
