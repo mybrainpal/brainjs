@@ -12,7 +12,6 @@ let Logger          = require('../log/logger'),
  * @param {Object} message
  */
 exports.save = function save(message) {
-  console.log('GA:' + JSON.stringify(message, null, '\t'));
   let category = process.env.NODE_ENV === Const.ENV.PROD ? '' : (process.env.NODE_ENV + ': ');
   category += JSON.stringify(message);
   let action   = '';
