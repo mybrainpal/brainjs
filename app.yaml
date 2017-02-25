@@ -4,9 +4,6 @@ env: flex
 
 env_variables:
   NODE_ENV: 'production'
-  MONGODB_URI: 'mongodb://heroku_d5v5r7nv:vecudadtq19mr5n1supi3kuhbn@ds129459.mlab.com:29459/heroku_d5v5r7nv'
   ACME_CHALLENGE: 'IGrPtuSu6uBwmsdxU7HjVEmjLTW04sBptvTB2u2VZhk.ZZidR7t-GGlm9CyrkYd1-sBKhtSgDZyYwM7aIG-1lP4'
-  ROLLBAR_ACCESS_TOKEN: '8df4cb488f724dfd9fe78b636b5db9a3'
-  ROLLBAR_ENDPOINT: 'https://api.rollbar.com/api/1/item/'
   GCLOUD_DEPLOY: 'true'
 # [END brainjs_yaml]
