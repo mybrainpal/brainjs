@@ -96,6 +96,9 @@ function _createSubject(options) {
     Logger.log(Level.WARNING, 'Collector: created an empty subject.');
     return {};
   }
+  if (!_.isNil(options.dataProps) && !Array.isArray(options.dataProps)) {
+    options.dataProps = [options.dataProps];
+  }
   if (!_.isEmpty(options.dataProps)) {
     emittedSubject.subject = {};
     for (i = 0; i < options.dataProps.length; i++) {
@@ -127,15 +130,15 @@ function _createSubject(options) {
       delete emittedSubject.client;
     }
   }
-  if (options.experiment) {
+  if (!_.isNil(options.experiment)) {
     emittedSubject.experiment = {};
-    if (options.experiment.id) {
+    if (!_.isNil(options.experiment.id)) {
       emittedSubject.experiment.id = options.experiment.id;
     }
-    if (options.experiment.label) {
+    if (!_.isNil(options.experiment.label)) {
       emittedSubject.experiment.label = options.experiment.label;
     }
-    if (options.experiment.included) {
+    if (!_.isNil(options.experiment.included)) {
       emittedSubject.experiment.included = options.experiment.included;
     }
     if (_.isEmpty(emittedSubject.experiment)) {
@@ -143,16 +146,16 @@ function _createSubject(options) {
       delete emittedSubject.client;
     }
   }
-  if (options.experimentGroup) {
+  if (!_.isNil(options.experimentGroup)) {
     emittedSubject.experimentGroup = {};
-    if (options.experimentGroup.experimentId) {
+    if (!_.isNil(options.experimentGroup.experimentId)) {
       emittedSubject.experimentGroup.experimentId = options.experimentGroup.experimentId;
     }
-    if (options.experimentGroup.included) {
+    if (!_.isNil(options.experimentGroup.included)) {
       emittedSubject.experimentGroup.included =
         options.experimentGroup.included;
     }
-    if (options.experimentGroup.label) {
+    if (!_.isNil(options.experimentGroup.label)) {
       emittedSubject.experimentGroup.label = options.experimentGroup.label;
     }
     if (_.isEmpty(emittedSubject.experiment)) {

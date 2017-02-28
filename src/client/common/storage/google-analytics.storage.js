@@ -3,35 +3,21 @@
  *
  * Saves data as google analytics events by stringify json objects.
  */
-let Logger = require('./../log/logger'),
-    Level           = require('./../log/logger').Level,
-    GoogleAnalytics = require('./../../integrations/google-analytics');
+let Logger          = require('../log/logger'),
+    Level           = require('../log/logger').Level,
+    GoogleAnalytics = require('../../integrations/google-analytics'),
+    Const           = require('../../../common/const');
 /**
- * Logs an entry on subject.
- * @param {Object} subject
+ * Saves an entry as an event to Google Analytics.
+ * @param {Object} message
  */
-exports.save = function save(subject) {
-  let category = 'BrainPal:';
-  let action   = JSON.stringify(subject);
+exports.save = function save(message) {
+  let category = process.env.NODE_ENV === Const.ENV.PROD ? '' : (process.env.NODE_ENV + ': ');
+  category += JSON.stringify(message);
+  let action   = '';
   let label    = '';
   let value    = 0;
   try {
-    if (subject.experiment) {
-      category += 'experiment:' + JSON.stringify(subject.experiment);
-    }
-    if (subject.exerimentGroup) {
-      category += 'experimentGroup:' + JSON.stringify(subject.group);
-    }
-    if (subject.client) {
-      category += 'client:' + JSON.stringify(subject.client);
-    }
-    if (subject.anchor) {
-      action = 'anchor:' + JSON.stringify(subject.anchor);
-    }
-    if (subject.subject) {
-      label = JSON.stringify(subject.subject);
-      value = subject.subject.price || subject.subject.count || value;
-    }
     ga(GoogleAnalytics.trackerName + '.send', 'event', {
       eventCategory: category,
       eventAction  : action,
@@ -52,4 +38,3 @@ exports.init = function (options, onReady) {
   GoogleAnalytics.init(options);
   GoogleAnalytics.onReady(onReady);
 };
-
