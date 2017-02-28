@@ -3,6 +3,7 @@
  */
 const expect = require('chai').expect,
       Client = require('./client');
+
 describe('Client', function () {
   this.timeout(1000);
   it('init', (done) => {

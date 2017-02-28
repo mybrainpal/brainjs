@@ -7,7 +7,7 @@ let _            = require('./../../../common/util/wrapper'),
     SwalExecutor = require('./sweetalert');
 
 describe('SwalExecutor', function () {
-  this.timeout(100);
+  this.timeout(1000);
   after(() => {
     const swal = document.querySelector('.swal2-container');
     swal.parentNode.removeChild(swal)
@@ -23,11 +23,11 @@ describe('SwalExecutor', function () {
     setTimeout(() => {
       expect(document.querySelector('.swal2-container')).to.be.ok;
       expect(document.querySelector('.swal2-content').textContent).to.equal(msg);
-      _.trigger('click', {}, document.querySelector('.swal2-container'));
+      _.trigger('click', {}, '.swal2-container');
       setTimeout(() => {
         expect(document.querySelector('.swal2-hide')).to.be.ok;
         done();
       }, 20);
-    }, 10);
+    }, 100);
   });
 });

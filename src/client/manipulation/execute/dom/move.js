@@ -44,14 +44,16 @@ exports.execute = function (options) {
   toInsert = _prepare(target, parent, options.copy);
   _insert(toInsert, parent, nextSibling);
   if (options.toLog) {
-    if (toInsert.parentNode &&
-        (parent && toInsert.parentNode === parent ||
-         nextSibling && toInsert.nextElementSibling === nextSibling) &&
-        _.isVisible(toInsert)) {
-      Logger.log(Level.INFO, `${options.target} moved.`);
-    } else {
-      Logger.log(Level.WARNING, `Failed to move ${options.target}.`);
-    }
+    setTimeout(() => {
+      if (toInsert.parentNode &&
+          (parent && toInsert.parentNode === parent ||
+           nextSibling && toInsert.nextElementSibling === nextSibling) &&
+          _.isVisible(toInsert)) {
+        Logger.log(Level.INFO, `${options.target} moved.`);
+      } else {
+        Logger.log(Level.WARNING, `Failed to move ${options.target}.`);
+      }
+    });
   }
 };
 

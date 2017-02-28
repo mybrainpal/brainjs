@@ -6,16 +6,15 @@ const path      = require('path'),
       Constants = require('./const');
 
 /**
- * @param {string} [subPath] - sub path within the configurations dir (such as 'dev')
  * @returns {Object} entry per customer for the webpack config.
  */
-exports.webpackEntries = function (subPath) {
+exports.webpackEntries = function () {
   const configurationFiles = glob.sync(
-    path.join(Constants.CLIENT_CONTEXT, Constants.CUSTOMER_CONFIGS_DIR, subPath || '') + '/*.js');
+    path.join(Constants.CLIENT_CONTEXT, Constants.CUSTOMER_CONFIGS_DIR) + '/*.js');
   let entries              = {};
   for (let i = 0; i < configurationFiles.length; i++) {
     entries[path.basename(configurationFiles[i], '.js')] = './' + path.join(
-        Constants.CUSTOMER_CONFIGS_DIR, subPath || '', path.basename(configurationFiles[i]));
+        Constants.CUSTOMER_CONFIGS_DIR, path.basename(configurationFiles[i]));
   }
   return entries;
 };
