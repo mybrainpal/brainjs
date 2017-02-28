@@ -4,7 +4,9 @@
   "main": "index.js",
   "scripts": {
     "clean": "rm -rf ./dist/*",
-    "test": "./node_modules/.bin/karma start",
+    "test-client": "./node_modules/.bin/karma start",
+    "test-server": "./node_modules/.bin/mocha ./src/server/**/*.test.js",
+    "test-common": "./node_modules/.bin/mocha ./src/common/**/*.test.js",
     "bundle": "webpack --config ./webpack.config.js --progress --colors",
     "build": "export NODE_ENV=development && npm run bundle",
     "production": "export NODE_ENV=production && npm run clean && npm run bundle",
@@ -29,6 +31,11 @@
     "url": "https://github.com/mybrainpal/brainjs/issues"
   },
   "homepage": "https://github.com/mybrainpal/brainjs#readme",
+  "prepush": [
+    "test-client",
+    "test-server",
+    "test-common"
+  ],
   "dependencies": {
     "@google-cloud/storage": "^0.7.0",
     "alertifyjs": "^1.9.0",
@@ -61,13 +68,12 @@
     "karma-webpack": "^2.0.2",
     "lodash": "^4.17.4",
     "mocha": "^3.2.0",
-    "mongoose": "^4.8.1",
     "nightwatch": "^0.9.12",
     "node-sass": "^4.5.0",
     "path": "^0.12.7",
+    "pre-push": "^0.1.1",
     "prop-types": "^0.2.0",
     "recursive-readdir": "^2.1.0",
-    "rollbar": "^0.6.3",
     "sass-loader": "^5.0.1",
     "url-loader": "^0.5.7",
     "webpack": "^2.2.1"
