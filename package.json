@@ -33,7 +33,7 @@
   },
   "homepage": "https://github.com/mybrainpal/brainjs#readme",
   "pre-push": {
-    "silent": true,
+    "silent": false,
     "run": [
       "pre-test",
       "test-client",
