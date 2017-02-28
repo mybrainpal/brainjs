@@ -80,8 +80,8 @@
       "enabled": true,
       "pre-push": [
         "npm run pre-test",
-        "npm run test-client",
         "npm run test-server",
+        "npm run test-client",
         "npm run test-common"
       ]
     }
