@@ -12,7 +12,8 @@
     "build": "export NODE_ENV=development && npm run bundle",
     "production": "export NODE_ENV=production && npm run clean && npm run bundle",
     "staging": "export NODE_ENV=staging && npm run clean && npm run bundle",
-    "watch": "export NODE_ENV=development && webpack --config ./webpack.config.js --watch"
+    "watch": "export NODE_ENV=development && webpack --config ./webpack.config.js --watch",
+    "commit": "commit-wizard"
   },
   "repository": {
     "type": "git",
@@ -32,15 +33,6 @@
     "url": "https://github.com/mybrainpal/brainjs/issues"
   },
   "homepage": "https://github.com/mybrainpal/brainjs#readme",
-  "pre-push": {
-    "silent": false,
-    "run": [
-      "pre-test",
-      "test-client",
-      "test-server",
-      "test-common"
-    ]
-  },
   "dependencies": {
     "@google-cloud/storage": "^0.7.0",
     "alertifyjs": "^1.9.0",
@@ -76,11 +68,22 @@
     "nightwatch": "^0.9.12",
     "node-sass": "^4.5.0",
     "path": "^0.12.7",
-    "pre-push": "^0.1.1",
+    "pre-git": "^3.14.0",
     "prop-types": "^0.2.0",
     "recursive-readdir": "^2.1.0",
     "sass-loader": "^5.0.1",
     "url-loader": "^0.5.7",
     "webpack": "^2.2.1"
+  },
+  "config": {
+    "pre-git": {
+      "enabled": true,
+      "pre-push": [
+        "npm run pre-test",
+        "npm run test-client",
+        "npm run test-server",
+        "npm run test-common"
+      ]
+    }
   }
 }
