@@ -4,10 +4,9 @@
   "main": "index.js",
   "scripts": {
     "clean": "rm -rf ./dist/*",
-    "test-client": "NODE_ENV=test && ./node_modules/.bin/karma start",
-    "test-server": "NODE_ENV=test && ./node_modules/.bin/mocha ./src/server/**/*.test.js",
-    "test-common": "NODE_ENV=test && ./node_modules/.bin/mocha ./src/common/**/*.test.js",
-    "pre-test": "export NODE_ENV=test",
+    "test-client": "export NODE_ENV=test && ./node_modules/.bin/karma start",
+    "test-server": "export NODE_ENV=test && ./node_modules/.bin/mocha ./src/server/**/*.test.js",
+    "test-common": "export NODE_ENV=test && ./node_modules/.bin/mocha ./src/common/**/*.test.js",
     "bundle": "webpack --config ./webpack.config.js --progress --colors",
     "build": "export NODE_ENV=development && npm run bundle",
     "production": "export NODE_ENV=production && npm run clean && npm run bundle",
@@ -79,7 +78,6 @@
     "pre-git": {
       "enabled": true,
       "pre-push": [
-        "npm run pre-test",
         "npm run test-server",
         "npm run test-client",
         "npm run test-common"
