@@ -2,13 +2,7 @@
  * Proudly created by ohad on 14/02/2017.
  */
 const router     = require('express').Router(),
-      bodyParser = require('express').bodyParser();
-
-router.param('message', function (req, res, next, name) {
-  console.log('validating ' + name);
-  console.log('value: ' + req.params(name));
-  next();
-});
+      bodyParser = require('body-parser');
 
 router.use('/', function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -16,10 +10,11 @@ router.use('/', function (req, res, next) {
   next();
 });
 
-router.use(bodyParser);
-
-router.post('/', function (req, res) {
-  console.log('processing: ' + req.body.message);
+router.post('/', bodyParser.json(), function (req, res) {
+  if (!req.body) {
+    res.status(500);
+    res.send('');
+  }
   res.status(200);
   res.send('');
 });

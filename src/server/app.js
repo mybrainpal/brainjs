@@ -10,12 +10,6 @@ let app          = express();
 process.env.PORT = process.env.PORT || Const.LOCAL_PORT;
 app.set('port', process.env.PORT);
 
-app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
-
 app.use('/save', saveRouter);
 
 app.get('*', function (req, res) {

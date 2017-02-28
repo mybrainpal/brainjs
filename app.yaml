@@ -1,9 +1,7 @@
-# [START brainjs_yaml]
+# [START app_yaml]
 runtime: nodejs
 env: flex
 
 env_variables:
   NODE_ENV: 'production'
-  ACME_CHALLENGE: 'IGrPtuSu6uBwmsdxU7HjVEmjLTW04sBptvTB2u2VZhk.ZZidR7t-GGlm9CyrkYd1-sBKhtSgDZyYwM7aIG-1lP4'
-  GCLOUD_DEPLOY: 'true'
-# [END brainjs_yaml]
+# [END app_yaml]
