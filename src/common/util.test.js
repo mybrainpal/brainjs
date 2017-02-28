@@ -31,18 +31,4 @@ describe('CommonUtil', function () {
       });
     fse.removeSync(configDir);
   });
-  it('webpack entries - sub path', () => {
-    const configDir    = path.join(testDirPath, Constants.CUSTOMER_CONFIGS_DIR);
-    const configDevDir = path.join(configDir, Constants.devDistDir);
-    fse.mkdirSync(configDir);
-    fse.mkdirSync(configDevDir);
-    fse.writeFileSync(path.join(configDevDir, 'a.js'), '');
-    fse.writeFileSync(path.join(configDevDir, 'b.js'), '');
-    expect(Util.webpackEntries(Constants.devDistDir)).to.deep.equal(
-      {
-        a: './' + path.join(Constants.CUSTOMER_CONFIGS_DIR, Constants.devDistDir, 'a.js'),
-        b: './' + path.join(Constants.CUSTOMER_CONFIGS_DIR, Constants.devDistDir, 'b.js'),
-      });
-    fse.removeSync(configDir);
-  });
 });
