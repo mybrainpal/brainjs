@@ -4,9 +4,9 @@
   "main": "index.js",
   "scripts": {
     "clean": "rm -rf ./dist/*",
-    "test-client": "./node_modules/.bin/karma start",
-    "test-server": "./node_modules/.bin/mocha ./src/server/**/*.test.js",
-    "test-common": "./node_modules/.bin/mocha ./src/common/**/*.test.js",
+    "test-client": "NODE_ENV=test && ./node_modules/.bin/karma start",
+    "test-server": "NODE_ENV=test && ./node_modules/.bin/mocha ./src/server/**/*.test.js",
+    "test-common": "NODE_ENV=test && ./node_modules/.bin/mocha ./src/common/**/*.test.js",
     "pre-test": "export NODE_ENV=test",
     "bundle": "webpack --config ./webpack.config.js --progress --colors",
     "build": "export NODE_ENV=development && npm run bundle",
