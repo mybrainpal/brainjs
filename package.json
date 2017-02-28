@@ -31,11 +31,14 @@
     "url": "https://github.com/mybrainpal/brainjs/issues"
   },
   "homepage": "https://github.com/mybrainpal/brainjs#readme",
-  "prepush": [
-    "test-client",
-    "test-server",
-    "test-common"
-  ],
+  "pre-push": {
+    "silent": true,
+    "run": [
+      "test-client",
+      "test-server",
+      "test-common"
+    ]
+  },
   "dependencies": {
     "@google-cloud/storage": "^0.7.0",
     "alertifyjs": "^1.9.0",
