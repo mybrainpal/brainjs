@@ -7,7 +7,8 @@ let Client  = require('../common/client'),
     Storage = require('../common/storage/storage'),
     Logger  = require('../common/log/logger'),
     Level   = require('../common/log/logger').Level,
-    _       = require('../common/util/wrapper');
+    _     = require('../common/util/wrapper'),
+    Const = require('../../common/const');
 
 /**
  * Collects data (subject) based on an event (i.e. anchor).
@@ -67,9 +68,7 @@ exports.collect = function (options) {
         const handler = _.on(options.anchor.event, () => {
           let emitted;
           emitted = _createSubject(_.deepExtend({anchor: {target: target}}, options));
-          if (!_.isEmpty(emitted)) {
-            Storage.save(emitted);
-          }
+          Storage.save(emitted);
           if (!_.has(options.anchor, 'once') || options.anchor.once) {
             _.off(options.anchor.event, handler, target, true);
           }
@@ -78,9 +77,7 @@ exports.collect = function (options) {
     });
   } else {
     immediateEmit = _createSubject(options);
-    if (!_.isEmpty(immediateEmit)) {
-      Storage.save(immediateEmit);
-    }
+    Storage.save(immediateEmit);
   }
 };
 
@@ -183,5 +180,6 @@ function _createSubject(options) {
       delete emittedSubject.anchor;
     }
   }
+  emittedSubject.kind = Const.KIND.EVENT;
   return emittedSubject;
 }

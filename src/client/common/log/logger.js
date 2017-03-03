@@ -2,7 +2,8 @@
  * Proudly created by ohad on 04/12/2016.
  */
 let _       = require('./../../common/util/wrapper'),
-    Storage = require('../storage/storage');
+    Storage = require('../storage/storage'),
+    Const   = require('../../../common/const');
 
 exports.Level = Object.freeze({
                                 FINE   : {value: 0, name: 'FINE'},
@@ -20,7 +21,7 @@ exports.Level = Object.freeze({
 exports.log = function (level, message) {
   let subject = {
     level: level.name,
-    type : 'log'
+    kind : Const.KIND.LOG
   };
   if (_.isString(message)) {
     subject.message = message;

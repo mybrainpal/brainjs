@@ -86,3 +86,9 @@ exports.STAGING_STORAGE = 'https://app.staging.brainpal.io/save';
  * @type {string}
  */
 exports.LOCAL_STORAGE = `http://localhost:${exports.LOCAL_PORT}/save`;
+exports.KIND = Object.freeze({
+                               LOG  : 'log',
+                               EVENT: 'event',
+                               USER : 'user',
+                               ERROR: 'error'
+                             });

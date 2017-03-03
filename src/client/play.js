@@ -20,11 +20,10 @@ let Client      = require('./common/client'),
  */
 module.exports = function (configuration) {
   if (!Client.canRunBrainPal()) {
-    Logger.log(Level.ERROR, 'Seems like this browser and BrainPal ain\'t gonna be friends :-(');
+    Logger.log(Level.WARNING, 'Seems like this browser and BrainPal ain\'t gonna be friends :-(');
     exports.shutDown(configuration);
     return;
   }
-  Logger.log(Level.INFO, 'BrainPal: game on!');
   if (configuration.storage && configuration.storage.name) {
     Storage.set(configuration.storage.name, configuration.storage.options || {},
                 () => {_run(configuration)});
@@ -41,6 +40,7 @@ module.exports = function (configuration) {
  */
 function _run(configuration) {
   Client.init(() => {
+    Logger.log(Level.INFO, 'BrainPal: game on!');
     if (configuration.hasOwnProperty('collect')) {
       for (let i = 0; i < configuration.collect.length; i++) {
         Collector.collect(configuration.collect[i]);

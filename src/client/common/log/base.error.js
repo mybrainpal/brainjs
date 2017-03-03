@@ -37,6 +37,7 @@ function _baseErrorHandler(event) {
     require('stacktrace-js').fromError(error, {offline: true})
                             .then((stackFrame) => {
                               error.stack = stackFrame;
+                              error.kind = Const.KIND.ERROR;
                               Storage.save(error);
                             });
   });

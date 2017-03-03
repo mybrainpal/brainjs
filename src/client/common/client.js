@@ -14,12 +14,14 @@ const GoogleAnalytics = require('../integrations/google-analytics'),
  * @param {function} [callback]
  */
 exports.init = function (callback) {
+  if (exports.id && exports.created) return;
   // Using Google Analytics as storage should be defined prior to this code.
   GoogleAnalytics.init();
   GoogleAnalytics.onReady(() => {
     if (process.env.NODE_ENV === Const.ENV.PROD) {
       try {
-        exports.id = Number.parseInt(window.ga.getAll()[0].get('clientId').split('.')[0]);
+        exports.id = Number.parseInt(
+          window.ga.getByName(GoogleAnalytics.trackerName).get('clientId').split('.')[0]);
       } catch (e) {
         Logger.log(Level.WARNING, 'No client ID from Google Analytics.');
       }
@@ -27,6 +29,7 @@ exports.init = function (callback) {
     }
     if (callback) callback();
   });
+  exports.created = new Date().getTime();
 };
 
 /**
@@ -102,19 +105,19 @@ exports.cookiesEnabled = (function () {
  * @private
  */
 function _parseUserAgent() {
-  let cs;
-  let id;
-  let osVersion;
-  let clientStrings;
-  let mobile;
-  let os;
-  let nameOffset, verOffset, ix;
-  let majorVersion;
-  let version;
-  let browser;
-  let nVer;
-  let nAgt;
-  let unknown = '';
+  let cs,
+      id,
+      osVersion,
+      clientStrings,
+      mobile,
+      os,
+      verOffset, ix,
+      majorVersion,
+      version,
+      browser,
+      nVer,
+      nAgt,
+      unknown = '';
 
   // browser
   nVer    = navigator.appVersion;
@@ -140,11 +143,6 @@ function _parseUserAgent() {
     browser = 'Microsoft Edge';
     version = nAgt.substring(verOffset + 5);
   }
-  // MSIE
-  else if ((verOffset = nAgt.indexOf('MSIE')) != -1) {
-    browser = 'Microsoft Internet Explorer';
-    version = nAgt.substring(verOffset + 5);
-  }
   // Chrome
   else if ((verOffset = nAgt.indexOf('Chrome')) != -1) {
     browser = 'Chrome';
@@ -162,19 +160,6 @@ function _parseUserAgent() {
   else if ((verOffset = nAgt.indexOf('Firefox')) != -1) {
     browser = 'Firefox';
     version = nAgt.substring(verOffset + 8);
-  }
-  // MSIE 11+
-  else if (nAgt.indexOf('Trident/') != -1) {
-    browser = 'Microsoft Internet Explorer';
-    version = nAgt.substring(nAgt.indexOf('rv:') + 3);
-  }
-  // Other browsers
-  else if ((nameOffset = nAgt.lastIndexOf(' ') + 1) < (verOffset = nAgt.lastIndexOf('/'))) {
-    browser = nAgt.substring(nameOffset, verOffset);
-    version = nAgt.substring(verOffset + 1);
-    if (browser.toLowerCase() == browser.toUpperCase()) {
-      browser = navigator.appName;
-    }
   }
   // trim the version string
   if ((ix = version.indexOf(';')) != -1) version = version.substring(0, ix);
@@ -197,30 +182,10 @@ function _parseUserAgent() {
     {s: 'Windows 8', r: /(Windows 8|Windows NT 6.2)/},
     {s: 'Windows 7', r: /(Windows 7|Windows NT 6.1)/},
     {s: 'Windows Vista', r: /Windows NT 6.0/},
-    {s: 'Windows Server 2003', r: /Windows NT 5.2/},
-    {s: 'Windows XP', r: /(Windows NT 5.1|Windows XP)/},
-    {s: 'Windows 2000', r: /(Windows NT 5.0|Windows 2000)/},
-    {s: 'Windows ME', r: /(Win 9x 4.90|Windows ME)/},
-    {s: 'Windows 98', r: /(Windows 98|Win98)/},
-    {s: 'Windows 95', r: /(Windows 95|Win95|Windows_95)/},
-    {s: 'Windows NT 4.0', r: /(Windows NT 4.0|WinNT4.0|WinNT|Windows NT)/},
-    {s: 'Windows CE', r: /Windows CE/},
-    {s: 'Windows 3.11', r: /Win16/},
     {s: 'Android', r: /Android/},
-    {s: 'Open BSD', r: /OpenBSD/},
-    {s: 'Sun OS', r: /SunOS/},
-    {s: 'Linux', r: /(Linux|X11)/},
     {s: 'iOS', r: /(iPhone|iPad|iPod)/},
     {s: 'Mac OS X', r: /Mac OS X/},
     {s: 'Mac OS', r: /(MacPPC|MacIntel|Mac_PowerPC|Macintosh)/},
-    {s: 'QNX', r: /QNX/},
-    {s: 'UNIX', r: /UNIX/},
-    {s: 'BeOS', r: /BeOS/},
-    {s: 'OS/2', r: /OS\/2/},
-    {
-      s: 'Search Bot',
-      r: /(nuhk|Googlebot|Yammybot|Openbot|Slurp|MSNBot|Ask Jeeves\/Teoma|ia_archiver)/
-    }
   ];
   for (id in clientStrings) {
     if (clientStrings.hasOwnProperty(id)) {

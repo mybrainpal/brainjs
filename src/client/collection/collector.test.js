@@ -7,7 +7,8 @@ let chai            = require('chai'),
     Collector       = require('./collector'),
     _               = require('../common/util/wrapper'),
     Storage         = require('../common/storage/storage'),
-    InMemoryStorage = require('../common/storage/in-memory.storage');
+    InMemoryStorage = require('../common/storage/in-memory.storage'),
+    Const           = require('../../common/const');
 
 chai.use(require('chai-spies'));
 
@@ -173,11 +174,6 @@ describe('Collector', function () {
       done();
     });
   });
-  it('failed to select subject', () => {
-    Collector.collect(
-      {dataProps: [{name: 'rule', selector: '#fight-club>span.non-existing-class'}]});
-    expect(_countSubjects()).to.equal(0);
-  });
   it('failed to select anchor', () => {
     Collector.collect({anchor: {selector: '#effi', event: id.toString()}});
     expect(_countSubjects()).to.equal(0);
@@ -226,7 +222,7 @@ describe('Collector', function () {
 function _countSubjects() {
   let count = 0;
   for (let i = 0; i < InMemoryStorage.storage.length; i++) {
-    if (InMemoryStorage.storage[i].type !== 'log') count++;
+    if (InMemoryStorage.storage[i].kind === Const.KIND.EVENT) count++;
   }
   return count;
 }

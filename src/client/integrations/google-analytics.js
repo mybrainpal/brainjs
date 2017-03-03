@@ -20,48 +20,47 @@ const _         = require('../common/util/wrapper'),
  *  @property {string} [trackingId=UA-91064115-1]
  */
 exports.init = function (options = {}) {
-  if (!exports.isReady()) {
-    (function (window, document, scriptTagName, src, name, gaScript, firstScript) {
-      window['GoogleAnalyticsObject'] = name;
-      window[name]                    = window[name] || function () {
-          (window[name].q = window[name].q || []).push(arguments)
-        };
-      window[name].l                  = 1 * new Date();
-      gaScript                        = document.createElement(scriptTagName);
-      firstScript                     = document.getElementsByTagName(scriptTagName)[0];
-      gaScript.async                  = 1;
-      gaScript.src                    = src;
-      firstScript.parentNode.insertBefore(gaScript, firstScript);
-    })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
-    if (!_.isNil(options.trackerName)) {
-      if (!_.isString(options.trackerName)) {
-        throw new BaseError('GoogleAnalytics: trackerName must be empty or a string');
-      } else {
-        exports.trackerName = options.trackerName;
-      }
+  if (exports.isReady()) return;
+  (function (window, document, scriptTagName, src, name, gaScript, firstScript) {
+    window['GoogleAnalyticsObject'] = name;
+    window[name]                    = window[name] || function () {
+        (window[name].q = window[name].q || []).push(arguments)
+      };
+    window[name].l                  = 1 * new Date();
+    gaScript                        = document.createElement(scriptTagName);
+    firstScript                     = document.getElementsByTagName(scriptTagName)[0];
+    gaScript.async                  = 1;
+    gaScript.src                    = src;
+    firstScript.parentNode.insertBefore(gaScript, firstScript);
+  })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+  if (!_.isNil(options.trackerName)) {
+    if (!_.isString(options.trackerName)) {
+      throw new BaseError('GoogleAnalytics: trackerName must be empty or a string');
+    } else {
+      exports.trackerName = options.trackerName;
     }
-    if (!_.isNil(options.trackingId)) {
-      if (!_.isString(options.trackingId)) {
-        throw new BaseError('GoogleAnalytics: trackingId must be empty or a string');
-      } else {
-        exports.trackingId = options.trackingId;
-      }
+  }
+  if (!_.isNil(options.trackingId)) {
+    if (!_.isString(options.trackingId)) {
+      throw new BaseError('GoogleAnalytics: trackingId must be empty or a string');
+    } else {
+      exports.trackingId = options.trackingId;
     }
-    if (!_.isNil(options.cookieDomain)) {
-      if (!_.isString(options.cookieDomain)) {
-        throw new BaseError('GoogleAnalytics: trackerName must be empty or a string');
-      } else {
-        exports.cookieDomain = options.cookieDomain;
-      }
+  }
+  if (!_.isNil(options.cookieDomain)) {
+    if (!_.isString(options.cookieDomain)) {
+      throw new BaseError('GoogleAnalytics: trackerName must be empty or a string');
+    } else {
+      exports.cookieDomain = options.cookieDomain;
     }
-    window.ga('create', {
-      trackingId  : exports.trackingId,
-      cookieDomain: exports.cookieDomain,
-      name        : exports.trackerName
-    });
-    if (process.env.NODE_ENV === Const.ENV.PROD) {
-      window.ga(exports.trackerName + '.send', 'pageview');
-    }
+  }
+  window.ga('create', {
+    trackingId  : exports.trackingId,
+    cookieDomain: exports.cookieDomain,
+    name        : exports.trackerName
+  });
+  if (process.env.NODE_ENV === Const.ENV.PROD) {
+    window.ga(exports.trackerName + '.send', 'pageview');
   }
 };
 
