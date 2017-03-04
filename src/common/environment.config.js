@@ -8,6 +8,7 @@ const Const = require('./const');
 module.exports = (function () {
   if (process.env.NODE_ENV === Const.ENV.STAGING) {
     return {
+      projectId   : Const.STAGING_PROJECT_ID,
       publicPath  : Const.STAGING_ALIAS,
       bucket      : Const.STAGING_BUCKET,
       storageRoute: Const.STAGING_STORAGE
@@ -15,6 +16,7 @@ module.exports = (function () {
   }
   if (process.env.NODE_ENV === Const.ENV.PROD) {
     return {
+      projectId   : Const.PROJECT_ID,
       publicPath  : Const.PRODUCTION_ALIAS,
       bucket      : Const.PRODUCTION_BUCKET,
       uglify      : true,

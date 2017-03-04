@@ -62,6 +62,11 @@ exports.ENV = Object.freeze({
  */
 exports.PROJECT_ID = 'nth-name-156816';
 /**
+ * Google Cloud staging project ID.
+ * @type {string}
+ */
+exports.STAGING_PROJECT_ID = 'brainjs-staging';
+/**
  * Name of staging storage bucket.
  * @type {string}
  */
@@ -75,12 +80,12 @@ exports.PRODUCTION_BUCKET = 'cdn.brainpal.io';
  * Node app's storage route.
  * @type {string}
  */
-exports.PRODUCTION_STORAGE = 'https://app.brainpal.io/save';
+exports.PRODUCTION_STORAGE = 'https://nth-name-156816.appspot.com/save';
 /**
  * Staging Node app's storage route.
  * @type {string}
  */
-exports.STAGING_STORAGE = 'https://app.staging.brainpal.io/save';
+exports.STAGING_STORAGE = 'https://brainjs-staging.appspot.com/save';
 /**
  * Local Node app's storage route.
  * @type {string}

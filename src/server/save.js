@@ -15,8 +15,8 @@ router.use('/', function (req, res, next) {
 });
 
 router.post('/', bodyParser.json(), function (req, res) {
-  if (!_.isObjectLike(req.body) || !req.body.kind || !_.isString(req.body.kind)) {
-    console.error('Save req.body is illegal.');
+  if (!_.isObjectLike(req.body) || !_.isString(req.body.kind)) {
+    console.error('Save: illegal value for req.body=' + JSON.stringify(req.body));
     res.status(500);
     res.type('txt').send('');
     return;

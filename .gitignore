@@ -38,3 +38,4 @@ database/
 
 # Credentials
 google.credentials.json
+staging.credentials.json

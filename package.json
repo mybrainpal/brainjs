@@ -11,6 +11,8 @@
     "build": "export NODE_ENV=development && npm run bundle",
     "production": "export NODE_ENV=production && npm run clean && npm run bundle",
     "staging": "export NODE_ENV=staging && npm run clean && npm run bundle",
+    "app-prod": "gcloud app deploy --project=nth-name-156816 ./app.yaml",
+    "app-staging": "gcloud app deploy --project=brainjs-staging ./staging.yaml",
     "watch": "export NODE_ENV=development && webpack --config ./webpack.config.js --watch",
     "commit": "commit-wizard",
     "start": "node ./src/server/app.js"
