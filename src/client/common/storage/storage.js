@@ -6,12 +6,16 @@
  */
 const _               = require('../util/wrapper'),
       BaseError       = require('../log/base.error'),
-      InMemoryStorage = require('./in-memory.storage');
+      InMemoryStorage = require('./in-memory.storage'),
+      Const           = require('../../../common/const');
 /**
  * Saves message using _storage.
  * @param message
  */
 exports.save = function (message) {
+  if ([Const.ENV.STAGING, Const.ENV.DEV].indexOf(process.env.NODE_ENV) !== -1) {
+    console.log(JSON.stringify(message), null, '\t');
+  }
   _storage.save(message);
 };
 let _storage = InMemoryStorage;
@@ -63,7 +67,7 @@ function _storageSwitch(newStorage, options, callback) {
   const onReady = () => {
     _storage = newStorage;
     for (let i = 0; i < InMemoryStorage.storage.length; i++) {
-      _storage.save(InMemoryStorage.storage[i])
+      exports.save(InMemoryStorage.storage[i])
     }
     InMemoryStorage.flush();
     if (callback) callback();
