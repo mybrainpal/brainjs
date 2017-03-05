@@ -36,13 +36,7 @@ class Group {
     if (options.demographics) {
       this.included = Demographics.included(options.demographics);
     }
-    if (!_.isNil(options.executors)) {
-      if (!Array.isArray(options.executors)) {
-        this.executors = [options.executors];
-      } else {
-        this.executors = options.executors;
-      }
-    }
+    this.executors = _.arrify(options.executors);
   }
 }
 

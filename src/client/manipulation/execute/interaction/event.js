@@ -33,10 +33,8 @@ Master.register(exports);
  */
 exports.execute = function (options) {
   if (options.listen) {
-    if (!Array.isArray(options.listen)) {
-      options.listen = [options.listen];
-    }
-    let promises = [];
+    options.listen = _.arrify(options.listen);
+    let promises   = [];
     options.listen.forEach(function (listener) {
       let target = document;
       if (listener.target) {
@@ -82,11 +80,9 @@ exports.preconditions = function (options) {
   }
   for (i = 0; i < props.length; i++) {
     if (options[props[i]]) {
-      if (Array.isArray(options[props[i]])) {
-        for (j = 0; j < options[props[i]].length; j++) {
-          _validateProperty(options[props[i]][j])
-        }
-      } else { _validateProperty(options[props[i]]) }
+      for (j = 0; j < _.arrify(options[props[i]]).length; j++) {
+        _validateProperty(_.arrify(options[props[i]])[j])
+      }
     }
   }
   if (_.isEmpty(options.create) && _.isEmpty(options.trigger) && _.isNil(options.callback)) {
@@ -115,10 +111,7 @@ function _validateProperty(prop) {
  */
 function _doFn(options) {
   if (options.callback) options.callback();
-  options.trigger = options.trigger || [];
-  if (!Array.isArray(options.trigger)) {
-    options.trigger = [options.trigger];
-  }
+  options.trigger = _.arrify(options.trigger);
   for (let i = 0; i < options.trigger.length; i++) {
     let target = document;
     if (options.trigger[i].target) {
@@ -133,11 +126,8 @@ function _doFn(options) {
     }
     _.trigger(options.trigger[i].event, options.trigger[i].detailOrId, target);
   }
-  options.create = options.create || [];
-  if (!Array.isArray(options.create)) {
-    options.create = [options.create];
-  }
-  for (let i = 0; i < options.create; i++) {
+  options.create = _.arrify(options.create);
+  for (let i = 0; i < options.create.length; i++) {
     EventFactory.create(options.create[i].event, options.create[i].options || {});
   }
   if (options.toLog) {

@@ -14,20 +14,18 @@ let _         = require('../../common/util/wrapper'),
  * @returns {boolean} Whether the client belongs to this demographics.
  */
 exports.included = function (properties) {
-  if (!Array.isArray(properties)) properties = [properties || {}];
-  if (properties) {
-    for (let i = 0; i < properties.length; i++) {
-      if (!exports.PROPERTIES[properties[i].name]) {
-        throw new BaseError('Demographics: property ' + properties[i].name + ' does not' +
-                            ' exist. ' + JSON.stringify(properties[i]));
-      }
-      if (!exports.PROPERTIES[properties[i].name].includeFn) {
-        throw new BaseError('Demographics: property ' + properties[i].name + ' is' +
-                            ' missing includeFn.');
-      }
-      if (!exports.PROPERTIES[properties[i].name].includeFn(properties[i])) {
-        return false;
-      }
+  properties = _.arrify(properties);
+  for (let i = 0; i < properties.length; i++) {
+    if (!exports.PROPERTIES[properties[i].name]) {
+      throw new BaseError('Demographics: property ' + properties[i].name + ' does not' +
+                          ' exist. ' + JSON.stringify(properties[i]));
+    }
+    if (!exports.PROPERTIES[properties[i].name].includeFn) {
+      throw new BaseError('Demographics: property ' + properties[i].name + ' is' +
+                          ' missing includeFn.');
+    }
+    if (!exports.PROPERTIES[properties[i].name].includeFn(properties[i])) {
+      return false;
     }
   }
   return true;

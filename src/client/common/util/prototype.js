@@ -199,12 +199,12 @@ function _cloneSpecificValue(val) {
  * @param {Array} arr
  * @returns {Array} recursive clone of arr.
  */
-function deepCloneArray(arr) {
+function _deepCloneArray(arr) {
   let clone = [];
   arr.forEach(function (item, index) {
     if (typeof item === 'object' && item !== null) {
       if (Array.isArray(item)) {
-        clone[index] = deepCloneArray(item);
+        clone[index] = _deepCloneArray(item);
       } else if (_isSpecificValue(item)) {
         clone[index] = _cloneSpecificValue(item);
       } else {
@@ -256,7 +256,7 @@ exports.deepExtend = function (/*obj_1, [obj_2], [obj_N]*/) {
         target[key] = val;
         // just clone arrays (and recursive clone objects inside)
       } else if (Array.isArray(val)) {
-        target[key] = deepCloneArray(val);
+        target[key] = _deepCloneArray(val);
         // custom cloning and overwrite for specific objects
       } else if (_isSpecificValue(val)) {
         target[key] = _cloneSpecificValue(val);
@@ -271,4 +271,14 @@ exports.deepExtend = function (/*obj_1, [obj_2], [obj_N]*/) {
   });
 
   return target;
+};
+
+/**
+ * @param {*} val
+ * @returns {Array} returns val or an array with val as its first value, dependent if val is an
+ * array.
+ */
+exports.arrify = function (val) {
+  if (_.isNil(val)) return [];
+  return Array.isArray(val) ? val : [val];
 };

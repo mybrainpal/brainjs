@@ -115,7 +115,9 @@ describe('Prototype', () => {
       expect(() => {
         _.get(obj, [1]);
       }).to.throw(Error);
+      //noinspection BadExpressionStatementJS
       expect(_.get(obj, ['b'])).to.not.be.ok;
+      //noinspection BadExpressionStatementJS
       expect(_.get(obj, ['a', 'b', 'd'])).to.not.be.ok;
     });
     it('set - successes', () => {
@@ -284,5 +286,17 @@ describe('Prototype', () => {
       expect(called).to.be.true;
     });
 
+  });
+  describe('arrify', () => {
+    it('base cases', () => {
+      expect(_.arrify([])).to.deep.equal([]);
+      //noinspection JSCheckFunctionSignatures
+      expect(_.arrify()).to.deep.equal([]);
+      expect(_.arrify(null)).to.deep.equal([]);
+      expect(_.arrify({})).to.deep.equal([{}]);
+      expect(_.arrify(1)).to.deep.equal([1]);
+      expect(_.arrify([1])).to.deep.equal([1]);
+      expect(_.arrify([[1], 2])).to.deep.equal([[1], 2]);
+    })
   });
 });

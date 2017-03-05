@@ -7,8 +7,8 @@ let Client  = require('../common/client'),
     Storage = require('../common/storage/storage'),
     Logger  = require('../common/log/logger'),
     Level   = require('../common/log/logger').Level,
-    _     = require('../common/util/wrapper'),
-    Const = require('../../common/const');
+    _       = require('../common/util/wrapper'),
+    Const   = require('../../common/const');
 
 /**
  * Collects data (subject) based on an event (i.e. anchor).
@@ -93,24 +93,20 @@ function _createSubject(options) {
     Logger.log(Level.WARNING, 'Collector: created an empty subject.');
     return {};
   }
-  if (!_.isNil(options.dataProps) && !Array.isArray(options.dataProps)) {
-    options.dataProps = [options.dataProps];
+  emittedSubject.subject = {};
+  options.dataProps      = _.arrify(options.dataProps);
+  for (i = 0; i < options.dataProps.length; i++) {
+    target = options.rootNode.querySelector(options.dataProps[i].selector);
+    if (target) {
+      emittedSubject.subject[options.dataProps[i].name] = target.textContent;
+    } else {
+      Logger.log(Level.WARNING,
+                 'Collector: failed to select ' + options.dataProps[i].selector);
+    }
   }
-  if (!_.isEmpty(options.dataProps)) {
-    emittedSubject.subject = {};
-    for (i = 0; i < options.dataProps.length; i++) {
-      target = options.rootNode.querySelector(options.dataProps[i].selector);
-      if (target) {
-        emittedSubject.subject[options.dataProps[i].name] = target.textContent;
-      } else {
-        Logger.log(Level.WARNING,
-                   'Collector: failed to select ' + options.dataProps[i].selector);
-      }
-    }
-    if (_.isEmpty(emittedSubject.subject)) {
-      delete emittedSubject.subject;
-      Logger.log(Level.WARNING, 'Collector: subject is empty.');
-    }
+  if (_.isEmpty(emittedSubject.subject)) {
+    delete emittedSubject.subject;
+    Logger.log(Level.WARNING, 'Collector: subject is empty.');
   }
   if (options.client) {
     emittedSubject.client = {};

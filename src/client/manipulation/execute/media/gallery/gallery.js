@@ -44,8 +44,7 @@ exports.preconditions = function (options) {
   if (!Array.isArray(options.sourceSelectors) && !_.isString(options.sourceSelectors)) {
     throw new BaseError('GalleryExecutor: sourceSelectors must be array or a string.');
   }
-  const srcSelectors = Array.isArray(options.sourceSelectors) ? options.sourceSelectors :
-                       [options.sourceSelectors];
+  const srcSelectors = _.arrify(options.sourceSelectors);
   for (let i = 0; i < srcSelectors.length; i++) {
     if (!document.querySelector(srcSelectors[i])) {
       throw new BaseError('GalleryExecutor : could not find source at ' + srcSelectors[i]);
@@ -77,9 +76,7 @@ const _NavigationDirection = Object.freeze({
  */
 function _createGallery(container, options) {
   let sources             = [], component, ul, i;
-  options.sourceSelectors =
-    Array.isArray(options.sourceSelectors) ? options.sourceSelectors :
-    [options.sourceSelectors];
+  options.sourceSelectors = _.arrify(options.sourceSelectors);
   for (i = 0; i < options.sourceSelectors.length; i++) {
     let newSrcs = document.querySelectorAll(options.sourceSelectors[i]);
     for (let j = 0; j < newSrcs.length; j++) {
