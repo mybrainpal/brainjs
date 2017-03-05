@@ -120,6 +120,6 @@ describe('Demographics', function () {
                                    }])).to.be.false;
   });
   it('no properties', () => {
-    expect(() => {Demographics.included()}).to.throw(Error);
+    expect(Demographics.included()).to.equal(true);
   });
 });
