@@ -14,12 +14,14 @@ router.use('/', function (req, res, next) {
   next();
 });
 
-router.get('/total-uplift/:encodedUrl/:fromTimestamp/:toTimestamp', function (req, res) {
-  const url           = decodeURIComponent(req.query('encodedUrl')),
+router.get('/uplift/:tracker/:fromTimestamp/:toTimestamp', function (req, res) {
+  const tracker = req.query('tracker'),
         fromTimestamp = req.query('fromTimestamp'),
         toTimestamp   = req.query('toTimestamp');
-  if (!_.isString(url)) {
-    console.error(`Count: illegal value url=${url}`);
+  if (!_.isString(tracker)) {
+    console.error(`Count: illegal value tracker=${tracker}`);
+    res.status(500);
+    res.type('txt').send('');
     return;
   }
   if (!_.isInteger(fromTimestamp) || fromTimestamp <= 0) {
@@ -42,7 +44,37 @@ router.get('/total-uplift/:encodedUrl/:fromTimestamp/:toTimestamp', function (re
   const query = datastore.createQuery(null, Const.KIND.EVENT)
                          .filter('timestamp', '>', fromTimestamp)
                          .filter('timestamp', '<', toTimestamp)
-
+                         .filter('experiment.included', '=', true)
+                         .filter('tracker', '=', tracker)
+                         .groupBy('client.created');
+  datastore.runQuery(query).then((results) => {
+    let total              = 0,
+        conversionOfAll    = 0,
+        groups             = 0,
+        conversionOfGroups = 0;
+    results[0].forEach((entity) => {
+      if (!entity.anchor.event) {
+        total += 1;
+        if (entity.experimentGroup.included) groups += 1;
+      } else {
+        conversionOfAll += 1;
+        if (entity.experimentGroup.included) conversionOfGroups += 1;
+      }
+    });
+    res.status(200);
+    res.type('application/json');
+    res.send({
+               total             : total,
+               conversionOfAll   : conversionOfAll,
+               groups            : groups,
+               conversionOfGroups: conversionOfGroups
+             });
+  }).catch((err) => {
+    console.error(`Count uplift query for ${url}: ${err.code} ${err.status} - ${err.message}`);
+    res.status(500);
+    res.type('txt').send('');
+  })
+  ;
 });
 
 module.exports = router;
