@@ -5,7 +5,9 @@
  */
 const Client = require('../client'),
       _      = require('../util/wrapper'),
-      Const  = require('../../../common/const');
+      GoogleAnalytics = require('../../integrations/google-analytics'),
+      Const           = require('../../../common/const'),
+      Storage         = require('./storage');
 /**
  * Sends a HTTP request with message.
  * @param {Object} message
@@ -24,22 +26,25 @@ exports.save = function save(message) {
  * @param {function} onReady
  */
 exports.init = function (options, onReady) {
-  let userMessage = {
-    kind  : Const.KIND.USER,
-    client: {
-      agent         : Client.agent,
-      cookiesEnabled: Client.cookiesEnabled,
-      screen        : {
-        height: window.innerHeight,
-        width : window.innerWidth
+  // Waiting for google analytics, so that Client.id exists.
+  GoogleAnalytics.onReady(() => {
+    let userMessage = {
+      kind  : Const.KIND.USER,
+      client: {
+        agent         : Client.agent,
+        cookiesEnabled: Client.cookiesEnabled,
+        screen        : {
+          height: window.innerHeight,
+          width : window.innerWidth
+        }
       }
+    };
+    if (window.screen) {
+      userMessage.client.screen.availHeight = window.screen.availHeight;
+      userMessage.client.screen.availWidth  = window.screen.availWidth;
     }
-  };
-  if (window.screen) {
-    userMessage.client.screen.availHeight = window.screen.availHeight;
-    userMessage.client.screen.availWidth  = window.screen.availWidth;
-  }
-  exports.save(userMessage);
+    Storage.save(userMessage);
+  });
   onReady();
 };
 
