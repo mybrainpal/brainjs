@@ -11,6 +11,7 @@ const configuration = {
   storage    : {
     name: Storage.names.POST,
   },
+  tracker    : 'uHadMyCuriosity',
   experiments: [
     {
       experiment: {

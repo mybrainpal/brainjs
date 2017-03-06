@@ -39,6 +39,13 @@ exports.init = function (callback) {
 exports.id = 0;
 
 /**
+ * Identifier of current tracker, you may think of it as a customer ID, or should we say a lucky
+ * customer!
+ * @type {string}
+ */
+exports.tracker = '';
+
+/**
  * Browser, OS and their major version.
  * @type {{
  *  browser: string,
@@ -51,7 +58,7 @@ exports.id = 0;
 exports.agent = _parseUserAgent();
 
 /**
- * @returns {boolean} whether the client and BrainPal can be friends (at least we tried!).
+ * @returns {boolean} whether the client and BrainPal can be friends (hey! at least we tried!).
  */
 exports.canRunBrainPal = function () {
   let i;

@@ -5,7 +5,6 @@
  */
 const Client = require('../client'),
       _      = require('../util/wrapper'),
-      GoogleAnalytics = require('../../integrations/google-analytics'),
       Const           = require('../../../common/const'),
       Storage         = require('./storage');
 /**
@@ -27,7 +26,7 @@ exports.save = function save(message) {
  */
 exports.init = function (options, onReady) {
   // Waiting for google analytics, so that Client.id exists.
-  GoogleAnalytics.onReady(() => {
+  Client.init(() => {
     let userMessage = {
       kind  : Const.KIND.USER,
       client: {
@@ -60,6 +59,7 @@ function _enrich(message) {
       id     : Client.id,
       created: Client.created
     },
-    url      : window.location.href
+    url      : window.location.href,
+    tracker  : Client.tracker
   });
 }
