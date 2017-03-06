@@ -70,7 +70,7 @@ router.get('/uplift/:tracker/:fromTimestamp/:toTimestamp', function (req, res) {
                conversionOfGroups: conversionOfGroups
              });
   }).catch((err) => {
-    console.error(`Count uplift query for ${url}: ${err.code} ${err.status} - ${err.message}`);
+    console.error(`Count uplift query for ${tracker}: ${err.code} ${err.status} - ${err.message}`);
     res.status(500);
     res.type('txt').send('');
   })
