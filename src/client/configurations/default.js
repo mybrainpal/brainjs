@@ -1,11 +1,12 @@
 /**
  * Proudly created by ohad on 02/12/2016.
  */
-const Play = require('../play');
+const Play    = require('../play'),
+      Storage = require('../common/storage/storage');
 
 // Let the games begin.
 Play({
        storage: {
-         name: require('../common/storage/storage').names.POST
+         name: Storage.names.POST
        }
      });

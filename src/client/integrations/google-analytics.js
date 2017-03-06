@@ -101,7 +101,7 @@ exports.isReady = function () {
 };
 
 /**
- * Runs handler as soon as BrainPal's Google Analytics tracker is initialized.
+ * Runs handler as soon as Google Analytics tracker is initialized.
  * @param {function} handler
  */
 exports.onReady = function (handler) {

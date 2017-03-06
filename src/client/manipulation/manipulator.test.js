@@ -9,7 +9,7 @@ let _             = require('./../common/util/wrapper'),
     Demographics  = require('./experiment/demographics'),
     Experiment    = require('./experiment/experiment'),
     Storage       = require('../common/storage/storage'),
-    InMoemory     = require('../common/storage/in-memory.storage');
+    InMemory      = require('../common/storage/in-memory.storage');
 
 chai.use(require('chai-spies'));
 
@@ -18,7 +18,7 @@ describe('Manipulator', function () {
   before(() => {
     id = 0;
     Storage.set(Storage.names.IN_MEMORY);
-    InMoemory.flush();
+    InMemory.flush();
     div = document.createElement('div');
     div.setAttribute('id', 'manipulator');
     document.querySelector('body').appendChild(div);
@@ -71,7 +71,7 @@ describe('Manipulator', function () {
     };
   });
   afterEach(() => {
-    InMoemory.flush();
+    InMemory.flush();
     // Clean all injected styles.
     document.querySelectorAll('style[' + _.css.identifyingAttribute + ']')
             .forEach(function (styleElement) {
@@ -84,12 +84,13 @@ describe('Manipulator', function () {
   });
   it('experiment runs', () => {
     Manipulator.experiment(new Experiment({id: id, groups: [clientGroup, nonClientGroup]}));
+    console.log(InMemory.storage, null, '\t');
     // Participation in experiment.
-    expect(InMoemory.storage[0].experiment.id).to.equal(id);
-    expect(InMoemory.storage[0].experiment.included).to.be.true;
+    expect(InMemory.storage[0].experiment.id).to.equal(id);
+    expect(InMemory.storage[0].experiment.included).to.be.true;
     // Participation in group.
-    expect(InMoemory.storage[1].experimentGroup.experimentId).to.equal(id);
-    expect(InMoemory.storage[1].experimentGroup.included).to.be.true;
+    expect(InMemory.storage[1].experimentGroup.experimentId).to.equal(id);
+    expect(InMemory.storage[1].experimentGroup.included).to.be.true;
     // Manipulations run.
     expect(getComputedStyle(span).marginTop).to.equal('10px');
     // Manipulations doesn't run for non client groups.
@@ -99,7 +100,7 @@ describe('Manipulator', function () {
     Manipulator.experiment(new Experiment({id: id, groups: [clientGroup]}), subject);
     _.trigger('click', id, a);
     setTimeout(() => {
-      const msg = InMoemory.storage[InMoemory.storage.length - 1];
+      const msg = InMemory.storage[InMemory.storage.length - 1];
       expect(msg).to.include.all.keys('experiment', 'experimentGroup', 'anchor', 'subject');
       expect(msg.subject[name]).to.equal(span.textContent);
       done();
@@ -107,8 +108,8 @@ describe('Manipulator', function () {
   });
   it('experiment without participation', () => {
     Manipulator.experiment(new Experiment({id: id, groups: [nonClientGroup]}));
-    expect(InMoemory.storage[0].experiment.included).to.be.true;
-    expect(InMoemory.storage[0]).to.not.include.keys('experimentGroup');
+    expect(InMemory.storage[0].experiment.included).to.be.true;
+    expect(InMemory.storage[0]).to.not.include.keys('experimentGroup');
     // Manipulations doesn't run.
     expect(getComputedStyle(span).marginTop).to.equal('0px');
   });
@@ -116,7 +117,7 @@ describe('Manipulator', function () {
     Manipulator.experiment(new Experiment({id: id, groups: [nonClientGroup]}), subject);
     _.trigger('click', id, a);
     setTimeout(() => {
-      const msg = InMoemory.storage[InMoemory.storage.length - 1];
+      const msg = InMemory.storage[InMemory.storage.length - 1];
       expect(msg).to.include.all.keys('experiment', 'anchor', 'subject');
       expect(msg).to.not.include.keys('experimentGroup');
       expect(msg.subject[name]).to.equal(span.textContent);
@@ -126,14 +127,14 @@ describe('Manipulator', function () {
   it('experiment with multiple groups', (done) => {
     Manipulator.experiment(new Experiment({id: id, groups: [clientGroup, clientGroup2]}), subject);
     // Participation in group.
-    expect(InMoemory.storage[1].experimentGroup.experimentId).to.equal(id);
-    expect(InMoemory.storage[1].experimentGroup.label).to.equal(clientGroup.label);
-    expect(InMoemory.storage[2].experimentGroup.experimentId).to.equal(id);
-    expect(InMoemory.storage[2].experimentGroup.label).to.equal(clientGroup2.label);
+    expect(InMemory.storage[1].experimentGroup.experimentId).to.equal(id);
+    expect(InMemory.storage[1].experimentGroup.label).to.equal(clientGroup.label);
+    expect(InMemory.storage[2].experimentGroup.experimentId).to.equal(id);
+    expect(InMemory.storage[2].experimentGroup.label).to.equal(clientGroup2.label);
     _.trigger('click', id, a);
     setTimeout(() => {
-      const msg  = InMoemory.storage[InMoemory.storage.length - 1];
-      const msg2 = InMoemory.storage[InMoemory.storage.length - 2];
+      const msg  = InMemory.storage[InMemory.storage.length - 1];
+      const msg2 = InMemory.storage[InMemory.storage.length - 2];
       expect(msg).to.include.all.keys('experiment', 'experimentGroup', 'anchor', 'subject');
       expect(msg2).to.include.all.keys('experiment', 'experimentGroup', 'anchor', 'subject');
       done();
