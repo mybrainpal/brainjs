@@ -104,7 +104,7 @@ function _createSubject(options) {
                  'Collector: failed to select ' + options.dataProps[i].selector);
     }
   }
-  if (_.isEmpty(emittedSubject.subject)) {
+  if (options.dataProps.length && _.isEmpty(emittedSubject.subject)) {
     delete emittedSubject.subject;
     Logger.log(Level.WARNING, 'Collector: subject is empty.');
   }

@@ -82,8 +82,9 @@ describe('Manipulator', function () {
   after(() => {
     div.parentNode.removeChild(div);
   });
-  it.only('experiment runs', () => {
+  it('experiment runs', () => {
     Manipulator.experiment(new Experiment({id: id, groups: [clientGroup, nonClientGroup]}));
+    console.log(InMemory.storage, null, '\t');
     // Participation in experiment.
     expect(InMemory.storage[0].experiment.id).to.equal(id);
     expect(InMemory.storage[0].experiment.included).to.be.true;
