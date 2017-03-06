@@ -54,6 +54,7 @@ function _enrich(message) {
     client   : {
       id     : Client.id,
       created: Client.created
-    }
+    },
+    url      : window.location.href
   });
 }

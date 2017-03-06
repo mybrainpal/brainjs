@@ -2,6 +2,7 @@
  * Proudly created by ohad on 14/02/2017.
  */
 const _          = require('lodash'),
+      flatten    = require('flat'),
       router     = require('express').Router(),
       bodyParser = require('body-parser'),
       Datastore  = require('@google-cloud/datastore');
@@ -22,7 +23,7 @@ router.post('/', bodyParser.json(), function (req, res) {
     return;
   }
   const key    = datastore.key(req.body.kind);
-  const toSave = {key: key, data: req.body};
+  const toSave = {key: key, data: flatten(req.body, {safe: true})};
   datastore.upsert(toSave)
            .then(() => {
              res.status(200);
