@@ -10,7 +10,8 @@ const configuration = {
     options: {
       trackingId: 'UA-91064115-6'
     }
-  }
+  },
+  tracker: 'tellMeMore'
 };
 
 Play(configuration);

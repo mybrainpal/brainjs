@@ -5,7 +5,7 @@
   "scripts": {
     "clean": "rm -rf ./dist/*",
     "test-client": "export NODE_ENV=test && ./node_modules/.bin/karma start",
-    "test-server": "export NODE_ENV=test DATASTORE_EMULATOR_HOST=localhost:8173 GCLOUD_PROJECT=nth-name-156816 GOOGLE_APPLICATION_CREDENTIALS=/Users/ohad/IdeaProjects/brainjs/google.credentials.json && ./node_modules/.bin/mocha ./src/server/**/*.test.js",
+    "test-server": "export NODE_ENV=test PORT=3001 DATASTORE_EMULATOR_HOST=localhost:8173 GCLOUD_PROJECT=nth-name-156816 GOOGLE_APPLICATION_CREDENTIALS=/Users/ohad/IdeaProjects/brainjs/google.credentials.json && ./node_modules/.bin/mocha ./src/server/**/*.test.js",
     "test-common": "export NODE_ENV=test && ./node_modules/.bin/mocha ./src/common/**/*.test.js",
     "bundle": "webpack --config ./webpack.config.js --progress --colors",
     "build": "export NODE_ENV=development && npm run bundle",

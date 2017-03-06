@@ -7,7 +7,8 @@ const Play    = require('../play'),
 const configuration = {
   storage: {
     name: Storage.names.POST,
-  }
+  },
+  tracker: 'uKnowNothing'
 };
 
 Play(configuration);

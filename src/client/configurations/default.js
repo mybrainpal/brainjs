@@ -8,5 +8,6 @@ const Play    = require('../play'),
 Play({
        storage: {
          name: Storage.names.POST
-       }
+       },
+       tracker: 'thatTheWayItIs'
      });
