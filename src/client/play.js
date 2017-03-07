@@ -12,11 +12,12 @@ let Client      = require('./common/client'),
 /**
  * Plays the whole thing.
  * @param {Object} configuration
- *  @property {Object[]} [collect] - anchors and subjects to collect data about.
+ *  @property {Object[]} [collect] - subjects to collect data about.
  *  @property {Object[]} [experiments] - experiments to execute.
  *      @property {Object} experiment
  *      @property {Object} options
- *  @property {string} storage
+ *  @property {Object} storage - the preferred method of storing data in our backend.
+ *  @property {string} tracker - as identifier for our awesome customer.
  */
 module.exports = function (configuration) {
   if (!Client.canRunBrainPal()) {
@@ -24,6 +25,7 @@ module.exports = function (configuration) {
     exports.shutDown(configuration);
     return;
   }
+  Client.tracker = configuration.tracker;
   if (configuration.storage && configuration.storage.name) {
     Storage.set(configuration.storage.name, configuration.storage.options || {},
                 () => {_run(configuration)});
