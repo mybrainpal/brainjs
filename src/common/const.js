@@ -45,7 +45,7 @@ exports.LOCAL_PUBLISHER = 'publisher.dev';
  * Localhost port of Node apps.
  * @type {number}
  */
-exports.LOCAL_PORT = 3000;
+exports.LOCAL_PORT = 4000;
 /**
  * for process.env.NODE_ENV
  * @type {Object}
@@ -92,8 +92,10 @@ exports.STAGING_STORAGE = 'https://brainjs-staging.appspot.com/save';
  */
 exports.LOCAL_STORAGE = `http://localhost:${exports.LOCAL_PORT}/save`;
 exports.KIND = Object.freeze({
-                               LOG  : 'log',
-                               EVENT: 'event',
-                               USER : 'user',
-                               ERROR: 'error'
+                               CUSTOMER: 'customer',
+                               ERROR   : 'error',
+                               EVENT   : 'event',
+                               LOG     : 'log',
+                               TRACKER : 'tracker',
+                               USER    : 'user'
                              });

@@ -37,5 +37,4 @@ tests_output/
 database/
 
 # Credentials
-google.credentials.json
-staging.credentials.json
+credentials/

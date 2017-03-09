@@ -95,7 +95,7 @@ if (envConfig.bucket) {
     include       : ['.js', '.js.map'],
     storageOptions: {
       projectId  : Const.PROJECT_ID,
-      credentials: require('./google.credentials.json'),
+      credentials: require('./credentials/google.credentials.json'),
     },
     uploadOptions : {
       bucketName: envConfig.bucket,

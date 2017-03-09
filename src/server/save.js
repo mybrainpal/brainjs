@@ -5,12 +5,17 @@ const _          = require('lodash'),
       flatten    = require('flat'),
       router     = require('express').Router(),
       bodyParser = require('body-parser'),
-      Datastore  = require('@google-cloud/datastore');
+      Datastore  = require('@google-cloud/datastore'),
+      Const      = require('../common/const');
 
 const datastore = Datastore();
 
 router.use('/', function (req, res, next) {
-  res.header('Access-Control-Allow-Origin', '*');
+  if (process.env.NODE_ENV === Const.ENV.DEV) {
+    res.header('Access-Control-Allow-Origin', 'http://localhost');
+  } else {
+    res.header('Access-Control-Allow-Origin', 'https://dashboard.brainpal.io');
+  }
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   next();
 });

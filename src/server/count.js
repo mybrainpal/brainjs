@@ -9,7 +9,11 @@ const _         = require('lodash'),
 const datastore = Datastore();
 
 router.use('/', function (req, res, next) {
-  res.header('Access-Control-Allow-Origin', 'https://dashboard.brainpal.io');
+  if (process.env.NODE_ENV === Const.ENV.DEV) {
+    res.header('Access-Control-Allow-Origin', 'http://localhost');
+  } else {
+    res.header('Access-Control-Allow-Origin', 'https://dashboard.brainpal.io');
+  }
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   next();
 });
@@ -20,32 +24,38 @@ router.get('/uplift', function (req, res) {
         toTimestamp   = _.parseInt(req.query.toTimestamp);
   if (!_.isString(tracker)) {
     console.error(`Count: tracker ain't a string darling tracker = ${tracker}`);
-    res.status(500).type('txt').send('');
+    res.status(500);
+    res.type('txt').send('');
     return;
   }
   if (!_.isInteger(fromTimestamp)) {
     console.error(`Count: fromTimestamp is no integer darling, ${err.toString()}`);
-    res.status(500).type('txt').send('');
+    res.status(500);
+    res.type('txt').send('');
     return;
   }
   if (fromTimestamp < 0) {
     console.error(`Count: fromTimestamp (=${fromTimestamp}) is negative.`);
-    res.status(500).type('txt').send('');
+    res.status(500);
+    res.type('txt').send('');
     return;
   }
   if (!_.isInteger(toTimestamp)) {
     console.error(`Count: toTimestamp is no integer darling, ${err.toString()}`);
-    res.status(500).type('txt').send('');
+    res.status(500);
+    res.type('txt').send('');
     return;
   }
   if (toTimestamp < 0) {
     console.error(`Count: toTimestamp (=${toTimestamp}) is negative.`);
-    res.status(500).type('txt').send('');
+    res.status(500);
+    res.type('txt').send('');
     return;
   }
   if (toTimestamp < fromTimestamp) {
     console.error(`Count: toTimestamp(${toTimestamp}) < fromTimestamp(${fromTimestamp})`);
-    res.status(500).type('txt').send('');
+    res.status(500);
+    res.type('txt').send('');
     return;
   }
   const query = datastore.createQuery(Const.KIND.EVENT)
@@ -77,7 +87,8 @@ router.get('/uplift', function (req, res) {
              });
   }).catch((err) => {
     console.error(`Count uplift query for ${tracker}: ${err.code} ${err.status} - ${err.message}`);
-    res.status(500).type('txt').send('');
+    res.status(500);
+    res.type('txt').send('');
   })
   ;
 });

@@ -2,6 +2,8 @@
  * Proudly created by ohad on 25/01/2017.
  */
 const express     = require('express'),
+      morgan      = require('morgan'),
+      authRouter  = require('./auth'),
       countRouter = require('./count'),
       saveRouter  = require('./save'),
       Const       = require('../common/const');
@@ -14,6 +16,12 @@ app.set('port', process.env.PORT);
 app.use('/save', saveRouter);
 
 app.use('/count', countRouter);
+
+app.use('/auth', authRouter);
+
+if (process.env.NODE_ENV !== Const.ENV.PROD) {
+  app.use(morgan('combined'));
+}
 
 app.get('*', function (req, res) {
   res.status(404);
