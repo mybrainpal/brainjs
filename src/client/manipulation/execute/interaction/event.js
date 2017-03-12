@@ -26,7 +26,7 @@ Master.register(exports);
  *      @property {Object} [detailOrId] - for the CustomEvent constructor.
  *      @property {string} [target] - event target, leave empty for document
  *      @property {Object} [detailOrId] - to be passed to CustomEvent constructor.
- *  @property {function} [callback] - executes callback, once all the listeners had been invoked.
+ *  @property {function} [callback] - executes callback, once enough listeners had been invoked.
  *  @property {Object|Array.<Object>} [create] - create a special event.
  *      @property {string} event
  *      @property {Object} [options] - for the event constructor.

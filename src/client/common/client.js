@@ -66,7 +66,7 @@ exports.canRunBrainPal = function () {
   let browserToMinVersions = {
     'edge'   : 14,
     'chrome' : 53,
-    'safari' : 10,
+    'safari' : 9,
     'firefox': 50,
     'opera'  : 40
   };
