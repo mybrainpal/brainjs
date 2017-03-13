@@ -299,4 +299,46 @@ describe('Prototype', () => {
       expect(_.arrify([[1], 2])).to.deep.equal([[1], 2]);
     })
   });
+  describe('flatten', () => {
+    it('base cases', () => {
+      //noinspection JSCheckFunctionSignatures
+      expect(_.flatten()).to.not.be.ok;
+      expect(_.flatten(null)).to.not.be.ok;
+      expect(_.flatten({})).to.deep.equal({});
+      expect(_.flatten({a: 1})).to.deep.equal({a: 1});
+      expect(_.flatten({a: 1, b: 2})).to.deep.equal({a: 1, b: 2});
+      expect(_.flatten({a: {b: 1}})).to.deep.equal({'a.b': 1});
+      expect(_.flatten([])).to.deep.equal({});
+      expect(_.flatten({a: []})).to.deep.equal({a: []});
+      expect(_.flatten({a: [0, 1]})).to.deep.equal({'a.0': 0, 'a.1': 1});
+      expect(_.flatten({a: {b: [0, 1]}})).to.deep.equal({'a.b.0': 0, 'a.b.1': 1});
+      expect(_.flatten({a: [{b: 1, c: 2}, 3]})).to.deep.equal({'a.0.b': 1, 'a.0.c': 2, 'a.1': 3});
+    })
+  });
+  describe.only('json to FormData', () => {
+    it('base cases', () => {
+      function deepEqualFormData(fd1, fd2) {
+        const keys1 = fd1.keys();
+        const keys2 = fd2.keys();
+        expect(keys1).to.deep.equal(keys2);
+        for (let k1 of keys1) {
+          expect(fd1.getAll(k1)).to.deep.equal(fd2.getAll(k1));
+        }
+      }
+
+      //noinspection JSCheckFunctionSignatures
+      deepEqualFormData(_.jsonToFormData(), new FormData());
+      deepEqualFormData(_.jsonToFormData(null), new FormData());
+      deepEqualFormData(_.jsonToFormData({}), new FormData());
+      let fd = new FormData();
+      fd.append('a', 1);
+      deepEqualFormData(_.jsonToFormData({a: 1}), fd);
+      fd = new FormData();
+      fd.append('a.b', 1);
+      deepEqualFormData(_.jsonToFormData({a: {b: 1}}), fd);
+      fd = new FormData();
+      fd.append('a.0', 1);
+      deepEqualFormData(_.jsonToFormData({a: [1]}), fd);
+    })
+  });
 });

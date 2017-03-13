@@ -282,3 +282,53 @@ exports.arrify = function (val) {
   if (_.isNil(val)) return [];
   return Array.isArray(val) ? val : [val];
 };
+
+/**
+ * @param {Object} json
+ * @returns {Object} flattened json (i.e. one that has no nested properties).
+ * Taken from http://jsfiddle.net/WSzec/6/
+ */
+exports.flatten = function (json) {
+  if (!_.isObject(json)) return json;
+  let flattened = {};
+
+  function recurse(cur, prop) {
+    if (Object(cur) !== cur) {
+      flattened[prop] = cur;
+    } else if (Array.isArray(cur)) {
+      let i = 0, l = cur.length;
+      for (; i < l; i++) {
+        recurse(cur[i], prop ? prop + '.' + i : '' + i);
+      }
+      if (l == 0 && prop) {
+        flattened[prop] = [];
+      }
+    } else {
+      //noinspection JSUnusedAssignment
+      let isEmpty = true;
+      for (let p in cur) {
+        isEmpty = false;
+        recurse(cur[p], prop ? prop + '.' + p : p);
+      }
+      if (isEmpty && prop) {
+        flattened[prop] = {};
+      }
+    }
+  }
+
+  recurse(json, '');
+  return flattened;
+};
+
+/**
+ * @param {Object} json
+ * @returns {FormData} form data of the flattened json that can be used in Ajax POST requests.
+ */
+exports.jsonToFormData = function (json) {
+  const flattened = _.flatten(json);
+  let formData    = new FormData();
+  for (let p in flattened) {
+    formData.append(p, flattened[p]);
+  }
+  return formData;
+};

@@ -14,9 +14,12 @@ const Client = require('../client'),
 exports.save = function save(message) {
   message = _enrich(message);
   let xhr = new XMLHttpRequest();
-  xhr.open('POST', process.env.STORAGE_ROUTE, true);
-  xhr.setRequestHeader("Content-Type", "application/json");
-  xhr.send(JSON.stringify(message));
+  xhr.open('POST', process.env.STORAGE_ROUTE + '/' + message.kind, true);
+  xhr.withCredentials = true;
+  xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+  let data = _.jsonToFormData(message);
+  data.append('json', 1);
+  xhr.send(data);
 };
 
 /**
