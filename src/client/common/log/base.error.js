@@ -54,7 +54,6 @@ function _shouldHandle(event) {
   if (_.isNil(event)) return false;
   //noinspection JSUnresolvedVariable
   if (event.error instanceof BaseError) return true;
-  if (process.env.NODE_ENV !== Const.ENV.PROD) return true;
   //noinspection JSUnresolvedVariable
   return /brainpal/.test(event.filename);
 }

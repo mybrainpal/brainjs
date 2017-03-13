@@ -1,17 +1,16 @@
 /**
  * Proudly created by ohad on 12/03/2017.
  */
-const _             = require('../common/util/wrapper'),
-      Play          = require('../play'),
-      Factory       = require('../common/events/factory'),
-      EventExecutor = require('../manipulation/execute/interaction/event'),
-      IdleEvent     = require('../common/events/idle'),
-      WordEvent     = require('../common/events/word'),
-      Master        = require('../manipulation/execute/master'),
-      StyleExecutor = require('../manipulation/execute/dom/style'),
-      SwalInterface = require('../manipulation/execute/interface/sweetalert'),
-      Demographics  = require('../manipulation/experiment/demographics'),
-      Storage       = require('../common/storage/storage');
+const _               = require('../common/util/wrapper'),
+      Play            = require('../play'),
+      Factory         = require('../common/events/factory'),
+      EventExecutor   = require('../manipulation/execute/interaction/event'),
+      ExitIntentEvent = require('../common/events/exit-intent'),
+      WordEvent       = require('../common/events/word'),
+      Master          = require('../manipulation/execute/master'),
+      StyleExecutor   = require('../manipulation/execute/dom/style'),
+      SwalInterface   = require('../manipulation/execute/interface/sweetalert'),
+      Storage         = require('../common/storage/storage');
 
 // Let the games begin.
 Play(
@@ -24,14 +23,17 @@ Play(
         experiment: {
           id          : 1,
           label       : 'modal',
-          demographics: [{name: Demographics.PROPERTIES.RESOLUTION.name, maxWidth: 1100}],
           groups      : [
             {
               label    : 'modal',
               executors: [
                 {
                   name   : StyleExecutor.name,
-                  options: {css: `[class^='swal2'] { direction: rtl}`}
+                  options: {
+                    css: `[class^='swal2'] { direction: rtl} 
+                    input[class^='swal2'] {color: #595959;}
+                    input[class^='swal2']:focus {outline-color: #d9d9d9 !important}`
+                  }
                 },
                 {
                   name   : SwalInterface.name,
@@ -105,10 +107,10 @@ Play(
                   name   : EventExecutor.name,
                   options: {
                     create: {
-                      event  : IdleEvent.name(),
+                      event  : ExitIntentEvent.name(),
                       options: {
                         detailOrId: 'swal',
-                        waitTime  : 5000
+                        waitTime  : 100
                       }
                     }
                   }
@@ -117,7 +119,7 @@ Play(
                   name   : EventExecutor.name,
                   options: {
                     listen : {
-                      event     : Factory.eventName(IdleEvent.name()),
+                      event     : Factory.eventName(ExitIntentEvent.name()),
                       detailOrId: 'swal'
                     },
                     trigger: {
@@ -134,12 +136,12 @@ Play(
   });
 
 function _sendForm(formData) {
-  document.querySelector('#Input_textbox_0').value  = formData.name;
-  document.querySelector('#Input_ndropbox_0').value = formData.tel.length === 9 ?
+  document.querySelector('#form_fullname').value  = formData.name;
+  document.querySelector('#form_pre_phone').value = formData.tel.length === 9 ?
                                                       formData.tel.substr(0, 2) :
                                                       formData.tel.substr(0, 3);
-  document.querySelector('#Input_textbox_2').value  = formData.tel.length === 9 ?
-                                                      formData.tel.substr(2) :
-                                                      formData.tel.substr(3);
-  _.trigger('click', {}, '#Button_submitButton_0');
+  document.querySelector('#form_phone').value     = formData.tel.length === 9 ?
+                                                    formData.tel.substr(2) :
+                                                    formData.tel.substr(3);
+  _.trigger('click', {}, '#form_submit');
 }
