@@ -58,8 +58,8 @@ let webpackConfig = {
       append  : ''
     }),
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV'     : JSON.stringify(process.env.NODE_ENV),
-      'process.env.STORAGE_ROUTE': JSON.stringify(envConfig.storageRoute)
+      'process.env.NODE_ENV'    : JSON.stringify(process.env.NODE_ENV),
+      'process.env.BACKEND_HOST': JSON.stringify(envConfig.storageRoute)
     }),
     function () {
       this.plugin('watch-run', function (watching, callback) {
