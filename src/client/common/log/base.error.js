@@ -27,20 +27,22 @@ _.on('error', _baseErrorHandler, {}, window, true);
 function _baseErrorHandler(event) {
   if (!_shouldHandle(event)) return;
   //noinspection JSUnresolvedVariable
-  let error = event.error;
-  if (_.isNil(error)) {
-    //noinspection JSUnresolvedVariable
-    error = new BaseError(event.message);
-  }
+  // let error = event.error;
+  // if (_.isNil(error)) {
+  //   //noinspection JSUnresolvedVariable
+  //   error = new BaseError(event.message);
+  // }
   Logger.log(Level.ERROR, event.message);
-  require.ensure('stacktrace-js', function (require) {
-    require('stacktrace-js').fromError(error, {offline: true})
-                            .then((stackFrame) => {
-                              error.stack = stackFrame;
-                              error.kind = Const.KIND.ERROR;
-                              Storage.save(error);
-                            });
-  });
+  // require.ensure('stacktrace-js', function (require) {
+  //   require('stacktrace-js').fromError(error, {offline: true})
+  //                           .then((stackFrame) => {
+  //                             error.stack = stackFrame;
+  //                             // error.kind = Const.KIND.ERROR;
+  //                             // error.backendUrl = Const.BACKEND_URL;
+  //                             // Storage.save(error);
+  //                             Logger.log(Level.ERROR, event)
+  //                           });
+  // });
 }
 
 //noinspection JSValidateJSDoc

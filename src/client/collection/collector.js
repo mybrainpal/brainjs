@@ -89,93 +89,102 @@ exports.collect = function (options) {
 function _createSubject(options) {
   let emittedSubject = {}, i, target, val;
 
-  if (_.isEmpty(options)) {
-    Logger.log(Level.WARNING, 'Collector: created an empty subject.');
-    return {};
-  }
-  emittedSubject.subject = {};
-  options.dataProps      = _.arrify(options.dataProps);
-  for (i = 0; i < options.dataProps.length; i++) {
-    target = options.rootNode.querySelector(options.dataProps[i].selector);
-    if (target) {
-      emittedSubject.subject[options.dataProps[i].name] = target.textContent;
-    } else {
-      Logger.log(Level.WARNING,
-                 'Collector: failed to select ' + options.dataProps[i].selector);
-    }
-  }
-  if (options.dataProps.length && _.isEmpty(emittedSubject.subject)) {
-    delete emittedSubject.subject;
-    Logger.log(Level.WARNING, 'Collector: subject is empty.');
-  }
-  if (options.client) {
-    emittedSubject.client = {};
-    if (options.client.properties) {
-      for (i = 0; i < options.client.properties.length; i++) {
-        val = _.get(Client, options.client.properties[i]);
-        if (val) {
-          _.set(emittedSubject.client, options.client.properties[i], val);
-        }
-      }
-    }
-    if (_.isEmpty(emittedSubject.client)) {
-      Logger.log(Level.WARNING, 'Collector: client is empty.');
-      delete emittedSubject.client;
-    }
-  }
+  // if (_.isEmpty(options)) {
+  //   Logger.log(Level.WARNING, 'Collector: created an empty subject.');
+  //   return {};
+  // }
+  // emittedSubject.subject = {};
+  // options.dataProps      = _.arrify(options.dataProps);
+  // for (i = 0; i < options.dataProps.length; i++) {
+  //   target = options.rootNode.querySelector(options.dataProps[i].selector);
+  //   if (target) {
+  //     emittedSubject.subject[options.dataProps[i].name] = target.textContent;
+  //   } else {
+  //     Logger.log(Level.WARNING,
+  //                'Collector: failed to select ' + options.dataProps[i].selector);
+  //   }
+  // }
+  // if (options.dataProps.length && _.isEmpty(emittedSubject.subject)) {
+  //   delete emittedSubject.subject;
+  //   Logger.log(Level.WARNING, 'Collector: subject is empty.');
+  // }
+  // if (options.client) {
+  //   emittedSubject.client = {};
+  //   if (options.client.properties) {
+  //     for (i = 0; i < options.client.properties.length; i++) {
+  //       val = _.get(Client, options.client.properties[i]);
+  //       if (val) {
+  //         _.set(emittedSubject.client, options.client.properties[i], val);
+  //       }
+  //     }
+  //   }
+  //   if (_.isEmpty(emittedSubject.client)) {
+  //     Logger.log(Level.WARNING, 'Collector: client is empty.');
+  //     delete emittedSubject.client;
+  //   }
+  // }
   if (!_.isNil(options.experiment)) {
-    emittedSubject.experiment = {};
+    // emittedSubject.experiment = {};
     if (!_.isNil(options.experiment.id)) {
-      emittedSubject.experiment.id = options.experiment.id;
+      // emittedSubject.experiment.id = options.experiment.id;
+      emittedSubject.experimentId = options.experiment.id;
     }
-    if (!_.isNil(options.experiment.label)) {
-      emittedSubject.experiment.label = options.experiment.label;
-    }
-    if (!_.isNil(options.experiment.included)) {
-      emittedSubject.experiment.included = options.experiment.included;
-    }
-    if (_.isEmpty(emittedSubject.experiment)) {
-      Logger.log(Level.WARNING, 'Collector: experiment is empty.');
-      delete emittedSubject.client;
-    }
+    // if (!_.isNil(options.experiment.label)) {
+    //   emittedSubject.experiment.label = options.experiment.label;
+    // }
+    // if (!_.isNil(options.experiment.included)) {
+    //   emittedSubject.experiment.included = options.experiment.included;
+    // }
+    // if (_.isEmpty(emittedSubject.experiment)) {
+    //   Logger.log(Level.WARNING, 'Collector: experiment is empty.');
+    //   delete emittedSubject.client;
+    // }
   }
   if (!_.isNil(options.experimentGroup)) {
-    emittedSubject.experimentGroup = {};
-    if (!_.isNil(options.experimentGroup.experimentId)) {
-      emittedSubject.experimentGroup.experimentId = options.experimentGroup.experimentId;
+    if (!_.isNil(options.experimentGroup.id)) {
+      emittedSubject.experimentGroupId = options.experimentGroup.id;
     }
-    if (!_.isNil(options.experimentGroup.included)) {
-      emittedSubject.experimentGroup.included =
-        options.experimentGroup.included;
-    }
-    if (!_.isNil(options.experimentGroup.label)) {
-      emittedSubject.experimentGroup.label = options.experimentGroup.label;
-    }
-    if (_.isEmpty(emittedSubject.experiment)) {
-      Logger.log(Level.WARNING, 'Collector: experiment is empty.');
-      delete emittedSubject.client;
-    }
+    // emittedSubject.experimentGroup = {};
+    // if (!_.isNil(options.experimentGroup.experimentId)) {
+    //   emittedSubject.experimentGroup.experimentId = options.experimentGroup.experimentId;
+    // }
+    // if (!_.isNil(options.experimentGroup.included)) {
+    //   emittedSubject.experimentGroup.included =
+    //     options.experimentGroup.included;
+    // }
+    // if (!_.isNil(options.experimentGroup.label)) {
+    //   emittedSubject.experimentGroup.label = options.experimentGroup.label;
+    // }
+    // if (_.isEmpty(emittedSubject.experiment)) {
+    //   Logger.log(Level.WARNING, 'Collector: experiment is empty.');
+    //   delete emittedSubject.client;
+    // }
   }
   if (!_.isEmpty(options.anchor)) {
-    emittedSubject.anchor = {};
+    // emittedSubject.anchor = {};
     if (options.anchor.selector) {
-      emittedSubject.anchor.selector = options.anchor.selector;
+      // emittedSubject.anchor.selector = options.anchor.selector;
+      emittedSubject.selector = options.anchor.selector;
     } else {
       Logger.log(Level.WARNING, 'Collector: anchor is missing a selector.');
     }
     if (options.anchor.event) {
-      emittedSubject.anchor.event = options.anchor.event;
+      // emittedSubject.anchor.event = options.anchor.event;
+      emittedSubject.event = options.anchor.event;
     } else {
       Logger.log(Level.WARNING, 'Collector: anchor is missing a selector.');
     }
-    if (options.anchor.target) {
-      emittedSubject.anchor.targetText = options.anchor.target.textContent;
-    }
-    if (_.isEmpty(emittedSubject.anchor)) {
-      Logger.log(Level.WARNING, 'Collector: subject\'s anchor is empty.');
-      delete emittedSubject.anchor;
-    }
+    // if (options.anchor.target) {
+    //   emittedSubject.anchor.targetText = options.anchor.target.textContent;
+    // }
+    // if (_.isEmpty(emittedSubject.anchor)) {
+    //   Logger.log(Level.WARNING, 'Collector: subject\'s anchor is empty.');
+    //   delete emittedSubject.anchor;
+    // }
+  } else {
+    emittedSubject.event = 'participate'
   }
-  emittedSubject.kind = Const.KIND.EVENT;
+  // emittedSubject.kind = Const.KIND.EVENT;
+  emittedSubject.backendUrl = Const.BACKEND_URL.EVENT;
   return emittedSubject;
 }

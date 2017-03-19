@@ -14,7 +14,8 @@ const Client = require('../client'),
 exports.save = function save(message) {
   message = _enrich(message);
   let xhr = new XMLHttpRequest();
-  xhr.open('POST', process.env.BACKEND_HOST + '/' + message.kind + '/add', true);
+  // xhr.open('POST', process.env.BACKEND_HOST + '/' + message.kind + '/add', true);
+  xhr.open('POST', process.env.BACKEND_HOST + '/' + message.backendUrl, true);
   xhr.withCredentials = true;
   let data = _.jsonToFormData(message);
   data.append('json', 1);
@@ -58,11 +59,11 @@ exports.init = function (options, onReady) {
 function _enrich(message) {
   return _.deepExtend(message, {
     timestamp: new Date().getTime(),
-    client   : {
-      id     : Client.id,
-      created: Client.created
-    },
-    url      : window.location.href,
+    // client   : {
+    //   id     : Client.id,
+    //   created: Client.created
+    // },
+    // url      : window.location.href,
     tracker  : Client.tracker
   });
 }

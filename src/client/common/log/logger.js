@@ -21,7 +21,8 @@ exports.Level = Object.freeze({
 exports.log = function (level, message) {
   let subject = {
     level: level.name,
-    kind : Const.KIND.LOG
+    // kind : Const.KIND.LOG
+    backendUrl: Const.BACKEND_URL.LOG
   };
   if (_.isString(message)) {
     subject.message = message;

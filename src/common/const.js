@@ -97,3 +97,8 @@ exports.KIND = Object.freeze({
                                USER : 'user',
                                ERROR: 'error'
                              });
+exports.BACKEND_URL = Object.freeze({
+                                      LOG   : 'log/add',
+                                      EVENT : 'event/add',
+                                      CLIENT: 'client/init'
+                                    });
