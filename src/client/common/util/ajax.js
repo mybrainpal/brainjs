@@ -34,7 +34,7 @@ exports.ajax = function (url, data, callback, type = 'POST', async = true) {
   }
   xhr.onreadystatechange = function () {
     if (xhr.readyState == XMLHttpRequest.DONE && xhr.status === 200) {
-      _csrf_token = _get(xhr.response);
+      _csrf_token = _get(xhr.response, 'csrf_token');
       callback(xhr);
     }
   }
