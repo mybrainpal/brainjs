@@ -11,11 +11,11 @@ const Client = require('../client'),
  * Sends a HTTP request with message.
  * @param {Object} message
  */
-exports.save = function save(message) {
+exports.save = function save(message, callback) {
   message = _enrich(message);
   const url = process.env.BACKEND_HOST + '/' + message.backendUrl;
   delete message.backendUrl;
-  _.http.ajax(url, message);
+  _.http.ajax(url, message, callback);
 };
 
 /**
@@ -27,6 +27,7 @@ exports.init = function (options, onReady) {
   // Waiting for google analytics, so that Client.id exists.
   // Client.init(() => {
     let userMessage = {
+      backendUrl: Const.BACKEND_URL.CLIENT,
       client    : {
         agent         : Client.agent,
         cookiesEnabled: Client.cookiesEnabled,
@@ -43,7 +44,8 @@ exports.init = function (options, onReady) {
   //   Storage.save(userMessage);
   // // });
   // onReady();
-  _.http.ajax(Const.BACKEND_URL.CLIENT, userMessage, onReady)
+  exports.save(userMessage, onReady);
+  // _.http.ajax(process.env.BACKEND_HOST + '/' + Const.BACKEND_URL.CLIENT, userMessage, onReady)
 };
 
 /**
