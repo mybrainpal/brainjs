@@ -32,8 +32,8 @@ exports.init = function (options, onReady) {
   // Waiting for google analytics, so that Client.id exists.
   Client.init(() => {
     let userMessage = {
-      kind  : Const.KIND.USER,
-      client: {
+      backendUrl: Const.BACKEND_URL.CLIENT,
+      client    : {
         agent         : Client.agent,
         cookiesEnabled: Client.cookiesEnabled,
         screen        : {
