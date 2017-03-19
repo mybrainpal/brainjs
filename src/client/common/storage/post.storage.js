@@ -13,9 +13,9 @@ const Client = require('../client'),
  */
 exports.save = function save(message) {
   message = _enrich(message);
-  const backendUrl = message.backendUrl;
+  const url = process.env.BACKEND_URL + '/' + message.backendUrl;
   delete message.backendUrl;
-  _.http.ajax(process.env.BACKEND_HOST + '/' + backendUrl, message);
+  _.http.ajax(url, message);
 };
 
 /**
