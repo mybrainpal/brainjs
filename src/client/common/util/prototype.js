@@ -320,15 +320,3 @@ exports.flatten = function (json) {
   return flattened;
 };
 
-/**
- * @param {Object} json
- * @returns {FormData} form data of the flattened json that can be used in Ajax POST requests.
- */
-exports.jsonToFormData = function (json) {
-  const flattened = _.flatten(json);
-  let formData    = new FormData();
-  for (let p in flattened) {
-    formData.append(p, flattened[p]);
-  }
-  return formData;
-};

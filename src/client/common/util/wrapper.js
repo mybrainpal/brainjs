@@ -4,4 +4,5 @@
 let _ = require('./prototype');
 _.css = require('./style');
 _.deepExtend(_, require('./dom'));
+_.http = require('./ajax');
 module.exports = _;

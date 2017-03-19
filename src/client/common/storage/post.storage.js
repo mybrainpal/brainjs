@@ -13,14 +13,9 @@ const Client = require('../client'),
  */
 exports.save = function save(message) {
   message = _enrich(message);
-  let xhr = new XMLHttpRequest();
-  // xhr.open('POST', process.env.BACKEND_HOST + '/' + message.kind + '/add', true);
-  xhr.open('POST', process.env.BACKEND_HOST + '/' + message.backendUrl, true);
-  xhr.withCredentials = true;
-  let data = _.jsonToFormData(message);
-  data.append('json', 1);
-  data.append('submit', 1);
-  xhr.send(data);
+  const backendUrl = message.backendUrl;
+  delete message.backendUrl;
+  _.http.ajax(process.env.BACKEND_HOST + '/' + backendUrl, message);
 };
 
 /**
@@ -30,9 +25,8 @@ exports.save = function save(message) {
  */
 exports.init = function (options, onReady) {
   // Waiting for google analytics, so that Client.id exists.
-  Client.init(() => {
+  // Client.init(() => {
     let userMessage = {
-      backendUrl: Const.BACKEND_URL.CLIENT,
       client    : {
         agent         : Client.agent,
         cookiesEnabled: Client.cookiesEnabled,
@@ -46,9 +40,10 @@ exports.init = function (options, onReady) {
       userMessage.client.screen.availHeight = window.screen.availHeight;
       userMessage.client.screen.availWidth  = window.screen.availWidth;
     }
-    Storage.save(userMessage);
-  });
-  onReady();
+  //   Storage.save(userMessage);
+  // // });
+  // onReady();
+  _.http.ajax(Const.BACKEND_URL.CLIENT, userMessage, onReady)
 };
 
 /**
