@@ -11,7 +11,7 @@ const configuration = {
   storage    : {
     name: Storage.names.POST,
   },
-  tracker    : 'uHadMyCuriosity',
+  tracker    : 100,
   experiments: [
     {
       experiment: {
@@ -19,6 +19,7 @@ const configuration = {
         label       : 'second CTA',
         groups      : [
           {
+            id          : 1,
             label       : 'experiment',
             demographics: [
               {name: Demographics.PROPERTIES.MODULO.name, moduloIds: [0], moduloOf: 5}

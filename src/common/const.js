@@ -85,7 +85,7 @@ exports.PRODUCTION_STORAGE = 'https://nth-name-156816.appspot.com/save';
  * Staging Node app's storage route.
  * @type {string}
  */
-exports.STAGING_STORAGE = 'https://brainjs-staging.appspot.com/save';
+exports.STAGING_STORAGE = 'https://dashboard-161017.appspot.com';
 /**
  * Local Node app's storage route.
  * @type {string}
