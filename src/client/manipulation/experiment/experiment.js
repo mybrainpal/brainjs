@@ -39,7 +39,7 @@ class Experiment {
      */
     this.groups = options.groups.map(
       function (g) {
-        return new Group(_.deepExtend({experimentId: options.id}, g));
+        return new Group(_.extend({experimentId: options.id}, g));
       });
     this.clientGroups = this.groups.filter(function (g) {return g.included});
     this.included     = true;

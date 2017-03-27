@@ -34,7 +34,7 @@ class VisibilityEvent {
       } else {
         this.target = options.target;
       }
-      if (!(this.target instanceof Element)) {
+      if (!(_.is(this.target, Element))) {
         throw new BaseError('VisibilityEvent: target must be an element');
       }
     } else {
@@ -65,10 +65,9 @@ class VisibilityEvent {
    * @private
    */
   _init() {
-    const that    = this;
     this.visible  = false;
-    this.interval = setInterval(() => {
-      if (_.isVisible(that.target) !== that.visible) that.fire();
+    this.interval = _.interval.call(this, () => {
+      if (_.isVisible(this.target) !== this.visible) this.fire();
     }, this.frequency);
   };
 

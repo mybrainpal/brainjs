@@ -10,8 +10,7 @@ describe('TyperExecutor', function () {
   this.timeout(500);
   let div;
   beforeEach(() => {
-    div = document.createElement('div');
-    div.setAttribute('id', 'div');
+    div = _.div({id: 'div'});
     document.querySelector('body').appendChild(div);
   });
   afterEach(() => {

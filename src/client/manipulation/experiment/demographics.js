@@ -76,7 +76,7 @@ function _osInclude(property) {
     throw new BaseError('Demographics: os must be a string.');
   }
   if (Client.agent && Client.agent.os) {
-    return Client.agent.os.toLowerCase().indexOf(property.os.toLowerCase()) != -1
+    return Client.agent.os.toLowerCase().indexOf(property.os.toLowerCase()) !== -1
   }
   return false;
 }
@@ -93,7 +93,7 @@ function _browserInclude(property) {
     throw new BaseError('Demographics: browser must be a string.');
   }
   if (Client.agent && Client.agent.browser) {
-    return Client.agent.browser.toLowerCase().indexOf(property.browser.toLowerCase()) != -1
+    return Client.agent.browser.toLowerCase().indexOf(property.browser.toLowerCase()) !== -1
   }
   return false;
 }
@@ -110,7 +110,7 @@ function _urlInclude(property) {
        window.location.host === Const.LOCAL_PUBLISHER)) {
     return true;
   }
-  if (!(property.url instanceof RegExp)) {
+  if (!(_.is(property.url, RegExp))) {
     throw new BaseError('Demographics: url must be a regex.');
   }
   return property.url.test(window.location.href);

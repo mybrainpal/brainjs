@@ -53,7 +53,7 @@ function _baseErrorHandler(event) {
 function _shouldHandle(event) {
   if (_.isNil(event)) return false;
   //noinspection JSUnresolvedVariable
-  if (event.error instanceof BaseError) return true;
+  if (_.is(event.error, BaseError)) return true;
   //noinspection JSUnresolvedVariable
   return /brainpal/.test(event.filename);
 }

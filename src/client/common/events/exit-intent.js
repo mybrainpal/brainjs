@@ -52,35 +52,35 @@ class ExitIntentEvent {
    * @private
    */
   _init() {
-    this.timer = setTimeout(() => {this.start()}, this.waitTime);
+    this.timer = _.delay.call(this, () => {this.start()}, this.waitTime);
   };
 
   /**
    * Starts the idle timer.
    */
   start() {
-    const that              = this; // To use `this` in the setTimeout handler.
     this.handler            = {};
-    this.handler.mouseleave = _.on('mouseleave', (e) => {
+    this.handler.mouseleave = _.on.call(this, 'mouseleave', (e) => {
       if (e.clientY <= 0) {
-        that.trigger();
+        this.trigger();
       }
     }, this.detailOrId, document, true);
     this.lastY              = window.scrollY;
     this.ticking            = false;
-    this.handler.scroll     = _.on('scroll', () => {
-      if (that.lastY > window.scrollY) {
-        if (!that.ticking) {
-          window.requestAnimationFrame(function () {
-            that.ticking = false;
-            that.trigger();
-          });
+    this.handler.scroll     = _.on.call(this, 'scroll', () => {
+      if (this.lastY > window.scrollY) {
+        if (!this.ticking) {
+          const bindFn = () => {
+            this.ticking = false;
+            this.trigger();
+          };
+          window.requestAnimationFrame(bindFn.bind(this));
         }
-        that.ticking = true;
+        this.ticking = true;
       } else {
-        that.ticking = false;
+        this.ticking = false;
       }
-      that.lastY = window.scrollY;
+      this.lastY = window.scrollY;
     }, this.detailOrId, document, true);
     return this;
   };

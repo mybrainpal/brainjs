@@ -25,7 +25,7 @@ const styles = css.locals;
  */
 exports.execute = function (options) {
   if (!_styleLoaded) {
-    _.css.load(css);
+    _.load(css);
     _styleLoaded = true;
   }
   const tooltip = _attachTooltip(options);

@@ -16,15 +16,12 @@ describe('TooltipExecutor', function () {
   this.timeout(2000);
   let div, target, options, id = 0;
   before(() => {
-    div              = document.createElement('div');
-    div.style.margin = '150px';
+    div = _.div({style: {margin: '150px'}});
     document.querySelector('body').appendChild(div);
     Storage.set(Storage.names.IN_MEMORY);
   });
   beforeEach(() => {
-    target = document.createElement('a');
-    target.setAttribute('id', 'huwayej');
-    target.textContent = 'NevoN';
+    target = _.a({id: 'huwayej'}, 'NevoN');
     div.appendChild(target);
     options = {target: '#huwayej', type: 'bloated', htmlContent: 'Huwayej', id: ++id};
     InMemoryStorage.flush();
@@ -94,7 +91,7 @@ describe('TooltipExecutor', function () {
     TooltipExecutor.execute(options);
     const tooltip            = document.querySelector(`div>.${styles.bloated}`),
           content            = tooltip.querySelector(`.${styles.content}`);
-    content.style.transition = 'all 1ms';
+    _.style(content, {transition: 'all 1ms'});
     _.trigger(Master.eventName(TooltipInterface.name),
               {state: TooltipExecutor.State.SHOW, id: id});
     setTimeout(() => {
@@ -108,10 +105,10 @@ describe('TooltipExecutor', function () {
     }, 10);
   });
   it('flow with timer', (done) => {
-    TooltipExecutor.execute(_.deepExtend({timer: 20}, options));
+    TooltipExecutor.execute(_.extend({timer: 20}, options));
     const tooltip            = document.querySelector(`div>.${styles.bloated}`),
           content            = tooltip.querySelector(`.${styles.content}`);
-    content.style.transition = 'all 1ms';
+    _.style(content, {transition: 'all 1ms'});
     _.trigger(Master.eventName(TooltipInterface.name), id);
     setTimeout(() => {
       expect(TooltipExecutor.isVisible(tooltip)).to.be.true;
@@ -125,7 +122,7 @@ describe('TooltipExecutor', function () {
     TooltipExecutor.execute(options);
     const tooltip            = document.querySelector(`div>.${styles.bloated}`),
           content            = tooltip.querySelector(`.${styles.content}`);
-    content.style.transition = 'all 1ms';
+    _.style(content, {transition: 'all 1ms'});
     _.trigger(Master.eventName(TooltipInterface.name), id);
     setTimeout(() => {
       expect(TooltipExecutor.isVisible(tooltip)).to.be.true;
@@ -142,24 +139,25 @@ describe('TooltipExecutor', function () {
     expect(tooltip).to.be.ok;
     TooltipExecutor.detachTooltip(target);
     tooltip = document.querySelector(`div>.${styles.bloated}`);
+    //noinspection JSUnresolvedVariable
     expect(tooltip).to.not.be.ok;
   });
   it('overriding tooltip', () => {
     const msg1 = 'hum', msg2 = 'dodim';
-    TooltipExecutor.execute(_.deepExtend({}, options, {htmlContent: msg1}));
+    TooltipExecutor.execute(_.extend({}, options, {htmlContent: msg1}));
     let tooltip = document.querySelector(`div>.${styles.bloated}`);
     expect(tooltip.querySelector(`.${styles.content}`).textContent).to.equal(msg1);
-    TooltipExecutor.execute(_.deepExtend({}, options, {htmlContent: msg2}));
+    TooltipExecutor.execute(_.extend({}, options, {htmlContent: msg2}));
     tooltip = document.querySelector(`div>.${styles.bloated}`);
     expect(tooltip.querySelector(`.${styles.content}`).textContent).to.equal(msg2);
     expect(document.querySelectorAll(`div>.${styles.bloated}`).length).to.equal(1);
   });
   describe.skip('logging flow', function () {
     it('logging', (done) => {
-      TooltipExecutor.execute(_.deepExtend({}, options, {toLog: true}));
+      TooltipExecutor.execute(_.extend({}, options, {toLog: true}));
       const tooltip            = document.querySelector(`div>.${styles.bloated}`),
             content            = tooltip.querySelector(`.${styles.content}`);
-      content.style.transition = 'all 1ms';
+      _.style(content, {transition: 'all 1ms'});
       _.trigger(Master.eventName(TooltipInterface.name), id);
       setTimeout(() => {
         // For some reason Karma behaviour is unpredictable and this test is flaky - the
@@ -175,10 +173,10 @@ describe('TooltipExecutor', function () {
       }, 100);
     });
     it('logging interrupted', (done) => {
-      TooltipExecutor.execute(_.deepExtend({}, options, {toLog: true}));
+      TooltipExecutor.execute(_.extend({}, options, {toLog: true}));
       const tooltip            = document.querySelector(`div>.${styles.bloated}`),
             content            = tooltip.querySelector(`.${styles.content}`);
-      content.style.transition = 'all 1ms';
+      _.style(content, {transition: 'all 1ms'});
       _.trigger(Master.eventName(TooltipInterface.name), id);
       setTimeout(() => {
         _.trigger(Master.eventName(TooltipInterface.name), id);
@@ -192,14 +190,17 @@ describe('TooltipExecutor', function () {
       }, 100);
     });
     it('log that tooltip is hidden', (done) => {
-      let evilDiv   = document.createElement('div');
-      evilDiv.style = 'position:absolute; top:-100px; left:-100px; width: 10000px; height:' +
-                      ' 10000px; background-color:red; z-index:1000000';
+      let evilDiv = _.div({
+                            style: {
+                              position: 'absolute', top: '-100px', left: '-100px', width: '10000px',
+                              height  : '10000px', 'background-color': 'red', 'z-index': 10000
+                            }
+                          });
       document.querySelector('body').appendChild(evilDiv);
-      TooltipExecutor.execute(_.deepExtend({}, options, {toLog: true}));
+      TooltipExecutor.execute(_.extend({}, options, {toLog: true}));
       const tooltip            = document.querySelector(`div>.${styles.bloated}`),
             content            = tooltip.querySelector(`.${styles.content}`);
-      content.style.transition = 'all 1ms';
+      _.style(content, {transition: 'all 1ms'});
       _.trigger(Master.eventName(TooltipInterface.name), id);
       setTimeout(() => {
         _.trigger(Master.eventName(TooltipInterface.name), id);
@@ -219,7 +220,7 @@ describe('TooltipExecutor', function () {
     });
     it('logging overcomes delay', (done) => {
       Master.execute(TooltipInterface.name,
-                     _.deepExtend({}, options, {toLog: true, type: 'line'}));
+                     _.extend({}, options, {toLog: true, type: 'line'}));
       const tooltip = document.querySelector(`div>.${styles.line}`),
             content = tooltip.querySelector(`.${styles.content}`),
             text    = tooltip.querySelector(`.${styles.text}`);

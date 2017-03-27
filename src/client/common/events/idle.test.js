@@ -73,7 +73,7 @@ describe('IdleEvent', function () {
   it('fireOnce = false', (done) => {
     let count = 0;
     _.on(Factory.eventName(IdleEvent.name()), () => {count++;}, id);
-    idle = new IdleEvent(_.deepExtend({}, options, {fireOnce: false}));
+    idle = new IdleEvent(_.extend({}, options, {fireOnce: false}));
     setTimeout(() => {
       expect(count).to.be.above(1);
       done();
@@ -83,7 +83,7 @@ describe('IdleEvent', function () {
     let first = false, second = false;
     new IdleEvent(options);
     _.on(Factory.eventName(IdleEvent.name()), () => {first = true}, id);
-    new IdleEvent(_.deepExtend({}, options, {detailOrId: ++id}));
+    new IdleEvent(_.extend({}, options, {detailOrId: ++id}));
     _.on(Factory.eventName(IdleEvent.name()), () => {second = true}, id);
     setTimeout(() => {
       expect(first).to.be.true;

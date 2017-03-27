@@ -2,7 +2,7 @@
  * Proudly created by ohad on 10/01/2017.
  */
 
-const _ = exports;
+const _ = module.exports;
 
 /**
  * @param {*} obj
@@ -16,7 +16,7 @@ exports.isNil = function (obj) {
  * @param {Object} obj
  * @returns {boolean}
  */
-exports.isObject = function (obj) {
+_.isObject = function (obj) {
   return !_.isNil(obj) && typeof obj === 'object';
 };
 
@@ -24,7 +24,7 @@ exports.isObject = function (obj) {
  * @param {string} str
  * @returns {boolean}
  */
-exports.isString = function (str) {
+_.isString = function (str) {
   return !_.isNil(str) && typeof str === 'string';
 };
 
@@ -32,7 +32,7 @@ exports.isString = function (str) {
  * @param {number} num
  * @returns {boolean}
  */
-exports.isNumber = function (num) {
+_.isNumber = function (num) {
   return !_.isNil(num) && typeof num === 'number';
 };
 
@@ -40,7 +40,7 @@ exports.isNumber = function (num) {
  * @param {boolean} bool
  * @returns {boolean}
  */
-exports.isBoolean = function (bool) {
+_.isBoolean = function (bool) {
   return !_.isNil(bool) && typeof bool === 'boolean';
 };
 
@@ -48,7 +48,7 @@ exports.isBoolean = function (bool) {
  * @param {function} fn
  * @returns {boolean}
  */
-exports.isFunction = function (fn) {
+_.isFunction = function (fn) {
   return !_.isNil(fn) && typeof fn === 'function';
 };
 
@@ -56,7 +56,7 @@ exports.isFunction = function (fn) {
  * @param {*} obj
  * @returns {boolean} whether obj has no properties of its own.
  */
-exports.isEmpty = function (obj) {
+_.isEmpty = function (obj) {
   // null and undefined are "empty"
   if (_.isNil(obj)) return true;
 
@@ -81,6 +81,18 @@ exports.isEmpty = function (obj) {
 };
 
 /**
+ * @param {*} obj
+ * @param {...Object} type
+ * @returns {boolean} whether obj is any of the given types.
+ */
+_.is = function (obj, type) {
+  for (let i = 1; i < arguments.length; i++) {
+    if (obj instanceof arguments[i]) return true;
+  }
+  return false;
+};
+
+/**
  * @param {Object} obj
  * @param {Array.<string>|string} props - a property name, or array of such.
  * @returns {*} the value of obj[props] or obj[props[0]][props[1]][...]
@@ -89,7 +101,7 @@ exports.isEmpty = function (obj) {
  * get(obj, ['a']) == {b: {c: 1}}
  * get(obj, ['a', 'b', 'c']) == 1;
  */
-exports.get = function (obj, props) {
+_.get = function (obj, props) {
   let val, i;
   if (typeof obj !== 'object') {
     throw new Error('Prototype:set - obj is not an object.');
@@ -129,7 +141,7 @@ exports.get = function (obj, props) {
  * set(obj, ['a', 'b', 'c'], 2) => obj = {a: {b: {c: 2}}}
  * set(obj, ['a', 'b', 'd'], 2) => obj = {a: {b: {c: 1, d: 2}}}
  */
-exports.set = function (obj, props, val) {
+_.set = function (obj, props, val) {
   let i, prop;
   if (typeof obj !== 'object') {
     throw new Error('Prototype:set - obj is not an object.');
@@ -165,7 +177,7 @@ exports.set = function (obj, props, val) {
  * @param prop
  * @returns {boolean} whether obj[prop] is not nil
  */
-exports.has = function (obj, prop) {
+_.has = function (obj, prop) {
   return !_.isNil(obj[prop]);
 };
 
@@ -175,7 +187,7 @@ exports.has = function (obj, prop) {
  * @private
  */
 function _isSpecificValue(val) {
-  return val instanceof Date || val instanceof RegExp || val instanceof Node;
+  return _.is(val, Date, RegExp, Node);
 }
 
 /**
@@ -184,11 +196,11 @@ function _isSpecificValue(val) {
  * @private
  */
 function _cloneSpecificValue(val) {
-  if (val instanceof Date) {
+  if (_.is(val, Date)) {
     return new Date(val.getTime());
-  } else if (val instanceof RegExp) {
+  } else if (_.is(val, RegExp)) {
     return new RegExp(val);
-  } else if (val instanceof Node) {
+  } else if (_.is(val, Node)) {
     return val;
   } else {
     throw new Error('Prototype: Unexpected type');
@@ -208,7 +220,7 @@ function _deepCloneArray(arr) {
       } else if (_isSpecificValue(item)) {
         clone[index] = _cloneSpecificValue(item);
       } else {
-        clone[index] = _.deepExtend({}, item);
+        clone[index] = _.extend({}, item);
       }
     } else {
       clone[index] = item;
@@ -226,7 +238,7 @@ function _deepCloneArray(arr) {
  * object as first argument, like this:
  *   deepExtend({}, yourObj_1, [yourObj_N]);
  */
-exports.deepExtend = function (/*obj_1, [obj_2], [obj_N]*/) {
+_.extend = function (/*obj_1, [obj_2], [obj_N]*/) {
   if (arguments.length < 1 || typeof arguments[0] !== 'object') return false;
   if (arguments.length < 2) return arguments[0];
 
@@ -262,10 +274,10 @@ exports.deepExtend = function (/*obj_1, [obj_2], [obj_N]*/) {
         target[key] = _cloneSpecificValue(val);
         // overwrite by new value if source isn't object or array
       } else if (typeof src !== 'object' || src === null || Array.isArray(src)) {
-        target[key] = _.deepExtend({}, val);
+        target[key] = _.extend({}, val);
         // source value and new value is objects both, extending...
       } else {
-        target[key] = _.deepExtend(src, val);
+        target[key] = _.extend(src, val);
       }
     });
   });
@@ -278,7 +290,33 @@ exports.deepExtend = function (/*obj_1, [obj_2], [obj_N]*/) {
  * @returns {Array} returns val or an array with val as its first value, dependent if val is an
  * array.
  */
-exports.arrify = function (val) {
+_.arrify = function (val) {
   if (_.isNil(val)) return [];
   return Array.isArray(val) ? val : [val];
+};
+
+/**
+ * Modifies the setTimeout method, so that `this` context within it behaves intuitively, i.e. it
+ * equals the one used when initializing the timer.
+ * @param {*} callback - to invoke after `delay` milliseconds.
+ * @param {number} [delay] - in milliseconds.
+ * @returns {Object|number|NodeJS.Timer} as returned from setTimeout.
+ */
+_.delay = function (callback, delay) {
+  const that = this,
+        args = Array.prototype.slice.call(arguments, 2);
+  return setTimeout(_.isFunction(callback) ? () => {callback.apply(that, args)} : callback, delay);
+};
+
+/**
+ * Modifies the setInterval method, so that `this` context within it behaves intuitively, i.e. it
+ * equals the one used when initializing the interval.
+ * @param {*} callback - to invoke every `time` milliseconds.
+ * @param {number} time - in milliseconds.
+ * @returns {Object|number|NodeJS.Timer} as returned from setInterval.
+ */
+_.interval = function (callback, time) {
+  const that = this,
+        args = Array.prototype.slice.call(arguments, 2);
+  return setInterval(_.isFunction(callback) ? () => {callback.apply(that, args)} : callback, time);
 };

@@ -20,7 +20,7 @@ const styles    = css.locals;
  */
 exports.execute = function (options) {
   if (!_styleLoaded) {
-    _.css.load(css);
+    _.load(css);
     _styleLoaded = true;
   }
   let container = document.querySelector(options.container);
@@ -83,16 +83,15 @@ function _createGallery(container, options) {
       sources.push(newSrcs[j].cloneNode(true));
     }
   }
-  component = document.createElement('div');
-  component.classList.add(styles.component, styles.fullwidth,
-                          styles[options.animationClass || 'fxSoftScale']);
-  component.setAttribute('id', Interface.idPrefix + (options.id ? `-${options.id}` : ''));
-  ul = document.createElement('ul');
-  ul.classList.add(styles.itemwrap);
+  component = _.div({
+                      class: [styles.component, styles.fullwidth,
+                              styles[options.animationClass || 'fxSoftScale']],
+                      id   : Interface.idPrefix + (options.id ? `-${options.id}` : '')
+                    });
+  ul        = _.ul({class: styles.itemwrap});
   for (i = 0; i < sources.length; i++) {
     // TODO(ohad): support multiple elements per item.
-    let li = document.createElement('li');
-    li.appendChild(sources[i]);
+    let li = _.li(sources[i]);
     if (sources[i].nodeName === 'IMG') {
       const containerRatio = container.clientWidth / container.clientHeight;
       const imgRatio       = sources[i].naturalWidth / sources[i].naturalHeight;
@@ -209,7 +208,7 @@ const _animationCountAttribute = 'data-brainpal-animation-count';
  * @private
  */
 const _animationClasses        =
-        ['fxSoftScale', 'fxPressAway', 'fxSideSwing', 'fxFortuneWheel', 'fxPushReveal',
-         'fxSnapIn', 'fxSoftPulse',
-         'fxLetMeIn', 'fxStickIt', 'fxArchiveMe', 'fxSlideBehind', 'fxEarthquake',
-         'fxCliffDiving'];
+      ['fxSoftScale', 'fxPressAway', 'fxSideSwing', 'fxFortuneWheel', 'fxPushReveal',
+       'fxSnapIn', 'fxSoftPulse',
+       'fxLetMeIn', 'fxStickIt', 'fxArchiveMe', 'fxSlideBehind', 'fxEarthquake',
+       'fxCliffDiving'];

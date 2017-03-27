@@ -11,7 +11,7 @@ let expect       = require('chai').expect,
 describe('Demographics', function () {
   let tmpAgent;
   before(() => {
-    tmpAgent             = _.deepExtend({}, Client.agent);
+    tmpAgent             = _.extend({}, Client.agent);
     Client.agent.os      = 'BrainOs'; // we are going to make it. period.
     Client.agent.browser = 'BrainMoz';
   });

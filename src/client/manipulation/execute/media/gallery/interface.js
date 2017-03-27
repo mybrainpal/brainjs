@@ -28,7 +28,7 @@ exports.preconditions = function (options) {};
 
 /**
  * Returns the event name that's fired once the gallery had been created.
- * Note the event is dispatched from document (i.e. from default element).
+ * Note the event should be dispatched from document (also from default element).
  * @returns {string}
  */
 exports.readyEvent = function () {

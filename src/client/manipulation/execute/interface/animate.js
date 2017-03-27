@@ -19,7 +19,7 @@ Master.register(exports);
 exports.execute = function (options) {
   const target = document.querySelector(options.target);
   require.ensure('animate.css', function (require) {
-    if (!_loaded) _.css.load(require('animate.css'));
+    if (!_loaded) _.load(require('animate.css'));
     target.classList.add(options.animationName, 'animated');
     setTimeout(() => {
       if (getComputedStyle(target).animationName !== options.animationName) {

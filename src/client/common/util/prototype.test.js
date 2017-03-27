@@ -44,6 +44,24 @@ describe('Prototype', () => {
       expect(_.isEmpty(new ContainerClass())).to.be.false;
     });
   });
+  describe('is', () => {
+    it('is type', () => {
+      function A() {}
+
+      function B() {}
+
+      function C() {}
+
+      expect(_.is(1, Object)).to.be.false;
+      expect(_.is({}, A)).to.be.false;
+      expect(_.is(new C(), A, B)).to.be.false;
+
+      expect(_.is({}, Object)).to.be.true;
+      expect(_.is(new A(), Object)).to.be.true;
+      expect(_.is(new A(), A)).to.be.true;
+      expect(_.is(new A(), B, A)).to.be.true;
+    });
+  });
   describe('base', () => {
     it('isString', () => {
       expect(_.isString('')).to.be.true;
@@ -153,7 +171,7 @@ describe('Prototype', () => {
     it('can extend on 1 level', () => {
       let a = {hello: 1};
       let b = {world: 2};
-      _.deepExtend(a, b);
+      _.extend(a, b);
       expect(a).to.deep.equal({
                                 hello: 1,
                                 world: 2
@@ -163,7 +181,7 @@ describe('Prototype', () => {
     it('can extend on 2 levels', () => {
       let a = {person: {name: 'John'}};
       let b = {person: {age: 30}};
-      _.deepExtend(a, b);
+      _.extend(a, b);
       expect(a).to.deep.equal({
                                 person: {name: 'John', age: 30}
                               });
@@ -171,26 +189,26 @@ describe('Prototype', () => {
 
     it('Date objects', () => {
       let a = {d: new Date()};
-      let b = _.deepExtend({}, a);
+      let b = _.extend({}, a);
       expect(b.d).to.be.instanceOf(Date);
     });
 
     it('Date object is cloned', () => {
       let a = {d: new Date()};
-      let b = _.deepExtend({}, a);
+      let b = _.extend({}, a);
       b.d.setTime((new Date()).getTime() + 100000);
       expect(b.d.getTime()).to.not.deep.equal(a.d.getTime());
     });
 
     it('RegExp objects', () => {
       let a = {d: new RegExp()};
-      let b = _.deepExtend({}, a);
+      let b = _.extend({}, a);
       expect(b.d).to.be.instanceOf(RegExp);
     });
 
     it('RegExp object is cloned', () => {
       let a = {d: new RegExp('b', 'g')};
-      let b = _.deepExtend({}, a);
+      let b = _.extend({}, a);
       b.d.test('abc');
       expect(b.d.lastIndex).to.not.deep.equal(a.d.lastIndex);
     });
@@ -199,7 +217,7 @@ describe('Prototype', () => {
       let a = {a: [1]};
       let b = {a: [2]};
       let c = {c: 3};
-      _.deepExtend({}, a, b, c);
+      _.extend({}, a, b, c);
       expect(a).to.deep.equal({a: [1]});
       expect(b).to.deep.equal({a: [2]});
       expect(c).to.deep.equal({c: 3});
@@ -234,7 +252,7 @@ describe('Prototype', () => {
         j: [3, 4]
       };
 
-      _.deepExtend(obj1, obj2);
+      _.extend(obj1, obj2);
       expect(obj1).to.deep.equal({
                                    a: 1,
                                    b: 3,
@@ -256,7 +274,7 @@ describe('Prototype', () => {
     });
 
     it('clone arrays instead of extend', () => {
-      expect(_.deepExtend({a: [1, 2, 3]}, {a: [2, 3]})).to.deep.equal({a: [2, 3]});
+      expect(_.extend({a: [1, 2, 3]}, {a: [2, 3]})).to.deep.equal({a: [2, 3]});
     });
 
     it('checking keys for hasOwnPrototype', () => {
@@ -266,12 +284,12 @@ describe('Prototype', () => {
       };
       A.prototype.z = 3;
       let foo       = new A();
-      expect(_.deepExtend({x: 123}, foo)).to.deep.equal({
+      expect(_.extend({x: 123}, foo)).to.deep.equal({
                                                           x: 1,
                                                           y: 2
                                                         });
       foo.z = 5;
-      expect(_.deepExtend({x: 123}, foo, {y: 22})).to.deep.equal({
+      expect(_.extend({x: 123}, foo, {y: 22})).to.deep.equal({
                                                                    x: 1,
                                                                    y: 22,
                                                                    z: 5
@@ -281,7 +299,7 @@ describe('Prototype', () => {
     it('clone functions', () => {
       let called = false;
       let obj    = {fn: () => {called = true}};
-      let target = _.deepExtend({}, obj);
+      let target = _.extend({}, obj);
       target.fn();
       expect(called).to.be.true;
     });
@@ -298,5 +316,46 @@ describe('Prototype', () => {
       expect(_.arrify([1])).to.deep.equal([1]);
       expect(_.arrify([[1], 2])).to.deep.equal([[1], 2]);
     })
+  });
+  describe('timeout & interval', function () {
+    this.timeout(100);
+    it('delay works', (done) => {
+      _.delay(() => {done()});
+    });
+    it('delay preserves this context ', (done) => {
+      const a = [1];
+      a.fn    = function () {
+        if (this[0] === 1) {
+          done();
+        } else {
+          done('this is shit!');
+        }
+      };
+      _.delay.call(a, a.fn);
+    });
+    it('interval works', (done) => {
+      let count = 0;
+      _.interval(() => {count++}, 5);
+      setTimeout(() => {
+        expect(count).to.be.at.least(2);
+        done();
+      }, 20);
+    });
+    it('interval preserves this context ', (done) => {
+      let count = 0;
+      const a   = [1];
+      a.fn      = function () {
+        if (this[0] === 1) {
+          count++;
+        } else {
+          done('this is shit!');
+        }
+      };
+      _.interval.call(a, () => {a.fn()}, 5);
+      setTimeout(() => {
+        expect(count).to.be.at.least(2);
+        done();
+      }, 20);
+    });
   });
 });

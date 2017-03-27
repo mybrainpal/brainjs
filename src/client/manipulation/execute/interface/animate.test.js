@@ -2,6 +2,7 @@
  * Proudly created by ohad on 10/03/2017.
  */
 let expect           = require('chai').expect,
+    _                = require('../../../common/util/wrapper'),
     BaseError        = require('../../../common/log/base.error'),
     AnimateInterface = require('./animate');
 
@@ -10,12 +11,10 @@ describe.skip('AnimateInterface', function () {
   let div, id = 0, divId, animationName;
   this.timeout(5000);
   before(() => {
-    div = document.createElement('div');
+    divId = 'lorenz-buffel';
+    div   = _.div({id: divId, style: {width: '100px', height: '100px', 'background-color': 'red'}});
     document.querySelector('body').appendChild(div);
-    div.style     = 'width:100px; height:100px; background-color:red;';
-    divId         = 'lorenz-buffel';
     animationName = 'bounceIn';
-    div.setAttribute('id', divId);
   });
   beforeEach(() => {
     id++;

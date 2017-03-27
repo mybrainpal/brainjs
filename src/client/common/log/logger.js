@@ -26,7 +26,7 @@ exports.log = function (level, message) {
   if (_.isString(message)) {
     subject.message = message;
   } else {
-    _.deepExtend(subject, message);
+    _.extend(subject, message);
   }
   Storage.save(subject);
 };
