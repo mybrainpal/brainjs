@@ -1,16 +1,18 @@
 /**
  * Proudly created by ohad on 20/12/2016.
  */
-let $             = require('./../common/util/dom'),
-    expect        = require('chai').expect,
-    chai          = require('chai'),
-    Manipulator   = require('./manipulator'),
-    StyleExecutor = require('./execute/dom/style'),
-    Demographics  = require('./experiment/demographics'),
-    Experiment    = require('./experiment/experiment'),
-    Storage       = require('../common/storage/storage'),
-    InMemory      = require('../common/storage/in-memory.storage'),
-    Const         = require('../../common/const');
+const expect        = require('chai').expect,
+      chai          = require('chai'),
+      Manipulator   = require('./manipulator'),
+      _             = require('../common/util/wrapper'),
+      $             = require('../common/util/dom'),
+      BaseError     = require('../common/log/base.error'),
+      StyleExecutor = require('./execute/dom/style'),
+      Demographics  = require('./experiment/demographics'),
+      Experiment    = require('./experiment/experiment'),
+      Storage       = require('../common/storage/storage'),
+      InMemory      = require('../common/storage/in-memory.storage'),
+      Const         = require('../../common/const');
 
 chai.use(require('chai-spies'));
 
@@ -24,9 +26,10 @@ describe('Manipulator', function () {
     InMemory.flush();
     div = $.div({id: 'branson'},
                 span = $.span('Screw it'),
-                $.a('let\'s do it!'));
+                $.a('let\'s'),
+                $.p('do it!'));
     $('body').appendChild(div);
-    collect               = {selector: '#branson>a', event: 'click'};
+    collect               = {selector: '#branson>a', event: 'click', state: 'CONVERSION'};
     nonClientDemographics = [{
       name: Demographics.PROPERTIES.MODULO.name, moduloIds: [], moduloOf: 1
     }];
@@ -113,8 +116,40 @@ describe('Manipulator', function () {
       expect(msg.experimentId).to.eq(id);
       expect(msg.experimentGroupId).to.eq(clientGroup.id);
       expect(msg.event).to.eq(collect.event);
+      expect(msg.state).to.eq(collect.state);
       expect(msg.selector).to.eq(collect.selector);
       done();
+    });
+  });
+  it('experiment with multiple collect', (done) => {
+    Manipulator.experiment(new Experiment({id: id, groups: [clientGroup]}),
+                           [collect, {selector: '#branson>p', event: collect.event}]);
+    // Participation in experiment.
+    expect(_get(0).experimentId).to.eq(id);
+    expect(_get(0).event).to.eq(Const.EVENTS.PARTICIPATE);
+    // Participation in group.
+    expect(_get(1).experimentGroupId).to.eq(clientGroup.id);
+    expect(_get(1).event).to.eq(Const.EVENTS.PARTICIPATE);
+    // Manipulations run.
+    expect(getComputedStyle(span).marginTop).to.eq('10px');
+    // Triggers collection
+    $.trigger(collect.event, id, '#branson>a');
+    setTimeout(() => {
+      expect(_get(2).selector).to.eq(collect.selector);
+      expect(_get(2).state).to.eq(collect.state);
+      expect(_get(2).experimentId).to.eq(id);
+      expect(_get(2).experimentGroupId).to.eq(clientGroup.id);
+      expect(_get(2).event).to.eq(collect.event);
+      $.trigger(collect.event, id, '#branson>p');
+      setTimeout(() => {
+        expect(_countEvents()).to.eq(4);
+        expect(_get(3).experimentId).to.eq(id);
+        expect(_get(3).experimentGroupId).to.eq(clientGroup.id);
+        expect(_get(3).event).to.eq('click');
+        expect(_get(3).selector).to.eq('#branson>p');
+        expect(_get(3).state).to.not.be.ok;
+        done();
+      });
     });
   });
   it('experiment without group participation', () => {
@@ -153,6 +188,19 @@ describe('Manipulator', function () {
       expect(getComputedStyle(span).marginLeft).to.eq('10px');
       done();
     });
+  });
+  it('collect cannot container experiment data', () => {
+    const experiment = new Experiment({id: id, groups: [nonClientGroup]});
+    expect(() => {
+      Manipulator.experiment(experiment, _.extend({experiment: {id: experiment.id}}))
+    }).to.throw(BaseError);
+    expect(() => {
+      Manipulator.experiment(experiment, _.extend({experimentGroup: {id: nonClientGroup.id}}))
+    }).to.throw(BaseError);
+    expect(() => {
+      Manipulator.experiment(experiment,
+                             [collect, _.extend({experimentGroup: {id: nonClientGroup.id}})])
+    }).to.throw(BaseError);
   });
 });
 

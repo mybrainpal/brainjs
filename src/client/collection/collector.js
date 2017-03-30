@@ -16,6 +16,8 @@ let Storage   = require('../common/storage/storage'),
  * @param {Object} options - can be an array.
  *  @property {string} event - to listen.
  *  @property {string} [selector] - of collection of elements to listen for event.
+ *  @property {string|number} [state] - of session that is changed following the event (i.e.
+ *  conversion).
  *  @property {boolean} [once = true] - whether to collect data on this anchor more than once.
  *  @property {boolean} [listen = true] - whether to listen to a DOM event, or log the event as is.
  *  @property {Experiment} [experiment] - that encompasses this data collection.
@@ -27,6 +29,9 @@ exports.collect = function (options) {
   }
   if (!_.isString(options.event) || !options.event) {
     throw new BaseError('Collector: event must be a non-empty string.');
+  }
+  if (!_.isNil(options.state) && !_.isString(options.state) && !_.isNumber(options.state)) {
+    throw new BaseError('Collector: state must be nil, a string or a number.');
   }
   if (_.isNil(options.listen) || options.listen) {
     if (!_.isNil(options.selector) && !_.isString(options.selector)) {
@@ -72,6 +77,9 @@ function _createMessage(options) {
   }
   if (options.selector) {
     emitted.selector = options.selector;
+  }
+  if (options.state) {
+    emitted.state = options.state;
   }
   if (options.event) {
     emitted.event = options.event;

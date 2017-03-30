@@ -49,6 +49,12 @@ describe('Collector', function () {
     Collector.collect({event: 'dual-personality', experiment: experiment, listen: false});
     expect(_get(0).experimentId).to.eq(1);
   });
+  it('save a state', () => {
+    Collector.collect({event: 'punch-self-in-nose', state: 1, listen: false});
+    Collector.collect({event: 'punch-self-in-nose', state: 'true', listen: false});
+    expect(_get(0).state).to.eq(1);
+    expect(_get(1).state).to.eq('true');
+  });
   it('save a group ID', () => {
     Collector.collect(
       {event: 'dual-personality', experimentGroup: experiment.groups[0], listen: false});
@@ -110,6 +116,9 @@ describe('Collector', function () {
   });
   it('illegal selector throws', () => {
     expect(() => {Collector.collect({event: 'a', listen: true, selector: 1})}).to.throw(BaseError);
+  });
+  it('illegal state throws', () => {
+    expect(() => {Collector.collect({event: 'a', state: {}})}).to.throw(BaseError);
   });
 });
 

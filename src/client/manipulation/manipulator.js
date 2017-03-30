@@ -13,7 +13,8 @@ let _         = require('../common/util/wrapper'),
  * Runs an experiment, or A/B test, in order to find out an improved versions of the customer's
  * web page.
  * @param {Experiment} experiment - describes way to manipulate the dom per various group of users.
- * @param {Object} [collect] - options for {@link Collector#collect}, should NOT contain
+ * @param {Object|Array<Object>} [collect] - options for {@link Collector#collect}, should NOT
+ * contain
  * experiment or experiment group.
  */
 exports.experiment = function (experiment, collect) {
@@ -21,11 +22,18 @@ exports.experiment = function (experiment, collect) {
   // Logs participation or lack thereof in the experiment.
   Collector.collect({event: Const.EVENTS.PARTICIPATE, listen: false, experiment: experiment});
 
-  if (collect && (collect.experiment || collect.experimentGroup)) {
-    throw new BaseError('Manipulator: collect cannot contain experiment or experiment group.');
+  collect = _.arrify(collect);
+  if (!_.isEmpty(collect)) {
+    collect.forEach((col) => {
+      if (col.experiment || col.experimentGroup) {
+        throw new BaseError('Manipulator: collect cannot contain experiment or experiment group.');
+      }
+    })
   }
   if (!experiment.clientGroups.length && collect) {
-    Collector.collect(_.extend({experiment: experiment}, collect));
+    collect.forEach((col) => {
+      Collector.collect(_.extend({experiment: experiment}, col));
+    });
   }
   for (let i = 0; i < experiment.clientGroups.length; i++) {
     // Logs participation in the group.
@@ -33,9 +41,11 @@ exports.experiment = function (experiment, collect) {
                         event          : Const.EVENTS.PARTICIPATE, listen: false,
                         experimentGroup: experiment.clientGroups[i], experiment: experiment
                       });
-    if (collect) {
-      Collector.collect(_.extend(
-        {experiment: experiment, experimentGroup: experiment.clientGroups[i]}, collect));
+    if (!_.isEmpty(collect)) {
+      collect.forEach((col) => {
+        Collector.collect(_.extend(
+          {experiment: experiment, experimentGroup: experiment.clientGroups[i]}, col));
+      });
     }
     for (let j = 0; j < experiment.clientGroups[i].executors.length; j++) {
       Executor.execute(experiment.clientGroups[i].executors[j].name,
