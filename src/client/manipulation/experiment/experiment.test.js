@@ -11,10 +11,11 @@ describe('Experiment', function () {
   let clientGroup, nonClientGroup, experiment, options;
   before(() => {
     clientGroup    = {
+      id          : 1,
       demographics: [{name: Demographics.PROPERTIES.MODULO.name, moduloIds: [0], moduloOf: 1}]
     };
     nonClientGroup = {
-      demographics: [{name: Demographics.PROPERTIES.MODULO.name, moduloIds: [], moduloOf: 1}]
+      id: 2, demographics: [{name: Demographics.PROPERTIES.MODULO.name, moduloIds: [], moduloOf: 1}]
     };
     options        = {id: 1, groups: [clientGroup, nonClientGroup]};
   });

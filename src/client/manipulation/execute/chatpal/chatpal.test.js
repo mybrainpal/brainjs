@@ -3,6 +3,7 @@
  */
 const expect     = require('chai').expect,
       _          = require('../../../common/util/wrapper'),
+      $          = require('../../../common/util/dom'),
       BaseError  = require('../../../common/log/base.error'),
       Interface  = require('./interface'),
       styles     = require('./chatpal.scss').locals,
@@ -16,7 +17,7 @@ describe('ChatPal', function () {
     for (let i = 0; i < 500; i++) longText += 'a';
     _.delay(() => {});
     origDelay = _.delay;
-    _.load(testStyles);
+    $.load(testStyles);
     _.delay = function (cb) {
       origDelay.call(this, cb);
     }
@@ -58,11 +59,11 @@ describe('ChatPal', function () {
     chatpal.open();
     setTimeout(() => {
       expect(chatpal.state).to.eq(Interface.state.OPEN);
-      expect(_.isVisible(chatpal.chatBox)).to.be.true;
+      expect($.isVisible(chatpal.chatBox)).to.be.true;
       chatpal.close();
       setTimeout(() => {
         expect(chatpal.state).to.eq(Interface.state.CLOSE);
-        expect(_.isVisible(chatpal.chatBox)).to.be.false;
+        expect($.isVisible(chatpal.chatBox)).to.be.false;
         done();
       }, 100);
     }, 100);
@@ -71,24 +72,24 @@ describe('ChatPal', function () {
     chatpal.toggle();
     setTimeout(() => {
       expect(chatpal.state).to.eq(Interface.state.OPEN);
-      expect(_.isVisible(chatpal.chatBox)).to.be.true;
+      expect($.isVisible(chatpal.chatBox)).to.be.true;
       chatpal.toggle();
       setTimeout(() => {
         expect(chatpal.state).to.eq(Interface.state.CLOSE);
-        expect(_.isVisible(chatpal.chatBox)).to.be.false;
+        expect($.isVisible(chatpal.chatBox)).to.be.false;
         done();
       }, 100);
     }, 100);
   });
   it('open & close with buttons', (done) => {
-    _.trigger('click', id, chatpal.buttons);
+    $.trigger('click', id, chatpal.buttons);
     setTimeout(() => {
       expect(chatpal.state).to.eq(Interface.state.OPEN);
-      expect(_.isVisible(chatpal.chatBox)).to.be.true;
-      _.trigger('click', id, chatpal.buttons);
+      expect($.isVisible(chatpal.chatBox)).to.be.true;
+      $.trigger('click', id, chatpal.buttons);
       setTimeout(() => {
         expect(chatpal.state).to.eq(Interface.state.CLOSE);
-        expect(_.isVisible(chatpal.chatBox)).to.be.false;
+        expect($.isVisible(chatpal.chatBox)).to.be.false;
         done();
       }, 100);
     }, 100);
@@ -96,10 +97,10 @@ describe('ChatPal', function () {
   it('close with cross', (done) => {
     chatpal.open();
     setTimeout(() => {
-      _.trigger('click', id, chatpal.chatBox.querySelector(`.${styles.cross}`));
+      $.trigger('click', id, chatpal.chatBox.querySelector(`.${styles.cross}`));
       setTimeout(() => {
         expect(chatpal.state).to.eq(Interface.state.CLOSE);
-        expect(_.isVisible(chatpal.chatBox)).to.be.false;
+        expect($.isVisible(chatpal.chatBox)).to.be.false;
         done();
       }, 100);
     }, 100);
@@ -107,11 +108,11 @@ describe('ChatPal', function () {
   it('send message by clicking send', (done) => {
     chatpal.open();
     chatpal.input.value = 'que tal chica';
-    _.trigger('click', id, chatpal.chatBox.querySelector(`.${styles.send} button`));
+    $.trigger('click', id, chatpal.chatBox.querySelector(`.${styles.send} button`));
     setTimeout(() => {
       const newMessage = chatpal.messages.children[0];
       expect(newMessage.querySelector(`.${styles.bubble}`).textContent).to.eq('que tal chica');
-      expect(_.isVisible(newMessage)).to.be.true;
+      expect($.isVisible(newMessage)).to.be.true;
       done();
     }, 100);
   });
@@ -120,10 +121,10 @@ describe('ChatPal', function () {
     expect(chatpal.messages.scrollTop).to.eq(0);
 
     chatpal.input.value = longText;
-    _.trigger('click', id, chatpal.chatBox.querySelector(`.${styles.send} button`));
+    $.trigger('click', id, chatpal.chatBox.querySelector(`.${styles.send} button`));
     setTimeout(() => {
       const newMessage = chatpal.messages.children[0].querySelector(`.${styles.bubble}`);
-      expect(_.isVisible(newMessage)).to.be.true;
+      expect($.isVisible(newMessage)).to.be.true;
       // verifies word wrapping
       expect(newMessage.clientHeight).to.be.at.least(100);
       // verifies scroll down
@@ -139,19 +140,19 @@ describe('ChatPal', function () {
     setTimeout(() => {
       expect(chatpal.messages.children.length).to.be.at.least(1);
       const newMessage = chatpal.messages.children[0].querySelector(`.${styles.bubble}`);
-      expect(_.isVisible(newMessage)).to.be.true;
+      expect($.isVisible(newMessage)).to.be.true;
       done();
     }, 100);
   });
   it('receive message', (done) => {
     chatpal.open();
     let typed = false;
-    _.on(Interface.typingEvent, () => {typed = true}, id);
+    $.on(Interface.typingEvent, () => {typed = true}, id);
     setTimeout(() => {
       chatpal.receiveMessage('it\'s britney bitch');
       setTimeout(() => {
         const newMessage = chatpal.messages.children[0].querySelector(`.${styles.bubble}`);
-        expect(_.isVisible(newMessage)).to.be.true;
+        expect($.isVisible(newMessage)).to.be.true;
         expect(newMessage.textContent).to.eq('it\'s britney bitch');
         expect(typed).to.be.true;
         done();
@@ -171,7 +172,7 @@ describe('ChatPal', function () {
   });
   it('do not type when chat box is closed', (done) => {
     let typed = false;
-    _.on(Interface.typingEvent, () => {typed = true}, id);
+    $.on(Interface.typingEvent, () => {typed = true}, id);
     chatpal.receiveMessage('instant');
     setTimeout(() => {
       expect(typed).to.be.false;
@@ -200,7 +201,7 @@ describe('ChatPal', function () {
     chatpal.receiveMessage('anyone home?');
     setTimeout(() => {
       expect(chatpal.notification.textContent).to.eq('1');
-      expect(_.isVisible(chatpal.notification)).to.be.true;
+      expect($.isVisible(chatpal.notification)).to.be.true;
       done();
     }, 100);
   });
@@ -229,7 +230,7 @@ describe('ChatPal', function () {
       setTimeout(() => {
         //noinspection BadExpressionStatementJS
         expect(chatpal.notification.parentNode).to.not.be.ok;
-        expect(_.isVisible(chatpal.notification)).to.be.false;
+        expect($.isVisible(chatpal.notification)).to.be.false;
         expect(chatpal.notification.textContent).to.eq('0');
         done();
       }, 100);

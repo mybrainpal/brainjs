@@ -4,6 +4,7 @@
 let expect       = require('chai').expect,
     chai         = require('chai'),
     _            = require('../../common/util/wrapper'),
+    $            = require('../../common/util/dom'),
     BaseError    = require('../../common/log/base.error'),
     Client       = require('../../common/client'),
     Demographics = require('./demographics');

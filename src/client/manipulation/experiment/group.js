@@ -1,8 +1,8 @@
 /**
  * Proudly created by ohad on 05/12/2016.
  */
-const _         = require('../../common/util/wrapper'),
-      BaseError = require('../../common/log/base.error'),
+const _            = require('../../common/util/wrapper'),
+      BaseError    = require('../../common/log/base.error'),
       Demographics = require('./demographics');
 
 /**
@@ -11,7 +11,9 @@ const _         = require('../../common/util/wrapper'),
 class Group {
   /**
    * @param options
-   *  @property {string|number} experimentId - should not be supplied by a customer configuration.
+   *  @property {number|string} id -
+   *  @property {string|number} experimentId - should be supplied by the constructor invocation
+   *  in Experiment.
    *  @property {string} [label]
    *  @property {Array.<Object>|Object} [demographics] - which part of the population should this
    *  group
@@ -23,11 +25,11 @@ class Group {
    */
   constructor(options = {}) {
     if (!_.isString(options.id) && !_.isNumber(options.id)) {
-      throw new BaseError('Group: id must be number or a string');
+      throw new BaseError('Group: id must be number or a string.');
     }
     this.id = options.id;
     if (_.isNil(options.experimentId)) {
-      throw new BaseError('Group: experimentId cannot be missing');
+      throw new BaseError('Group: experimentId cannot be missing.');
     }
     this.experimentId = options.experimentId;
     if (!_.isNil(options.label)) {

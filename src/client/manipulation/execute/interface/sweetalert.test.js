@@ -1,7 +1,7 @@
 /**
  * Proudly created by ohad on 23/12/2016.
  */
-let _            = require('./../../../common/util/wrapper'),
+let $            = require('./../../../common/util/dom'),
     BaseError    = require('../../../common/log/base.error'),
     expect       = require('chai').expect,
     SwalExecutor = require('./sweetalert');
@@ -23,7 +23,7 @@ describe('SwalExecutor', function () {
     setTimeout(() => {
       expect(document.querySelector('.swal2-container')).to.be.ok;
       expect(document.querySelector('.swal2-content').textContent).to.equal(msg);
-      _.trigger('click', {}, '.swal2-container');
+      $.trigger('click', {}, '.swal2-container');
       setTimeout(() => {
         expect(document.querySelector('.swal2-hide')).to.be.ok;
         done();

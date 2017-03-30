@@ -162,7 +162,7 @@ describe('DomUtils', function () {
       zIndex2.style.zIndex          = '2';
     });
     after(() => {
-      // div.parentNode.removeChild(div);
+      div.parentNode.removeChild(div);
     });
     it('isVisible = true', () => {
       expect($.isVisible(div)).to.be.true;

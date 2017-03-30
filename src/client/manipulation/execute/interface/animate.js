@@ -2,6 +2,7 @@
  * Proudly created by ohad on 10/03/2017.
  */
 const _         = require('../../../common/util/wrapper'),
+      $         = require('../../../common/util/dom'),
       Logger    = require('../../../common/log/logger'),
       Level     = require('../../../common/log/logger').Level,
       BaseError = require('../../../common/log/base.error.js'),
@@ -19,7 +20,7 @@ Master.register(exports);
 exports.execute = function (options) {
   const target = document.querySelector(options.target);
   require.ensure('animate.css', function (require) {
-    if (!_loaded) _.load(require('animate.css'));
+    if (!_loaded) $.load(require('animate.css'));
     target.classList.add(options.animationName, 'animated');
     setTimeout(() => {
       if (getComputedStyle(target).animationName !== options.animationName) {
@@ -28,7 +29,7 @@ exports.execute = function (options) {
         Logger.log(Level.WARNING, `AnimateInterface: ${options.target} was animated, woo-hoo!`);
       }
     }, 10);
-    _.on('animationend', () => {
+    $.on('animationend', () => {
       target.classList.remove(options.animationName, 'animated');
     }, options.id, target);
   })

@@ -4,6 +4,7 @@
  * An event that's fired after the user had been idle.
  */
 const _         = require('../util/wrapper'),
+      $         = require('../util/dom'),
       Logger    = require('../log/logger'),
       Level     = require('../log/logger').Level,
       BaseError = require('../log/base.error'),
@@ -63,7 +64,7 @@ class IdleEvent {
     this.start();
     for (let i = 0; i < _activeEvents.length; i++) {
       // useCapture is used so that every event will trigger reset.
-      _.on.call(this, _activeEvents[i], () => {this.reset()}, {}, this.target, true);
+      $.on.call(this, _activeEvents[i], () => {this.reset()}, {}, this.target, true);
     }
   };
 
@@ -81,7 +82,7 @@ class IdleEvent {
    */
   start() {
     this.timer = _.delay.call(this, () => {
-      _.trigger(Factory.eventName(IdleEvent.name()), this.detailOrId, this.target);
+      $.trigger(Factory.eventName(IdleEvent.name()), this.detailOrId, this.target);
       Logger.log(Level.INFO, `${Factory.eventName(IdleEvent.name())} triggered${_.isNil(
         this.detailOrId) ? '' : ' for ' + this.detailOrId}.`);
       if (_.has(this, 'fireOnce') && !this.fireOnce) this.reset();

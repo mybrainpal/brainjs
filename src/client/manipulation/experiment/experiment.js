@@ -13,9 +13,9 @@ class Experiment {
    *  @property {string|number} id
    *  @property {string} [label] - used for logging.
    *  @property {Array.<Object>} groups - the various experiment groups, each one consists of
-   *  demographics portraits (i.e. which part of the entire population of users using our
-   *  customers website), and executors (i.e. what kind of DOM manipulations should the group
-   *  participants experience).
+   *  demographics (i.e. which part of the entire population of users using our customers
+   *  website), and executors (i.e. what kind of DOM manipulations should the group participants
+   *  experience).
    *  @property {Array.<Object>|Object} [demographics] - the experiment demographics. By default the
    *  user is included.
    */

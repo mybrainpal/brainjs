@@ -1,7 +1,7 @@
 /**
  * Proudly created by ohad on 21/12/2016.
  */
-let _         = require('../../common/util/wrapper'),
+let $         = require('../../common/util/dom'),
     BaseError = require('../../common/log/base.error'),
     expect    = require('chai').expect,
     Executor  = require('./master');
@@ -95,10 +95,10 @@ describe('Executor', function () {
   });
   it('on', (done) => {
     Executor.execute('form', {target: '#input', id: id, focus: true, on: true});
-    _.trigger(Executor.eventName('form'), 'nada');
+    $.trigger(Executor.eventName('form'), 'nada');
     setTimeout(() => {
       expect(document.activeElement).to.not.equal(input);
-      _.trigger(Executor.eventName('form'), id);
+      $.trigger(Executor.eventName('form'), id);
       setTimeout(() => {
         expect(document.activeElement).to.be.equal(input);
         done();
@@ -107,10 +107,10 @@ describe('Executor', function () {
   });
   it('on as a string', (done) => {
     Executor.execute('form', {target: '#input', id: id, focus: true, on: 'woohoo'});
-    _.trigger(Executor.eventName('form'), id);
+    $.trigger(Executor.eventName('form'), id);
     setTimeout(() => {
       expect(document.activeElement).to.not.equal(input);
-      _.trigger('woohoo');
+      $.trigger('woohoo');
       setTimeout(() => {
         expect(document.activeElement).to.be.equal(input);
         done();
@@ -122,10 +122,10 @@ describe('Executor', function () {
       target: '#input', id: id, focus: true,
       on    : {event: 'messiah-came', target: 'body'}
     });
-    _.trigger('messiah-came', id);
+    $.trigger('messiah-came', id);
     setTimeout(() => {
       expect(document.activeElement).to.not.equal(input);
-      _.trigger('messiah-came', id, 'body');
+      $.trigger('messiah-came', id, 'body');
       setTimeout(() => {
         expect(document.activeElement).to.be.equal(input);
         done();
@@ -134,11 +134,11 @@ describe('Executor', function () {
   });
   it('once', (done) => {
     Executor.execute('form', {target: '#input', id: id, focus: true, on: true, once: true});
-    _.trigger(Executor.eventName('form'), id);
+    $.trigger(Executor.eventName('form'), id);
     setTimeout(() => {
       expect(document.activeElement).to.be.equal(input);
       input.blur();
-      _.trigger(Executor.eventName('form'), id);
+      $.trigger(Executor.eventName('form'), id);
       setTimeout(() => {
         expect(document.activeElement).to.not.equal(input);
         done();
@@ -147,9 +147,9 @@ describe('Executor', function () {
   });
   it('off', (done) => {
     Executor.execute('form', {target: '#input', id: id, focus: true, on: true, off: 'enough'});
-    _.trigger('enough');
+    $.trigger('enough');
     setTimeout(() => {
-      _.trigger(Executor.eventName('form'), id);
+      $.trigger(Executor.eventName('form'), id);
       setTimeout(() => {
         expect(document.activeElement).to.not.equal(input);
         done();
@@ -161,27 +161,27 @@ describe('Executor', function () {
       target: '#input', id: id, focus: true, on: true,
       off   : {event: 'no-more', id: 'i-am-who-i-am', target: 'body'}
     });
-    _.trigger('no-more');
+    $.trigger('no-more');
     setTimeout(() => {
-      _.trigger(Executor.eventName('form'), id);
+      $.trigger(Executor.eventName('form'), id);
       setTimeout(() => {
         expect(document.activeElement).to.equal(input);
         input.blur();
-        _.trigger('no-more', 'not-me', 'body');
+        $.trigger('no-more', 'not-me', 'body');
         setTimeout(() => {
-          _.trigger(Executor.eventName('form'), id);
+          $.trigger(Executor.eventName('form'), id);
           setTimeout(() => {
             expect(document.activeElement).to.equal(input);
             input.blur();
-            _.trigger('no-more', 'i-am-who-i-am');
+            $.trigger('no-more', 'i-am-who-i-am');
             setTimeout(() => {
-              _.trigger(Executor.eventName('form'), id);
+              $.trigger(Executor.eventName('form'), id);
               setTimeout(() => {
                 expect(document.activeElement).to.equal(input);
                 input.blur();
-                _.trigger('no-more', 'i-am-who-i-am', 'body');
+                $.trigger('no-more', 'i-am-who-i-am', 'body');
                 setTimeout(() => {
-                  _.trigger(Executor.eventName('form'), id);
+                  $.trigger(Executor.eventName('form'), id);
                   setTimeout(() => {
                     expect(document.activeElement).to.not.equal(input);
                     done();

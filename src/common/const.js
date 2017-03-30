@@ -91,14 +91,19 @@ exports.STAGING_STORAGE = 'https://dashboard-161017.appspot.com';
  * @type {string}
  */
 exports.LOCAL_STORAGE = `http://localhost:${exports.LOCAL_PORT}/save`;
-exports.KIND = Object.freeze({
-                               LOG  : 'log',
-                               EVENT: 'event',
-                               USER : 'user',
-                               ERROR: 'error'
-                             });
+/**
+ * Backend URL path to handle various messages types.
+ * @type {Object}
+ */
 exports.BACKEND_URL = Object.freeze({
                                       LOG   : 'log/add',
                                       EVENT : 'event/add',
                                       CLIENT: 'client/init'
                                     });
+/**
+ * Types of non-native events, such as participation in an experiment.
+ * @type {Object}
+ */
+exports.EVENTS = Object.freeze({
+                                 PARTICIPATE: 'PARTICIPATE',
+                               });

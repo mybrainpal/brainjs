@@ -2,6 +2,7 @@
  * Proudly created by ohad on 12/03/2017.
  */
 const _         = require('../util/wrapper'),
+      $         = require('../util/dom'),
       Logger    = require('../log/logger'),
       Level     = require('../log/logger').Level,
       BaseError = require('../log/base.error'),
@@ -60,14 +61,14 @@ class ExitIntentEvent {
    */
   start() {
     this.handler            = {};
-    this.handler.mouseleave = _.on.call(this, 'mouseleave', (e) => {
+    this.handler.mouseleave = $.on.call(this, 'mouseleave', (e) => {
       if (e.clientY <= 0) {
         this.trigger();
       }
     }, this.detailOrId, document, true);
     this.lastY              = window.scrollY;
     this.ticking            = false;
-    this.handler.scroll     = _.on.call(this, 'scroll', () => {
+    this.handler.scroll     = $.on.call(this, 'scroll', () => {
       if (this.lastY > window.scrollY) {
         if (!this.ticking) {
           const bindFn = () => {
@@ -89,7 +90,7 @@ class ExitIntentEvent {
    * Triggers the event.
    */
   trigger() {
-    _.trigger(Factory.eventName(ExitIntentEvent.name()), this.detailOrId);
+    $.trigger(Factory.eventName(ExitIntentEvent.name()), this.detailOrId);
     Logger.log(Level.INFO, `${Factory.eventName(ExitIntentEvent.name())} triggered${_.isNil(
       this.detailOrId) ? '' : ' for ' + this.detailOrId}.`);
     if (!_.has(this, 'fireOnce') || this.fireOnce) this.stop();
@@ -102,7 +103,7 @@ class ExitIntentEvent {
   stop() {
     if (this.timer) clearTimeout(this.timer);
     for (let ev in this.handler) {
-      _.off(ev, this.handler[ev], document, true);
+      $.off(ev, this.handler[ev], document, true);
     }
     return this;
   }

@@ -2,7 +2,7 @@
  * Proudly created by ohad on 18/12/2016.
  */
 const _ = require('./prototype'),
-      $ = module.exports;
+      $ = exports;
 
 /**
  * Adds an event listener that is executed only when event.detail.id is missing or matches

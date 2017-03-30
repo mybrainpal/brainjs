@@ -5,57 +5,85 @@ const _ = require('./prototype');
 
 /**
  * Responsible for executing an AJAX request.
- * If the returned data is in JSON format, the function automatically decodes it.
+ * If the returned data is in JSON format, the function automatically parses it.
  *
  * @param {string} url - The URL destination.
+ * @param {string|Object|FormData} data - Additional HTTP parameters. Defaults to an empty string.
  * @param {function} callback - once a request had been successfully completed the callback is
  * called with the request.
- * @param {string} type - The request type (GET, POST). Defaults to 'POST'.
- * @param {string|Object|FormData} data - Additional HTTP parameters. Defaults to an empty string.
- * @param {boolean} async - whether to perform an async call.
+ * @param {string} [type = POST] - The request type (GET, POST).
+ * @param {boolean} [async = true] - Whether to perform an async call.
  */
 exports.ajax = function (url, data, callback, type = 'POST', async = true) {
   type = type.toUpperCase();
-  _set(data, 'submit', 1);
-  _set(data, 'ajax', 1);
-  if (_csrf_token) _set(data, 'token', _csrf_token);
+  data = _set(data, 'submit', 1);
+  data = _set(data, 'ajax', 1);
+  if (exports.csrf_token) data = _set(data, 'token', exports.csrf_token);
 
-  let xhr = new XMLHttpRequest();
-  if (type === 'POST' && !(data instanceof FormData) && !_.isString(data)) {
-    data = exports.jsonToFormData(data);
-  }
+  let xhr             = new XMLHttpRequest();
   xhr.withCredentials = true;
   if (type === 'GET') {
+    if (!_.isString(data)) {
+      data = _toQueryString(data);
+    }
     xhr.open('GET', url + '?' + data, async);
     xhr.send();
-  } else {
+  } else if (type === 'POST') {
+    if (!_.is(data, FormData)) {
+      data = exports.toFormData(data);
+    }
     xhr.open('POST', url, async);
     xhr.send(data);
+  } else {
+    throw new Error(`HttpUtil: unknown request type (${type}).`);
   }
   xhr.onreadystatechange = function () {
-    if (xhr.readyState == XMLHttpRequest.DONE && xhr.status === 200) {
-      // if (_get(data, 'json')) {
-      const parsedResponse = JSON.parse(xhr.response);
-      _csrf_token          = _get(parsedResponse, 'csrf_token');
-      // }
-      if (_.isFunction(callback)) callback(xhr);
+    if (xhr.readyState === XMLHttpRequest.DONE) {
+      if (xhr.status === 200 && _get(xhr, 'success')) {
+        if (_get(xhr, 'csrf_token')) {
+          exports.csrf_token = _get(xhr, 'csrf_token').toString();
+        }
+        let responseData = xhr.response;
+        if (_get(xhr, 'json') && xhr.getResponseHeader('Content-Type') === 'application/json') {
+          responseData = JSON.parse(xhr.response);
+        }
+        if (_.isFunction(callback)) callback(null, responseData);
+      } else {
+        callback(xhr.responseText || xhr.status);
+      }
     }
   }
 };
 
 /**
- * @param {string} key - of parameter within query.
- * @param {string} query - URL or query string. i.e. example.com?key1=val1&key2=val2
- * @returns {string} value of `key` parameter in query, or null if none was found.
+ * @param {string} [query] - URL or query string. i.e. example.com?key1=val1&key2=val2
+ * @param {string|number} key - name or index (zero based) of parameter within query.
+ * parameter (if any) is returned.
+ * @returns {string|Object} if `key` is string, then returns the value of `key` parameter in
+ * query. Otherwise (i.e. key is an integer) a pair of (name, value) of the key-th parameter. If
+ * no parameter matches either criteria, undefined is returned.
  */
-exports.getParameterFromQuery = function (key, query) {
+exports.getQueryParam = function (query, key) {
+  let regex, results;
   if (!query) query = window.location.href;
-  key           = key.replace(/[\[\]]/g, '\\$&');
-  const regex   = new RegExp('[?&]' + key + '(=([^&#]*)|&|#|$)'),
-        results = regex.exec(query);
-  if (!results) return null;
-  if (!results[2]) return '';
-  return decodeURIComponent(results[2].replace(/\+/g, ' '));
+  if (_.isString(key)) {
+    key     = key.replace(/[\[\]]/g, '\\$&');
+    regex   = new RegExp(`[?&](?:${key}|${encodeURIComponent(key)})(?:=([^&#]*)|&|#|$)`);
+    results = regex.exec(query);
+    if (!results || !_.isString(results[1])) return;
+    return decodeURIComponent(results[1].replace(/\+/g, ' '));
+  } else if (Number.isInteger(key) && key >= 0) {
+    // const prefix = ``;
+    regex   = new RegExp(`(?:[?&][^=]+=(?:[^&#]*)|&|#){${key}}[?&]([^=]+)=(?:([^&#]*)|&|#|$)`);
+    results = regex.exec(query);
+    if (!results || !_.isString(results[1]) || !_.isString(results[2])) return;
+    return {
+      key  : decodeURIComponent(results[1].replace(/\+/g, ' ')),
+      value: decodeURIComponent(results[2].replace(/\+/g, ' '))
+    };
+  } else {
+    throw new Error('HttpUtil: key must be a string or a non-negative integer.');
+  }
 };
 
 /**
@@ -64,51 +92,80 @@ exports.getParameterFromQuery = function (key, query) {
  * @param {string} value - of key.
  * @returns {string} the new query with updated value of `key`. Old values are replaced.
  */
-exports.updateQueryStringParameter = function (query, key, value) {
+exports.setQueryParam = function (query, key, value) {
   const re        = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
   const separator = query.indexOf('?') !== -1 ? "&" : "?";
   if (query.match(re)) {
-    return query.replace(re, '$1' + key + "=" + value + '$2');
+    return query.replace(re, '$1' + key + "=" + encodeURIComponent(value) + '$2');
   }
   else {
-    return query + separator + key + "=" + value;
+    return query + separator + encodeURIComponent(key) + "=" + encodeURIComponent(value);
   }
 };
 
 /**
- * @param {Object} json
+ * @param {Object|string} src - json or a query string.
  * @returns {FormData} form data of the flattened json that can be used in Ajax POST requests.
  */
-exports.jsonToFormData = function (json) {
-  const flattened = _.flatten(json);
-  let formData    = new FormData();
-  for (let p in flattened) {
-    formData.append(p, flattened[p]);
+exports.toFormData = function (src) {
+  let formData = new FormData();
+  if (_.isString(src)) {
+    let i = 0;
+    let pair;
+    while (pair = exports.getQueryParam(src, i)) {
+      i++;
+      formData.append(pair.key, pair.value);
+    }
+  } else {
+    const flattened = _.flatten(src);
+    for (let p in flattened) {
+      formData.append(p, flattened[p]);
+    }
   }
   return formData;
 };
+
+/**
+ * @param {Object|FormData} src
+ * @returns {string} query string with the flattened json values, or with the FormData entries.
+ * Note that duplicated parameter names will overwrite one another, in an unstable fashion.
+ * @private
+ */
+function _toQueryString(src) {
+  let query = '';
+  if (_.is(src, FormData)) {
+    for (let pair of src.entries()) {
+      query = exports.setQueryParam(query, pair[0], pair[1]);
+    }
+  } else {
+    const flattened = _.flatten(src);
+    for (let p in flattened) {
+      query = exports.setQueryParam(query, p, flattened[p]);
+    }
+  }
+  return query;
+}
 
 /**
  * Authentication token for our backend.
  * @type {string}
  * @private
  */
-let _csrf_token = '';
+exports.csrf_token = '';
 
 /**
- * @param {string|Object|FormData} data
+ * @param {XMLHttpRequest} xhr
  * @param {string} key
- * @returns {*} all values associated with key of data.
+ * @returns {string} a value associated with `key` of `xhr` response. If the response is not a
+ * json or a query string, then nothing is returned.
  * @private
  */
-function _get(data, key) {
-  if (_.isString(data)) return exports.getParameterFromQuery(key, data);
-  if (_.isNil(data) || !_.isObject(data)) return;
-  if (data instanceof FormData) {
-    //noinspection JSUnresolvedFunction
-    return data.getAll(key);
+function _get(xhr, key) {
+  if (_.isEmpty(xhr.response)) return;
+  if (xhr.getResponseHeader('Content-Type') === 'application/json') {
+    return JSON.parse(xhr.response)[key];
   }
-  return data[key];
+  if (_.isString(xhr.response)) return exports.getQueryParam(xhr.response, key);
 }
 
 /**
@@ -116,16 +173,18 @@ function _get(data, key) {
  * @param {string|Object|FormData} data
  * @param {string} key
  * @param {*} value
+ * @returns {string|Object|FormData} updated `data`
  * @private
  */
 function _set(data, key, value) {
-  if (_.isNil(data)) return;
+  if (!data) data = '';
   if (_.isString(data)) {
-    exports.updateQueryStringParameter(query, key, value);
+    data = exports.setQueryParam(data, key, value);
   } else if (data instanceof FormData) {
     //noinspection JSUnresolvedFunction
     data.set(key, value);
   } else {
     data[key] = value;
   }
+  return data;
 }

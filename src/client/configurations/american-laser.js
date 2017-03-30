@@ -1,7 +1,7 @@
 /**
  * Proudly created by ohad on 14/03/2017.
  */
-const _             = require('../common/util/wrapper'),
+const $             = require('../common/util/dom'),
       Play          = require('../play'),
       Factory       = require('../common/events/factory'),
       EventExecutor = require('../manipulation/execute/interaction/event'),
@@ -89,14 +89,14 @@ Play(
                             // _sendForm(formData);
                           });
                       new WordEvent({
-                        waitTime: 500, enforceRegex: true, regex: /^0[0-9]{8,9}$/,
-                        target                                  : 'input.swal2-input'
-                      });
-                      _.on(Factory.eventName(WordEvent.name()),
+                                      waitTime: 500, enforceRegex: true, regex: /^0[0-9]{8,9}$/,
+                                      target                                  : 'input.swal2-input'
+                                    });
+                      $.on(Factory.eventName(WordEvent.name()),
                            () => {
                              swal.clickConfirm();
                              new WordEvent({waitTime: 1000, target: 'input.swal2-input'});
-                             _.on(Factory.eventName(WordEvent.name()),
+                             $.on(Factory.eventName(WordEvent.name()),
                                   () => {
                                     swal.clickConfirm();
                                   }, {}, 'input.swal2-input');

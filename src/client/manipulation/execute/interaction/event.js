@@ -2,12 +2,13 @@
  * Proudly created by ohad on 23/12/2016.
  */
 let _            = require('../../../common/util/wrapper'),
-    BaseError = require('../../../common/log/base.error'),
+    $            = require('../../../common/util/dom'),
+    BaseError    = require('../../../common/log/base.error'),
     EventFactory = require('../../../common/events/factory'),
     Logger       = require('../../../common/log/logger'),
     Level        = require('../../../common/log/logger').Level,
     Master       = require('../master');
-exports.name  = 'event';
+exports.name     = 'event';
 Master.register(exports);
 /**
  * Creates and triggers events and custom events.
@@ -49,7 +50,7 @@ exports.execute = function (options) {
         }
       }
       promises.push(new Promise(function (resolve) {
-        _.on(listener.event,
+        $.on(listener.event,
              () => {resolve({event: listener.event, target: target})},
              listener.detailOrId, target);
       }));
@@ -124,7 +125,7 @@ function _doFn(options) {
         continue;
       }
     }
-    _.trigger(options.trigger[i].event, options.trigger[i].detailOrId, target);
+    $.trigger(options.trigger[i].event, options.trigger[i].detailOrId, target);
   }
   options.create = _.arrify(options.create);
   for (let i = 0; i < options.create.length; i++) {

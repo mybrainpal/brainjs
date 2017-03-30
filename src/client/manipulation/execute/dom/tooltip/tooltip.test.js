@@ -3,6 +3,7 @@
  */
 const expect           = require('chai').expect,
       _                = require('../../../../common/util/wrapper'),
+      $                = require('../../../../common/util/dom'),
       BaseError        = require('../../../../common/log/base.error'),
       Level            = require('../../../../common/log/logger').Level,
       Storage          = require('../../../../common/storage/storage'),
@@ -16,12 +17,12 @@ describe('TooltipExecutor', function () {
   this.timeout(2000);
   let div, target, options, id = 0;
   before(() => {
-    div = _.div({style: {margin: '150px'}});
+    div = $.div({style: {margin: '150px'}});
     document.querySelector('body').appendChild(div);
     Storage.set(Storage.names.IN_MEMORY);
   });
   beforeEach(() => {
-    target = _.a({id: 'huwayej'}, 'NevoN');
+    target = $.a({id: 'huwayej'}, 'NevoN');
     div.appendChild(target);
     options = {target: '#huwayej', type: 'bloated', htmlContent: 'Huwayej', id: ++id};
     InMemoryStorage.flush();
@@ -91,12 +92,12 @@ describe('TooltipExecutor', function () {
     TooltipExecutor.execute(options);
     const tooltip            = document.querySelector(`div>.${styles.bloated}`),
           content            = tooltip.querySelector(`.${styles.content}`);
-    _.style(content, {transition: 'all 1ms'});
-    _.trigger(Master.eventName(TooltipInterface.name),
+    $.style(content, {transition: 'all 1ms'});
+    $.trigger(Master.eventName(TooltipInterface.name),
               {state: TooltipExecutor.State.SHOW, id: id});
     setTimeout(() => {
       expect(TooltipExecutor.isVisible(tooltip)).to.be.true;
-      _.trigger(Master.eventName(TooltipInterface.name),
+      $.trigger(Master.eventName(TooltipInterface.name),
                 {state: TooltipExecutor.State.HIDE, id: id});
       setTimeout(() => {
         expect(TooltipExecutor.isVisible(tooltip)).to.be.false;
@@ -108,8 +109,8 @@ describe('TooltipExecutor', function () {
     TooltipExecutor.execute(_.extend({timer: 20}, options));
     const tooltip            = document.querySelector(`div>.${styles.bloated}`),
           content            = tooltip.querySelector(`.${styles.content}`);
-    _.style(content, {transition: 'all 1ms'});
-    _.trigger(Master.eventName(TooltipInterface.name), id);
+    $.style(content, {transition: 'all 1ms'});
+    $.trigger(Master.eventName(TooltipInterface.name), id);
     setTimeout(() => {
       expect(TooltipExecutor.isVisible(tooltip)).to.be.true;
       setTimeout(() => {
@@ -122,11 +123,11 @@ describe('TooltipExecutor', function () {
     TooltipExecutor.execute(options);
     const tooltip            = document.querySelector(`div>.${styles.bloated}`),
           content            = tooltip.querySelector(`.${styles.content}`);
-    _.style(content, {transition: 'all 1ms'});
-    _.trigger(Master.eventName(TooltipInterface.name), id);
+    $.style(content, {transition: 'all 1ms'});
+    $.trigger(Master.eventName(TooltipInterface.name), id);
     setTimeout(() => {
       expect(TooltipExecutor.isVisible(tooltip)).to.be.true;
-      _.trigger(Master.eventName(TooltipInterface.name), id);
+      $.trigger(Master.eventName(TooltipInterface.name), id);
       setTimeout(() => {
         expect(TooltipExecutor.isVisible(tooltip)).to.be.false;
         done();
@@ -157,12 +158,12 @@ describe('TooltipExecutor', function () {
       TooltipExecutor.execute(_.extend({}, options, {toLog: true}));
       const tooltip            = document.querySelector(`div>.${styles.bloated}`),
             content            = tooltip.querySelector(`.${styles.content}`);
-      _.style(content, {transition: 'all 1ms'});
-      _.trigger(Master.eventName(TooltipInterface.name), id);
+      $.style(content, {transition: 'all 1ms'});
+      $.trigger(Master.eventName(TooltipInterface.name), id);
       setTimeout(() => {
         // For some reason Karma behaviour is unpredictable and this test is flaky - the
         // tooltip is not always visible after first event.
-        _.trigger(Master.eventName(TooltipInterface.name), id);
+        $.trigger(Master.eventName(TooltipInterface.name), id);
         setTimeout(() => {
           expect(InMemoryStorage.storage).to.have.length(3);
           for (let i = 0; i < InMemoryStorage.storage.length; i++) {
@@ -176,10 +177,10 @@ describe('TooltipExecutor', function () {
       TooltipExecutor.execute(_.extend({}, options, {toLog: true}));
       const tooltip            = document.querySelector(`div>.${styles.bloated}`),
             content            = tooltip.querySelector(`.${styles.content}`);
-      _.style(content, {transition: 'all 1ms'});
-      _.trigger(Master.eventName(TooltipInterface.name), id);
+      $.style(content, {transition: 'all 1ms'});
+      $.trigger(Master.eventName(TooltipInterface.name), id);
       setTimeout(() => {
-        _.trigger(Master.eventName(TooltipInterface.name), id);
+        $.trigger(Master.eventName(TooltipInterface.name), id);
         setTimeout(() => {
           expect(InMemoryStorage.storage.length).to.be.at.least(2);
           for (let i = 0; i < InMemoryStorage.storage.length; i++) {
@@ -190,7 +191,7 @@ describe('TooltipExecutor', function () {
       }, 100);
     });
     it('log that tooltip is hidden', (done) => {
-      let evilDiv = _.div({
+      let evilDiv = $.div({
                             style: {
                               position: 'absolute', top: '-100px', left: '-100px', width: '10000px',
                               height  : '10000px', 'background-color': 'red', 'z-index': 10000
@@ -200,10 +201,10 @@ describe('TooltipExecutor', function () {
       TooltipExecutor.execute(_.extend({}, options, {toLog: true}));
       const tooltip            = document.querySelector(`div>.${styles.bloated}`),
             content            = tooltip.querySelector(`.${styles.content}`);
-      _.style(content, {transition: 'all 1ms'});
-      _.trigger(Master.eventName(TooltipInterface.name), id);
+      $.style(content, {transition: 'all 1ms'});
+      $.trigger(Master.eventName(TooltipInterface.name), id);
       setTimeout(() => {
-        _.trigger(Master.eventName(TooltipInterface.name), id);
+        $.trigger(Master.eventName(TooltipInterface.name), id);
         setTimeout(() => {
           let hasWarning = false;
           for (let i = 0; i < InMemoryStorage.storage.length; i++) {
@@ -224,11 +225,11 @@ describe('TooltipExecutor', function () {
       const tooltip = document.querySelector(`div>.${styles.line}`),
             content = tooltip.querySelector(`.${styles.content}`),
             text    = tooltip.querySelector(`.${styles.text}`);
-      _.trigger(Master.eventName(TooltipInterface.name), id);
+      $.trigger(Master.eventName(TooltipInterface.name), id);
       setTimeout(() => {
         // For some reason Karma behaviour is unpredictable and this test is flaky - the
         // tooltip is not always visible after first event.
-        _.trigger(Master.eventName(TooltipInterface.name), id);
+        $.trigger(Master.eventName(TooltipInterface.name), id);
         setTimeout(() => {
           expect(InMemoryStorage.storage).to.have.length(3);
           for (let i = 0; i < InMemoryStorage.storage.length; i++) {

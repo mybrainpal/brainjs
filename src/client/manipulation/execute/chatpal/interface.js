@@ -2,6 +2,7 @@
  * Proudly created by ohad on 21/03/2017.
  */
 const _         = require('../../../common/util/wrapper'),
+      $         = require('../../../common/util/dom'),
       Logger    = require('../../../common/log/logger'),
       Level     = require('../../../common/log/logger').Level,
       BaseError = require('../../../common/log/base.error.js'),
@@ -24,9 +25,9 @@ exports.execute = function (options) {
   require.ensure('./chatpal', function (require) {
     const ChatPal = require('./chatpal');
     const chatPal = new ChatPal(options);
-    _.trigger(exports.readyEvent(), options.id);
+    $.trigger(exports.readyEvent(), options.id);
     _.delay(() => {
-      if (_.isVisible(chatPal.buttons)) {
+      if ($.isVisible(chatPal.buttons)) {
         if (options.toLog) {
           Logger.log(Level.INFO,
                      `ChatPal ${options.id ? options.id + ' ' : ''} created.`);

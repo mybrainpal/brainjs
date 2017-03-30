@@ -2,13 +2,14 @@
  * Proudly created by nevo on 26/12/2016.
  */
 const _         = require('../../../../common/util/wrapper'),
-      Logger = require('../../../../common/log/logger'),
-      Level  = require('../../../../common/log/logger').Level,
+      $         = require('../../../../common/util/dom'),
+      Logger    = require('../../../../common/log/logger'),
+      Level     = require('../../../../common/log/logger').Level,
       BaseError = require('../../../../common/log/base.error'),
       Master    = require('../../master'),
       Interface = require('./interface'),
       css       = require('./tooltip.scss');
-const styles = css.locals;
+const styles    = css.locals;
 
 /**
  * Creates a tooltip and injects it into element.
@@ -25,7 +26,7 @@ const styles = css.locals;
  */
 exports.execute = function (options) {
   if (!_styleLoaded) {
-    _.load(css);
+    $.load(css);
     _styleLoaded = true;
   }
   const tooltip = _attachTooltip(options);
@@ -128,7 +129,7 @@ exports.isVisible = function (tooltip) {
     visibilityTarget =
       targetParent.nextElementSibling || targetParent.previousElementSibling;
   }
-  return _.isVisible(visibilityTarget);
+  return $.isVisible(visibilityTarget);
 };
 
 /**
@@ -186,7 +187,7 @@ function _attachTooltip(options) {
  * @param {boolean} toLog - whether to log state changes.
  */
 function _attachEvents(tooltip, id, toLog) {
-  _.on(Master.eventName(Interface.name), (ev) => {
+  $.on(Master.eventName(Interface.name), (ev) => {
     let state;
     if (state = _.get(ev, 'detail.state')) {
       if (exports.State[state]) {

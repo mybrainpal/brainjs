@@ -5,6 +5,7 @@ const BaseError       = require('../log/base.error'),
       expect          = require('chai').expect,
       ExitIntentEvent = require('./exit-intent');
 
+// TODO(ohad): test cases with proper initiation of events.
 describe('ExitIntentEvent', function () {
   this.timeout(200);
   it('construction', () => {

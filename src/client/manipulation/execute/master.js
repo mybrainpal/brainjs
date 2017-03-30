@@ -5,8 +5,9 @@
  */
   // TODO(ohad): add `prepare` method that initiates external resource loading.
 let _            = require('../../common/util/wrapper'),
-    Logger = require('../../common/log/logger'),
-    Level  = require('../../common/log/logger').Level,
+    $            = require('../../common/util/dom'),
+    Logger       = require('../../common/log/logger'),
+    Level        = require('../../common/log/logger').Level,
     EventFactory = require('../../common/events/factory'),
     BaseError    = require('../../common/log/base.error');
 
@@ -30,7 +31,7 @@ exports.register = function (module) {
  *  @property {boolean} [toLog = (process.env.NODE_ENV !== 'test')] - whether to log the executor
  *  flow.
  *  @property {string|boolean|object} [on] - event name to execute on. use `true` to execute on
- *  `_.on(eventName(name), .. , id)`
+ *  `$.on(eventName(name), .. , id)`
  *  @property {string|object} [off] - event name to prevent execution.
  *  @property {boolean} [once] - whether to execute only once per each on.event triggered.
  * @returns {Object} this module.
@@ -39,18 +40,18 @@ exports.execute = function (name, options = {}) {
   if (!_preconditions(name, options)) return exports;
   let executeHandler;
   if (options.on) {
-    executeHandler = _.on(options.on.event,
+    executeHandler = $.on(options.on.event,
                           () => {
                             _executorByName[name].execute(options);
                             if (options.once) {
-                              _.off(options.on.event, executeHandler, options.on.target);
+                              $.off(options.on.event, executeHandler, options.on.target);
                             }
                           },
                           options.id,
                           options.on.target);
     if (options.off) {
-      _.on(options.off.event,
-           () => {_.off(options.on.event, executeHandler, options.on.target)},
+      $.on(options.off.event,
+           () => {$.off(options.on.event, executeHandler, options.on.target)},
            options.off.id, options.off.target);
     }
   } else {

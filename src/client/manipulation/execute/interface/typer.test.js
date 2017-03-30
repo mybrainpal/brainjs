@@ -1,7 +1,7 @@
 /**
  * Proudly created by ohad on 30/12/2016.
  */
-let _             = require('../../../common/util/wrapper'),
+let $             = require('../../../common/util/dom'),
     BaseError     = require('../../../common/log/base.error'),
     expect        = require('chai').expect,
     TyperExecutor = require('./typer');
@@ -10,7 +10,7 @@ describe('TyperExecutor', function () {
   this.timeout(500);
   let div;
   beforeEach(() => {
-    div = _.div({id: 'div'});
+    div = $.div({id: 'div'});
     document.querySelector('body').appendChild(div);
   });
   afterEach(() => {
@@ -109,7 +109,7 @@ describe('TyperExecutor', function () {
     }, 20);
   });
   it('emit', (done) => {
-    _.on('ev', () => {done()});
+    $.on('ev', () => {done()});
     TyperExecutor.execute({typerFn: (typer) => {typer('#div', 1).emit('ev').end();}});
   });
   it('listen', (done) => {
@@ -117,7 +117,7 @@ describe('TyperExecutor', function () {
       {typerFn: (typer) => {typer('#div', 1).listen('ev').continue('123').end();}});
     setTimeout(() => {
       expect(div.textContent).to.equal('');
-      _.trigger('ev');
+      $.trigger('ev');
       setTimeout(() => {
         expect(div.textContent).to.equal('123');
         done();
@@ -150,7 +150,7 @@ describe('TyperExecutor', function () {
                           });
   });
   it('end', (done) => {
-    _.on('typerFinished', () => {done()});
+    $.on('typerFinished', () => {done()});
     TyperExecutor.execute({
                             typerFn: typer => {
                               typer('#div', 1).line('123').end((el) => {

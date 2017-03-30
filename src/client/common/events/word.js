@@ -7,6 +7,7 @@
  * 2) The input is idle for 2 seconds.
  */
 const _         = require('../util/wrapper'),
+      $         = require('../util/dom'),
       BaseError = require('../log/base.error'),
       Logger    = require('../log/logger'),
       Level     = require('../log/logger').Level,
@@ -95,10 +96,10 @@ class WordEvent {
    * @private
    */
   _init() {
-    this.actualInputHandler = _.on.call(this, 'input', () => {this.inputHandler()}, {},
+    this.actualInputHandler = $.on.call(this, 'input', () => {this.inputHandler()}, {},
                                         this.target);
     this.actualKeyupHandler =
-      _.on.call(this, 'keyup', (event) => {this.keyupHandler(event)}, {}, this.target);
+      $.on.call(this, 'keyup', (event) => {this.keyupHandler(event)}, {}, this.target);
     this._updateClass();
   };
 
@@ -128,8 +129,8 @@ class WordEvent {
    */
   stop() {
     if (this.idleEvent) this.idleEvent.stop();
-    _.off('input', this.actualInputHandler, this.target);
-    _.off('keyup', this.actualKeyupHandler, this.target);
+    $.off('input', this.actualInputHandler, this.target);
+    $.off('keyup', this.actualKeyupHandler, this.target);
     this.fired = false;
   }
 
@@ -144,7 +145,7 @@ class WordEvent {
     if (this.idleEvent) {
       this.idleEvent.reset();
     } else {
-      _.on.call(this, Factory.eventName(IdleEvent.name()), () => {this.fireIfShould()},
+      $.on.call(this, Factory.eventName(IdleEvent.name()), () => {this.fireIfShould()},
                 this.detailOrId,
                 this.target);
       this.idleEvent = new IdleEvent({
@@ -175,7 +176,7 @@ class WordEvent {
     this._updateClass(WordEvent.matchesRegex());
     if (this.idleEvent) this.idleEvent.stop();
     this.fired = true;
-    _.trigger(Factory.eventName(WordEvent.name()), this.detailOrId, this.target);
+    $.trigger(Factory.eventName(WordEvent.name()), this.detailOrId, this.target);
     Logger.log(Level.INFO, `${Factory.eventName(WordEvent.name())} triggered${_.isNil(
       this.detailOrId) ? '' : ' for ' + this.detailOrId}.`);
     return true;

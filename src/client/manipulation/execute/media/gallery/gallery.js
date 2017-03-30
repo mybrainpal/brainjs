@@ -2,6 +2,7 @@
  * Proudly created by ohad on 25/12/2016.
  */
 const _         = require('../../../../common/util/wrapper'),
+      $         = require('../../../../common/util/dom'),
       Logger    = require('../../../../common/log/logger'),
       Level     = require('../../../../common/log/logger').Level,
       BaseError = require('../../../../common/log/base.error.js'),
@@ -20,13 +21,13 @@ const styles    = css.locals;
  */
 exports.execute = function (options) {
   if (!_styleLoaded) {
-    _.load(css);
+    $.load(css);
     _styleLoaded = true;
   }
   let container = document.querySelector(options.container);
   container.appendChild(_createGallery(container, options));
-  _.trigger(Interface.readyEvent(), options.id);
-  if (_.isVisible(container.querySelector(`.${styles.component}`))) {
+  $.trigger(Interface.readyEvent(), options.id);
+  if ($.isVisible(container.querySelector(`.${styles.component}`))) {
     if (options.toLog) Logger.log(Level.INFO, 'Gallery create at ' + options.container);
   } else if (options.toLog) {
     Logger.log(Level.WARNING, 'Failed to create gallery at ' + options.container);
@@ -83,15 +84,15 @@ function _createGallery(container, options) {
       sources.push(newSrcs[j].cloneNode(true));
     }
   }
-  component = _.div({
+  component = $.div({
                       class: [styles.component, styles.fullwidth,
                               styles[options.animationClass || 'fxSoftScale']],
                       id   : Interface.idPrefix + (options.id ? `-${options.id}` : '')
                     });
-  ul        = _.ul({class: styles.itemwrap});
+  ul        = $.ul({class: styles.itemwrap});
   for (i = 0; i < sources.length; i++) {
     // TODO(ohad): support multiple elements per item.
-    let li = _.li(sources[i]);
+    let li = $.li(sources[i]);
     if (sources[i].nodeName === 'IMG') {
       const containerRatio = container.clientWidth / container.clientHeight;
       const imgRatio       = sources[i].naturalWidth / sources[i].naturalHeight;
@@ -118,8 +119,8 @@ function _play(component, options) {
   let intervalId   = setInterval(() => {
     _navigate(_NavigationDirection.NEXT, component);
   }, intervalMs);
-  _.on('mouseover', () => { clearInterval(intervalId); }, {}, component, true);
-  _.on('mouseout', () => {
+  $.on('mouseover', () => { clearInterval(intervalId); }, {}, component, true);
+  $.on('mouseout', () => {
     intervalId = setInterval(() => {
       _navigate(_NavigationDirection.NEXT, component);
     }, intervalMs);
@@ -152,8 +153,8 @@ function _navigate(direction, component) {
 
   let nextItem = items[current];
 
-  _.on('animationend', _onAnimationEnd, {}, currentItem);
-  _.on('animationend', _onAnimationEnd, {}, nextItem);
+  $.on('animationend', _onAnimationEnd, {}, currentItem);
+  $.on('animationend', _onAnimationEnd, {}, nextItem);
   currentItem.classList.add(
     direction === _NavigationDirection.NEXT ? styles.navOutNext : styles.navOutPrev);
   nextItem.classList.add(direction === _NavigationDirection.NEXT ? styles.navInNext :
@@ -173,7 +174,7 @@ function _onAnimationEnd() {
   if (animationCount < 0) {
     throw new BaseError('GalleryExecutor: animationCount mustn\'t be negative.');
   }
-  _.off('animationend', _onAnimationEnd, this);
+  $.off('animationend', _onAnimationEnd, this);
   if (this.classList.contains(styles.current)) {
     this.classList.remove(styles.current,
                           styles.navOutNext,

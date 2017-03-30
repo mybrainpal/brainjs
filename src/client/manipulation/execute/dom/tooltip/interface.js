@@ -2,6 +2,7 @@
  * Proudly created by ohad on 16/01/2017.
  */
 const _      = require('../../../../common/util/wrapper'),
+      $      = require('../../../../common/util/dom'),
       Master = require('../../master');
 exports.name = 'tooltip';
 Master.register(exports);

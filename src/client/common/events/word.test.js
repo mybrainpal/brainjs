@@ -1,7 +1,7 @@
 /**
  * Proudly created by ohad on 08/01/2017.
  */
-const _         = require('../util/wrapper'),
+const $         = require('../util/dom'),
       BaseError = require('../log/base.error'),
       expect    = require('chai').expect,
       Factory   = require('./factory'),
@@ -42,29 +42,29 @@ describe('WordEvent', function () {
     expect(() => {new WordEvent({target: '#input2'})}).to.throw(BaseError);
   });
   it('fires on idle', (done) => {
-    _.on(Factory.eventName(WordEvent.name()), () => {done()}, id, input);
+    $.on(Factory.eventName(WordEvent.name()), () => {done()}, id, input);
     wordEvent   = new WordEvent(options);
     input.value = 'a';
-    _.trigger('input', id, input);
+    $.trigger('input', id, input);
   });
   it('stops', (done) => {
     wordEvent   = new WordEvent(options);
     input.value = 'a';
     wordEvent.stop();
-    _.trigger('input', id, input);
-    _.on(Factory.eventName(WordEvent.name()), () => {done('come on!')}, id, input);
+    $.trigger('input', id, input);
+    $.on(Factory.eventName(WordEvent.name()), () => {done('come on!')}, id, input);
     setTimeout(() => {done()}, 20);
   });
   it('fires once', (done) => {
     let count = 0;
-    _.on(Factory.eventName(WordEvent.name()), () => {count++}, id, input);
+    $.on(Factory.eventName(WordEvent.name()), () => {count++}, id, input);
     wordEvent   = new WordEvent({
       target: '#input', detailOrId: id, waitTime: 10, fireOnce: true, fireOnEnter: true
     });
     input.value = 'a';
     let event   = new Event('keyup', {which: 13});
     input.dispatchEvent(event);
-    _.trigger('input', id, input);
+    $.trigger('input', id, input);
     setTimeout(() => {
       expect(count).to.equal(1);
       done()
@@ -72,14 +72,14 @@ describe('WordEvent', function () {
   });
   it('fires more than once', (done) => {
     let count = 0;
-    _.on(Factory.eventName(WordEvent.name()), () => {count++}, id, input);
+    $.on(Factory.eventName(WordEvent.name()), () => {count++}, id, input);
     wordEvent   =
       new WordEvent({target: '#input', detailOrId: id, waitTime: 10, fireOnce: false});
     input.value = 'a';
-    _.trigger('input', id, input);
+    $.trigger('input', id, input);
     setTimeout(() => {
       input.value = 'b';
-      _.trigger('input', id, input);
+      $.trigger('input', id, input);
       setTimeout(() => {
         expect(count).to.equal(2);
         done();
@@ -91,20 +91,20 @@ describe('WordEvent', function () {
       target: '#input', detailOrId: id, waitTime: 10, fireOnEmpty: false, fireOnRegex: true
     });
     input.value = ' ';
-    _.trigger('input', id, input);
-    _.on(Factory.eventName(WordEvent.name()), () => {done('come on!')}, id, input);
+    $.trigger('input', id, input);
+    $.on(Factory.eventName(WordEvent.name()), () => {done('come on!')}, id, input);
     setTimeout(() => {done()}, 20);
   });
   it('fires on empty', (done) => {
-    _.on(Factory.eventName(WordEvent.name()), () => {done()}, id, input);
+    $.on(Factory.eventName(WordEvent.name()), () => {done()}, id, input);
     wordEvent   = new WordEvent({
       target: '#input', detailOrId: id, waitTime: 10, fireOnEmpty: true, fireOnRegex: true
     });
     input.value = ' ';
-    _.trigger('input', id, input);
+    $.trigger('input', id, input);
   });
   it('fires on regex', (done) => {
-    _.on(Factory.eventName(WordEvent.name()), () => {
+    $.on(Factory.eventName(WordEvent.name()), () => {
       expect(input.classList.contains(WordEvent.matchesRegex())).to.be.true;
       expect(input.classList.contains(WordEvent.mismatchesRegex())).to.be.false;
       done()
@@ -115,10 +115,10 @@ describe('WordEvent', function () {
         regex : /^[^\s]+\s$/
       });
     input.value = 'a ';
-    _.trigger('input', id, input);
+    $.trigger('input', id, input);
   });
   it('not fires on regex', (done) => {
-    const errorFn = _.on(Factory.eventName(WordEvent.name()), () => {done('come on!')}, id,
+    const errorFn = $.on(Factory.eventName(WordEvent.name()), () => {done('come on!')}, id,
                          input);
     wordEvent     =
       new WordEvent({
@@ -126,10 +126,10 @@ describe('WordEvent', function () {
         regex : /^[^\s]+\s$/
       });
     input.value   = 'a ';
-    _.trigger('input', id, input);
+    $.trigger('input', id, input);
     setTimeout(() => {
-      _.off(Factory.eventName(WordEvent.name()), errorFn, input);
-      _.on(Factory.eventName(WordEvent.name()), () => {done()}, id, input);
+      $.off(Factory.eventName(WordEvent.name()), errorFn, input);
+      $.on(Factory.eventName(WordEvent.name()), () => {done()}, id, input);
     }, 5);
 
   });
@@ -140,7 +140,7 @@ describe('WordEvent', function () {
     input.value = 'a';
     let event   = new KeyboardEvent('keyup', {key: 'Enter'});
     input.dispatchEvent(event);
-    _.on(Factory.eventName(WordEvent.name()), () => {done('come on!')}, id, input);
+    $.on(Factory.eventName(WordEvent.name()), () => {done('come on!')}, id, input);
     setTimeout(() => {
       expect(input.classList.contains(WordEvent.mismatchesRegex())).to.be.true;
       expect(input.classList.contains(WordEvent.matchesRegex())).to.be.false;
@@ -148,7 +148,7 @@ describe('WordEvent', function () {
     }, 20);
   });
   it('fires on enter', (done) => {
-    _.on(Factory.eventName(WordEvent.name()), () => {done()}, id, input);
+    $.on(Factory.eventName(WordEvent.name()), () => {done()}, id, input);
     wordEvent   =
       new WordEvent({target: '#input', detailOrId: id, waitTime: 10000, fireOnEnter: true});
     input.value = 'a';
@@ -156,7 +156,7 @@ describe('WordEvent', function () {
     input.dispatchEvent(event);
   });
   it('enter sets class', (done) => {
-    _.on(Factory.eventName(WordEvent.name()), () => {
+    $.on(Factory.eventName(WordEvent.name()), () => {
       expect(input.classList.contains(WordEvent.matchesRegex())).to.be.true;
       expect(input.classList.contains(WordEvent.mismatchesRegex())).to.be.false;
       done()
@@ -170,17 +170,17 @@ describe('WordEvent', function () {
     input.dispatchEvent(event);
   });
   it('not fires on enter', (done) => {
-    const errorFn = _.on(Factory.eventName(WordEvent.name()), () => {done('come on!')}, id,
+    const errorFn = $.on(Factory.eventName(WordEvent.name()), () => {done('come on!')}, id,
                          input);
     wordEvent     =
       new WordEvent({target: '#input', detailOrId: id, waitTime: 10, fireOnEnter: false});
     input.value   = 'a';
     let event     = new KeyboardEvent('keyup', {key: 'Enter'});
     input.dispatchEvent(event);
-    _.trigger('input', id, input);
+    $.trigger('input', id, input);
     setTimeout(() => {
-      _.off(Factory.eventName(WordEvent.name()), errorFn, input);
-      _.on(Factory.eventName(WordEvent.name()), () => {done()}, id, input);
+      $.off(Factory.eventName(WordEvent.name()), errorFn, input);
+      $.on(Factory.eventName(WordEvent.name()), () => {done()}, id, input);
     }, 5);
   });
   afterEach(() => {

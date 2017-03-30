@@ -2,6 +2,7 @@
  * Proudly created by ohad on 22/12/2016.
  */
 let _         = require('../../../common/util/wrapper'),
+    $         = require('../../../common/util/dom'),
     Logger    = require('../../../common/log/logger'),
     Level     = require('../../../common/log/logger').Level,
     BaseError = require('../../../common/log/base.error'),
@@ -16,13 +17,13 @@ Master.register(exports);
  */
 exports.execute = function (options) {
   require.ensure(['sweetalert2', 'sweetalert2/dist/sweetalert2.css'], function (require) {
-    if (!_styleLoaded) _.load(require('sweetalert2/dist/sweetalert2.css'));
+    if (!_styleLoaded) $.load(require('sweetalert2/dist/sweetalert2.css'));
     _styleLoaded = true;
     options.swalFn(require('sweetalert2'));
     if (options.toLog) {
       setTimeout(() => {
         const suffix = _.isNil(options.id) ? '' : ` (id = ${options.id}`;
-        if (_.isVisible(document.querySelector('div.swal2-modal.swal2-show'))) {
+        if ($.isVisible(document.querySelector('div.swal2-modal.swal2-show'))) {
           Logger.log(Level.INFO, 'Fired sweetalert2' + suffix);
         } else {
           Logger.log(Level.WARNING, 'Sweetalert2 was not fired' + suffix);

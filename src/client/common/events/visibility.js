@@ -2,6 +2,7 @@
  * Proudly created by ohad on 27/01/2017.
  */
 const _         = require('../util/wrapper'),
+      $         = require('../util/dom'),
       Logger    = require('../log/logger'),
       Level     = require('../log/logger').Level,
       BaseError = require('../log/base.error'),
@@ -67,7 +68,7 @@ class VisibilityEvent {
   _init() {
     this.visible  = false;
     this.interval = _.interval.call(this, () => {
-      if (_.isVisible(this.target) !== this.visible) this.fire();
+      if ($.isVisible(this.target) !== this.visible) this.fire();
     }, this.frequency);
   };
 
@@ -75,7 +76,7 @@ class VisibilityEvent {
    * Fires the event, and stops the interval if necessary.
    */
   fire() {
-    _.trigger(Factory.eventName(VisibilityEvent.name()), this.detailOrId, this.target);
+    $.trigger(Factory.eventName(VisibilityEvent.name()), this.detailOrId, this.target);
     Logger.log(
       Level.INFO,
       `Visibility event ${this.detailOrId} fired for ${this.visible ? 'hidden' : 'shown'}`);

@@ -2,6 +2,7 @@
  * Proudly created by ohad on 25/12/2016.
  */
 let _         = require('./../../../common/util/wrapper'),
+    $         = require('./../../../common/util/dom'),
     BaseError = require('../../../common/log/base.error'),
     Logger    = require('../../../common/log/logger'),
     Level     = require('../../../common/log/logger').Level,
@@ -48,7 +49,7 @@ exports.execute = function (options) {
       if (toInsert.parentNode &&
           (parent && toInsert.parentNode === parent ||
            nextSibling && toInsert.nextElementSibling === nextSibling) &&
-          _.isVisible(toInsert)) {
+          $.isVisible(toInsert)) {
         Logger.log(Level.INFO, `${options.target} moved.`);
       } else {
         Logger.log(Level.WARNING, `Failed to move ${options.target}.`);

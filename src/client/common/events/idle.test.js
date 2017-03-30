@@ -2,6 +2,7 @@
  * Proudly created by ohad on 29/12/2016.
  */
 const _         = require('../util/wrapper'),
+      $         = require('../util/dom'),
       BaseError = require('../log/base.error'),
       expect    = require('chai').expect,
       Factory   = require('./factory'),
@@ -28,42 +29,42 @@ describe('IdleEvent', function () {
     expect(() => {new IdleEvent({waitTime: 10, target: 1})}).to.throw(BaseError);
   });
   it('event fires', (done) => {
-    _.on(Factory.eventName(IdleEvent.name()), () => {done()}, id);
+    $.on(Factory.eventName(IdleEvent.name()), () => {done()}, id);
     idle = new IdleEvent(options);
   });
   it('event does fires if instance is destroyed', (done) => {
-    _.on(Factory.eventName(IdleEvent.name()), () => {done()}, id);
+    $.on(Factory.eventName(IdleEvent.name()), () => {done()}, id);
     //noinspection JSUnusedAssignment
     idle = new IdleEvent(options);
     idle = null;
   });
   it('reset works', (done) => {
-    const errorFn = _.on(Factory.eventName(IdleEvent.name()), () => {done('too early')}, id);
+    const errorFn = $.on(Factory.eventName(IdleEvent.name()), () => {done('too early')}, id);
     idle          = new IdleEvent(options);
     setTimeout(() => {idle.reset()}, 5);
     setTimeout(() => {
-      _.off(Factory.eventName(IdleEvent.name()), errorFn);
-      _.on(Factory.eventName(IdleEvent.name()), () => {done()}, id);
+      $.off(Factory.eventName(IdleEvent.name()), errorFn);
+      $.on(Factory.eventName(IdleEvent.name()), () => {done()}, id);
     }, 12);
   });
   it('activity resets counter', (done) => {
-    const errorFn = _.on(Factory.eventName(IdleEvent.name()), () => {done('too early')}, id);
+    const errorFn = $.on(Factory.eventName(IdleEvent.name()), () => {done('too early')}, id);
     idle          = new IdleEvent(options);
-    setTimeout(() => {_.trigger('click')}, 5);
+    setTimeout(() => {$.trigger('click')}, 5);
     setTimeout(() => {
-      _.off(Factory.eventName(IdleEvent.name()), errorFn);
-      _.on(Factory.eventName(IdleEvent.name()), () => {done()}, id);
+      $.off(Factory.eventName(IdleEvent.name()), errorFn);
+      $.on(Factory.eventName(IdleEvent.name()), () => {done()}, id);
     }, 12);
   });
   it('stop works', (done) => {
-    _.on(Factory.eventName(IdleEvent.name()), () => {done('too early')}, id);
+    $.on(Factory.eventName(IdleEvent.name()), () => {done('too early')}, id);
     idle = new IdleEvent(options);
     idle.stop();
     setTimeout(() => {done()}, 100);
   });
   it('fireOnce = true', (done) => {
     let count = 0;
-    _.on(Factory.eventName(IdleEvent.name()), () => {count++;}, id);
+    $.on(Factory.eventName(IdleEvent.name()), () => {count++;}, id);
     idle = new IdleEvent(options);
     setTimeout(() => {
       expect(count).to.be.equal(1);
@@ -72,7 +73,7 @@ describe('IdleEvent', function () {
   });
   it('fireOnce = false', (done) => {
     let count = 0;
-    _.on(Factory.eventName(IdleEvent.name()), () => {count++;}, id);
+    $.on(Factory.eventName(IdleEvent.name()), () => {count++;}, id);
     idle = new IdleEvent(_.extend({}, options, {fireOnce: false}));
     setTimeout(() => {
       expect(count).to.be.above(1);
@@ -82,9 +83,9 @@ describe('IdleEvent', function () {
   it('multiple events', (done) => {
     let first = false, second = false;
     new IdleEvent(options);
-    _.on(Factory.eventName(IdleEvent.name()), () => {first = true}, id);
+    $.on(Factory.eventName(IdleEvent.name()), () => {first = true}, id);
     new IdleEvent(_.extend({}, options, {detailOrId: ++id}));
-    _.on(Factory.eventName(IdleEvent.name()), () => {second = true}, id);
+    $.on(Factory.eventName(IdleEvent.name()), () => {second = true}, id);
     setTimeout(() => {
       expect(first).to.be.true;
       expect(second).to.be.true;

@@ -2,6 +2,7 @@
  * Proudly created by ohad on 30/12/2016.
  */
 let _         = require('../../../common/util/wrapper'),
+    $         = require('../../../common/util/dom'),
     Logger    = require('../../../common/log/logger'),
     Level     = require('../../../common/log/logger').Level,
     BaseError = require('../../../common/log/base.error'),
@@ -16,7 +17,7 @@ Master.register(exports);
  */
 exports.execute = function (options) {
   require.ensure(['./typer-js', 'typer-js/typer.css'], function (require) {
-    if (!_styleLoaded) _.load(require('typer-js/typer.css'));
+    if (!_styleLoaded) $.load(require('typer-js/typer.css'));
     _styleLoaded = true;
     options.typerFn(require('./typer-js'));
     if (options.toLog) {
@@ -26,7 +27,7 @@ exports.execute = function (options) {
         let allVisible     = true;
         let notVisibleText = '';
         document.querySelectorAll('[data-typer-child]').forEach((elem) => {
-          if (!_.isVisible(elem)) {
+          if (!$.isVisible(elem)) {
             allVisible     = false;
             notVisibleText = elem.textContent;
           }

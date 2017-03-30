@@ -5,14 +5,14 @@
  */
 const Client = require('../client'),
       _      = require('../util/wrapper'),
-      Const           = require('../../../common/const'),
-      Storage         = require('./storage');
+      Const  = require('../../../common/const');
 /**
  * Sends a HTTP request with message.
  * @param {Object} message
+ * @param {function} callback - to execute once the request had been completed successfully.
  */
 exports.save = function save(message, callback) {
-  message = _enrich(message);
+  message   = _enrich(message);
   const url = process.env.BACKEND_HOST + '/' + message.backendUrl;
   delete message.backendUrl;
   _.http.ajax(url, message, callback);
@@ -24,28 +24,22 @@ exports.save = function save(message, callback) {
  * @param {function} onReady
  */
 exports.init = function (options, onReady) {
-  // Waiting for google analytics, so that Client.id exists.
-  // Client.init(() => {
-    let userMessage = {
-      backendUrl: Const.BACKEND_URL.CLIENT,
-      client    : {
-        agent         : Client.agent,
-        cookiesEnabled: Client.cookiesEnabled,
-        screen        : {
-          height: window.innerHeight,
-          width : window.innerWidth
-        }
+  let userMessage = {
+    backendUrl: Const.BACKEND_URL.CLIENT,
+    client    : {
+      agent         : Client.agent,
+      cookiesEnabled: Client.cookiesEnabled,
+      screen        : {
+        height: window.innerHeight,
+        width : window.innerWidth
       }
-    };
-    if (window.screen) {
-      userMessage.client.screen.availHeight = window.screen.availHeight;
-      userMessage.client.screen.availWidth  = window.screen.availWidth;
     }
-  //   Storage.save(userMessage);
-  // // });
-  // onReady();
+  };
+  if (window.screen) {
+    userMessage.client.screen.availHeight = window.screen.availHeight;
+    userMessage.client.screen.availWidth  = window.screen.availWidth;
+  }
   exports.save(userMessage, onReady);
-  // _.http.ajax(process.env.BACKEND_HOST + '/' + Const.BACKEND_URL.CLIENT, userMessage, onReady)
 };
 
 /**
@@ -56,11 +50,6 @@ exports.init = function (options, onReady) {
 function _enrich(message) {
   return _.extend(message, {
     timestamp: new Date().getTime(),
-    // client   : {
-    //   id     : Client.id,
-    //   created: Client.created
-    // },
-    // url      : window.location.href,
     tracker  : Client.tracker
   });
 }

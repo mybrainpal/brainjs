@@ -3,6 +3,7 @@
  */
 const expect           = require('chai').expect,
       _                = require('../../../../common/util/wrapper'),
+      $                = require('../../../../common/util/dom'),
       BaseError        = require('../../../../common/log/base.error.js'),
       GalleryExecutor  = require('./gallery'),
       GalleryInterface = require('./interface'),
@@ -14,11 +15,11 @@ describe('GalleryExecutor', function () {
   before(() => {
     options       = {sourceSelectors: '#div img', container: '#container'};
     animationSpec = _.extend({interval: 100, animationClass: 'fxSnapIn'}, options);
-    div           = _.div({id: 'div'},
-                          _.div({id: 'small', style: {width: '100px', height: '100px'}}),
-                          _.div({id: 'container'}),
-                          _.img({src: require('./testdata/sad.jpg')}),
-                          _.img({src: require('./testdata/diving.jpg')})
+    div           = $.div({id: 'div'},
+                          $.div({id: 'small', style: {width: '100px', height: '100px'}}),
+                          $.div({id: 'container'}),
+                          $.img({src: require('./testdata/sad.jpg')}),
+                          $.img({src: require('./testdata/diving.jpg')})
     );
     document.querySelector('body').appendChild(div);
   });
@@ -89,8 +90,6 @@ describe('GalleryExecutor', function () {
     expect(document.querySelectorAll(`.${styles.component}`)).to.have.length(2);
   });
   it('narrow and wide', () => {
-    // imgNarrow.src = require('./testdata/sad.jpg');
-    // imgWide.src   = require('./testdata/diving.jpg');
     GalleryExecutor.execute(_.extend({}, options, {container: '#small'}));
     expect(
       document.querySelector(`#small img.${styles.narrow}`).clientWidth).to.be.at.least(100);

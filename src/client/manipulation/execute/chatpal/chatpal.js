@@ -2,6 +2,7 @@
  * Proudly created by ohad on 21/03/2017.
  */
 const _         = require('../../../common/util/wrapper'),
+      $         = require('../../../common/util/dom'),
       Logger    = require('../../../common/log/logger'),
       Level     = require('../../../common/log/logger').Level,
       Interface = require('./interface'),
@@ -52,7 +53,7 @@ class ChatPal {
     this.chatBox.style.display = '';
     _.delay.call(this, () => {this.chatBox.classList.remove(styles.hidden)});
     _.delay.call(this, this._scrollDown, 500);
-    this.floatingImg = _.img(
+    this.floatingImg = $.img(
       {class: styles.floatingImg, src: this.profile.imgSrc, style: {top: '400px', left: '230px'}});
     this.chatBox.appendChild(this.floatingImg);
     _.delay.call(this, () => {
@@ -76,7 +77,7 @@ class ChatPal {
     }, 150);
     _.delay.call(this, () => {
       this.floatingImg.classList.add(styles.animate);
-      _.style(this.floatingImg, {top: '20px', left: ''});
+      $.style(this.floatingImg, {top: '20px', left: ''});
     });
     this.chatBox.querySelector(`.${styles.profile} p`).innerHTML    = this.profile.name;
     this.chatBox.querySelector(`.${styles.profile} span`).innerHTML = this.profile.description;
@@ -101,7 +102,7 @@ class ChatPal {
     this.chatBox.querySelectorAll(`.${styles.cx}, .${styles.cy}`).forEach(function (item) {
       item.classList.remove(styles.s1, styles.s2, styles.s3);
     });
-    _.style(this.floatingImg, {top: '400px', left: '230px'});
+    $.style(this.floatingImg, {top: '400px', left: '230px'});
     this.floatingImg.classList.remove(styles.animate);
     _.delay.call(this, () => {
       if (this.floatingImg && this.floatingImg.parentNode) {
@@ -138,10 +139,10 @@ class ChatPal {
       this._appendMessage(this._createMessage(html, false));
       return;
     }
-    let typing  = _.div({class: [styles.typing, styles.animate]},
-                        _.span(), _.span(), _.span());
+    let typing  = $.div({class: [styles.typing, styles.animate]},
+                        $.span(), $.span(), $.span());
     let message = this._appendMessage(this._createMessage(typing, false));
-    _.trigger(Interface.typingEvent, this.id);
+    $.trigger(Interface.typingEvent, this.id);
     _.delay.call(this, () => {
       typing.classList.remove(styles.animate);
       typing.classList.add(styles['bounce-out']);
@@ -167,26 +168,26 @@ class ChatPal {
    */
   _create() {
     if (!_styleLoaded) {
-      _.load(css);
+      $.load(css);
       _styleLoaded = true;
     }
     this.state    = Interface.state.CLOSE;
     let height    = 0;
     const that    = this;
     //noinspection JSUnusedGlobalSymbols
-    this.chatBox  = _.div(
+    this.chatBox  = $.div(
       {
         id: Interface.id(this.id), class: [styles['chat-container'], styles.hidden],
         style                           : {display: 'none'}
       },
-      _.div({class: styles.view},
-            _.div({class: styles.profile, style: {backgroundColor: this.themeColor}},
-                  _.div({class: styles.cross, onclick: this.close.bind(this)},
-                        _.div({class: styles.cy}),
-                        _.div({class: styles.cx})),
-                  _.p(this.profile.name),
-                  _.span(this.profile.description)),
-            _.div({
+      $.div({class: styles.view},
+            $.div({class: styles.profile, style: {backgroundColor: this.themeColor}},
+                  $.div({class: styles.cross, onclick: this.close.bind(this)},
+                        $.div({class: styles.cy}),
+                        $.div({class: styles.cx})),
+                  $.p(this.profile.name),
+                  $.span(this.profile.description)),
+            $.div({
                     class: styles.messages, onscroll: (ev) => {
                 if (that.state === Interface.state.OPEN) return;
                 if (!height) {
@@ -198,8 +199,8 @@ class ChatPal {
                 }
               }
                   }),
-            _.div({class: styles.send},
-                  _.create('input', {
+            $.div({class: styles.send},
+                  $.create('input', {
                     type: 'text', value: _inputDefault, onfocus: (ev) => {
                       if (ev.target.value === _inputDefault) ev.target.value = '';
                       that.chatBox.querySelector(`.${styles.send}`).style.backgroundColor = '#fff';
@@ -210,16 +211,16 @@ class ChatPal {
                       if (ev.key === 'Enter') that._sendMessage();
                     }
                   }),
-                  _.create('button', {onclick: () => {that._sendMessage()}}))));
+                  $.create('button', {onclick: () => {that._sendMessage()}}))));
     this.messages = this.chatBox.querySelector(`.${styles.messages}`);
     this.input    = this.chatBox.querySelector(`.${styles.send} input`);
-    this.buttons  = _.div({
+    this.buttons  = $.div({
                             class  : styles['button-container'],
                             style  : {backgroundColor: this.themeColor},
                             onclick: this.toggle.bind(this)
                           },
-                          _.div({class: styles['open-button']}),
-                          _.div({class: [styles['close-button'], styles.hidden]}));
+                          $.div({class: styles['open-button']}),
+                          $.div({class: [styles['close-button'], styles.hidden]}));
     document.querySelector('body').appendChild(this.chatBox);
     document.querySelector('body').appendChild(this.buttons);
   }
@@ -231,13 +232,13 @@ class ChatPal {
    * @private
    */
   _createMessage(html, fromUser) {
-    let newMessage = _.div({class: styles.message},
-                           _.img({src: this.profile.imgSrc}),
-                           _.div({
+    let newMessage = $.div({class: styles.message},
+                           $.img({src: this.profile.imgSrc}),
+                           $.div({
                                    class: styles.bubble,
                                    style: {backgroundColor: fromUser ? this.themeColor : ''}
                                  }, html,
-                                 _.div({class: styles.corner})));
+                                 $.div({class: styles.corner})));
     if (fromUser) newMessage.classList.add(styles.right);
     return newMessage;
   }
@@ -301,7 +302,7 @@ class ChatPal {
    */
   _addNotification() {
     if (!this.notification || !this.notification.parentNode) {
-      this.notification = _.div({class: styles.notification}, '0');
+      this.notification = $.div({class: styles.notification}, '0');
       this.buttons.appendChild(this.notification);
     }
     let val                     = Number.parseInt(this.notification.innerHTML);
@@ -341,7 +342,7 @@ class ChatPal {
    * @private
    */
   _checkVisibility() {
-    if (!_.isVisible(this.buttons) || !_.isVisible(this.chatBox)) {
+    if (!$.isVisible(this.buttons) || !$.isVisible(this.chatBox)) {
       Logger.log(Level.WARNING,
                  'ChatPal ' + (this.id ? ' ' + this.id : '') + 'is not visible.');
     }

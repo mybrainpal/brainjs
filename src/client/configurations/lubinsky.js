@@ -1,7 +1,7 @@
 /**
  * Proudly created by ohad on 10/03/2017.
  */
-const _                 = require('../common/util/wrapper'),
+const $                 = require('../common/util/dom'),
       Play              = require('../play'),
       Factory           = require('../common/events/factory'),
       IdleEvent         = require('../common/events/idle'),
@@ -137,14 +137,14 @@ Play(
                             _sendForm(formData);
                           });
                       new WordEvent({
-                        waitTime: 500, enforceRegex: true, regex: /^0[0-9]{9}$/,
-                        target                                  : 'input.swal2-input'
-                      });
-                      _.on(Factory.eventName(WordEvent.name()),
+                                      waitTime: 500, enforceRegex: true, regex: /^0[0-9]{9}$/,
+                                      target                                  : 'input.swal2-input'
+                                    });
+                      $.on(Factory.eventName(WordEvent.name()),
                            () => {
                              swal.clickConfirm();
                              new WordEvent({waitTime: 1000, target: 'input.swal2-input'});
-                             _.on(Factory.eventName(WordEvent.name()),
+                             $.on(Factory.eventName(WordEvent.name()),
                                   () => {
                                     swal.clickConfirm();
                                   }, {}, 'input.swal2-input');
@@ -188,5 +188,5 @@ function _sendForm(formData) {
   document.querySelector('#Input_textbox_0').value  = formData.name;
   document.querySelector('#Input_textbox_1').value  = formData.tel;
   document.querySelector('#Input_ndropbox_0').value = formData.city;
-  _.trigger('click', {}, '#Button_submitButton_0');
+  $.trigger('click', {}, '#Button_submitButton_0');
 }

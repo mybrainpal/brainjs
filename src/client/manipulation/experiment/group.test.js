@@ -18,25 +18,29 @@ describe('Group', function () {
     }];
   });
   it('constructor', () => {
-    group = new Group({experimentId: 1});
+    group = new Group({id: 1, experimentId: 1});
     expect(group).to.be.instanceOf(Group);
     expect(group.included).to.be.true;
-    group = new Group({experimentId: 1, label: 'a', executors: [1]});
+    expect(group.id).to.eq(1);
+    expect(group.experimentId).to.eq(1);
+    group = new Group({id: 1, experimentId: 1, label: 'a', executors: [1]});
     expect(group.label).to.equal('a');
     expect(group.executors).to.deep.equal([1]);
-    group = new Group({experimentId: 1, executors: {name: 'a'}});
+    group = new Group({id: 1, experimentId: 1, executors: {name: 'a'}});
     expect(group.executors).to.deep.equal([{name: 'a'}]);
 
     expect(() => {new Group()}).to.throw(BaseError);
     expect(() => {new Group({})}).to.throw(BaseError);
-    expect(() => {new Group({experimentId: 1, label: 1})}).to.throw(BaseError);
+    expect(() => {new Group({experimentId: 1})}).to.throw(BaseError);
+    expect(() => {new Group({id: 1})}).to.throw(BaseError);
+    expect(() => {new Group({id: 1, experimentId: 1, label: 1})}).to.throw(BaseError);
   });
   it('client included', () => {
-    group = new Group({experimentId: 1, demographics: clientDemographics});
+    group = new Group({id: 1, experimentId: 1, demographics: clientDemographics});
     expect(group.included).to.be.true;
   });
   it('client not included', () => {
-    group = new Group({experimentId: 1, demographics: nonClientDemographics});
+    group = new Group({id: 1, experimentId: 1, demographics: nonClientDemographics});
     expect(group.included).to.be.false;
   });
 });

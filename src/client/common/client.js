@@ -3,33 +3,15 @@
  *
  * Properties of the lucky client running BrainPal.
  */
-const GoogleAnalytics = require('../integrations/google-analytics'),
-      _               = require('../common/util/wrapper'),
-      Logger          = require('../common/log/logger'),
-      Level = require('../common/log/logger').Level,
-      Const = require('../../common/const');
+const _ = require('../common/util/wrapper');
 
 /**
  * Initializes client properties.
  * @param {function} [callback]
  */
 exports.init = function (callback) {
-  if (exports.id && exports.created) return;
-  // Using Google Analytics as storage should be defined prior to this code.
-  GoogleAnalytics.init();
-  if (process.env.NODE_ENV === Const.ENV.PROD) {
-    GoogleAnalytics.onReady(() => {
-      try {
-        exports.id = Number.parseInt(
-          window.ga.getByName(GoogleAnalytics.trackerName).get('clientId').split('.')[0]);
-      } catch (e) {
-        Logger.log(Level.WARNING, 'No client ID from Google Analytics.');
-      }
-      if (_.isNil(exports.id)) exports.id = Math.round(Math.random() * 1000000);
-      if (callback) callback();
-    });
-  } else if (callback) callback();
-  exports.created = new Date().getTime();
+  if (_.isNil(exports.id)) exports.id = Math.round(Math.random() * 1000000) + 1;
+  if (_.isFunction(callback)) callback();
 };
 
 /**
@@ -78,7 +60,7 @@ exports.canRunBrainPal = function () {
     return false;
   }
   for (i = 0; i < allowedOs.length; i++) {
-    if (agent.os.toLowerCase().indexOf(allowedOs[i]) != -1) {
+    if (agent.os.toLowerCase().indexOf(allowedOs[i]) !== -1) {
       return true;
     }
   }
@@ -92,9 +74,9 @@ exports.canRunBrainPal = function () {
 exports.cookiesEnabled = (function () {
   let cookieEnabled = navigator.cookieEnabled;
 
-  if (typeof navigator.cookieEnabled == 'undefined' && !cookieEnabled) {
+  if (typeof navigator.cookieEnabled === 'undefined' && !cookieEnabled) {
     document.cookie = 'testcookie';
-    cookieEnabled   = document.cookie.indexOf('testcookie') != -1;
+    cookieEnabled   = document.cookie.indexOf('testcookie') !== -1;
   }
   return cookieEnabled;
 })();
@@ -133,45 +115,45 @@ function _parseUserAgent() {
   version = '' + parseFloat(navigator.appVersion);
 
   // Opera
-  if ((verOffset = nAgt.indexOf('Opera')) != -1) {
+  if ((verOffset = nAgt.indexOf('Opera')) !== -1) {
     browser = 'Opera';
     version = nAgt.substring(verOffset + 6);
-    if ((verOffset = nAgt.indexOf('Version')) != -1) {
+    if ((verOffset = nAgt.indexOf('Version')) !== -1) {
       version = nAgt.substring(verOffset + 8);
     }
   }
   // Opera Next
-  if ((verOffset = nAgt.indexOf('OPR')) != -1) {
+  if ((verOffset = nAgt.indexOf('OPR')) !== -1) {
     browser = 'Opera';
     version = nAgt.substring(verOffset + 4);
   }
   // Edge
-  else if ((verOffset = nAgt.indexOf('Edge')) != -1) {
+  else if ((verOffset = nAgt.indexOf('Edge')) !== -1) {
     browser = 'Microsoft Edge';
     version = nAgt.substring(verOffset + 5);
   }
   // Chrome
-  else if ((verOffset = nAgt.indexOf('Chrome')) != -1) {
+  else if ((verOffset = nAgt.indexOf('Chrome')) !== -1) {
     browser = 'Chrome';
     version = nAgt.substring(verOffset + 7);
   }
   // Safari
-  else if ((verOffset = nAgt.indexOf('Safari')) != -1) {
+  else if ((verOffset = nAgt.indexOf('Safari')) !== -1) {
     browser = 'Safari';
     version = nAgt.substring(verOffset + 7);
-    if ((verOffset = nAgt.indexOf('Version')) != -1) {
+    if ((verOffset = nAgt.indexOf('Version')) !== -1) {
       version = nAgt.substring(verOffset + 8);
     }
   }
   // Firefox
-  else if ((verOffset = nAgt.indexOf('Firefox')) != -1) {
+  else if ((verOffset = nAgt.indexOf('Firefox')) !== -1) {
     browser = 'Firefox';
     version = nAgt.substring(verOffset + 8);
   }
   // trim the version string
-  if ((ix = version.indexOf(';')) != -1) version = version.substring(0, ix);
-  if ((ix = version.indexOf(' ')) != -1) version = version.substring(0, ix);
-  if ((ix = version.indexOf(')')) != -1) version = version.substring(0, ix);
+  if ((ix = version.indexOf(';')) !== -1) version = version.substring(0, ix);
+  if ((ix = version.indexOf(' ')) !== -1) version = version.substring(0, ix);
+  if ((ix = version.indexOf(')')) !== -1) version = version.substring(0, ix);
 
   majorVersion = parseInt('' + version, 10);
   if (isNaN(majorVersion)) {

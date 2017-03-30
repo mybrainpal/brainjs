@@ -1,7 +1,7 @@
 /**
  * Proudly created by ohad on 23/12/2016.
  */
-let _             = require('../../../common/util/wrapper'),
+let $             = require('../../../common/util/dom'),
     BaseError     = require('../../../common/log/base.error'),
     expect        = require('chai').expect,
     chai          = require('chai'),
@@ -31,59 +31,59 @@ describe('EventExecutor', function () {
     expect(() => {EventExecutor.preconditions({create: {event: 'a'}})}).to.not.throw(Error);
   });
   it('event triggered without listener', (done) => {
-    _.on('triggered', () => { done(); });
+    $.on('triggered', () => { done(); });
     EventExecutor.execute({trigger: {event: 'triggered'}});
   });
   it('multiple triggers', (done) => {
-    Promise.all([new Promise((resolve) => { _.on('triggered1', resolve); }),
-                 new Promise((resolve) => { _.on('triggered2', resolve); })])
+    Promise.all([new Promise((resolve) => { $.on('triggered1', resolve); }),
+                 new Promise((resolve) => { $.on('triggered2', resolve); })])
            .then(() => { done(); });
     EventExecutor.execute({trigger: [{event: 'triggered1'}, {event: 'triggered2'}]});
   });
   it('event triggered with listener', (done) => {
-    _.on('triggered', () => { done(); });
+    $.on('triggered', () => { done(); });
     EventExecutor.execute({listen: {event: 'listen'}, trigger: {event: 'triggered'}});
-    _.trigger('listen');
+    $.trigger('listen');
   });
   it('callback called', (done) => {
     EventExecutor.execute({listen: {event: 'listen'}, callback: () => { done() }});
-    _.trigger('listen');
+    $.trigger('listen');
   });
   it('event fires with matching detail', (done) => {
-    _.on('ev', () => { done(); });
+    $.on('ev', () => { done(); });
     EventExecutor.execute({listen: {event: 'listen', detailOrId: 1}, trigger: {event: 'ev'}});
-    _.trigger('listen', 1);
+    $.trigger('listen', 1);
   });
   it('missing detail still fired', (done) => {
-    _.on('triggered', () => { done(); });
+    $.on('triggered', () => { done(); });
     EventExecutor.execute({listen: {event: 'listen'}, trigger: {event: 'triggered'}});
-    _.trigger('listen', 1);
+    $.trigger('listen', 1);
   });
   it('mismatching detail - don\'t fire', (done) => {
-    _.on('ev', () => { done('should not have fired'); });
+    $.on('ev', () => { done('should not have fired'); });
     EventExecutor.execute({listen: {event: 'listen', detailOrId: 1}, trigger: {event: 'ev'}});
-    _.trigger('listen', 2);
+    $.trigger('listen', 2);
     setTimeout(() => {done()}, 100);
   });
   it('event triggered with multiple listeners and race', (done) => {
-    _.on('triggered', () => { done(); });
+    $.on('triggered', () => { done(); });
     EventExecutor.execute({
                             listen : [{event: 'listen1'}, {event: 'listen2'}],
                             trigger: {event: 'triggered'}
                           });
-    _.trigger('listen2');
+    $.trigger('listen2');
   });
   it('event triggered after all listeners fired', (done) => {
     let triggered = false;
-    _.on('triggered', () => { triggered = true; });
+    $.on('triggered', () => { triggered = true; });
     EventExecutor.execute({
                             listen    : [{event: 'listen1'}, {event: 'listen2'}],
                             waitForAll: true,
                             trigger   : {event: 'triggered'}
                           });
-    _.trigger('listen1');
+    $.trigger('listen1');
     setTimeout(() => { expect(triggered).to.be.false });
-    setTimeout(() => {_.trigger('listen2');});
+    setTimeout(() => {$.trigger('listen2');});
     setTimeout(() => {
       expect(triggered).to.be.true;
       done();

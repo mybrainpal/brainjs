@@ -5,6 +5,7 @@
  * The whole purpose of a Demographics instance is to decide whether the client belongs to it.
  */
 let _         = require('../../common/util/wrapper'),
+    $         = require('../../common/util/dom'),
     Client    = require('../../common/client'),
     BaseError = require('../../common/log/base.error'),
     Const     = require('../../../common/const');

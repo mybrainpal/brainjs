@@ -2,6 +2,7 @@
  * Proudly created by ohad on 30/12/2016.
  */
 let _         = require('./../../../common/util/wrapper'),
+    $         = require('./../../../common/util/dom'),
     Logger    = require('../../../common/log/logger'),
     Level     = require('../../../common/log/logger').Level,
     BaseError = require('../../../common/log/base.error'),
@@ -19,13 +20,13 @@ exports.execute = function (options) {
   // TODO(ohad): support multiple style loads.
   if (options.rtl) {
     require.ensure('alertifyjs/build/css/alertify.rtl.css', function (require) {
-      if (!_styleLoaded) _.load(require('alertifyjs/build/css/alertify.rtl.css'));
+      if (!_styleLoaded) $.load(require('alertifyjs/build/css/alertify.rtl.css'));
       _styleLoaded = true;
       _run(options);
     });
   } else {
     require.ensure('alertifyjs/build/css/alertify.css', function (require) {
-      if (!_styleLoaded) _.load(require('alertifyjs/build/css/alertify.css'));
+      if (!_styleLoaded) $.load(require('alertifyjs/build/css/alertify.css'));
       _styleLoaded = true;
       _run(options);
     });

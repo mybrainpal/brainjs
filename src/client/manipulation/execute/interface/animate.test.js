@@ -2,7 +2,7 @@
  * Proudly created by ohad on 10/03/2017.
  */
 let expect           = require('chai').expect,
-    _                = require('../../../common/util/wrapper'),
+    $                = require('../../../common/util/dom'),
     BaseError        = require('../../../common/log/base.error'),
     AnimateInterface = require('./animate');
 
@@ -12,7 +12,7 @@ describe.skip('AnimateInterface', function () {
   this.timeout(5000);
   before(() => {
     divId = 'lorenz-buffel';
-    div   = _.div({id: divId, style: {width: '100px', height: '100px', 'background-color': 'red'}});
+    div   = $.div({id: divId, style: {width: '100px', height: '100px', 'background-color': 'red'}});
     document.querySelector('body').appendChild(div);
     animationName = 'bounceIn';
   });

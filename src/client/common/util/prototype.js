@@ -2,13 +2,13 @@
  * Proudly created by ohad on 10/01/2017.
  */
 
-const _ = module.exports;
+const _ = exports;
 
 /**
  * @param {*} obj
  * @returns {boolean}
  */
-exports.isNil = function (obj) {
+_.isNil = function (obj) {
   return obj === undefined || obj === null;
 };
 
@@ -300,7 +300,7 @@ _.arrify = function (val) {
  * @returns {Object} flattened json (i.e. one that has no nested properties).
  * Taken from http://jsfiddle.net/WSzec/6/
  */
-exports.flatten = function (json) {
+_.flatten = function (json) {
   if (!_.isObject(json)) return json;
   let flattened = {};
 
@@ -312,7 +312,7 @@ exports.flatten = function (json) {
       for (; i < l; i++) {
         recurse(cur[i], prop ? prop + '.' + i : '' + i);
       }
-      if (l == 0 && prop) {
+      if (l === 0 && prop) {
         flattened[prop] = [];
       }
     } else {

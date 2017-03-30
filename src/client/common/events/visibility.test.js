@@ -2,6 +2,7 @@
  * Proudly created by ohad on 27/01/2017.
  */
 const _               = require('../util/wrapper'),
+      $               = require('../util/dom'),
       BaseError       = require('../log/base.error'),
       expect          = require('chai').expect,
       Factory         = require('./factory'),
@@ -51,35 +52,35 @@ describe('VisiblityEvent', function () {
     expect(() => {new VisibilityEvent({target: a, frequency: '4s'})}).to.throw(BaseError);
   });
   it('event fires', (done) => {
-    _.on(Factory.eventName(VisibilityEvent.name()), () => {done()}, id, a);
+    $.on(Factory.eventName(VisibilityEvent.name()), () => {done()}, id, a);
     visibilityEvent = new VisibilityEvent(options);
   });
   it('event does fires if instance is destroyed', (done) => {
-    _.on(Factory.eventName(VisibilityEvent.name()), () => {done()}, id, a);
+    $.on(Factory.eventName(VisibilityEvent.name()), () => {done()}, id, a);
     //noinspection JSUnusedAssignment
     visibilityEvent = new VisibilityEvent(options);
     visibilityEvent = null;
   });
   it('waits until element is visible', (done) => {
     const errorFn   =
-            _.on(Factory.eventName(VisibilityEvent.name()), () => {done('too early')}, id, a);
+            $.on(Factory.eventName(VisibilityEvent.name()), () => {done('too early')}, id, a);
     visibilityEvent = new VisibilityEvent(options);
     a.style.opacity = '0';
     setTimeout(() => {
       a.style.opacity = '1';
-      _.off(Factory.eventName(VisibilityEvent.name()), errorFn, a);
-      _.on(Factory.eventName(VisibilityEvent.name()), () => {done()}, id, a);
+      $.off(Factory.eventName(VisibilityEvent.name()), errorFn, a);
+      $.on(Factory.eventName(VisibilityEvent.name()), () => {done()}, id, a);
     }, 10);
   });
   it('stop works', (done) => {
-    _.on(Factory.eventName(VisibilityEvent.name()), () => {done('too early')}, id, a);
+    $.on(Factory.eventName(VisibilityEvent.name()), () => {done('too early')}, id, a);
     visibilityEvent = new VisibilityEvent(options);
     visibilityEvent.stop();
     setTimeout(() => {done()}, 20);
   });
   it('stopOnVisible = true', (done) => {
     let count = 0;
-    _.on(Factory.eventName(VisibilityEvent.name()), () => {count++;}, id, a);
+    $.on(Factory.eventName(VisibilityEvent.name()), () => {count++;}, id, a);
     visibilityEvent = new VisibilityEvent(_.extend({}, options, {stopOnVisible: true}));
     setTimeout(() => {
       expect(count).to.be.equal(1);
@@ -88,7 +89,7 @@ describe('VisiblityEvent', function () {
   });
   it('stopOnVisible = false', (done) => {
     let count = 0;
-    _.on(Factory.eventName(VisibilityEvent.name()), () => {count++;}, id, a);
+    $.on(Factory.eventName(VisibilityEvent.name()), () => {count++;}, id, a);
     visibilityEvent = new VisibilityEvent(_.extend({}, options, {stopOnVisible: false}));
     setTimeout(() => {
       a.style.opacity = '0';

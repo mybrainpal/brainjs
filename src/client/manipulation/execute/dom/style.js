@@ -1,7 +1,7 @@
 /**
  * Proudly created by ohad on 19/12/2016.
  */
-let _         = require('./../../../common/util/wrapper'),
+let $         = require('./../../../common/util/dom'),
     Logger    = require('../../../common/log/logger'),
     Level     = require('../../../common/log/logger').Level,
     BaseError = require('../../../common/log/base.error'),
@@ -15,7 +15,7 @@ Master.register(exports);
  *  content of a style module.
  */
 exports.execute = function (options) {
-  const newStylesheet = _.load(options.css);
+  const newStylesheet = $.load(options.css);
   if (options.toLog) {
     if (newStylesheet) {
       Logger.log(Level.INFO,
@@ -31,7 +31,7 @@ exports.execute = function (options) {
  * @param {Object} options
  */
 exports.preconditions = function (options) {
-  if (!_.loadable(options.css)) {
+  if (!$.loadable(options.css)) {
     throw new BaseError('StyleExecutor: css is not loadable.');
   }
 };
