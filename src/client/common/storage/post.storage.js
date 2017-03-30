@@ -54,7 +54,7 @@ exports.init = function (options, onReady) {
  * @private
  */
 function _enrich(message) {
-  return _.deepExtend(message, {
+  return _.extend(message, {
     timestamp: new Date().getTime(),
     // client   : {
     //   id     : Client.id,

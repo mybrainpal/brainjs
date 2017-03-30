@@ -1,7 +1,8 @@
 /**
  * Proudly created by ohad on 16/01/2017.
  */
-const Master = require('../../master');
+const _      = require('../../../../common/util/wrapper'),
+      Master = require('../../master');
 exports.name = 'tooltip';
 Master.register(exports);
 /**
@@ -20,3 +21,17 @@ exports.execute = function (options) {
  * @param {Object} options
  */
 exports.preconditions = function (options) {};
+
+/**
+ * Name prefix for attributes, events and ids.
+ * @type {string}
+ */
+exports.namePrefix = 'brainpal-' + exports.name;
+
+/**
+ * @param {string|number} [id]
+ * @returns {string} prefixes namePrefix to id, if it is not nil.
+ */
+exports.tooltipId = function (id) {
+  return _.isNil(id) ? exports.namePrefix : `${exports.namePrefix}-${id.toString()}`;
+};

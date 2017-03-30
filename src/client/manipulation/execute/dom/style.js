@@ -15,7 +15,7 @@ Master.register(exports);
  *  content of a style module.
  */
 exports.execute = function (options) {
-  const newStylesheet = _.css.load(options.css);
+  const newStylesheet = _.load(options.css);
   if (options.toLog) {
     if (newStylesheet) {
       Logger.log(Level.INFO,
@@ -31,7 +31,7 @@ exports.execute = function (options) {
  * @param {Object} options
  */
 exports.preconditions = function (options) {
-  if (!_.css.loadable(options.css)) {
+  if (!_.loadable(options.css)) {
     throw new BaseError('StyleExecutor: css is not loadable.');
   }
 };

@@ -80,7 +80,7 @@ describe('VisiblityEvent', function () {
   it('stopOnVisible = true', (done) => {
     let count = 0;
     _.on(Factory.eventName(VisibilityEvent.name()), () => {count++;}, id, a);
-    visibilityEvent = new VisibilityEvent(_.deepExtend({}, options, {stopOnVisible: true}));
+    visibilityEvent = new VisibilityEvent(_.extend({}, options, {stopOnVisible: true}));
     setTimeout(() => {
       expect(count).to.be.equal(1);
       done();
@@ -89,7 +89,7 @@ describe('VisiblityEvent', function () {
   it('stopOnVisible = false', (done) => {
     let count = 0;
     _.on(Factory.eventName(VisibilityEvent.name()), () => {count++;}, id, a);
-    visibilityEvent = new VisibilityEvent(_.deepExtend({}, options, {stopOnVisible: false}));
+    visibilityEvent = new VisibilityEvent(_.extend({}, options, {stopOnVisible: false}));
     setTimeout(() => {
       a.style.opacity = '0';
       setTimeout(() => {

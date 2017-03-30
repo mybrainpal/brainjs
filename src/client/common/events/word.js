@@ -62,7 +62,7 @@ class WordEvent {
     this.fireOnEmpty  = _.has(options, 'fireOnEmpty') && options.fireOnEmpty;
     this.fireOnEnter  = !_.has(options, 'fireOnEnter') || options.fireOnEnter;
     this.fireOnce     = !_.has(options, 'fireOnce') || options.fireOnce;
-    if (options.regex instanceof RegExp) {
+    if (_.is(options.regex, RegExp)) {
       this.regex = options.regex;
     } else if (_.isNil(options.regex)) {
       this.regex = /^[^\s]+\s$/;
@@ -75,7 +75,7 @@ class WordEvent {
     if (options.target) {
       this.target = _.isString(options.target) ? document.querySelector(options.target) :
                     options.target;
-      if (!(this.target instanceof EventTarget)) {
+      if (!(_.is(this.target, EventTarget))) {
         throw new BaseError('WordEvent: could not find target at ' + options.target);
       }
     } else {
@@ -95,10 +95,10 @@ class WordEvent {
    * @private
    */
   _init() {
-    const that              = this; // To use `this` in the listener handler.
-    this.actualInputHandler = _.on('input', () => {that.inputHandler()}, {}, this.target);
+    this.actualInputHandler = _.on.call(this, 'input', () => {this.inputHandler()}, {},
+                                        this.target);
     this.actualKeyupHandler =
-      _.on('keyup', (event) => {that.keyupHandler(event)}, {}, this.target);
+      _.on.call(this, 'keyup', (event) => {this.keyupHandler(event)}, {}, this.target);
     this._updateClass();
   };
 
@@ -137,7 +137,6 @@ class WordEvent {
    * Handles inputs.
    */
   inputHandler() {
-    const that = this; // To use `this` in the listener handler.
     this._updateClass();
     if (this.regex && this.fireOnRegex && this.regex.test(this.target.value)) {
       if (this.fireIfShould()) return;
@@ -145,8 +144,9 @@ class WordEvent {
     if (this.idleEvent) {
       this.idleEvent.reset();
     } else {
-      _.on(Factory.eventName(IdleEvent.name()), () => {that.fireIfShould()}, this.detailOrId,
-           this.target);
+      _.on.call(this, Factory.eventName(IdleEvent.name()), () => {this.fireIfShould()},
+                this.detailOrId,
+                this.target);
       this.idleEvent = new IdleEvent({
         waitTime: this.waitTime, target: this.target, detailOrId: this.detailOrId
       });

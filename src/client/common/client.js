@@ -17,8 +17,8 @@ exports.init = function (callback) {
   if (exports.id && exports.created) return;
   // Using Google Analytics as storage should be defined prior to this code.
   GoogleAnalytics.init();
-  GoogleAnalytics.onReady(() => {
-    if (process.env.NODE_ENV === Const.ENV.PROD) {
+  if (process.env.NODE_ENV === Const.ENV.PROD) {
+    GoogleAnalytics.onReady(() => {
       try {
         exports.id = Number.parseInt(
           window.ga.getByName(GoogleAnalytics.trackerName).get('clientId').split('.')[0]);
@@ -26,9 +26,9 @@ exports.init = function (callback) {
         Logger.log(Level.WARNING, 'No client ID from Google Analytics.');
       }
       if (_.isNil(exports.id)) exports.id = Math.round(Math.random() * 1000000);
-    }
-    if (callback) callback();
-  });
+      if (callback) callback();
+    });
+  } else if (callback) callback();
   exports.created = new Date().getTime();
 };
 
@@ -66,7 +66,7 @@ exports.canRunBrainPal = function () {
   let browserToMinVersions = {
     'edge'   : 14,
     'chrome' : 53,
-    'safari' : 10,
+    'safari' : 9,
     'firefox': 50,
     'opera'  : 40
   };

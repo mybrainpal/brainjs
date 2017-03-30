@@ -16,7 +16,7 @@ Master.register(exports);
  */
 exports.execute = function (options) {
   require.ensure(['sweetalert2', 'sweetalert2/dist/sweetalert2.css'], function (require) {
-    if (!_styleLoaded) _.css.load(require('sweetalert2/dist/sweetalert2.css'));
+    if (!_styleLoaded) _.load(require('sweetalert2/dist/sweetalert2.css'));
     _styleLoaded = true;
     options.swalFn(require('sweetalert2'));
     if (options.toLog) {

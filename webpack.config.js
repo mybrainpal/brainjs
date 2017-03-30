@@ -74,7 +74,7 @@ webpackConfig.entry             = Util.webpackEntries();
 webpackConfig.output.path       = path.join(__dirname, Const.DIST_DIR);
 webpackConfig.output.publicPath = envConfig.publicPath;
 webpackConfig.module.rules.push({
-                                  test: /\.(png|svg|woff|jpg|jpeg|gif)$/,
+                                  test: /\.(png|svg|woff|jpg|jpeg|gif|wav|mp3)$/,
                                   use : [{
                                     loader: 'url-loader',
                                     query : 'limit=2000000&name=[path][name].[ext]'

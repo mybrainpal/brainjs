@@ -25,7 +25,7 @@ const styles = css.locals;
  */
 exports.execute = function (options) {
   if (!_styleLoaded) {
-    _.css.load(css);
+    _.load(css);
     _styleLoaded = true;
   }
   const tooltip = _attachTooltip(options);
@@ -141,24 +141,10 @@ exports.State = Object.freeze({
                               });
 
 /**
- * Name prefix for attributes, events and ids.
- * @type {string}
- */
-exports.namePrefix = 'brainpal-' + Interface.name;
-
-/**
- * @param {string|number} id
- * @returns {string} prefixes namePrefix to id, if it is not nil.
- */
-exports.tooltipId = function (id) {
-  return _.isNil(id) ? exports.namePrefix : `${exports.namePrefix}-${id.toString()}`;
-};
-
-/**
  * Marks tooltip containers.
  * @type {string}
  */
-exports.tooltipAttribute = 'data-' + exports.namePrefix;
+exports.tooltipAttribute = 'data-' + Interface.namePrefix;
 
 /**
  * Marks the element to which one should insert the tooltip content.
@@ -183,7 +169,7 @@ function _attachTooltip(options) {
   exports.detachTooltip(target);
   let parent  = target.parentNode;
   let tooltip = _tooltipInfo[options.type].buildTypeTemplate(options);
-  tooltip.setAttribute('id', exports.tooltipId(options.id));
+  tooltip.setAttribute('id', Interface.tooltipId(options.id));
   if (options.timer > 0) {
     tooltip.setAttribute(_timerAttribute, (options.timer).toString());
   }

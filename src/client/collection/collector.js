@@ -49,7 +49,7 @@ exports.collect = function (options) {
       return;
     }
     for (i = 0; i < iterRoots.length; i++) {
-      let newOptions = _.deepExtend({}, options, {rootNode: iterRoots[i]});
+      let newOptions = _.extend({}, options, {rootNode: iterRoots[i]});
       delete newOptions.iterSelector;
       exports.collect(newOptions);
     }
@@ -64,10 +64,10 @@ exports.collect = function (options) {
       return;
     }
     targets.forEach((target) => {
-      if (target instanceof EventTarget) {
+      if (_.is(target, EventTarget)) {
         const handler = _.on(options.anchor.event, () => {
           let emitted;
-          emitted = _createSubject(_.deepExtend({anchor: {target: target}}, options));
+          emitted = _createSubject(_.extend({anchor: {target: target}}, options));
           Storage.save(emitted);
           if (!_.has(options.anchor, 'once') || options.anchor.once) {
             _.off(options.anchor.event, handler, target, true);

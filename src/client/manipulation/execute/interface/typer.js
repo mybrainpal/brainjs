@@ -16,7 +16,7 @@ Master.register(exports);
  */
 exports.execute = function (options) {
   require.ensure(['./typer-js', 'typer-js/typer.css'], function (require) {
-    if (!_styleLoaded) _.css.load(require('typer-js/typer.css'));
+    if (!_styleLoaded) _.load(require('typer-js/typer.css'));
     _styleLoaded = true;
     options.typerFn(require('./typer-js'));
     if (options.toLog) {

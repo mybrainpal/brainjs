@@ -19,13 +19,13 @@ exports.execute = function (options) {
   // TODO(ohad): support multiple style loads.
   if (options.rtl) {
     require.ensure('alertifyjs/build/css/alertify.rtl.css', function (require) {
-      if (!_styleLoaded) _.css.load(require('alertifyjs/build/css/alertify.rtl.css'));
+      if (!_styleLoaded) _.load(require('alertifyjs/build/css/alertify.rtl.css'));
       _styleLoaded = true;
       _run(options);
     });
   } else {
     require.ensure('alertifyjs/build/css/alertify.css', function (require) {
-      if (!_styleLoaded) _.css.load(require('alertifyjs/build/css/alertify.css'));
+      if (!_styleLoaded) _.load(require('alertifyjs/build/css/alertify.css'));
       _styleLoaded = true;
       _run(options);
     });

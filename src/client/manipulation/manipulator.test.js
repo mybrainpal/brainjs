@@ -73,7 +73,7 @@ describe('Manipulator', function () {
   afterEach(() => {
     InMemory.flush();
     // Clean all injected styles.
-    document.querySelectorAll('style[' + _.css.identifyingAttribute + ']')
+    document.querySelectorAll('style[' + _.identifyingAttribute + ']')
             .forEach(function (styleElement) {
               styleElement.parentNode.removeChild(styleElement);
             });

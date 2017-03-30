@@ -23,13 +23,13 @@ exports.experiment = function (experiment, subject) {
     throw new BaseError('Manipulator: subject cannot contain experiment or experiment group.');
   }
   if (!experiment.clientGroups.length && subject) {
-    Collector.collect(_.deepExtend({experiment: experiment}, subject));
+    Collector.collect(_.extend({experiment: experiment}, subject));
   }
   for (let i = 0; i < experiment.clientGroups.length; i++) {
     // Logs participation in the group.
     Collector.collect({experimentGroup: experiment.clientGroups[i], experiment: experiment});
     if (subject) {
-      Collector.collect(_.deepExtend(
+      Collector.collect(_.extend(
         {experiment: experiment, experimentGroup: experiment.clientGroups[i]}, subject));
     }
     for (let j = 0; j < experiment.clientGroups[i].executors.length; j++) {

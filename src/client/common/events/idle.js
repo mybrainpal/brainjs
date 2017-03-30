@@ -40,7 +40,7 @@ class IdleEvent {
     if (options.target) {
       this.target = _.isString(options.target) ? document.querySelector(options.target) :
                     options.target;
-      if (!(this.target instanceof EventTarget)) {
+      if (!(_.is(this.target, EventTarget))) {
         throw new BaseError('IdleEvent: could not find target at ' + options.target);
       }
     } else {
@@ -60,11 +60,10 @@ class IdleEvent {
    * @private
    */
   _init() {
-    const that = this; // To use `this` in the listener handler.
     this.start();
     for (let i = 0; i < _activeEvents.length; i++) {
       // useCapture is used so that every event will trigger reset.
-      _.on(_activeEvents[i], () => {that.reset()}, {}, this.target, true);
+      _.on.call(this, _activeEvents[i], () => {this.reset()}, {}, this.target, true);
     }
   };
 
@@ -81,12 +80,11 @@ class IdleEvent {
    * Starts the idle timer.
    */
   start() {
-    const that = this; // To use `this` in the setTimeout handler.
-    this.timer = setTimeout(function () {
-      _.trigger(Factory.eventName(IdleEvent.name()), that.detailOrId, that.target);
+    this.timer = _.delay.call(this, () => {
+      _.trigger(Factory.eventName(IdleEvent.name()), this.detailOrId, this.target);
       Logger.log(Level.INFO, `${Factory.eventName(IdleEvent.name())} triggered${_.isNil(
-        that.detailOrId) ? '' : ' for ' + that.detailOrId}.`);
-      if (_.has(that, 'fireOnce') && !that.fireOnce) that.reset();
+        this.detailOrId) ? '' : ' for ' + this.detailOrId}.`);
+      if (_.has(this, 'fireOnce') && !this.fireOnce) this.reset();
     }, this.waitTime);
     return this;
   };

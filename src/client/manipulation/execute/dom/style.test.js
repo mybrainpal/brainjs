@@ -9,30 +9,17 @@ const expect        = require('chai').expect,
       custom        = require('./testdata/custom.scss').locals;
 
 describe('StyleExecutor', function () {
-  let ul, li1, li2, li3, li4;
+  let ul;
   before(() => {
-    ul = document.createElement('ul');
-    ul.setAttribute('id', 'lost');
+    ul = _.ul({id: 'lost'},
+              _.li({class: styles.survivor}, 'Jack'),
+              _.li({class: styles.survivor}, 'Kate'),
+              _.li({class: 'conman'}, 'Sawyer'),
+              _.li({class: 'deceased'}, 'Charlie'));
     document.querySelector('body').appendChild(ul);
-    li1             = document.createElement('li');
-    li1.textContent = 'Jack';
-    li1.classList.add(styles.survivor);
-    ul.appendChild(li1);
-    li2             = document.createElement('li');
-    li2.textContent = 'Kate';
-    li2.classList.add(styles.survivor);
-    ul.appendChild(li2);
-    li3             = document.createElement('li');
-    li3.textContent = 'Sawyer';
-    li3.classList.add('conman');
-    ul.appendChild(li3);
-    li4             = document.createElement('li');
-    li4.textContent = 'Charlie';
-    li4.classList.add('deceased');
-    ul.appendChild(li4);
   });
   beforeEach(() => {
-    _.css.load(require('./testdata/style.scss'));
+    _.load(require('./testdata/style.scss'));
     document.querySelectorAll('li').forEach(function (li) {
       expect(getComputedStyle(li).padding).to.equal('10px');
     });
@@ -42,7 +29,7 @@ describe('StyleExecutor', function () {
   });
   afterEach(() => {
     // Clean all injected styles.
-    document.querySelectorAll('style[' + _.css.identifyingAttribute + ']')
+    document.querySelectorAll('style[' + _.identifyingAttribute + ']')
             .forEach(function (styleElement) {
               styleElement.parentNode.removeChild(styleElement);
             });
