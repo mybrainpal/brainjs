@@ -11,7 +11,7 @@ describe('TyperExecutor', function () {
   let div;
   beforeEach(() => {
     div = $.div({id: 'div'});
-    document.querySelector('body').appendChild(div);
+    $('body').appendChild(div);
   });
   afterEach(() => {
     div.parentNode.removeChild(div);

@@ -39,7 +39,7 @@ exports.execute = function (options) {
     options.listen.forEach(function (listener) {
       let target = document;
       if (listener.target) {
-        target = document.querySelector(listener.target);
+        target = $(listener.target);
         if (_.isNil(target)) {
           if (options.toLog) {
             Logger.log(Level.WARNING,
@@ -116,7 +116,7 @@ function _doFn(options) {
   for (let i = 0; i < options.trigger.length; i++) {
     let target = document;
     if (options.trigger[i].target) {
-      target = document.querySelector(options.trigger[i].target);
+      target = $(options.trigger[i].target);
       if (_.isNil(target)) {
         if (options.toLog) {
           Logger.log(Level.WARNING, 'EventExecutor: count not find trigger target at ' +

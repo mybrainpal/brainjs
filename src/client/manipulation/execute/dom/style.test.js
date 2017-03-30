@@ -16,7 +16,7 @@ describe('StyleExecutor', function () {
               $.li({class: styles.survivor}, 'Kate'),
               $.li({class: 'conman'}, 'Sawyer'),
               $.li({class: 'deceased'}, 'Charlie'));
-    document.querySelector('body').appendChild(ul);
+    $('body').appendChild(ul);
   });
   beforeEach(() => {
     $.load(require('./testdata/style.scss'));

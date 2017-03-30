@@ -2,6 +2,8 @@
  * Proudly created by ohad on 18/12/2016.
  */
 const tinysort  = require('tinysort'),
+      _         = require('../../../common/util/wrapper'),
+      $         = require('../../../common/util/dom'),
       Logger    = require('../../../common/log/logger'),
       Level     = require('../../../common/log/logger').Level,
       BaseError = require('../../../common/log/base.error'),
@@ -25,7 +27,7 @@ exports.execute = function (options) {
  * @param {Object} options - to be used with tinysort.
  */
 exports.preconditions = function (options) {
-  if (!document.querySelector(options.targets)) {
+  if (!_.isString(options.target) || !$(options.targets)) {
     throw new BaseError('SortExecutor: could not find targets at ' + options.targets);
   }
 };

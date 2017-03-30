@@ -2,6 +2,7 @@
  * Proudly created by ohad on 25/12/2016.
  */
 let expect            = require('chai').expect,
+    $                 = require('../../../common/util/dom'),
     BaseError         = require('../../../common/log/base.error'),
     DomRemoveExecutor = require('./remove');
 
@@ -10,7 +11,7 @@ describe('DomRemoveExecutor', function () {
   before(() => {
     div = document.createElement('div');
     div.setAttribute('id', 'div');
-    document.querySelector('body').appendChild(div);
+    $('body').appendChild(div);
   });
   beforeEach(() => {
     a = document.createElement('a');

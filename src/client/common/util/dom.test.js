@@ -6,14 +6,48 @@ const expect = require('chai').expect,
       $      = require('./dom');
 
 describe('DomUtils', function () {
+  describe('selector', function () {
+    let div;
+    before(() => {
+      div = $.div({id: 'bitch'}, 'cercie',
+                  $.a('ring-bell'), $.a('shame-walk'));
+      $('body').appendChild(div);
+    });
+    after(() => {
+      div.parentNode.removeChild(div);
+    });
+    it('errors', () => {
+      expect(() => {$()}).to.throw(Error);
+      expect(() => {$(1)}).to.throw(Error);
+      expect(() => {$('a', 1)}).to.throw(Error);
+    });
+    it('return sel if it is an element', () => {
+      expect($(div)).to.eq(div);
+      expect($(document)).to.eq(document);
+    });
+    it('select element', () => {
+      expect($('#bitch')).to.eq(div);
+      expect($('body')).to.eq(document.querySelector('body'));
+    });
+    it('select multiple element', () => {
+      const res = $('#bitch a', null, true);
+      expect(res).to.have.length(2);
+      expect(res[0].textContent).to.eq('ring-bell');
+      expect(res[1].textContent).to.eq('shame-walk');
+    });
+    it('select child element', () => {
+      const res = $('a', div, true);
+      expect(res).to.have.length(2);
+      expect(res[0].textContent).to.eq('ring-bell');
+      expect(res[1].textContent).to.eq('shame-walk');
+    });
+  });
   describe('event emitter', function () {
     this.timeout(100);
     let a, fired, fireFn = () => {fired = true}, index = 0;
     before(() => {
-      a = document.createElement('a');
-      a.setAttribute('id', 'one-hand');
-      a.textContent = 'jamie';
-      document.querySelector('body').appendChild(a);
+      a = $.a({id: 'one-hand'}, 'jamie');
+      $('body').appendChild(a);
     });
     beforeEach(() => {
       index++;
@@ -98,7 +132,7 @@ describe('DomUtils', function () {
         centerLeft, centerRight;
     before(() => {
       div = $.div();
-      document.querySelector('body').appendChild(div);
+      $('body').appendChild(div);
       div.appendChild(visible = document.createElement('div'));
       visible.style       = 'border: 1px solid black; margin: 5px; display: inline-block;';
       visible.textContent = 'visible';

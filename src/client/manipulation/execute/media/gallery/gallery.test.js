@@ -21,7 +21,7 @@ describe('GalleryExecutor', function () {
                           $.img({src: require('./testdata/sad.jpg')}),
                           $.img({src: require('./testdata/diving.jpg')})
     );
-    document.querySelector('body').appendChild(div);
+    $('body').appendChild(div);
   });
   afterEach(() => {
     document.querySelectorAll(`.${styles.component}`).forEach((component) => {
@@ -57,30 +57,30 @@ describe('GalleryExecutor', function () {
   });
   it('assign animation class', () => {
     GalleryExecutor.execute(animationSpec);
-    expect(document.querySelector(`#container .${styles.fxSnapIn}`)).to.be.ok;
+    expect($(`#container .${styles.fxSnapIn}`)).to.be.ok;
   });
   it('animation', (done) => {
     GalleryExecutor.execute(animationSpec);
-    expect(document.querySelector(`#container li.${styles.current}`).classList
-                   .contains(styles.navOutNext)).to.be.false;
+    expect($(`#container li.${styles.current}`).classList
+                                               .contains(styles.navOutNext)).to.be.false;
     setTimeout(() => {
-      expect(document.querySelector(`#container li.${styles.current}`).classList
-                     .contains(styles.navOutNext)).to.be.true;
+      expect($(`#container li.${styles.current}`).classList
+                                                 .contains(styles.navOutNext)).to.be.true;
       done()
     }, 200);
   });
   it('animation responds to mouse', (done) => {
     GalleryExecutor.execute(animationSpec);
-    document.querySelector(`#container .${styles.component}`).dispatchEvent(new Event('mouseover'));
+    $(`#container .${styles.component}`).dispatchEvent(new Event('mouseover'));
     setTimeout(() => {
-      expect(document.querySelector(`#container li.${styles.current}`).classList
-                     .contains(styles.navOutNext)).to.be.false;
-      document.querySelector(`#container .${styles.component}`)
+      expect($(`#container li.${styles.current}`).classList
+                                                 .contains(styles.navOutNext)).to.be.false;
+      $(`#container .${styles.component}`)
               .dispatchEvent(new Event('mouseout'));
     }, 200);
     setTimeout(() => {
-      expect(document.querySelector(`#container li.${styles.current}`).classList
-                     .contains(styles.navOutNext)).to.be.true;
+      expect($(`#container li.${styles.current}`).classList
+                                                 .contains(styles.navOutNext)).to.be.true;
       done();
     }, 400);
   });
@@ -92,9 +92,9 @@ describe('GalleryExecutor', function () {
   it('narrow and wide', () => {
     GalleryExecutor.execute(_.extend({}, options, {container: '#small'}));
     expect(
-      document.querySelector(`#small img.${styles.narrow}`).clientWidth).to.be.at.least(100);
-    expect(document.querySelector(`#small img.${styles.narrow}`).clientHeight).to.equal(100);
-    expect(document.querySelector(`#small img.${styles.wide}`).clientWidth).to.equal(100);
-    expect(document.querySelector(`#small img.${styles.wide}`).clientHeight).to.be.at.least(100);
+      $(`#small img.${styles.narrow}`).clientWidth).to.be.at.least(100);
+    expect($(`#small img.${styles.narrow}`).clientHeight).to.equal(100);
+    expect($(`#small img.${styles.wide}`).clientWidth).to.equal(100);
+    expect($(`#small img.${styles.wide}`).clientHeight).to.be.at.least(100);
   });
 });

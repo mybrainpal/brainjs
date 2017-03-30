@@ -2,6 +2,7 @@
  * Proudly created by ohad on 18/12/2016.
  */
 let expect       = require('chai').expect,
+    $            = require('../../../common/util/dom'),
     BaseError    = require('../../../common/log/base.error'),
     SortExecutor = require('./sort'),
     tinysort     = require('tinysort');
@@ -11,7 +12,7 @@ describe('SortExecutor', function () {
   beforeEach(() => {
     ul = document.createElement('ul');
     ul.setAttribute('id', 'ul');
-    document.querySelector('body').appendChild(ul);
+    $('body').appendChild(ul);
     li2             = document.createElement('li');
     li2.textContent = '2';
     ul.appendChild(li2);
@@ -36,14 +37,14 @@ describe('SortExecutor', function () {
     expect(ul.children[0]).to.equal(li2);
     expect(ul.children[1]).to.equal(li1);
     expect(ul.children[2]).to.equal(li3);
-    expect(ul.parentNode).to.equal(document.querySelector('body'));
+    expect(ul.parentNode).to.equal($('body'));
   });
   it('don\'t sort zero elements', () => {
     SortExecutor.execute({targets: '#ul>a'});
     expect(ul.children[0]).to.equal(li2);
     expect(ul.children[1]).to.equal(li1);
     expect(ul.children[2]).to.equal(li3);
-    expect(ul.parentNode).to.equal(document.querySelector('body'));
+    expect(ul.parentNode).to.equal($('body'));
   });
   it('Preconditions', () => {
     expect(() => {SortExecutor.preconditions({})}).to.throw(BaseError);

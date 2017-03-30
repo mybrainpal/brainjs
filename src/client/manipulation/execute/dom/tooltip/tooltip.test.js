@@ -18,7 +18,7 @@ describe('TooltipExecutor', function () {
   let div, target, options, id = 0;
   before(() => {
     div = $.div({style: {margin: '150px'}});
-    document.querySelector('body').appendChild(div);
+    $('body').appendChild(div);
     Storage.set(Storage.names.IN_MEMORY);
   });
   beforeEach(() => {
@@ -65,7 +65,7 @@ describe('TooltipExecutor', function () {
   });
   it('creation', () => {
     TooltipExecutor.execute(options);
-    const tooltip = document.querySelector(`div>.${styles.bloated}`);
+    const tooltip = $(`div>.${styles.bloated}`);
     expect(tooltip).to.be.ok;
     expect(tooltip.classList.contains(styles.bloated)).to.be.true;
     expect(tooltip.classList.contains(styles.show)).to.be.false;
@@ -75,7 +75,7 @@ describe('TooltipExecutor', function () {
   it('interface', (done) => {
     TooltipInterface.execute(options);
     setTimeout(() => {
-      const tooltip = document.querySelector(`div>.${styles.bloated}`);
+      const tooltip = $(`div>.${styles.bloated}`);
       expect(tooltip).to.be.ok;
       done();
     });
@@ -83,15 +83,15 @@ describe('TooltipExecutor', function () {
   it('creation with special property', () => {
     TooltipExecutor.execute(
       {target: '#huwayej', type: 'sharp', direction: 'left', id: 'sharp'});
-    const tooltip = document.querySelector(`div>.${styles.sharp}`);
+    const tooltip = $(`div>.${styles.sharp}`);
     expect(tooltip).to.be.ok;
     expect(tooltip.classList.contains(styles.left)).to.be.true;
     expect(tooltip.querySelector(target.nodeName)).to.be.ok;
   });
   it('flow', (done) => {
     TooltipExecutor.execute(options);
-    const tooltip            = document.querySelector(`div>.${styles.bloated}`),
-          content            = tooltip.querySelector(`.${styles.content}`);
+    const tooltip = $(`div>.${styles.bloated}`),
+          content = tooltip.querySelector(`.${styles.content}`);
     $.style(content, {transition: 'all 1ms'});
     $.trigger(Master.eventName(TooltipInterface.name),
               {state: TooltipExecutor.State.SHOW, id: id});
@@ -107,8 +107,8 @@ describe('TooltipExecutor', function () {
   });
   it('flow with timer', (done) => {
     TooltipExecutor.execute(_.extend({timer: 20}, options));
-    const tooltip            = document.querySelector(`div>.${styles.bloated}`),
-          content            = tooltip.querySelector(`.${styles.content}`);
+    const tooltip = $(`div>.${styles.bloated}`),
+          content = tooltip.querySelector(`.${styles.content}`);
     $.style(content, {transition: 'all 1ms'});
     $.trigger(Master.eventName(TooltipInterface.name), id);
     setTimeout(() => {
@@ -121,8 +121,8 @@ describe('TooltipExecutor', function () {
   });
   it('flow without state', (done) => {
     TooltipExecutor.execute(options);
-    const tooltip            = document.querySelector(`div>.${styles.bloated}`),
-          content            = tooltip.querySelector(`.${styles.content}`);
+    const tooltip = $(`div>.${styles.bloated}`),
+          content = tooltip.querySelector(`.${styles.content}`);
     $.style(content, {transition: 'all 1ms'});
     $.trigger(Master.eventName(TooltipInterface.name), id);
     setTimeout(() => {
@@ -136,28 +136,28 @@ describe('TooltipExecutor', function () {
   });
   it('detaching tooltip', () => {
     TooltipExecutor.execute(options);
-    let tooltip = document.querySelector(`div>.${styles.bloated}`);
+    let tooltip = $(`div>.${styles.bloated}`);
     expect(tooltip).to.be.ok;
     TooltipExecutor.detachTooltip(target);
-    tooltip = document.querySelector(`div>.${styles.bloated}`);
+    tooltip = $(`div>.${styles.bloated}`);
     //noinspection JSUnresolvedVariable
     expect(tooltip).to.not.be.ok;
   });
   it('overriding tooltip', () => {
     const msg1 = 'hum', msg2 = 'dodim';
     TooltipExecutor.execute(_.extend({}, options, {htmlContent: msg1}));
-    let tooltip = document.querySelector(`div>.${styles.bloated}`);
+    let tooltip = $(`div>.${styles.bloated}`);
     expect(tooltip.querySelector(`.${styles.content}`).textContent).to.equal(msg1);
     TooltipExecutor.execute(_.extend({}, options, {htmlContent: msg2}));
-    tooltip = document.querySelector(`div>.${styles.bloated}`);
+    tooltip = $(`div>.${styles.bloated}`);
     expect(tooltip.querySelector(`.${styles.content}`).textContent).to.equal(msg2);
     expect(document.querySelectorAll(`div>.${styles.bloated}`).length).to.equal(1);
   });
   describe.skip('logging flow', function () {
     it('logging', (done) => {
       TooltipExecutor.execute(_.extend({}, options, {toLog: true}));
-      const tooltip            = document.querySelector(`div>.${styles.bloated}`),
-            content            = tooltip.querySelector(`.${styles.content}`);
+      const tooltip = $(`div>.${styles.bloated}`),
+            content = tooltip.querySelector(`.${styles.content}`);
       $.style(content, {transition: 'all 1ms'});
       $.trigger(Master.eventName(TooltipInterface.name), id);
       setTimeout(() => {
@@ -175,8 +175,8 @@ describe('TooltipExecutor', function () {
     });
     it('logging interrupted', (done) => {
       TooltipExecutor.execute(_.extend({}, options, {toLog: true}));
-      const tooltip            = document.querySelector(`div>.${styles.bloated}`),
-            content            = tooltip.querySelector(`.${styles.content}`);
+      const tooltip = $(`div>.${styles.bloated}`),
+            content = tooltip.querySelector(`.${styles.content}`);
       $.style(content, {transition: 'all 1ms'});
       $.trigger(Master.eventName(TooltipInterface.name), id);
       setTimeout(() => {
@@ -197,10 +197,10 @@ describe('TooltipExecutor', function () {
                               height  : '10000px', 'background-color': 'red', 'z-index': 10000
                             }
                           });
-      document.querySelector('body').appendChild(evilDiv);
+      $('body').appendChild(evilDiv);
       TooltipExecutor.execute(_.extend({}, options, {toLog: true}));
-      const tooltip            = document.querySelector(`div>.${styles.bloated}`),
-            content            = tooltip.querySelector(`.${styles.content}`);
+      const tooltip = $(`div>.${styles.bloated}`),
+            content = tooltip.querySelector(`.${styles.content}`);
       $.style(content, {transition: 'all 1ms'});
       $.trigger(Master.eventName(TooltipInterface.name), id);
       setTimeout(() => {
@@ -222,7 +222,7 @@ describe('TooltipExecutor', function () {
     it('logging overcomes delay', (done) => {
       Master.execute(TooltipInterface.name,
                      _.extend({}, options, {toLog: true, type: 'line'}));
-      const tooltip = document.querySelector(`div>.${styles.line}`),
+      const tooltip = $(`div>.${styles.line}`),
             content = tooltip.querySelector(`.${styles.content}`),
             text    = tooltip.querySelector(`.${styles.text}`);
       $.trigger(Master.eventName(TooltipInterface.name), id);

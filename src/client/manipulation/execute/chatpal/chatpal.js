@@ -221,8 +221,8 @@ class ChatPal {
                           },
                           $.div({class: styles['open-button']}),
                           $.div({class: [styles['close-button'], styles.hidden]}));
-    document.querySelector('body').appendChild(this.chatBox);
-    document.querySelector('body').appendChild(this.buttons);
+    $('body').appendChild(this.chatBox);
+    $('body').appendChild(this.buttons);
   }
 
   /**

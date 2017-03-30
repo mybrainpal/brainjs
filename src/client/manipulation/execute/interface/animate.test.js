@@ -13,7 +13,7 @@ describe.skip('AnimateInterface', function () {
   before(() => {
     divId = 'lorenz-buffel';
     div   = $.div({id: divId, style: {width: '100px', height: '100px', 'background-color': 'red'}});
-    document.querySelector('body').appendChild(div);
+    $('body').appendChild(div);
     animationName = 'bounceIn';
   });
   beforeEach(() => {

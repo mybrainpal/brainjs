@@ -2,6 +2,7 @@
  * Proudly created by ohad on 24/12/2016.
  */
 let expect         = require('chai').expect,
+    $              = require('../../../common/util/dom'),
     BaseError      = require('../../../common/log/base.error'),
     InjectExecutor = require('./inject');
 
@@ -10,7 +11,7 @@ describe('InjectExecutor', function () {
   before(() => {
     div = document.createElement('div');
     div.setAttribute('id', 'westworld');
-    document.querySelector('body').appendChild(div);
+    $('body').appendChild(div);
     src             = document.createElement('p');
     src.textContent = 'Delores';
     src.classList.add('host');
@@ -35,14 +36,14 @@ describe('InjectExecutor', function () {
   });
   it('Inject from html', () => {
     InjectExecutor.execute({target: '#westworld>.human', html: 'the maze'});
-    expect(document.querySelector('#westworld>.human').innerHTML).to.be.equal('the maze');
+    expect($('#westworld>.human').innerHTML).to.be.equal('the maze');
   });
   it('append html', () => {
     const toAppend = 'looks for the maze';
     InjectExecutor.execute(
       {target: '#westworld>.human', html: toAppend, position: 'beforeEnd'});
-    expect(document.querySelector('#westworld>.human').innerHTML).to.be
-                                                                 .equal(origText + toAppend);
+    expect($('#westworld>.human').innerHTML).to.be
+                                            .equal(origText + toAppend);
   });
   it('Preconditions', () => {
     expect(() => {InjectExecutor.preconditions({})}).to.throw(BaseError);

@@ -53,7 +53,7 @@ describe('ChatPal', function () {
   });
   it('interface', () => {
     Interface.execute(options);
-    expect(document.querySelector(`#${Interface.id(id)}`)).to.be.ok;
+    expect($(`#${Interface.id(id)}`)).to.be.ok;
   });
   it('open & close programmatically', (done) => {
     chatpal.open();

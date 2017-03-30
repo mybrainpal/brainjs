@@ -14,7 +14,7 @@ describe('VisiblityEvent', function () {
   before(() => {
     a             = document.createElement('a');
     a.textContent = 'now you see me';
-    document.querySelector('body').appendChild(a);
+    $('body').appendChild(a);
   });
   after(() => {
     a.parentNode.removeChild(a);

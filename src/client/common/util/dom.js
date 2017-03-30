@@ -1,8 +1,28 @@
 /**
  * Proudly created by ohad on 18/12/2016.
  */
-const _ = require('./prototype'),
-      $ = exports;
+const _ = require('./prototype');
+
+/**
+ * @param {string|Element|HTMLDocument} sel - a string selector. If an element is provided, then
+ * it is returned.
+ * @param {Element|HTMLDocument} [elem = document] - to select only children of that element.
+ * @param {boolean} [all = false] - whether to query for all elements that matches the query.
+ * @type {module.selector}
+ * @returns {Element|NodeList} query selector that satisfies the input.
+ */
+let $ = function selector(sel, elem, all) {
+  if (_.is(sel, Element, HTMLDocument)) return sel;
+  if (!_.isString(sel)) {
+    throw new Error('DomUtil: sel must be an element or a string.');
+  }
+  elem = elem ? elem : document;
+  if (!_.is(elem, HTMLDocument, Element)) {
+    throw new Error('DomUtil: elem must be an element.');
+  }
+  const method = (!_.isNil(all) && all) ? 'querySelectorAll' : 'querySelector';
+  return elem[method](sel);
+};
 
 /**
  * Adds an event listener that is executed only when event.detail.id is missing or matches
@@ -27,7 +47,7 @@ $.on = function (event, handler, detailOrId, target = document, useCapture = fal
       !_.isObject(detailOrId)) {
     throw new Error('DomUtil: detail is illegal.');
   } else if (!_.isNil(detailOrId) && !_.isObject(detailOrId)) detailOrId = {id: detailOrId};
-  if (_.isString(target)) target = document.querySelector(target);
+  if (_.isString(target)) target = $(target);
   if (!(_.is(target, EventTarget))) {
     throw new Error('DomUtil: target is not a proper event target.');
   }
@@ -59,7 +79,7 @@ $.off = function (event, handler, target = document, useCapture = false) {
   if (!_.isFunction(handler)) {
     throw new Error('DomUtil: handler is not a function.');
   }
-  if (_.isString(target)) target = document.querySelector(target);
+  target = $(target);
   if (!(_.is(target, EventTarget))) {
     throw new Error('DomUtil: target is not a proper event target.');
   }
@@ -81,7 +101,7 @@ $.trigger = function (event, detailOrId, target = document) {
       !_.isObject(detailOrId)) {
     throw new Error('DomUtil: detail is illegal.');
   } else if (!_.isNil(detailOrId) && !_.isObject(detailOrId)) detailOrId = {id: detailOrId};
-  if (_.isString(target)) target = document.querySelector(target);
+  target = $(target);
   if (!(_.is(target, EventTarget))) {
     throw new Error('DomUtil: target is not a proper event target.');
   }
@@ -364,3 +384,5 @@ $.loadable = function (css) {
          _.isString(css[css.length - 1][1]);
 
 };
+
+module.exports = $;

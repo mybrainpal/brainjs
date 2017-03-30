@@ -54,7 +54,7 @@ exports.execute = function (options) {
  */
 exports.preconditions = function (options) {
   let target;
-  target = document.querySelector(options.target);
+  target = $(options.target);
   if (!target) {
     throw new BaseError('TooltipExecutor: could not find target at ' + options.target);
   }
@@ -166,7 +166,7 @@ exports.targetAttribute = exports.tooltipAttribute + '-target';
  * @private
  */
 function _attachTooltip(options) {
-  const target = document.querySelector(options.target);
+  const target = $(options.target);
   exports.detachTooltip(target);
   let parent  = target.parentNode;
   let tooltip = _tooltipInfo[options.type].buildTypeTemplate(options);

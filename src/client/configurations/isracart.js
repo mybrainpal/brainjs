@@ -95,7 +95,7 @@ Play(
                   name   : TyperInterface.name,
                   options: {
                     typerFn: (typer) => {
-                      const ul = document.querySelector('.LeadFormContent>div>ul');
+                      const ul = $('.LeadFormContent>div>ul');
                       ul.parentNode.removeChild(ul);
                       const obj = typer('.LeadFormContent>div>p', 40)
                         .cursor({blink: 'soft', color: '#333399'});

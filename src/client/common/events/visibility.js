@@ -28,7 +28,7 @@ class VisibilityEvent {
     this.stopOnVisible = !_.has(options, 'stopOnVisible') || options.stopOnVisible;
     if (options.target) {
       if (_.isString(options.target)) {
-        this.target = document.querySelector(options.target);
+        this.target = $(options.target);
         if (!this.target) {
           throw new BaseError('VisibilityEvent: could not find target at ' + options.target);
         }

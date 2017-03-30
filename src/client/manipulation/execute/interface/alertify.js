@@ -60,8 +60,8 @@ function _run(options) {
     options.alertifyFn(require('alertifyjs'));
     if (options.toLog) {
       const suffix = _.isNil(options.id) ? '' : ` (id = ${options.id}`;
-      if (document.querySelector(`[class^='ajs']`) ||
-          document.querySelector(`[class^='alertify']`)) {
+      if ($(`[class^='ajs']`) ||
+          $(`[class^='alertify']`)) {
         Logger.log(Level.INFO, 'Created stuff with alertify' + suffix);
       } else {
         Logger.log(Level.WARNING, 'Created nothing with alertify' + suffix);

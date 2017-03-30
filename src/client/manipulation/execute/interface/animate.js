@@ -18,7 +18,7 @@ Master.register(exports);
  *  https://daneden.github.io/animate.css/
  */
 exports.execute = function (options) {
-  const target = document.querySelector(options.target);
+  const target = $(options.target);
   require.ensure('animate.css', function (require) {
     if (!_loaded) $.load(require('animate.css'));
     target.classList.add(options.animationName, 'animated');
@@ -39,7 +39,7 @@ exports.execute = function (options) {
  * @param {Object} options
  */
 exports.preconditions = function (options) {
-  if (!document.querySelector(options.target)) {
+  if (!$(options.target)) {
     throw new BaseError('AnimateInterface: could not find target at ' + options.target);
   }
   if (!_.isString(options.animationName)) {

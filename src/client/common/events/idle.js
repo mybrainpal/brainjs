@@ -39,7 +39,7 @@ class IdleEvent {
     }
     this.fireOnce = !_.has(options, 'fireOnce') || options.fireOnce;
     if (options.target) {
-      this.target = _.isString(options.target) ? document.querySelector(options.target) :
+      this.target = _.isString(options.target) ? $(options.target) :
                     options.target;
       if (!(_.is(this.target, EventTarget))) {
         throw new BaseError('IdleEvent: could not find target at ' + options.target);

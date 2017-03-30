@@ -24,7 +24,7 @@ exports.execute = function (options) {
     $.load(css);
     _styleLoaded = true;
   }
-  let container = document.querySelector(options.container);
+  let container = $(options.container);
   container.appendChild(_createGallery(container, options));
   $.trigger(Interface.readyEvent(), options.id);
   if ($.isVisible(container.querySelector(`.${styles.component}`))) {
@@ -38,7 +38,7 @@ exports.execute = function (options) {
  * @param {Object} options
  */
 exports.preconditions = function (options) {
-  if (!document.querySelector(options.container)) {
+  if (!_.isString(options.container) || !$(options.container)) {
     throw new BaseError('GalleryExecutor : could not find container at ' + options.container);
   }
   if (!options.sourceSelectors) return false;
@@ -47,7 +47,7 @@ exports.preconditions = function (options) {
   }
   const srcSelectors = _.arrify(options.sourceSelectors);
   for (let i = 0; i < srcSelectors.length; i++) {
-    if (!document.querySelector(srcSelectors[i])) {
+    if (!$(srcSelectors[i])) {
       throw new BaseError('GalleryExecutor : could not find source at ' + srcSelectors[i]);
     }
   }

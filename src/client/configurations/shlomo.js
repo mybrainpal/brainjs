@@ -134,12 +134,12 @@ Play(
   });
 
 function _sendForm(formData) {
-  document.querySelector('#Input_textbox_0').value  = formData.name;
-  document.querySelector('#Input_ndropbox_0').value = formData.tel.length === 9 ?
+  $('#Input_textbox_0').value  = formData.name;
+  $('#Input_ndropbox_0').value = formData.tel.length === 9 ?
                                                       formData.tel.substr(0, 2) :
                                                       formData.tel.substr(0, 3);
-  document.querySelector('#Input_textbox_2').value  = formData.tel.length === 9 ?
-                                                      formData.tel.substr(2) :
-                                                      formData.tel.substr(3);
+  $('#Input_textbox_2').value  = formData.tel.length === 9 ?
+                                 formData.tel.substr(2) :
+                                 formData.tel.substr(3);
   $.trigger('click', {}, '#Button_submitButton_0');
 }

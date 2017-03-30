@@ -14,7 +14,7 @@ describe('WordEvent', function () {
   beforeEach(() => {
     ++id;
     div = document.createElement('div');
-    document.querySelector('body').appendChild(div);
+    $('body').appendChild(div);
     input = document.createElement('input');
     input.setAttribute('id', 'input');
     div.appendChild(input);

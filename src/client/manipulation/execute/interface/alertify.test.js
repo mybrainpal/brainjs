@@ -2,6 +2,7 @@
  * Proudly created by ohad on 30/12/2016.
  */
 let expect           = require('chai').expect,
+    $                = require('../../../common/util/dom'),
     BaseError        = require('../../../common/log/base.error'),
     AlertifyExecutor = require('./alertify');
 
@@ -16,15 +17,15 @@ describe('AlertifyExecutor', function () {
   it('alertify works', (done) => {
     AlertifyExecutor.execute({alertifyFn: (alertify) => {alertify.notify(msg);}});
     setTimeout(() => {
-      const notification = document.querySelector('.alertify-notifier');
+      const notification = $('.alertify-notifier');
       expect(notification).to.be.ok;
       expect(notification.textContent).to.equal(msg);
-      expect(document.querySelector('div.alertify-notifier div').classList
-                     .contains('ajs-visible')).to.be.true;
+      expect($('div.alertify-notifier div').classList
+                                           .contains('ajs-visible')).to.be.true;
       AlertifyExecutor.execute({alertifyFn: (alertify) => {alertify.dismissAll();}});
       setTimeout(() => {
-        expect(document.querySelector('div.alertify-notifier div').classList
-                       .contains('ajs-visible')).to.be.false;
+        expect($('div.alertify-notifier div').classList
+                                             .contains('ajs-visible')).to.be.false;
         done();
       }, 20);
     }, 100);

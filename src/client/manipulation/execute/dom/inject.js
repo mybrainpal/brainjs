@@ -2,6 +2,7 @@
  * Proudly created by ohad on 24/12/2016.
  */
 let _         = require('./../../../common/util/wrapper'),
+    $         = require('../../../common/util/dom'),
     Logger    = require('../../../common/log/logger'),
     Level     = require('../../../common/log/logger').Level,
     BaseError = require('../../../common/log/base.error'),
@@ -18,10 +19,10 @@ Master.register(exports);
  *  @property {string} [sourceSelector] - selector to source element, from which to copy html.
  */
 exports.execute = function (options) {
-  const target  = document.querySelector(options.target);
+  const target  = $(options.target);
   let src, html = '';
   if (options.sourceSelector) {
-    src  = document.querySelector(options.sourceSelector);
+    src  = $(options.sourceSelector);
     html = src.innerHTML;
   } else if (options.html) html = options.html;
 
@@ -39,7 +40,7 @@ exports.execute = function (options) {
  * @param {Object} options
  */
 exports.preconditions = function (options) {
-  if (!document.querySelector(options.target)) {
+  if (!_.isString(options.target) || !$(options.target)) {
     throw new BaseError('InjectExecutor : could not find target at ' + options.target);
   }
   if (_.has(options, 'position') && !_.isString(options.position)) {
@@ -52,7 +53,7 @@ exports.preconditions = function (options) {
     if (!_.isString(options.sourceSelector)) {
       throw new BaseError('InjectExecutor : sourceSelector must be nil or a string');
     }
-    if (!document.querySelector(options.sourceSelector)) {
+    if (!$(options.sourceSelector)) {
       throw new BaseError('InjectExecutor : could not find sourceSelector at ' +
                           options.sourceSelector);
     }

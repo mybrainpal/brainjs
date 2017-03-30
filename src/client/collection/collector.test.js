@@ -26,7 +26,7 @@ describe('Collector', function () {
                            $.a('first night'),
                            $.span('no shirts')));
     experiment = new Experiment({id: 1, groups: [{id: 10}]});
-    document.querySelector('body').appendChild(div);
+    $('body').appendChild(div);
     Storage.set(Storage.names.IN_MEMORY);
   });
   after(() => {

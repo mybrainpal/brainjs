@@ -125,7 +125,7 @@ Play(
                         confirmButtonText: 'שלח/י',
                         onOpen           : () => {
                           setTimeout(
-                            () => {document.querySelector('.swal2-modal.swal2-show').focus()});
+                            () => {$('.swal2-modal.swal2-show').focus()});
                         }
                       }]).catch(swal.noop)
                           .then(function (response) {
@@ -185,8 +185,8 @@ Play(
   });
 
 function _sendForm(formData) {
-  document.querySelector('#Input_textbox_0').value  = formData.name;
-  document.querySelector('#Input_textbox_1').value  = formData.tel;
-  document.querySelector('#Input_ndropbox_0').value = formData.city;
+  $('#Input_textbox_0').value  = formData.name;
+  $('#Input_textbox_1').value  = formData.tel;
+  $('#Input_ndropbox_0').value = formData.city;
   $.trigger('click', {}, '#Button_submitButton_0');
 }

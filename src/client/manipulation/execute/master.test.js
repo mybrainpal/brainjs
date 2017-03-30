@@ -13,7 +13,7 @@ describe('Executor', function () {
     Executor.register(require('./dom/form'));
     form = document.createElement('form');
     form.setAttribute('id', 'form');
-    document.querySelector('body').appendChild(form);
+    $('body').appendChild(form);
     input = document.createElement('input');
     input.setAttribute('id', 'input');
     form.appendChild(input);

@@ -74,7 +74,7 @@ class WordEvent {
       throw new BaseError('WordEvent: regex must exist when enforceRegex is true.');
     }
     if (options.target) {
-      this.target = _.isString(options.target) ? document.querySelector(options.target) :
+      this.target = _.isString(options.target) ? $(options.target) :
                     options.target;
       if (!(_.is(this.target, EventTarget))) {
         throw new BaseError('WordEvent: could not find target at ' + options.target);

@@ -25,7 +25,7 @@ describe('Manipulator', function () {
     div = $.div({id: 'branson'},
                 span = $.span('Screw it'),
                 $.a('let\'s do it!'));
-    document.querySelector('body').appendChild(div);
+    $('body').appendChild(div);
     collect               = {selector: '#branson>a', event: 'click'};
     nonClientDemographics = [{
       name: Demographics.PROPERTIES.MODULO.name, moduloIds: [], moduloOf: 1

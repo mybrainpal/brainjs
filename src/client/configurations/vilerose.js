@@ -151,13 +151,13 @@ Play(
   });
 
 function _sendForm(formData) {
-  document.querySelector('#js_txt_3').value = formData.name;
-  document.querySelector('#js_txt_2').value = formData.email;
-  document.querySelector('#js_txt_1').value = formData.tel;
-  // document.querySelector('#js_txt_1').value = formData.tel.length === 9 ?
+  $('#js_txt_3').value = formData.name;
+  $('#js_txt_2').value = formData.email;
+  $('#js_txt_1').value = formData.tel;
+  // $('#js_txt_1').value = formData.tel.length === 9 ?
   //                                                   formData.tel.substr(0, 2) :
   //                                                   formData.tel.substr(0, 3);
-  // document.querySelector('#form_phone').value     = formData.tel.length === 9 ?
+  // $('#form_phone').value     = formData.tel.length === 9 ?
   //                                                   formData.tel.substr(2) :
   //                                                   formData.tel.substr(3);
   $.trigger('click', {}, '#jf_submit_btn');

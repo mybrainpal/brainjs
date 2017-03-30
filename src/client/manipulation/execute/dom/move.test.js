@@ -1,7 +1,8 @@
 /**
  * Proudly created by ohad on 25/12/2016.
  */
-let _               = require('./../../../common/util/wrapper'),
+let _               = require('../../../common/util/wrapper'),
+    $               = require('../../../common/util/dom'),
     Storage         = require('../../../common/storage/storage'),
     InMemoryStorage = require('../../../common/storage/in-memory.storage'),
     Level           = require('../../../common/log/logger').Level,
@@ -16,7 +17,7 @@ describe('MoveExecutor', function () {
     Storage.set(Storage.names.IN_MEMORY);
     div = document.createElement('div');
     div.setAttribute('id', 'div');
-    document.querySelector('body').appendChild(div);
+    $('body').appendChild(div);
     p1             = document.createElement('p');
     p1.textContent = 'p1';
     p1.classList.add('first');

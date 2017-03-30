@@ -2,18 +2,16 @@
  * Proudly created by ohad on 19/12/2016.
  */
 let expect       = require('chai').expect,
+    $            = require('../../../common/util/dom'),
     BaseError    = require('../../../common/log/base.error'),
     FormExecutor = require('./form');
 
 describe('FormExecutor', function () {
   let form, input;
   before(() => {
-    form = document.createElement('form');
-    form.setAttribute('id', 'form');
-    document.querySelector('body').appendChild(form);
-    input = document.createElement('input');
-    input.setAttribute('id', 'input');
-    form.appendChild(input);
+    form = $.create('form', {id: form},
+                    input = $.create('input', {id: 'input'}));
+    $('body').appendChild(form);
   });
   after(() => {
     form.parentNode.removeChild(form);

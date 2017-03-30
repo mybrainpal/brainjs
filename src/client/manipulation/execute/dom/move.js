@@ -27,16 +27,16 @@ exports.copiedClass = 'brainpal-copy';
  */
 exports.execute = function (options) {
   let nextSibling, parent, toInsert,
-      target = document.querySelector(options.target);
+      target = $(options.target);
   if (options.nextSiblingSelector) {
-    nextSibling = document.querySelector(options.nextSiblingSelector);
+    nextSibling = $(options.nextSiblingSelector);
     if (_.isNil(nextSibling)) {
       Logger.log(Level.ERROR, 'MoveExecutor: count not find next sibling at ' +
                               options.nextSiblingSelector);
     }
   }
   if (options.parentSelector) {
-    parent = document.querySelector(options.parentSelector);
+    parent = $(options.parentSelector);
     if (_.isNil(parent)) {
       Logger.log(Level.ERROR, 'MoveExecutor: count not find parent at ' +
                               options.parentSelector);
@@ -63,10 +63,10 @@ exports.execute = function (options) {
  */
 exports.preconditions = function (options) {
   let nextSibling, parent, target;
-  target = document.querySelector(options.target);
-  if (!target) {
+  if (!_.isString(options.target) || !$(options.target)) {
     throw new BaseError('MoveExecutor : could not find target at ' + options.target);
   }
+  target = $(options.target);
   if (_.isNil(target.parentNode)) {
     throw new BaseError('MoveExecutor : target must have a parent node.');
   }
@@ -76,7 +76,7 @@ exports.preconditions = function (options) {
   if (options.parentSelector && !_.isString(options.parentSelector)) {
     throw new BaseError('MoveExecutor : parentSelector must be nil or a string.');
   } else if (options.parentSelector) {
-    parent = document.querySelector(options.parentSelector);
+    parent = $(options.parentSelector);
     if (!parent) {
       throw new BaseError('MoveExecutor : could not find parent at ' +
                           options.parentSelector);
@@ -85,7 +85,7 @@ exports.preconditions = function (options) {
   if (options.nextSiblingSelector && !_.isString(options.nextSiblingSelector)) {
     throw new BaseError('MoveExecutor : nextSiblingSelector must be nil or a string.');
   } else if (options.nextSiblingSelector) {
-    nextSibling = document.querySelector(options.nextSiblingSelector);
+    nextSibling = $(options.nextSiblingSelector);
     if (!nextSibling) {
       throw new BaseError('MoveExecutor : could not find next sibling at ' +
                           options.nextSiblingSelector);

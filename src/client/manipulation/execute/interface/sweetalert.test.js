@@ -9,7 +9,7 @@ let $            = require('./../../../common/util/dom'),
 describe('SwalExecutor', function () {
   this.timeout(1000);
   after(() => {
-    const swal = document.querySelector('.swal2-container');
+    const swal = $('.swal2-container');
     swal.parentNode.removeChild(swal)
   });
   it('preconditions', () => {
@@ -21,11 +21,11 @@ describe('SwalExecutor', function () {
     const msg = `I can't make anything of this.`;
     SwalExecutor.execute({swalFn: (swal) => {swal({text: msg})}});
     setTimeout(() => {
-      expect(document.querySelector('.swal2-container')).to.be.ok;
-      expect(document.querySelector('.swal2-content').textContent).to.equal(msg);
+      expect($('.swal2-container')).to.be.ok;
+      expect($('.swal2-content').textContent).to.equal(msg);
       $.trigger('click', {}, '.swal2-container');
       setTimeout(() => {
-        expect(document.querySelector('.swal2-hide')).to.be.ok;
+        expect($('.swal2-hide')).to.be.ok;
         done();
       }, 20);
     }, 100);

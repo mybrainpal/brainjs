@@ -16,7 +16,7 @@ Master.register(exports);
  *  @property {boolean} [focus] - whether to focus on the first provided element.
  */
 exports.execute = function (options) {
-  let target = document.querySelector(options.target);
+  let target = $(options.target);
   if (options.focus) {
     target.focus();
     if (options.toLog) {
@@ -35,7 +35,7 @@ exports.execute = function (options) {
  * @param {Object} options
  */
 exports.preconditions = function (options) {
-  if (!document.querySelector(options.target)) {
+  if (!_.isString(options.target) || !$(options.target)) {
     throw new BaseError('FormExecutor : could not find target at ' + options.target);
   }
   if (!_.isNil(options.focus) && !_.isBoolean(options.focus)) {
