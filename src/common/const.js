@@ -98,7 +98,8 @@ exports.LOCAL_STORAGE = `http://localhost:${exports.LOCAL_PORT}/save`;
 exports.BACKEND_URL = Object.freeze({
                                       LOG   : 'log/add',
                                       EVENT : 'event/add',
-                                      CLIENT: 'client/init'
+                                      CLIENT: 'client/init',
+                                      UPDATE: 'client/update'
                                     });
 /**
  * Types of non-native events, such as participation in an experiment.
@@ -106,4 +107,5 @@ exports.BACKEND_URL = Object.freeze({
  */
 exports.EVENTS = Object.freeze({
                                  PARTICIPATE: 'PARTICIPATE',
+                                 CONVERSION : 'CONVERSION'
                                });

@@ -93,13 +93,13 @@ exports.getQueryParam = function (query, key) {
  * @returns {string} the new query with updated value of `key`. Old values are replaced.
  */
 exports.setQueryParam = function (query, key, value) {
-  const re        = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
-  const separator = query.indexOf('?') !== -1 ? "&" : "?";
+  const re        = new RegExp('([?&])' + key + '=.*?(&|$)', 'i');
+  const separator = query.indexOf('?') !== -1 ? '&' : '?';
   if (query.match(re)) {
-    return query.replace(re, '$1' + key + "=" + encodeURIComponent(value) + '$2');
+    return query.replace(re, '$1' + key + '=' + encodeURIComponent(value) + '$2');
   }
   else {
-    return query + separator + encodeURIComponent(key) + "=" + encodeURIComponent(value);
+    return query + separator + encodeURIComponent(key) + '=' + encodeURIComponent(value);
   }
 };
 

@@ -18,6 +18,8 @@ class Experiment {
    *  experience).
    *  @property {Array.<Object>|Object} [demographics] - the experiment demographics. By default the
    *  user is included.
+   *  @property {Array.<Object>|Object} [demographics] - the experiment demographics. By default the
+   *  user is included.
    */
   constructor(options = {}) {
     if (!_.isString(options.id) && !_.isNumber(options.id)) {

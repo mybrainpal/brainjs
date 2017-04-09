@@ -28,6 +28,13 @@ exports.id = 0;
 exports.tracker = '';
 
 /**
+ * All experiments that had been loaded from the customer's configuration. Note that the client
+ * may not participate in all or any of them.
+ * @type {Array.<Experiment>}
+ */
+exports.experiments = [];
+
+/**
  * Browser, OS and their major version.
  * @type {{
  *  browser: string,

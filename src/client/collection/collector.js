@@ -45,7 +45,7 @@ exports.collect = function (options) {
     targets.forEach((target) => {
       if (_.is(target, EventTarget)) {
         const handler = $.on(options.event, () => {
-          Storage.save(_createMessage(options));
+          Storage.save(_createEventMessage(options));
           if (!_.has(options, 'once') || options.once) {
             $.off(options.event, handler, target, true);
           }
@@ -53,7 +53,7 @@ exports.collect = function (options) {
       }
     });
   } else {
-    Storage.save(_createMessage(options));
+    Storage.save(_createEventMessage(options));
   }
 };
 
@@ -62,7 +62,7 @@ exports.collect = function (options) {
  * @return {Object} that we want to attach to the event, upon saving.
  * @private
  */
-function _createMessage(options) {
+function _createEventMessage(options) {
   let emitted = {};
 
   if (_.isEmpty(options)) {
