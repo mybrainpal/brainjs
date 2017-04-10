@@ -16,10 +16,31 @@ describe('DomUtils', function () {
     after(() => {
       div.parentNode.removeChild(div);
     });
-    it('errors', () => {
-      expect(() => {$()}).to.throw(Error);
-      expect(() => {$(1)}).to.throw(Error);
-      expect(() => {$('a', 1)}).to.throw(Error);
+    it('errors for singular selector', () => {
+      expect(() => {//noinspection JSCheckFunctionSignatures
+        $()
+      }).to.throw(Error);
+      expect(() => {//noinspection JSCheckFunctionSignatures
+        $(1)
+      }).to.throw(Error);
+      expect(() => {//noinspection JSCheckFunctionSignatures
+        $('a', 1)
+      }).to.throw(Error);
+    });
+    it('errors for plural selector', () => {
+      expect(() => {//noinspection JSCheckFunctionSignatures
+        $.all()
+      }).to.throw(Error);
+      expect(() => {//noinspection JSCheckFunctionSignatures
+        $.all(1)
+      }).to.throw(Error);
+      expect(() => {$.all(document)}).to.throw(Error);
+      expect(() => {//noinspection JSCheckFunctionSignatures
+        $.all(document.querySelector('body'))
+      }).to.throw(Error);
+      expect(() => {//noinspection JSCheckFunctionSignatures
+        $('a', 1)
+      }).to.throw(Error);
     });
     it('return sel if it is an element', () => {
       expect($(div)).to.eq(div);
@@ -30,13 +51,13 @@ describe('DomUtils', function () {
       expect($('body')).to.eq(document.querySelector('body'));
     });
     it('select multiple element', () => {
-      const res = $('#bitch a', null, true);
+      const res = $.all('#bitch a');
       expect(res).to.have.length(2);
       expect(res[0].textContent).to.eq('ring-bell');
       expect(res[1].textContent).to.eq('shame-walk');
     });
-    it('select child element', () => {
-      const res = $('a', div, true);
+    it('select multiple child element', () => {
+      const res = $.all('a', div);
       expect(res).to.have.length(2);
       expect(res[0].textContent).to.eq('ring-bell');
       expect(res[1].textContent).to.eq('shame-walk');

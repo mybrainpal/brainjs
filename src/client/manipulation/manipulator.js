@@ -4,7 +4,6 @@
  * Manipulates the DOM to fill our customers pockets with 'em dollars.
  */
 let _         = require('../common/util/wrapper'),
-    BaseError = require('../common/log/base.error'),
     Collector = require('../collection/collector'),
     Executor  = require('./execute/master'),
     Const     = require('../../common/const');
@@ -13,43 +12,30 @@ let _         = require('../common/util/wrapper'),
  * Runs an experiment, or A/B test, in order to find out an improved versions of the customer's
  * web page.
  * @param {Experiment} experiment - describes way to manipulate the dom per various group of users.
- * @param {Object|Array<Object>} [collect] - options for {@link Collector#collect}, should NOT
- * contain
  * experiment or experiment group.
  */
-exports.experiment = function (experiment, collect) {
-  if (!experiment.included) return;
+exports.manipulate = function (experiment) {
+  if (!experiment || !experiment.included) return;
   // Logs participation or lack thereof in the experiment.
   Collector.collect({event: Const.EVENTS.PARTICIPATE, listen: false, experiment: experiment});
 
-  collect = _.arrify(collect);
-  if (!_.isEmpty(collect)) {
-    collect.forEach((col) => {
-      if (col.experiment || col.experimentGroup) {
-        throw new BaseError('Manipulator: collect cannot contain experiment or experiment group.');
-      }
-    })
-  }
-  if (!experiment.clientGroups.length && collect) {
-    collect.forEach((col) => {
+  if (!experiment.clientGroups.length && experiment.collect) {
+    experiment.collect.forEach((col) => {
       Collector.collect(_.extend({experiment: experiment}, col));
     });
   }
-  for (let i = 0; i < experiment.clientGroups.length; i++) {
+  experiment.clientGroups.forEach((group) => {
     // Logs participation in the group.
     Collector.collect({
                         event          : Const.EVENTS.PARTICIPATE, listen: false,
-                        experimentGroup: experiment.clientGroups[i], experiment: experiment
+                        experimentGroup: group, experiment: experiment
                       });
-    if (!_.isEmpty(collect)) {
-      collect.forEach((col) => {
-        Collector.collect(_.extend(
-          {experiment: experiment, experimentGroup: experiment.clientGroups[i]}, col));
-      });
-    }
-    for (let j = 0; j < experiment.clientGroups[i].executors.length; j++) {
-      Executor.execute(experiment.clientGroups[i].executors[j].name,
-                       experiment.clientGroups[i].executors[j].options);
-    }
-  }
+    experiment.collect.forEach((col) => {
+      Collector.collect(_.extend(
+        {experiment: experiment, experimentGroup: group}, col));
+    });
+    group.executors.forEach((executor) => {
+      Executor.execute(executor.name, executor.options);
+    });
+  });
 };

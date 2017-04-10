@@ -23,8 +23,7 @@ describe('Group', function () {
     expect(group.included).to.be.true;
     expect(group.id).to.eq(1);
     expect(group.experimentId).to.eq(1);
-    group = new Group({id: 1, experimentId: 1, label: 'a', executors: [1]});
-    expect(group.label).to.equal('a');
+    group = new Group({id: 1, experimentId: 1, executors: [1]});
     expect(group.executors).to.deep.equal([1]);
     group = new Group({id: 1, experimentId: 1, executors: {name: 'a'}});
     expect(group.executors).to.deep.equal([{name: 'a'}]);
@@ -33,7 +32,6 @@ describe('Group', function () {
     expect(() => {new Group({})}).to.throw(BaseError);
     expect(() => {new Group({experimentId: 1})}).to.throw(BaseError);
     expect(() => {new Group({id: 1})}).to.throw(BaseError);
-    expect(() => {new Group({id: 1, experimentId: 1, label: 1})}).to.throw(BaseError);
   });
   it('client included', () => {
     group = new Group({id: 1, experimentId: 1, demographics: clientDemographics});

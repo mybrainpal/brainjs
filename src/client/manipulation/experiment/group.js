@@ -14,7 +14,6 @@ class Group {
    *  @property {number|string} id -
    *  @property {string|number} experimentId - should be supplied by the constructor invocation
    *  in Experiment.
-   *  @property {string} [label]
    *  @property {Array.<Object>|Object} [demographics] - which part of the population should this
    *  group
    *  include. By default all users are included. In sharp contrast to golf clubs.
@@ -32,12 +31,6 @@ class Group {
       throw new BaseError('Group: experimentId cannot be missing.');
     }
     this.experimentId = options.experimentId;
-    if (!_.isNil(options.label)) {
-      if (!_.isString(options.label)) {
-        throw new BaseError('Group: label must be nil or a string.');
-      }
-      this.label = options.label;
-    }
     this.included = true;
     if (options.demographics) {
       this.included = Demographics.included(options.demographics);

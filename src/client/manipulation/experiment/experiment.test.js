@@ -3,6 +3,7 @@
  */
 let expect       = require('chai').expect,
     chai         = require('chai'),
+    _            = require('../../common/util/wrapper'),
     BaseError    = require('../../common/log/base.error'),
     Experiment   = require('./experiment'),
     Demographics = require('./demographics');
@@ -27,13 +28,15 @@ describe('Experiment', function () {
       expect(experiment.groups[i].experimentId).to.equal(1);
     }
     expect(experiment.included).to.be.true;
-
+  });
+  it('constructor fails', () => {
     expect(() => {new Experiment({})}).to.throw(Error);
     expect(() => {new Experiment()}).to.throw(Error);
     expect(() => {new Experiment({groups: [clientGroup]})}).to.throw(BaseError);
     expect(() => {new Experiment({id: 1})}).to.throw(BaseError);
     expect(() => {new Experiment({id: 1, groups: []})}).to.throw(Error);
     expect(() => {new Experiment({id: 1, groups: 1})}).to.throw(Error);
+    expect(() => {new Experiment(_.extend({collect: 1}, options))}).to.throw(Error);
   });
   it('client included', () => {
     experiment = new Experiment(options);

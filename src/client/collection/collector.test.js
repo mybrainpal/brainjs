@@ -42,30 +42,32 @@ describe('Collector', function () {
   it('listen = false', () => {
     Collector.collect({event: 'first-night', listen: false});
     expect(_countEvents()).to.equal(1);
-    expect(_get(0).event).to.eq('first-night');
-    expect(_get(0).backendUrl).to.eq(Const.BACKEND_URL.EVENT);
+    expect(_getEvent(0).event).to.eq('first-night');
+    expect(_getEvent(0).backendUrl).to.eq(Const.BACKEND_URL.EVENT);
   });
   it('save an experiment ID', () => {
     Collector.collect({event: 'dual-personality', experiment: experiment, listen: false});
-    expect(_get(0).experimentId).to.eq(1);
+    expect(_getEvent(0).experimentId).to.eq(1);
   });
   it('save a state', () => {
     Collector.collect({event: 'punch-self-in-nose', state: 1, listen: false});
     Collector.collect({event: 'punch-self-in-nose', state: 'true', listen: false});
-    expect(_get(0).state).to.eq(1);
-    expect(_get(1).state).to.eq('true');
+    expect(_countStates()).to.equal(2);
+    expect(_getState(0).state).to.eq(1);
+    expect(_getState(0).backendUrl).to.eq(Const.BACKEND_URL.UPDATE);
+    expect(_getState(1).state).to.eq('true');
   });
   it('save a group ID', () => {
     Collector.collect(
       {event: 'dual-personality', experimentGroup: experiment.groups[0], listen: false});
-    expect(_get(0).experimentGroupId).to.eq(10);
+    expect(_getEvent(0).experimentGroupId).to.eq(10);
   });
   it('DOM event', (done) => {
     Collector.collect({selector: '#fight-club>a.fight', event: id.toString()});
     $.trigger(id.toString(), {}, '#fight-club>a.fight');
     setTimeout(() => {
       expect(_countEvents()).to.equal(1);
-      expect(_get(0).event).to.eq(id.toString());
+      expect(_getEvent(0).event).to.eq(id.toString());
       done();
     });
   });
@@ -106,24 +108,25 @@ describe('Collector', function () {
   });
   it('empty options throws', () => {
     expect(() => {//noinspection JSCheckFunctionSignatures
-      Collector.collect()
+      Collector.preconditions()
     }).to.throw(BaseError);
-    expect(() => {Collector.collect({})}).to.throw(BaseError);
+    expect(() => {Collector.preconditions({})}).to.throw(BaseError);
   });
   it('illegal event throws', () => {
-    expect(() => {Collector.collect({event: 1})}).to.throw(BaseError);
-    expect(() => {Collector.collect({event: ''})}).to.throw(BaseError);
+    expect(() => {Collector.preconditions({event: 1})}).to.throw(BaseError);
+    expect(() => {Collector.preconditions({event: ''})}).to.throw(BaseError);
   });
   it('illegal selector throws', () => {
-    expect(() => {Collector.collect({event: 'a', listen: true, selector: 1})}).to.throw(BaseError);
+    expect(() => {Collector.preconditions({event: 'a', listen: true, selector: 1})}).to.throw(
+      BaseError);
   });
   it('illegal state throws', () => {
-    expect(() => {Collector.collect({event: 'a', state: {}})}).to.throw(BaseError);
+    expect(() => {Collector.preconditions({event: 'a', state: {}})}).to.throw(BaseError);
   });
 });
 
 /**
- * @returns {number} of non-log messages in InMemoryStorage.
+ * @returns {number} of event types messages in InMemoryStorage.
  * @private
  */
 function _countEvents() {
@@ -139,10 +142,35 @@ function _countEvents() {
  * @returns {Object} the i-th message of type event from InMemory storage.
  * @private
  */
-function _get(i) {
+function _getEvent(i) {
   let count = 0;
   for (let j = 0; j < InMemoryStorage.storage.length; j++) {
     if (InMemoryStorage.storage[j].backendUrl === Const.BACKEND_URL.EVENT) count++;
+    if (count === i + 1) return InMemoryStorage.storage[j];
+  }
+}
+
+/**
+ * @returns {number} of session update typed messages in InMemoryStorage.
+ * @private
+ */
+function _countStates() {
+  let count = 0;
+  for (let i = 0; i < InMemoryStorage.storage.length; i++) {
+    if (InMemoryStorage.storage[i].backendUrl === Const.BACKEND_URL.UPDATE) count++;
+  }
+  return count;
+}
+
+/**
+ * @param {number} i
+ * @returns {Object} the i-th message of type session update from InMemory storage.
+ * @private
+ */
+function _getState(i) {
+  let count = 0;
+  for (let j = 0; j < InMemoryStorage.storage.length; j++) {
+    if (InMemoryStorage.storage[j].backendUrl === Const.BACKEND_URL.UPDATE) count++;
     if (count === i + 1) return InMemoryStorage.storage[j];
   }
 }

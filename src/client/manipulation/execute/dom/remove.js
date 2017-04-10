@@ -1,7 +1,8 @@
 /**
  * Proudly created by ohad on 25/12/2016.
  */
-let _         = require('./../../../common/util/wrapper'),
+let $         = require('../../../common/util/dom'),
+    _         = require('../../../common/util/wrapper'),
     Logger    = require('../../../common/log/logger'),
     Level     = require('../../../common/log/logger').Level,
     BaseError = require('../../../common/log/base.error'),
@@ -15,10 +16,10 @@ Master.register(exports);
  *  @property {string} targets - css selectors of targets to remove.
  */
 exports.execute = function (options) {
-  document.querySelectorAll(options.targets)
-          .forEach((elem) => { if (elem.parentNode) elem.parentNode.removeChild(elem) });
+  $.all(options.targets)
+   .forEach((elem) => { if (elem.parentNode) elem.parentNode.removeChild(elem) });
   if (options.toLog) {
-    Logger.log(Level.INFO, 'Removes all ' + options.targets);
+    Logger.log(Level.INFO, 'RemoveExecutor: Removed all ' + options.targets);
   }
 };
 

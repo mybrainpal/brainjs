@@ -24,6 +24,29 @@ let Storage   = require('../common/storage/storage'),
  *  @property {Group} [experimentGroup] - that the client belongs to.
  */
 exports.collect = function (options) {
+  exports.preconditions(options);
+  if (_.isNil(options.listen) || options.listen) {
+    const targets = options.selector ? $.all(options.selector) : [document];
+    if (_.isEmpty(targets)) {
+      Logger.log(Level.WARNING, 'Collector: failed to select at ' + options.selector);
+      return;
+    }
+    targets.forEach((target) => {
+      if (_.is(target, EventTarget)) {
+        const handler = $.on(options.event, () => {
+          _saveEventMessage(options);
+          if (!_.has(options, 'once') || options.once) {
+            $.off(options.event, handler, target, true);
+          }
+        }, {}, target, true);
+      }
+    });
+  } else {
+    _saveEventMessage(options);
+  }
+};
+
+exports.preconditions = function (options) {
   if (_.isEmpty(options)) {
     throw new BaseError('Collector: options must be a non-empty object.');
   }
@@ -37,23 +60,6 @@ exports.collect = function (options) {
     if (!_.isNil(options.selector) && !_.isString(options.selector)) {
       throw new BaseError('Collector: selector must be a non-empty string when listen = true.');
     }
-    const targets = options.selector ? document.querySelectorAll(options.selector) : [document];
-    if (_.isEmpty(targets)) {
-      Logger.log(Level.WARNING, 'Collector: failed to select at ' + options.selector);
-      return;
-    }
-    targets.forEach((target) => {
-      if (_.is(target, EventTarget)) {
-        const handler = $.on(options.event, () => {
-          Storage.save(_createEventMessage(options));
-          if (!_.has(options, 'once') || options.once) {
-            $.off(options.event, handler, target, true);
-          }
-        }, {}, target, true);
-      }
-    });
-  } else {
-    Storage.save(_createEventMessage(options));
   }
 };
 
@@ -62,7 +68,7 @@ exports.collect = function (options) {
  * @return {Object} that we want to attach to the event, upon saving.
  * @private
  */
-function _createEventMessage(options) {
+function _saveEventMessage(options) {
   let emitted = {};
 
   if (_.isEmpty(options)) {
@@ -78,14 +84,19 @@ function _createEventMessage(options) {
   if (options.selector) {
     emitted.selector = options.selector;
   }
-  if (options.state) {
-    emitted.state = options.state;
-  }
   if (options.event) {
     emitted.event = options.event;
   } else {
     Logger.log(Level.WARNING, 'Collector: missing an event.');
   }
   emitted.backendUrl = Const.BACKEND_URL.EVENT;
-  return emitted;
+  Storage.save(emitted);
+  // If state is mentioned, then the session should be updated.
+  if (!_.isNil(options.state)) {
+    emitted = {
+      backendUrl: Const.BACKEND_URL.UPDATE,
+      state     : options.state
+    };
+    Storage.save(emitted);
+  }
 }

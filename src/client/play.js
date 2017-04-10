@@ -1,7 +1,9 @@
 /**
  * Proudly created by ohad on 25/01/2017.
  */
-let Client      = require('./common/client'),
+let _           = require('./common/util/wrapper'),
+    $           = require('./common/util/dom'),
+    Client      = require('./common/client'),
     Logger      = require('./common/log/logger'),
     Level       = require('./common/log/logger').Level,
     Storage     = require('./common/storage/storage'),
@@ -22,10 +24,13 @@ let Client      = require('./common/client'),
 module.exports = function (configuration) {
   if (!Client.canRunBrainPal()) {
     Logger.log(Level.WARNING, 'Seems like this browser and BrainPal ain\'t gonna be friends :-(');
-    exports.shutDown(configuration);
+    exports.shutDown();
     return;
   }
-  Client.tracker = configuration.tracker;
+  Client.tracker     = configuration.tracker;
+  Client.experiments = _.arrify(configuration.experiments).map((experimentOptions) => {
+    return new Experiment(experimentOptions);
+  });
   if (configuration.storage && configuration.storage.name) {
     Storage.set(configuration.storage.name, configuration.storage.options || {},
                 () => {_run(configuration)});
@@ -43,26 +48,22 @@ module.exports = function (configuration) {
 function _run(configuration) {
   Client.init(() => {
     Logger.log(Level.INFO, 'BrainPal: game on!');
-    if (configuration.hasOwnProperty('collect')) {
-      for (let i = 0; i < configuration.collect.length; i++) {
-        Collector.collect(configuration.collect[i]);
-      }
-    }
-    if (configuration.hasOwnProperty('experiments')) {
-      for (let i = 0; i < configuration.experiments.length; i++) {
-        let experiment = new Experiment(configuration.experiments[i].experiment);
-        if (experiment.included) {
-          Manipulator.experiment(experiment, configuration.experiments[i].options);
-        }
-      }
-    }
+    _.arrify(configuration.collect).forEach((subject) => {
+      Collector.collect(subject);
+    });
+    Client.experiments.forEach((experiment) => {
+      Manipulator.manipulate(experiment);
+    });
   });
 }
 
 /**
- * Shuts the entire BrainPal presence.
- * @param {Object} configuration
+ * Clean all BrainPal presence on the webpage.
  */
-exports.shutDown = function (configuration) {
-
+exports.shutDown = function () {
+  // Clean all injected styles.
+  $.all('style[' + $.identifyingAttribute + ']')
+   .forEach(function (styleElement) {
+     styleElement.parentNode.removeChild(styleElement);
+   });
 };

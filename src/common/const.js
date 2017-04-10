@@ -106,6 +106,12 @@ exports.BACKEND_URL = Object.freeze({
  * @type {Object}
  */
 exports.EVENTS = Object.freeze({
-                                 PARTICIPATE: 'PARTICIPATE',
-                                 CONVERSION : 'CONVERSION'
+                                 PARTICIPATE: 'PARTICIPATE'
+                               });
+/**
+ * Types of predefined session states.
+ * @type {Object}
+ */
+exports.STATES = Object.freeze({
+                                 CONVERSION: 'CONVERSION'
                                });

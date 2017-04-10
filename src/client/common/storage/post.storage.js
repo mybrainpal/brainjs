@@ -39,6 +39,15 @@ exports.init = function (options, onReady) {
     userMessage.client.screen.availHeight = window.screen.availHeight;
     userMessage.client.screen.availWidth  = window.screen.availWidth;
   }
+  // Experiment data
+  let manipulated  = 0,
+      participates = 0;
+  Client.experiments.forEach((experiment) => {
+    if (experiment.included) participates = 1;
+    if (experiment.included && !_.isEmpty(experiment.clientGroups)) manipulated = 1;
+  });
+  userMessage.manipulated  = manipulated;
+  userMessage.participates = participates;
   exports.save(userMessage, onReady);
 };
 

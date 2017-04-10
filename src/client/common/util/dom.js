@@ -7,11 +7,9 @@ const _ = require('./prototype');
  * @param {string|Element|HTMLDocument} sel - a string selector. If an element is provided, then
  * it is returned.
  * @param {Element|HTMLDocument} [elem = document] - to select only children of that element.
- * @param {boolean} [all = false] - whether to query for all elements that matches the query.
- * @type {module.selector}
- * @returns {Element|NodeList} query selector that satisfies the input.
+ * @returns {Element} query selector that satisfies the input.
  */
-let $ = function selector(sel, elem, all) {
+let $ = function (sel, elem) {
   if (_.is(sel, Element, HTMLDocument)) return sel;
   if (!_.isString(sel)) {
     throw new Error('DomUtil: sel must be an element or a string.');
@@ -20,8 +18,23 @@ let $ = function selector(sel, elem, all) {
   if (!_.is(elem, HTMLDocument, Element)) {
     throw new Error('DomUtil: elem must be an element.');
   }
-  const method = (!_.isNil(all) && all) ? 'querySelectorAll' : 'querySelector';
-  return elem[method](sel);
+  return elem.querySelector(sel);
+};
+
+/**
+ * @param {string} sel - a string selector.
+ * @param {Element|HTMLDocument} [elem = document] - to select only children of that element.
+ * @returns {NodeList} query selector that satisfies the input.
+ */
+$.all = function (sel, elem) {
+  if (!_.isString(sel)) {
+    throw new Error('DomUtil: sel must be a string.');
+  }
+  elem = elem ? elem : document;
+  if (!_.is(elem, HTMLDocument, Element)) {
+    throw new Error('DomUtil: elem must be an element.');
+  }
+  return elem.querySelectorAll(sel);
 };
 
 /**

@@ -51,7 +51,6 @@ exports.agent = _parseUserAgent();
  */
 exports.canRunBrainPal = function () {
   let i;
-  let agent                = _parseUserAgent();
   let browserToMinVersions = {
     'edge'   : 14,
     'chrome' : 53,
@@ -60,14 +59,14 @@ exports.canRunBrainPal = function () {
     'opera'  : 40
   };
   let allowedOs            = ['windows', 'ios', 'android', 'mac'];
-  if (!browserToMinVersions.hasOwnProperty(agent.browser.toLowerCase())) {
+  if (!browserToMinVersions.hasOwnProperty(exports.agent.browser.toLowerCase())) {
     return false;
   }
-  if (agent.browserVersion < browserToMinVersions[agent.browser.toLowerCase()]) {
+  if (exports.agent.browserVersion < browserToMinVersions[exports.agent.browser.toLowerCase()]) {
     return false;
   }
   for (i = 0; i < allowedOs.length; i++) {
-    if (agent.os.toLowerCase().indexOf(allowedOs[i]) !== -1) {
+    if (exports.agent.os.toLowerCase().indexOf(allowedOs[i]) !== -1) {
       return true;
     }
   }

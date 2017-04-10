@@ -49,7 +49,7 @@ exports.ajax = function (url, data, callback, type = 'POST', async = true) {
         }
         if (_.isFunction(callback)) callback(null, responseData);
       } else {
-        callback(xhr.responseText || xhr.status);
+        if (_.isFunction(callback)) callback(xhr.responseText || xhr.status);
       }
     }
   }
@@ -148,6 +148,7 @@ function _toQueryString(src) {
 
 /**
  * Authentication token for our backend.
+ * PHP naming convention is used for consistency purposes.
  * @type {string}
  * @private
  */
