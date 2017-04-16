@@ -203,8 +203,8 @@ describe('Manipulator', function () {
  */
 function _countEvents() {
   let count = 0;
-  for (let i = 0; i < InMemory.storage.length; i++) {
-    if (InMemory.storage[i].backendUrl === Const.BACKEND_URL.EVENT) count++;
+  for (let i = 0; i < InMemory.messages.length; i++) {
+    if (InMemory.messages[i].backendUrl === Const.BACKEND_URL.EVENT) count++;
   }
   return count;
 }
@@ -216,9 +216,9 @@ function _countEvents() {
  */
 function _getEvents(i) {
   let count = 0;
-  for (let j = 0; j < InMemory.storage.length; j++) {
-    if (InMemory.storage[j].backendUrl === Const.BACKEND_URL.EVENT) count++;
-    if (count === i + 1) return InMemory.storage[j];
+  for (let j = 0; j < InMemory.messages.length; j++) {
+    if (InMemory.messages[j].backendUrl === Const.BACKEND_URL.EVENT) count++;
+    if (count === i + 1) return InMemory.messages[j];
   }
 }
 
@@ -228,8 +228,8 @@ function _getEvents(i) {
  */
 function _countStates() {
   let count = 0;
-  for (let i = 0; i < InMemory.storage.length; i++) {
-    if (InMemory.storage[i].backendUrl === Const.BACKEND_URL.UPDATE) count++;
+  for (let i = 0; i < InMemory.messages.length; i++) {
+    if (InMemory.messages[i].backendUrl === Const.BACKEND_URL.UPDATE) count++;
   }
   return count;
 }
@@ -241,9 +241,9 @@ function _countStates() {
  */
 function _getStates(i) {
   let count = 0;
-  for (let j = 0; j < InMemory.storage.length; j++) {
-    if (InMemory.storage[j].backendUrl === Const.BACKEND_URL.UPDATE) count++;
-    if (count === i + 1) return InMemory.storage[j];
+  for (let j = 0; j < InMemory.messages.length; j++) {
+    if (InMemory.messages[j].backendUrl === Const.BACKEND_URL.UPDATE) count++;
+    if (count === i + 1) return InMemory.messages[j];
   }
 }
 
@@ -253,8 +253,8 @@ function _getStates(i) {
  */
 function _last() {
   let last;
-  for (let j = 0; j < InMemory.storage.length; j++) {
-    if (InMemory.storage[j].backendUrl === Const.BACKEND_URL.EVENT) last = InMemory.storage[j];
+  for (let j = 0; j < InMemory.messages.length; j++) {
+    if (InMemory.messages[j].backendUrl === Const.BACKEND_URL.EVENT) last = InMemory.messages[j];
   }
   return last;
 }

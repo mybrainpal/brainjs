@@ -8,15 +8,15 @@
  * Saves a message.
  * @param {Object} message
  */
-exports.save = function save(message) { exports.storage.push(message) };
+exports.save = function save(message) { exports.messages.push(message) };
 
 /**
  * Flushes the storage.
  */
-exports.flush = function () { exports.storage = [] };
+exports.flush = function () { exports.messages = [] };
 
 /**
  * Stores the saved messages.
  * @type {Array}
  */
-exports.storage = [];
+exports.messages = [];

@@ -56,7 +56,7 @@ describe('MoveExecutor', function () {
     Master.execute(MoveExecutor.name,
                    {target: '#div a', parentSelector: '#div>.first', toLog: true});
     setTimeout(() => {
-      expect(InMemoryStorage.storage[0].level).to.equal(Level.INFO.name);
+      expect(InMemoryStorage.messages[0].level).to.equal(Level.INFO.name);
       done();
     });
   });

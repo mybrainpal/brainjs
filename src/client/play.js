@@ -32,8 +32,8 @@ module.exports = function (configuration) {
     return new Experiment(experimentOptions);
   });
   if (configuration.storage && configuration.storage.name) {
-    Storage.set(configuration.storage.name, configuration.storage.options || {},
-                () => {_run(configuration)});
+    Storage.set(configuration.storage.name, configuration.storage.options);
+    _run(configuration);
   } else {
     Logger.log(Level.WARNING, 'configuration: missing storage.');
     _run(configuration)
@@ -46,14 +46,13 @@ module.exports = function (configuration) {
  * @private
  */
 function _run(configuration) {
-  Client.init(() => {
-    Logger.log(Level.INFO, 'BrainPal: game on!');
-    _.arrify(configuration.collect).forEach((subject) => {
-      Collector.collect(subject);
-    });
-    Client.experiments.forEach((experiment) => {
-      Manipulator.manipulate(experiment);
-    });
+  Client.init();
+  Logger.log(Level.INFO, 'BrainPal: game on!');
+  _.arrify(configuration.collect).forEach((subject) => {
+    Collector.collect(subject);
+  });
+  Client.experiments.forEach((experiment) => {
+    Manipulator.manipulate(experiment);
   });
 }
 

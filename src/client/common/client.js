@@ -7,11 +7,9 @@ const _ = require('../common/util/wrapper');
 
 /**
  * Initializes client properties.
- * @param {function} [callback]
  */
-exports.init = function (callback) {
+exports.init = function () {
   if (_.isNil(exports.id)) exports.id = Math.round(Math.random() * 1000000) + 1;
-  if (_.isFunction(callback)) callback();
 };
 
 /**
@@ -37,12 +35,12 @@ exports.experiments = [];
 /**
  * Browser, OS and their major version.
  * @type {{
- *  browser: string,
+    browser: string,
     browserVersion: number,
     mobile: boolean,
     os: string,
     osVersion: string
- * }}
+   }}
  */
 exports.agent = _parseUserAgent();
 

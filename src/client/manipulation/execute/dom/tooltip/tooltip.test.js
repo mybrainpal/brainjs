@@ -165,9 +165,9 @@ describe('TooltipExecutor', function () {
         // tooltip is not always visible after first event.
         $.trigger(Master.eventName(TooltipInterface.name), id);
         setTimeout(() => {
-          expect(InMemoryStorage.storage).to.have.length(3);
-          for (let i = 0; i < InMemoryStorage.storage.length; i++) {
-            expect(InMemoryStorage.storage[i].level).to.equal(Level.INFO.name);
+          expect(InMemoryStorage.messages).to.have.length(3);
+          for (let i = 0; i < InMemoryStorage.messages.length; i++) {
+            expect(InMemoryStorage.messages[i].level).to.equal(Level.INFO.name);
           }
           done();
         }, 200);
@@ -182,9 +182,9 @@ describe('TooltipExecutor', function () {
       setTimeout(() => {
         $.trigger(Master.eventName(TooltipInterface.name), id);
         setTimeout(() => {
-          expect(InMemoryStorage.storage.length).to.be.at.least(2);
-          for (let i = 0; i < InMemoryStorage.storage.length; i++) {
-            expect(InMemoryStorage.storage[i].level).to.equal(Level.INFO.name);
+          expect(InMemoryStorage.messages.length).to.be.at.least(2);
+          for (let i = 0; i < InMemoryStorage.messages.length; i++) {
+            expect(InMemoryStorage.messages[i].level).to.equal(Level.INFO.name);
           }
           done();
         }, 200);
@@ -207,8 +207,8 @@ describe('TooltipExecutor', function () {
         $.trigger(Master.eventName(TooltipInterface.name), id);
         setTimeout(() => {
           let hasWarning = false;
-          for (let i = 0; i < InMemoryStorage.storage.length; i++) {
-            if (InMemoryStorage.storage[i].level === Level.WARNING.name) {
+          for (let i = 0; i < InMemoryStorage.messages.length; i++) {
+            if (InMemoryStorage.messages[i].level === Level.WARNING.name) {
               hasWarning =
                 true;
             }
@@ -231,9 +231,9 @@ describe('TooltipExecutor', function () {
         // tooltip is not always visible after first event.
         $.trigger(Master.eventName(TooltipInterface.name), id);
         setTimeout(() => {
-          expect(InMemoryStorage.storage).to.have.length(3);
-          for (let i = 0; i < InMemoryStorage.storage.length; i++) {
-            expect(InMemoryStorage.storage[i].level).to.equal(Level.INFO.name);
+          expect(InMemoryStorage.messages).to.have.length(3);
+          for (let i = 0; i < InMemoryStorage.messages.length; i++) {
+            expect(InMemoryStorage.messages[i].level).to.equal(Level.INFO.name);
           }
           done();
         }, 800);

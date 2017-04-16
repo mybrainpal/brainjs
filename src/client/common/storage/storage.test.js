@@ -5,11 +5,13 @@ const expect          = require('chai').expect,
       BaseError       = require('../log/base.error'),
       InMemoryStorage = require('./in-memory.storage'),
       StorageInjector = require('inject-loader!./storage');
+// Defined here for autocomplete purposes.
+let Storage           = require('./storage');
 
 describe('Storage', function () {
   this.timeout(100);
   let _consoleLogMock = [];
-  const Storage       = StorageInjector({
+  Storage             = StorageInjector({
                                           './console.storage': {
                                             save: (msg) => {_consoleLogMock.push(msg)}
                                           }
@@ -26,8 +28,8 @@ describe('Storage', function () {
   });
   it('save', () => {
     Storage.save('msg');
-    expect(InMemoryStorage.storage[0]).to.equal('msg');
-    expect(InMemoryStorage.storage).to.have.length(1);
+    expect(InMemoryStorage.messages[0]).to.equal('msg');
+    expect(InMemoryStorage.messages).to.have.length(1);
   });
   it('callback', (done) => {
     const doneFn = () => {done()};

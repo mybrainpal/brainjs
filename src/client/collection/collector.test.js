@@ -131,8 +131,8 @@ describe('Collector', function () {
  */
 function _countEvents() {
   let count = 0;
-  for (let i = 0; i < InMemoryStorage.storage.length; i++) {
-    if (InMemoryStorage.storage[i].backendUrl === Const.BACKEND_URL.EVENT) count++;
+  for (let i = 0; i < InMemoryStorage.messages.length; i++) {
+    if (InMemoryStorage.messages[i].backendUrl === Const.BACKEND_URL.EVENT) count++;
   }
   return count;
 }
@@ -144,9 +144,9 @@ function _countEvents() {
  */
 function _getEvent(i) {
   let count = 0;
-  for (let j = 0; j < InMemoryStorage.storage.length; j++) {
-    if (InMemoryStorage.storage[j].backendUrl === Const.BACKEND_URL.EVENT) count++;
-    if (count === i + 1) return InMemoryStorage.storage[j];
+  for (let j = 0; j < InMemoryStorage.messages.length; j++) {
+    if (InMemoryStorage.messages[j].backendUrl === Const.BACKEND_URL.EVENT) count++;
+    if (count === i + 1) return InMemoryStorage.messages[j];
   }
 }
 
@@ -156,8 +156,8 @@ function _getEvent(i) {
  */
 function _countStates() {
   let count = 0;
-  for (let i = 0; i < InMemoryStorage.storage.length; i++) {
-    if (InMemoryStorage.storage[i].backendUrl === Const.BACKEND_URL.UPDATE) count++;
+  for (let i = 0; i < InMemoryStorage.messages.length; i++) {
+    if (InMemoryStorage.messages[i].backendUrl === Const.BACKEND_URL.UPDATE) count++;
   }
   return count;
 }
@@ -169,8 +169,8 @@ function _countStates() {
  */
 function _getState(i) {
   let count = 0;
-  for (let j = 0; j < InMemoryStorage.storage.length; j++) {
-    if (InMemoryStorage.storage[j].backendUrl === Const.BACKEND_URL.UPDATE) count++;
-    if (count === i + 1) return InMemoryStorage.storage[j];
+  for (let j = 0; j < InMemoryStorage.messages.length; j++) {
+    if (InMemoryStorage.messages[j].backendUrl === Const.BACKEND_URL.UPDATE) count++;
+    if (count === i + 1) return InMemoryStorage.messages[j];
   }
 }

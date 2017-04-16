@@ -18,6 +18,10 @@ exports.save = function (message) {
   }
   _storage.save(message);
 };
+
+/**
+ * Storage module that is being used for storing messages.
+ */
 let _storage = InMemoryStorage;
 
 /**
@@ -49,6 +53,10 @@ exports.set = function (name, options, callback) {
   }
 };
 
+/**
+ * Names of storage types.
+ * @type {Object}
+ */
 exports.names = Object.freeze({
                                 CONSOLE         : 'console',
                                 GOOGLE_ANALYTICS: 'google-analytics',
@@ -66,11 +74,11 @@ exports.names = Object.freeze({
 function _storageSwitch(newStorage, options, callback) {
   const onReady = () => {
     _storage = newStorage;
-    for (let i = 0; i < InMemoryStorage.storage.length; i++) {
-      exports.save(InMemoryStorage.storage[i])
+    for (let i = 0; i < InMemoryStorage.messages.length; i++) {
+      exports.save(InMemoryStorage.messages[i]);
     }
     InMemoryStorage.flush();
-    if (callback) callback();
+    if (_.isFunction(callback)) callback();
   };
   if (newStorage.init) {
     newStorage.init(options, onReady);

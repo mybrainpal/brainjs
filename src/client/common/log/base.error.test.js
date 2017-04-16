@@ -33,9 +33,9 @@ describe('BaseError', function () {
   it.skip('handled', (done) => {
     const error = new BaseError();
     setTimeout(() => {
-      expect(InMemoryStorage.storage).to.have.length(1);
-      expect(InMemoryStorage.storage[0]).to.be.instanceOf(BaseError);
-      expect(InMemoryStorage.storage[0]).to.equal(error);
+      expect(InMemoryStorage.messages).to.have.length(1);
+      expect(InMemoryStorage.messages[0]).to.be.instanceOf(BaseError);
+      expect(InMemoryStorage.messages[0]).to.equal(error);
       done();
     }, 5);
     throw error;

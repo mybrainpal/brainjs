@@ -5,20 +5,13 @@ const expect = require('chai').expect,
       Client = require('./client');
 
 describe('Client', function () {
-  this.timeout(1000);
-  it('init', (done) => {
-    Client.init(() => {
-      expect(Number.isInteger(Client.id)).to.be.true;
-      done();
-    });
+  it('init', () => {
+    Client.init();
+    expect(Number.isInteger(Client.id)).to.be.true;
   });
-  it('init without ga', (done) => {
-    Client.init(() => {
-      const tmp = window.ga;
-      window.ga = {};
-      expect(Number.isInteger(Client.id)).to.be.true;
-      window.ga = tmp;
-      done();
-    });
+  it('agent', () => {
+    expect(Client.agent).to.be.ok;
+    expect(Client.agent.browser).to.be.ok;
+    expect(Client.agent.os).to.be.ok;
   });
 });

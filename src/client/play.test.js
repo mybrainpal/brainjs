@@ -124,16 +124,22 @@ describe('End 2 End', function () {
     Play({tracker: id, experiments: [nonClientExperiment]});
     expect(Client.experiments).to.deep.eq([new Experiment(nonClientExperiment)]);
   });
-  it('client init & storage switch', function () {
+  it('client init & storage switch', function (done) {
     Play({tracker: id, storage: {name: Storage.names.POST}});
     expect(this.requests).to.not.be.empty;
-    this.requests[0].respond(200, {'Content-Type': 'application/json'},
-                             JSON.stringify({success: 1, json: 1, csrf_token: 'miami'}));
-    expect(this.requests[0].requestBody.get('participates')).to.eq('0');
-    expect(this.requests[0].requestBody.get('manipulated')).to.eq('0');
-    expect(_.http.csrf_token).to.eq('miami');
-    expect(this.requests[1].url.endsWith(Const.BACKEND_URL.LOG)).to.be.true;
-    expect(this.requests[1].requestBody.get('token')).to.eq('miami');
+    // Simulates a non-zero response time from the backend.
+    _.delay.call(this, () => {
+      this.requests[0].respond(200, {'Content-Type': 'application/json'},
+                               JSON.stringify({success: 1, json: 1, csrf_token: 'miami'}));
+    }, 10);
+    _.delay.call(this, () => {
+      expect(this.requests[0].requestBody.get('participates')).to.eq('0');
+      expect(this.requests[0].requestBody.get('manipulated')).to.eq('0');
+      expect(_.http.csrf_token).to.eq('miami');
+      expect(this.requests[1].url.endsWith(Const.BACKEND_URL.LOG)).to.be.true;
+      expect(this.requests[1].requestBody.get('token')).to.eq('miami');
+      done();
+    }, 20);
   });
   it('experiment run', function (done) {
     Play({tracker: id, storage: {name: Storage.names.POST}, experiments: [clientExperiment]});
