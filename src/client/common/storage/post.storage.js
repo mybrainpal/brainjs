@@ -59,6 +59,6 @@ exports.init = function (options, onReady) {
 function _enrich(message) {
   return _.extend(message, {
     timestamp: new Date().getTime(),
-    tracker  : Client.tracker
+    trackerId: Client.trackerId
   });
 }

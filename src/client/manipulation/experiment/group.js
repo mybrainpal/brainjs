@@ -23,7 +23,7 @@ class Group {
    *    @property {Object} options - extra options for the executors.
    */
   constructor(options = {}) {
-    if (!_.isString(options.id) && !_.isNumber(options.id)) {
+    if (!_.isAlphaNum(options.id)) {
       throw new BaseError('Group: id must be number or a string.');
     }
     this.id = options.id;

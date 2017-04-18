@@ -56,7 +56,7 @@ $.on = function (event, handler, detailOrId, target = document, useCapture = fal
   if (!_.isFunction(handler)) {
     throw new Error('DomUtil: handler is not a function.');
   }
-  if (!_.isNil(detailOrId) && !_.isString(detailOrId) && !_.isNumber(detailOrId) &&
+  if (!_.isNil(detailOrId) && !_.isAlphaNum(detailOrId) &&
       !_.isObject(detailOrId)) {
     throw new Error('DomUtil: detail is illegal.');
   } else if (!_.isNil(detailOrId) && !_.isObject(detailOrId)) detailOrId = {id: detailOrId};
@@ -110,8 +110,7 @@ $.trigger = function (event, detailOrId, target = document) {
   if (!_.isString(event) || !event) {
     throw new Error('DomUtil: event is not a string or is empty.');
   }
-  if (!_.isNil(detailOrId) && !_.isString(detailOrId) && !_.isNumber(detailOrId) &&
-      !_.isObject(detailOrId)) {
+  if (!_.isNil(detailOrId) && !_.isAlphaNum(detailOrId) && !_.isObject(detailOrId)) {
     throw new Error('DomUtil: detail is illegal.');
   } else if (!_.isNil(detailOrId) && !_.isObject(detailOrId)) detailOrId = {id: detailOrId};
   target = $(target);
@@ -213,7 +212,7 @@ function appendArray(el, children) {
       appendArray(el, child);
     } else if (_.is(child, Element)) {
       el.appendChild(child);
-    } else if (_.isString(child) || _.isNumber(child)) {
+    } else if (_.isAlphaNum(child)) {
       el.insertAdjacentHTML('beforeend', child);
     }
   });
@@ -273,7 +272,7 @@ $.create = function (type, props, ...extra) {
     appendArray(el, props);
   } else if (_.is(props, Element)) {
     el.appendChild(props);
-  } else if (_.isString(props) || _.isNumber(props)) {
+  } else if (_.isAlphaNum(props)) {
     el.insertAdjacentHTML('beforeend', props);
   } else if (_.isObject(props)) {
     Object.keys(props).forEach((propName) => {

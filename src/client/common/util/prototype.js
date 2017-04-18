@@ -37,6 +37,14 @@ _.isNumber = function (num) {
 };
 
 /**
+ * @param {number|string} alphaNum
+ * @returns {boolean} whether `alphaNum` is a number or a string.
+ */
+_.isAlphaNum = function (alphaNum) {
+  return _.isString(alphaNum) || _.isNumber(alphaNum);
+};
+
+/**
  * @param {boolean} bool
  * @returns {boolean}
  */
@@ -356,4 +364,30 @@ _.interval = function (callback, time) {
   const that = this,
         args = Array.prototype.slice.call(arguments, 2);
   return setInterval(_.isFunction(callback) ? () => {callback.apply(that, args)} : callback, time);
+};
+
+/**
+ * @param {string} s
+ * @returns {string} converts `s` into snake_case (also known as underscore_case).
+ * Examples:
+ * 1) 'camelCase' -> 'camel_case'
+ * 2) 'PascalCase' -> 'pascal_case'
+ * 3) 'BrainPalTLV' -> 'brain_pal_tlv'
+ */
+_.snakeCase = function (s) {
+  if (!_.isString(s)) throw new Error('Prototype: s must be a string.');
+  /**
+   * Explanation:
+   * - Captures all the uppercase letters, and maybe a preceding underscore.
+   * - Then converts the captured uppercase letters to lowercase and then return back to replace
+   *   function with an _ as preceding character.
+   *   This will be achieved by using anonymous function in the replacement part.
+   * - This would replace the starting uppercase letter to _ + lowercase_letter.
+   * - Finally removing the starting underscore will give you the desired output.
+   * Credit to Avinash Raj from StackOverflow
+   * http://stackoverflow.com/questions/30521224/javascript-convert-pascalcase-to-underscore-case
+   */
+  return s.replace(/[._]?([A-Z]+)/g, (full, group) => {
+    return '_' + group.toLowerCase();
+  }).replace(/^_/, '');
 };

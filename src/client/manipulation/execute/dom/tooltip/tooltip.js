@@ -58,7 +58,7 @@ exports.preconditions = function (options) {
   if (!target) {
     throw new BaseError('TooltipExecutor: could not find target at ' + options.target);
   }
-  if (options.id && !_.isString(options.id) && !_.isNumber(options.id)) {
+  if (options.id && !_.isAlphaNum(options.id)) {
     throw new BaseError('TooltipExecutor: id must be string or a number');
   }
   if (!_.isNil(options.timer) && (!Number.isInteger(options.timer) || options.timer <= 0)) {

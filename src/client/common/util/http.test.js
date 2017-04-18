@@ -43,11 +43,11 @@ describe('HttpUtil', function () {
       _.http.ajax(url, {}, (err, res) => {
         if (err) done(err);
         expect(res.csrf_token).to.eq(10);
-        expect(_.http.csrf_token).to.eq('10');
+        expect(_.http.csrfToken).to.eq('10');
         _.http.ajax(url, {}, (err, res) => {
           if (err) done(err);
           expect(res.csrf_token).to.eq(20);
-          expect(_.http.csrf_token).to.eq('20');
+          expect(_.http.csrfToken).to.eq('20');
           _.http.ajax(url, {}, (err) => {
             if (err) done(err);
             done();
@@ -64,12 +64,14 @@ describe('HttpUtil', function () {
                                JSON.stringify({success: 1, json: 1, csrf_token: 10}));
     });
     it('post send json params', function (done) {
-      _.http.ajax(url, {amigo: 'mejor', hermano: false}, (err) => {
+      // Tests multiple parameters, snake case conversion, and json flattening
+      _.http.ajax(url, {miAmigo: 'mejor', hermano: false, como: {teLlamas: 'buchacho'}}, (err) => {
         if (err) done(err);
         done();
       });
       expect(this.requests[0].requestBody.get('hermano')).to.eq('false');
-      expect(this.requests[0].requestBody.get('amigo')).to.eq('mejor');
+      expect(this.requests[0].requestBody.get('mi_amigo')).to.eq('mejor');
+      expect(this.requests[0].requestBody.get('como.te_llamas')).to.eq('buchacho');
       this.requests[0].respond(200, {'Content-Type': 'application/json'},
                                JSON.stringify({success: 1}));
     });
@@ -116,11 +118,11 @@ describe('HttpUtil', function () {
       _.http.ajax(url, {}, (err, res) => {
         if (err) done(err);
         expect(res.csrf_token).to.eq(10);
-        expect(_.http.csrf_token).to.eq('10');
+        expect(_.http.csrfToken).to.eq('10');
         _.http.ajax(url, {}, (err, res) => {
           if (err) done(err);
           expect(res.csrf_token).to.eq(20);
-          expect(_.http.csrf_token).to.eq('20');
+          expect(_.http.csrfToken).to.eq('20');
           _.http.ajax(url, {}, (err) => {
             if (err) done(err);
             done();
@@ -137,12 +139,13 @@ describe('HttpUtil', function () {
                                JSON.stringify({success: 1, json: 1, csrf_token: 10}));
     });
     it('get send json params', function (done) {
-      _.http.ajax(url, {amigo: 'mejor', hermano: false}, (err) => {
+      // Tests multiple parameters and snake case conversion
+      _.http.ajax(url, {miAmigo: 'mejor', hermano: false}, (err) => {
         if (err) done(err);
         done();
       }, 'GET');
       expect(_.http.getQueryParam(this.requests[0].url, 'hermano')).to.eq('false');
-      expect(_.http.getQueryParam(this.requests[0].url, 'amigo')).to.eq('mejor');
+      expect(_.http.getQueryParam(this.requests[0].url, 'mi_amigo')).to.eq('mejor');
       this.requests[0].respond(200, {'Content-Type': 'application/json'},
                                JSON.stringify({success: 1}));
     });
@@ -312,6 +315,60 @@ describe('HttpUtil', function () {
     fd.append('a', 1);
     fd.append('b', 2);
     deepEqualFormData(_.http.toFormData('?a=1&b=2'), fd);
+  });
+  describe('to snake case', () => {
+    it('FormData with snake case values remains unchanged', () => {
+      let formData = new FormData();
+      formData.append('bruno', 'mars');
+      deepEqualFormData(_.http.toSnakeCase(formData), formData);
+      formData = new FormData();
+      formData.append('bruno_mars', '24k magic');
+      deepEqualFormData(_.http.toSnakeCase(formData), formData);
+      formData = new FormData();
+      formData.append('techno', 'is');
+      formData.append('techno', 'repetitive');
+      deepEqualFormData(_.http.toSnakeCase(formData), formData);
+    });
+    it('FormData converts to snake case', () => {
+      let formData = new FormData(), expected = new FormData();
+      formData.append('brunoMars', 'billionaire');
+      expected.append(_.snakeCase('brunoMars'), 'billionaire');
+      deepEqualFormData(_.http.toSnakeCase(formData), expected);
+      formData = new FormData();
+      expected = new FormData();
+      formData.append('techoMusic', 'is');
+      formData.append('techoMusic', 'repetitive');
+      expected.append(_.snakeCase('techoMusic'), 'is');
+      expected.append(_.snakeCase('techoMusic'), 'repetitive');
+      deepEqualFormData(_.http.toSnakeCase(formData), expected);
+    });
+    it('query string with snake case values remains as is', () => {
+      let query = '?android=evil';
+      expect(_.http.toSnakeCase(query)).to.eq(query);
+      query = '?dont=get&me=started';
+      expect(_.http.toSnakeCase(query)).to.eq(query);
+      query = '?come_on=no-way';
+      expect(_.http.toSnakeCase(query)).to.eq(query);
+      query = `?${encodeURIComponent('my url')}=${encodeURIComponent('http://brainpal.io')}`;
+      expect(_.http.toSnakeCase(query)).to.eq(query);
+    });
+    it('query string is converted to snake case', () => {
+      let query = '?iPhone=sweet', expected = '?i_phone=sweet';
+      expect(_.http.toSnakeCase(query)).to.eq(expected);
+      query    = `?myUrl=${'http://brainpal.io'}&pabloEscobar=patron`;
+      expected = `?my_url=${encodeURIComponent('http://brainpal.io')}&pablo_escobar=patron`;
+      expect(_.http.toSnakeCase(query)).to.eq(expected);
+    });
+    it('object (json) with snake case values remains as is', () => {
+      let data = {apollo: 11};
+      expect(_.http.toSnakeCase(data)).to.deep.eq(data);
+      data = {say_waaat: '?'};
+      expect(_.http.toSnakeCase(data)).to.deep.eq(data);
+    });
+    it('object (json) is converted to snake case', () => {
+      let data = {spaceX: 'Mars'}, expected = {space_x: 'Mars'};
+      expect(_.http.toSnakeCase(data)).to.deep.eq(expected);
+    });
   });
 });
 

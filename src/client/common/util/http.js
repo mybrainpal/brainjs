@@ -18,7 +18,7 @@ exports.ajax = function (url, data, callback, type = 'POST', async = true) {
   type = type.toUpperCase();
   data = _set(data, 'submit', 1);
   data = _set(data, 'ajax', 1);
-  if (exports.csrf_token) data = _set(data, 'token', exports.csrf_token);
+  if (exports.csrfToken) data = _set(data, 'token', exports.csrfToken);
 
   let xhr             = new XMLHttpRequest();
   xhr.withCredentials = true;
@@ -26,14 +26,14 @@ exports.ajax = function (url, data, callback, type = 'POST', async = true) {
     if (!_.isString(data)) {
       data = _toQueryString(data);
     }
-    xhr.open('GET', url + '?' + data, async);
+    xhr.open('GET', url + exports.toSnakeCase(data), async);
     xhr.send();
   } else if (type === 'POST') {
     if (!_.is(data, FormData)) {
       data = exports.toFormData(data);
     }
     xhr.open('POST', url, async);
-    xhr.send(data);
+    xhr.send(exports.toSnakeCase(data));
   } else {
     throw new Error(`HttpUtil: unknown request type (${type}).`);
   }
@@ -41,7 +41,7 @@ exports.ajax = function (url, data, callback, type = 'POST', async = true) {
     if (xhr.readyState === XMLHttpRequest.DONE) {
       if (xhr.status === 200 && _get(xhr, 'success')) {
         if (_get(xhr, 'csrf_token')) {
-          exports.csrf_token = _get(xhr, 'csrf_token').toString();
+          exports.csrfToken = _get(xhr, 'csrf_token').toString();
         }
         let responseData = xhr.response;
         if (_get(xhr, 'json') && xhr.getResponseHeader('Content-Type') === 'application/json') {
@@ -71,15 +71,15 @@ exports.getQueryParam = function (query, key) {
     regex   = new RegExp(`[?&](?:${key}|${encodeURIComponent(key)})(?:=([^&#]*)|&|#|$)`);
     results = regex.exec(query);
     if (!results || !_.isString(results[1])) return;
-    return decodeURIComponent(results[1].replace(/\+/g, ' '));
+    return _decode(results[1]);
   } else if (Number.isInteger(key) && key >= 0) {
     // const prefix = ``;
     regex   = new RegExp(`(?:[?&][^=]+=(?:[^&#]*)|&|#){${key}}[?&]([^=]+)=(?:([^&#]*)|&|#|$)`);
     results = regex.exec(query);
     if (!results || !_.isString(results[1]) || !_.isString(results[2])) return;
     return {
-      key  : decodeURIComponent(results[1].replace(/\+/g, ' ')),
-      value: decodeURIComponent(results[2].replace(/\+/g, ' '))
+      key  : _decode(results[1]),
+      value: _decode(results[2])
     };
   } else {
     throw new Error('HttpUtil: key must be a string or a non-negative integer.');
@@ -106,6 +106,7 @@ exports.setQueryParam = function (query, key, value) {
 /**
  * @param {Object|string} src - json or a query string.
  * @returns {FormData} form data of the flattened json that can be used in Ajax POST requests.
+ * @private
  */
 exports.toFormData = function (src) {
   let formData = new FormData();
@@ -123,6 +124,34 @@ exports.toFormData = function (src) {
     }
   }
   return formData;
+};
+
+/**
+ * @param {string|Object|FormData} data
+ * @returns {string|Object|FormData} of data with every parameter key converted to snake_case.
+ * @private
+ */
+exports.toSnakeCase = function (data) {
+  if (_.is(data, FormData)) {
+    let newFormData = new FormData();
+    for (let pair of data.entries()) {
+      newFormData = _set(newFormData, _.snakeCase(pair[0]), pair[1]);
+    }
+    return newFormData;
+  }
+  if (_.isString(data)) {
+    let i = 0, pair, newQueryString = '';
+    while (pair = exports.getQueryParam(data, i++)) {
+      newQueryString = exports.setQueryParam(newQueryString, _.snakeCase(pair.key), pair.value);
+    }
+    return newQueryString;
+  }
+  if (!_.isObject(data)) throw new Error('HttpUtil: data must be FormData, string or an object.');
+  let newObject = {};
+  for (let prop in data) {
+    newObject[_.snakeCase(prop)] = data[prop];
+  }
+  return newObject;
 };
 
 /**
@@ -148,11 +177,10 @@ function _toQueryString(src) {
 
 /**
  * Authentication token for our backend.
- * PHP naming convention is used for consistency purposes.
  * @type {string}
  * @private
  */
-exports.csrf_token = '';
+exports.csrfToken = '';
 
 /**
  * @param {XMLHttpRequest} xhr
@@ -183,9 +211,18 @@ function _set(data, key, value) {
     data = exports.setQueryParam(data, key, value);
   } else if (data instanceof FormData) {
     //noinspection JSUnresolvedFunction
-    data.set(key, value);
+    data.append(key, value);
   } else {
     data[key] = value;
   }
   return data;
+}
+
+/**
+ * @param {string} s
+ * @returns {string} Decodes s, as if it were a URI component.
+ * @private
+ */
+function _decode(s) {
+  return decodeURIComponent(s.replace(/\+/g, ' '));
 }

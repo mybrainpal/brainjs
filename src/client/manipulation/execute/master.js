@@ -80,7 +80,7 @@ function _preconditions(name, options) {
   if (!_executorByName[name]) {
     throw new BaseError('Executor: executor ' + name + ' is nonexistent.');
   }
-  if (!_.isNil(options.id) && !_.isString(options.id) && !_.isNumber(options.id)) {
+  if (!_.isNil(options.id) && !_.isAlphaNum(options.id)) {
     throw new BaseError('Executor: id must be a string or a number.');
   }
   if (!_.isNil(options.on) && !_.isString(options.on) && !_.isBoolean(options.on) &&

@@ -11,7 +11,7 @@ const configuration = {
   storage   : {
     name: Storage.names.POST,
   },
-  tracker   : 3,
+  trackerId : 3,
   experiment: {
     id          : 10,
     demographics: {name: Demographics.PROPERTIES.MODULO.name, moduloIds: [0], moduloOf: 2},

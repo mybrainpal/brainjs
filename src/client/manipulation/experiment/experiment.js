@@ -24,7 +24,7 @@ class Experiment {
    *  The object (or the array elements) should match the options of {@link Collector#collect}
    */
   constructor(options = {}) {
-    if (!_.isString(options.id) && !_.isNumber(options.id)) {
+    if (!_.isAlphaNum(options.id)) {
       throw new BaseError('Experiment: id must be number or a string');
     }
     this.id = options.id;

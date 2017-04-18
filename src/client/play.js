@@ -4,6 +4,7 @@
 let _           = require('./common/util/wrapper'),
     $           = require('./common/util/dom'),
     Client      = require('./common/client'),
+    BaseError   = require('./common/log/base.error'),
     Logger      = require('./common/log/logger'),
     Level       = require('./common/log/logger').Level,
     Storage     = require('./common/storage/storage'),
@@ -19,7 +20,7 @@ let _           = require('./common/util/wrapper'),
  *      @property {Object} experiment
  *      @property {Object} options
  *  @property {Object} storage - the preferred method of storing data in our backend.
- *  @property {string} tracker - as identifier for our awesome customer.
+ *  @property {string|number} trackerId - as identifier for our awesome customer.
  */
 module.exports = function (configuration) {
   if (!Client.canRunBrainPal()) {
@@ -27,7 +28,16 @@ module.exports = function (configuration) {
     exports.shutDown();
     return;
   }
-  Client.tracker     = configuration.tracker;
+  if (_.isNil(configuration)) {
+    throw new BaseError('Play: missing configuration.');
+  }
+  if (!_.isObject(configuration)) {
+    throw new BaseError('Play: configuration must be an object.');
+  }
+  if (!_.isAlphaNum(configuration.trackerId)) {
+    throw new BaseError('Play: missing trackerId.');
+  }
+  Client.trackerId   = configuration.trackerId;
   Client.experiments = _.arrify(configuration.experiments).map((experimentOptions) => {
     return new Experiment(experimentOptions);
   });

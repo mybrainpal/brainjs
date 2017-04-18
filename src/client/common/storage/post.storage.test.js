@@ -64,13 +64,13 @@ describe('PostStorage', function () {
   });
   it('init without experiments', function (done) {
     PostStorage.init({}, () => {
-      expect(_.http.csrf_token).to.eq('10');
+      expect(_.http.csrfToken).to.eq('10');
       done();
     });
     expect(this.requests).to.have.length(1);
-    expect(this.requests[0].requestBody.get('tracker')).to.eq(Client.tracker);
+    expect(this.requests[0].requestBody.get('tracker_id')).to.eq(Client.trackerId);
     expect(this.requests[0].requestBody.get('timestamp')).to.be.ok;
-    expect(this.requests[0].requestBody.get('backendUrl')).to.not.be.ok;
+    expect(this.requests[0].requestBody.get('backend_url')).to.not.be.ok;
     this.requests[0].respond(200, {'Content-Type': 'application/json'},
                              JSON.stringify({success: 1, json: 1, csrf_token: 10}));
   });

@@ -21,9 +21,9 @@ exports.id = 0;
 /**
  * Identifier of current tracker, you may think of it as a customer ID, or should we say a lucky
  * customer!
- * @type {string}
+ * @type {string|number}
  */
-exports.tracker = '';
+exports.trackerId = '';
 
 /**
  * All experiments that had been loaded from the customer's configuration. Note that the client

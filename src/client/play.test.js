@@ -7,6 +7,7 @@ const expect        = require('chai').expect,
       Play          = require('./play'),
       _             = require('./common/util/wrapper'),
       $             = require('./common/util/dom'),
+      BaseError     = require('./common/log/base.error'),
       Client        = require('./common/client'),
       Experiment    = require('./manipulation/experiment/experiment'),
       StyleExecutor = require('./manipulation/execute/dom/style'),
@@ -99,7 +100,7 @@ describe('End 2 End', function () {
             });
     id++;
     collect.event      = 'click-' + id;
-    Client.tracker     = '';
+    Client.trackerId   = '';
     Client.experiments = [];
   });
   after(() => {
@@ -117,15 +118,24 @@ describe('End 2 End', function () {
     expect($('style[' + $.identifyingAttribute + ']')).to.not.be.ok;
   });
   it('tracker initialized', () => {
-    Play({tracker: `it's you`});
-    expect(Client.tracker).to.eq(`it's you`);
+    Play({trackerId: `it's you`});
+    expect(Client.trackerId).to.eq(`it's you`);
+  });
+  it('missing tracker ID', () => {
+    expect(() => {Play({})}).to.throw(BaseError);
+  });
+  it('invalid configuration', () => {
+    expect(() => {//noinspection JSCheckFunctionSignatures
+      Play()
+    }).to.throw(BaseError);
+    expect(() => {Play(1)}).to.throw(BaseError);
   });
   it('experiments initialized', () => {
-    Play({tracker: id, experiments: [nonClientExperiment]});
+    Play({trackerId: id, experiments: [nonClientExperiment]});
     expect(Client.experiments).to.deep.eq([new Experiment(nonClientExperiment)]);
   });
   it('client init & storage switch', function (done) {
-    Play({tracker: id, storage: {name: Storage.names.POST}});
+    Play({trackerId: id, storage: {name: Storage.names.POST}});
     expect(this.requests).to.not.be.empty;
     // Simulates a non-zero response time from the backend.
     _.delay.call(this, () => {
@@ -135,14 +145,15 @@ describe('End 2 End', function () {
     _.delay.call(this, () => {
       expect(this.requests[0].requestBody.get('participates')).to.eq('0');
       expect(this.requests[0].requestBody.get('manipulated')).to.eq('0');
-      expect(_.http.csrf_token).to.eq('miami');
+      expect(this.requests[0].requestBody.get('tracker_id')).to.eq(id.toString());
+      expect(_.http.csrfToken).to.eq('miami');
       expect(this.requests[1].url.endsWith(Const.BACKEND_URL.LOG)).to.be.true;
       expect(this.requests[1].requestBody.get('token')).to.eq('miami');
       done();
     }, 20);
   });
   it('experiment run', function (done) {
-    Play({tracker: id, storage: {name: Storage.names.POST}, experiments: [clientExperiment]});
+    Play({trackerId: id, storage: {name: Storage.names.POST}, experiments: [clientExperiment]});
     this.requests[0].respond(200, {'Content-Type': 'application/json'},
                              JSON.stringify({success: 1, json: 1, csrf_token: 'florida'}));
     expect(this.requests[0].requestBody.get('participates')).to.eq('1');
@@ -150,16 +161,16 @@ describe('End 2 End', function () {
     _.delay.call(this, () => {
       expect(getComputedStyle(span).marginTop).to.eq('10px');
       expect(_getEvent(0, this.requests).requestBody.get('event')).to.eq(Const.EVENTS.PARTICIPATE);
-      expect(_getEvent(1, this.requests).requestBody.get('experimentId')).to.eq(
+      expect(_getEvent(1, this.requests).requestBody.get('experiment_id')).to.eq(
         clientExperiment.id.toString());
       expect(_getEvent(1, this.requests).requestBody.get('event')).to.eq(Const.EVENTS.PARTICIPATE);
-      expect(_getEvent(1, this.requests).requestBody.get('experimentGroupId')).to.eq(
+      expect(_getEvent(1, this.requests).requestBody.get('experiment_group_id')).to.eq(
         clientExperiment.groups[0].id.toString());
       done();
     });
   });
   it('conversion / state change', function (done) {
-    Play({tracker: id, storage: {name: Storage.names.POST}, experiments: [clientExperiment]});
+    Play({trackerId: id, storage: {name: Storage.names.POST}, experiments: [clientExperiment]});
     this.requests[0].respond(200, {'Content-Type': 'application/json'},
                              JSON.stringify({success: 1, json: 1, csrf_token: 'token'}));
     $.trigger(collect.event, null, collect.selector);
@@ -173,7 +184,7 @@ describe('End 2 End', function () {
     });
   });
   it('non-client experiment does not manipulate', function (done) {
-    Play({tracker: id, storage: {name: Storage.names.POST}, experiments: [nonClientExperiment]});
+    Play({trackerId: id, storage: {name: Storage.names.POST}, experiments: [nonClientExperiment]});
     this.requests[0].respond(200, {'Content-Type': 'application/json'},
                              JSON.stringify({success: 1, json: 1, csrf_token: 'florida'}));
     expect(this.requests[0].requestBody.get('participates')).to.eq('1');
@@ -184,7 +195,7 @@ describe('End 2 End', function () {
     });
   });
   it('collect', function (done) {
-    Play({tracker: id, storage: {name: Storage.names.POST}, collect: collect});
+    Play({trackerId: id, storage: {name: Storage.names.POST}, collect: collect});
     this.requests[0].respond(200, {'Content-Type': 'application/json'},
                              JSON.stringify({success: 1, json: 1, csrf_token: 'florida'}));
     $.trigger(collect.event, null, collect.selector);

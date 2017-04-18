@@ -55,7 +55,7 @@ exports.preconditions = function (options) {
       _animationClasses.indexOf(options.animationClass) === -1) {
     throw new BaseError('GalleryExecutor : animationClass is unknown.');
   }
-  if (!_.isNil(options.id) && !_.isString(options.id) && !_.isNumber(options.id)) {
+  if (!_.isNil(options.id) && !_.isAlphaNum(options.id)) {
     throw new BaseError('GalleryExecutor : id must be a string, number or nil.');
   }
 };

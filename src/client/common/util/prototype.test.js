@@ -82,6 +82,15 @@ describe('Prototype', () => {
       //noinspection JSCheckFunctionSignatures
       expect(_.isNumber()).to.be.false;
     });
+    it('isAlphaNum', () => {
+      expect(_.isAlphaNum(1)).to.be.true;
+      //noinspection JSCheckFunctionSignatures
+      expect(_.isAlphaNum('')).to.be.true;
+      //noinspection JSCheckFunctionSignatures
+      expect(_.isAlphaNum(null)).to.be.false;
+      //noinspection JSCheckFunctionSignatures
+      expect(_.isAlphaNum()).to.be.false;
+    });
     it('isBoolean', () => {
       expect(_.isBoolean(true)).to.be.true;
       expect(_.isBoolean(false)).to.be.true;
@@ -365,6 +374,45 @@ describe('Prototype', () => {
         expect(count).to.be.at.least(2);
         done();
       }, 20);
+    });
+  });
+  describe('snake_case', () => {
+    it('invalid input throws error', () => {
+      expect(() => {//noinspection JSCheckFunctionSignatures
+        _.snakeCase()
+      }).to.throw(Error);
+      expect(() => {//noinspection JSCheckFunctionSignatures
+        _.snakeCase(1)
+      }).to.throw(Error);
+      expect(() => {//noinspection JSCheckFunctionSignatures
+        _.snakeCase(null)
+      }).to.throw(Error);
+    });
+    it('lowercase string remains as is', () => {
+      expect(_.snakeCase('a')).to.eq('a');
+    });
+    it('special characters', () => {
+      expect(_.snakeCase('')).to.eq('');
+      expect(_.snakeCase('1')).to.eq('1');
+      expect(_.snakeCase('.')).to.eq('.');
+      expect(_.snakeCase('a.?a')).to.eq('a.?a');
+    });
+    it('camelCase', () => {
+      expect(_.snakeCase('camelCase')).to.eq('camel_case');
+      expect(_.snakeCase('don\'tLetMeDown')).to.eq('don\'t_let_me_down');
+    });
+    it('PascalCase', () => {
+      expect(_.snakeCase('PascalCase')).to.eq('pascal_case');
+      expect(_.snakeCase('BitchPlease')).to.eq('bitch_please');
+    });
+    it('sequential uppercase letters', () => {
+      expect(_.snakeCase('BRAINPAL_IS_DOPE')).to.eq('brainpal_is_dope');
+      expect(_.snakeCase('lasVEGAS')).to.eq('las_vegas');
+    });
+    it('snake case remains as is', () => {
+      expect(_.snakeCase('a_a')).to.eq('a_a');
+      expect(_.snakeCase('don\'t_you_look_at_me_like_that')).to
+                                                            .eq('don\'t_you_look_at_me_like_that');
     });
   });
 });

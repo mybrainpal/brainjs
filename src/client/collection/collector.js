@@ -53,7 +53,7 @@ exports.preconditions = function (options) {
   if (!_.isString(options.event) || !options.event) {
     throw new BaseError('Collector: event must be a non-empty string.');
   }
-  if (!_.isNil(options.state) && !_.isString(options.state) && !_.isNumber(options.state)) {
+  if (!_.isNil(options.state) && !_.isAlphaNum(options.state)) {
     throw new BaseError('Collector: state must be nil, a string or a number.');
   }
   if (_.isNil(options.listen) || options.listen) {
